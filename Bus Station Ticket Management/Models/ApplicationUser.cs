@@ -18,6 +18,6 @@ namespace Bus_Station_Ticket_Management.Models
         public string Gender { get; set; }
 
         [DisplayName("Ngày sinh")]
-        public DateTime? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
     }
 }

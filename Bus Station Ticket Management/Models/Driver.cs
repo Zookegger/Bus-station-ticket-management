@@ -27,7 +27,7 @@ namespace Bus_Station_Ticket_Management.Models
 
         [DisplayName("Ngày sinh")]
         [Required]
-        public DateTime? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
         [DisplayName("Địa chỉ Email")]
         [Required]

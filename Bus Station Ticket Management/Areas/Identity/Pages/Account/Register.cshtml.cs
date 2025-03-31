@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 {
@@ -98,6 +99,19 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [DisplayName("Họ tên")]
+            [Required]
+            public string FullName { get; set; }
+
+            [DisplayName("Địa chỉ")]
+            public string? Address { get; set; }
+
+            [DisplayName("Giới tính")]
+            public string Gender { get; set; }
+
+            [DisplayName("Ngày sinh")]
+            public DateOnly? DateOfBirth { get; set; }
         }
 
 
@@ -114,6 +128,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                user.FullName = Input.FullName;
+                user.Address = Input.Address;
+                user.Gender = Input.Gender;
+                user.DateOfBirth = Input.DateOfBirth;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
