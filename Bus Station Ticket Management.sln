@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus Station Ticket Management", "Quản lý bán vé bến xe\Bus Station Ticket Management.csproj", "{F87643A3-4F99-4EB7-BA01-3011972335B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus Station Ticket Management", "Bus Station Ticket Management\Bus Station Ticket Management.csproj", "{F87643A3-4F99-4EB7-BA01-3011972335B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

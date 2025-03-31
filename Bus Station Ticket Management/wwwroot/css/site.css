@@ -1,0 +1,228 @@
+:root {
+    --global-font-size: 16px;
+}
+
+html {
+  font-size: var(--global-font-size);
+  height: 100vh;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    /* min-width: 100vw;
+    min-height: 100vh; */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 60px;
+    height: 100%;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+    
+header {
+    background-color: #20874e !important;
+    margin-bottom: 1rem;
+}
+
+header nav {
+    position: relative;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+}
+
+main {
+    margin: 0 24px;
+    flex: 1;
+}
+
+
+header nav, footer {
+    background-color: #20874e !important;
+}
+
+    header nav *, footer * {
+        color: white !important;
+    }
+
+.navbar-brand {
+    font-weight: bold;
+
+}
+.navbar-nav {
+    flex-direction: column !important;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    footer > .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+table {
+    max-width: inherit;
+}
+
+table thead th, .accordion * {
+    background-color: #20874e !important;
+    color: white;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.accordion {
+    display: flex;
+    /* flex-direction: column; */
+}
+
+.accordion .nav-item:not(:first-child) {
+    border-top: 2px solid rgb(3, 109, 50);
+}
+
+.nav-item:hover {
+    outline: 1px solid black;
+}
+
+.accordion-body, .navbar-nav, .navbar-nav .nav-link {
+    background-color: #fff !important;
+}
+
+.navbar-nav .nav-link {
+    color: black !important;
+}
+
+@media (max-width: 426px) {
+    main {
+        overflow-x: scroll;
+    }
+
+    .navbar-brand {
+        font-size: 18px !important;
+    }
+}
+
+@media (max-width: 397px) {
+    .navbar-brand {
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 578px) {
+    .accordion {
+        flex-direction: column;
+        padding-top: 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .navbar-nav {
+        flex-direction: column;
+    }
+    .navbar-toggler {
+        display: block;
+    }
+}
+
+@media (min-width: 800px) {
+    .accordion-container {
+        position: relative; /* Ensures absolute positioning inside */
+    }
+    
+    .accordion {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .accordion-body {
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        background: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        min-width: inherit;
+        flex-direction: column;
+        border-radius: 6px;
+        overflow: hidden;
+        z-index: 1000;
+        height: 0;
+        opacity: 0;
+        padding: 0 15px;
+        transition: height 0.1s ease-in-out, opacity 0.1s ease-in-out;
+    }
+    
+    /* When the accordion is expanded */
+        .accordion-collapse.show .accordion-body {
+            height: auto;
+            opacity: 1;
+            padding-top: 10px; 
+            padding-bottom: 10px; 
+        }
+        .accordion-item {
+            position: relative; 
+            min-width: 120px;
+            border-radius: 6px;
+        }
+    
+        .accordion-item:hover {
+            gap: 15px;
+        }
+    
+        .accordion-button {
+            width: 100%;
+            gap: 8px;
+            text-align: left;
+            border: none;
+            background: none;
+            color: white;
+            font-size: var(--global-font-size);
+            transition: font-size 0.125s ease-in-out, font-weight 0.125s ease-in;
+        }
+    
+        .accordion-button:hover {
+            font-weight: 600;
+            outline: 2px solid #1d5f29;
+            border-radius: 6px;
+            font-size: calc(var(--global-font-size) + 4px);
+        }
+}
