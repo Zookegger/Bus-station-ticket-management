@@ -5,6 +5,26 @@
       "PackagePath": "staticwebassets\\Bus Station Ticket Management.np28g9jbwn.bundle.scp.css"
     },
     {
+      "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css",
+      "PackagePath": "staticwebassets\\css\\VehicleType\\Create.css"
+    },
+    {
+      "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css",
+      "PackagePath": "staticwebassets\\css\\VehicleType\\Delete.css"
+    },
+    {
+      "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css",
+      "PackagePath": "staticwebassets\\css\\VehicleType\\Details.css"
+    },
+    {
+      "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css",
+      "PackagePath": "staticwebassets\\css\\VehicleType\\Index.css"
+    },
+    {
+      "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css",
+      "PackagePath": "staticwebassets\\css\\VehicleType\\Update.css"
+    },
+    {
       "Id": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

@@ -15,8 +15,8 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
-build_property.RootNamespace = Quản_lý_bán_vé_bến_xe
-build_property.RootNamespace = Quản_lý_bán_vé_bến_xe
+build_property.RootNamespace = Bus_Station_Ticket_Management
+build_property.RootNamespace = Bus_Station_Ticket_Management
 build_property.ProjectDir = D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
@@ -46,6 +46,26 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/_ViewImports.cshtml]

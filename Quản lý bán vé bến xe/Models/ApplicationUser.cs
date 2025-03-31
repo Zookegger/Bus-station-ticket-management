@@ -1,15 +1,14 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Bus_Station_Ticket_Management.Models
 {
-    public class Customer
+    public class ApplicationUser : IdentityUser
     {
-        [DisplayName("Mã Khách Hàng")]
+        [DisplayName("Tên người dùng")]
         [Required]
-        public int Id { get; set; }
-
-        [DisplayName("Tên Khách Hàng")]
         public string FullName { get; set; }
 
         [DisplayName("Địa chỉ")]
@@ -20,13 +19,5 @@ namespace Bus_Station_Ticket_Management.Models
 
         [DisplayName("Ngày sinh")]
         public DateTime? DateOfBirth { get; set; }
-
-        [DisplayName("Địa chỉ Email")]
-        public string Email { get; set; }
-
-        [DisplayName("Số điện thoại")]
-        [StringLength(maximumLength:10, MinimumLength=9)]
-        public string PhoneNumber { get; set; }
-
     }
 }

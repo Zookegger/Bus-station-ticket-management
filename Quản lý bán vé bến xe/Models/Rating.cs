@@ -1,20 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Station_Ticket_Management.Models
 {
     public class Rating
     {
+        [Required]
+        [Key]
         public int Id { get; set; }
-        public string? Content { get; set; }
-        public string? Suggestion { get; set; }
+
+        [Required]
+        public string CustomerId { get; set; }
+        [ForeignKey(nameof(CustomerId))]
+        public ApplicationUser User { get; set; }
+
+        [Required]
+        public int TripId { get; set; }
+        [ForeignKey(nameof(TripId))]
+        public Trip Trip { get; set; }
+
+        [DisplayName("Nhận xét")]
+        public string? Comment { get; set; }
 
         [Range(1, 10)]
+        [DisplayName("Điểm chuyến xe")]
         public byte TripRating { get; set; }
-        [Range(1, 10)]
-        public byte DriverRating { get; set; }
-        [Range(1, 10)]
-        public byte ServiceRating { get; set; }
 
-        public DateTime RecordedDate { get; set; }
+        [DisplayName("Ngày tạo ra")]
+        public DateTime CreatedAt { get; set; }
+
     }
 }

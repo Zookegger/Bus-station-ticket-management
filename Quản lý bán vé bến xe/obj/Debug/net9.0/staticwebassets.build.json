@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "D8plJpwqiKpYm269BUHnstP3YcBdeshnCQ0Rm+G5Wd4=",
+  "Hash": "dkMk3gpWQkjSyM3TRz3RTlxmgilqUl0zs4/Lo3wdrPw=",
   "Source": "Bus Station Ticket Management",
   "BasePath": "_content/Bus Station Ticket Management",
   "Mode": "Default",
@@ -1382,12 +1382,12 @@
       "OriginalItemSpec": "C:\\Users\\HELLO\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.3\\staticwebassets\\V5\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-b9sayid5wm.gz",
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-tfu3agkbny.gz",
       "SourceId": "Bus Station Ticket Management",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/Bus Station Ticket Management",
-      "RelativePath": "css/site#[.{fingerprint=b9sayid5wm}]?.css.gz",
+      "RelativePath": "css/site#[.{fingerprint=tfu3agkbny}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1396,8 +1396,8 @@
       "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\site.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "wf4wcyqcqt",
-      "Integrity": "fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I=",
+      "Fingerprint": "je155m2t1s",
+      "Integrity": "pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\site.css"
@@ -1569,6 +1569,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3qncvq04wj-27p3t2i2z1.gz",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Details#[.{fingerprint=27p3t2i2z1}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "w8tbdpn8mx",
+      "Integrity": "MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css"
     },
     {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3tzsqhslk9-ub07r2b239.gz",
@@ -1821,6 +1842,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\6ie3kuq2a9-5ipweew5fc.gz",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Index#[.{fingerprint=5ipweew5fc}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "5ipweew5fc",
+      "Integrity": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css"
     },
     {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\7brlgvyjs9-nvvlpmu67g.gz",
@@ -2222,6 +2264,27 @@
       "OriginalItemSpec": "C:\\Users\\HELLO\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.3\\staticwebassets\\V5\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\c3fk7uih1v-1skziyfs3x.gz",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Delete#[.{fingerprint=1skziyfs3x}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "8o63en5pzw",
+      "Integrity": "eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css"
+    },
+    {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\cynp17w084-c2oey78nd0.gz",
       "SourceId": "Microsoft.AspNetCore.Identity.UI",
       "SourceType": "Package",
@@ -2325,6 +2388,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\HELLO\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.3\\staticwebassets\\V5\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\emsrwbkgcn-upu51ud2oj.gz",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Update#[.{fingerprint=upu51ud2oj}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "bvphfw59jw",
+      "Integrity": "yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css"
     },
     {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\eumvdkrlgv-iovd86k7lj.gz",
@@ -2451,6 +2535,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h80amo9vxw-onlbjckwz7.gz",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Create#[.{fingerprint=onlbjckwz7}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "41c6nxgbd7",
+      "Integrity": "aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css"
     },
     {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h9vwtoirpy-j5mq2jizvt.gz",
@@ -4042,11 +4147,116 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "b9sayid5wm",
-      "Integrity": "j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=",
+      "Fingerprint": "tfu3agkbny",
+      "Integrity": "2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Create#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "onlbjckwz7",
+      "Integrity": "ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\VehicleType\\Create.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Delete#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "1skziyfs3x",
+      "Integrity": "8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\VehicleType\\Delete.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Details#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "27p3t2i2z1",
+      "Integrity": "sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\VehicleType\\Details.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Index#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5ipweew5fc",
+      "Integrity": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\VehicleType\\Index.css"
+    },
+    {
+      "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css",
+      "SourceId": "Bus Station Ticket Management",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\",
+      "BasePath": "_content/Bus Station Ticket Management",
+      "RelativePath": "css/VehicleType/Update#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "upu51ud2oj",
+      "Integrity": "wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\VehicleType\\Update.css"
     },
     {
       "Identity": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\favicon.ico",
@@ -5949,167 +6159,6 @@
       ]
     },
     {
-      "Route": "css/site.b9sayid5wm.css",
-      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-b9sayid5wm.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.003125000000"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "319"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "b9sayid5wm"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="
-        }
-      ]
-    },
-    {
-      "Route": "css/site.b9sayid5wm.css",
-      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\site.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "667"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "b9sayid5wm"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="
-        }
-      ]
-    },
-    {
-      "Route": "css/site.b9sayid5wm.css.gz",
-      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-b9sayid5wm.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "319"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "b9sayid5wm"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css.gz"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I="
-        }
-      ]
-    },
-    {
       "Route": "css/site.css",
       "AssetFile": "C:\\Users\\HELLO\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.3\\staticwebassets\\css\\site.css",
       "Selectors": [],
@@ -6148,12 +6197,12 @@
     },
     {
       "Route": "css/site.css",
-      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-b9sayid5wm.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-tfu3agkbny.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.003125000000"
+          "Quality": "0.002624671916"
         }
       ],
       "ResponseHeaders": [
@@ -6163,15 +6212,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "319"
+          "Value": "380"
         },
         {
           "Name": "ETag",
-          "Value": "\"fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I=\""
+          "Value": "\"pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6191,13 +6240,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\""
+          "Value": "W/\"2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="
+          "Value": "sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg="
         }
       ]
     },
@@ -6212,7 +6261,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "667"
+          "Value": "828"
         },
         {
           "Name": "Content-Type",
@@ -6220,11 +6269,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\""
+          "Value": "\"2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6234,13 +6283,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="
+          "Value": "sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg="
         }
       ]
     },
     {
       "Route": "css/site.css.gz",
-      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-b9sayid5wm.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-tfu3agkbny.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6249,7 +6298,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "319"
+          "Value": "380"
         },
         {
           "Name": "Content-Type",
@@ -6257,11 +6306,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I=\""
+          "Value": "\"pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 19 Mar 2025 08:07:43 GMT"
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6279,7 +6328,1658 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-fNKkLSNFLZMVTc2zVrpMXQqOwPU3sU4GWcfEbCR2V1I="
+          "Value": "sha256-pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.tfu3agkbny.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-tfu3agkbny.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.002624671916"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "380"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tfu3agkbny"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.tfu3agkbny.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tfu3agkbny"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG+JkJ1wMWLbuzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.tfu3agkbny.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\0ovepmc9nn-tfu3agkbny.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "380"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 06:59:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tfu3agkbny"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-pcy1jXMNTwCS1KsCQMv+lBi3qecnDKaElq2TDrMvloQ="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h80amo9vxw-onlbjckwz7.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008928571429"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "149"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h80amo9vxw-onlbjckwz7.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.onlbjckwz7.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h80amo9vxw-onlbjckwz7.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008928571429"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "onlbjckwz7"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Create.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.onlbjckwz7.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Create.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "149"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "onlbjckwz7"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Create.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP+QXv/xk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Create.onlbjckwz7.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\h80amo9vxw-onlbjckwz7.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "onlbjckwz7"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Create.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-aN0Xge3murlULyQjDbqvzc5dFKF5PbU6F6PCdmmTXIU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.1skziyfs3x.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\c3fk7uih1v-1skziyfs3x.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1skziyfs3x"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Delete.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.1skziyfs3x.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1skziyfs3x"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Delete.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.1skziyfs3x.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\c3fk7uih1v-1skziyfs3x.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1skziyfs3x"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Delete.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\c3fk7uih1v-1skziyfs3x.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Delete.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Delete.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\c3fk7uih1v-1skziyfs3x.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-eKGP+W35GlLP9K+dppyx4G3LlD/01URvjDbDH+imC18="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.27p3t2i2z1.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3qncvq04wj-27p3t2i2z1.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "27p3t2i2z1"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Details.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.27p3t2i2z1.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "27p3t2i2z1"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Details.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.27p3t2i2z1.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3qncvq04wj-27p3t2i2z1.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "27p3t2i2z1"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Details.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3qncvq04wj-27p3t2i2z1.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Details.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Details.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\3qncvq04wj-27p3t2i2z1.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MPYJfGG1ww3H2Nxc/bIAAHdgIdyVKOTeTeuZXuJj5Vk="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.5ipweew5fc.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\6ie3kuq2a9-5ipweew5fc.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "1.000000000000"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5ipweew5fc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Index.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.5ipweew5fc.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5ipweew5fc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Index.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.5ipweew5fc.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\6ie3kuq2a9-5ipweew5fc.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5ipweew5fc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Index.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\6ie3kuq2a9-5ipweew5fc.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "1.000000000000"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Index.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Index.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\6ie3kuq2a9-5ipweew5fc.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "0"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\emsrwbkgcn-upu51ud2oj.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\emsrwbkgcn-upu51ud2oj.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.upu51ud2oj.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\emsrwbkgcn-upu51ud2oj.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.008849557522"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "upu51ud2oj"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Update.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.upu51ud2oj.css",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\wwwroot\\css\\VehicleType\\Update.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "150"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "upu51ud2oj"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Update.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="
+        }
+      ]
+    },
+    {
+      "Route": "css/VehicleType/Update.upu51ud2oj.css.gz",
+      "AssetFile": "D:\\CodingStufts\\C,C++, C#\\C#\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\Quản lý bán vé bến xe\\obj\\Debug\\net9.0\\compressed\\emsrwbkgcn-upu51ud2oj.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "112"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 31 Mar 2025 07:01:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "upu51ud2oj"
+        },
+        {
+          "Name": "label",
+          "Value": "css/VehicleType/Update.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yeNPMqHCcNLE7BAYdNSmWb9r5JfjzoCVH5eqYN/ff70="
         }
       ]
     },

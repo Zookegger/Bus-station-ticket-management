@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Quản_lý_bán_vé_bến_xe-82e6d63a-22b1-4f33-9aaf-2114cdacc643</UserSecretsId>
-    <RootNamespace>Quản_lý_bán_vé_bến_xe</RootNamespace>
+    <RootNamespace>Bus_Station_Ticket_Management</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Templating" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\VehicleType\" />
   </ItemGroup>
 
 </Project>

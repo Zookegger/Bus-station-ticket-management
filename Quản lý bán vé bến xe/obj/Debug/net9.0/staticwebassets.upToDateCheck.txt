@@ -5,6 +5,7 @@ D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé b�
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\css\VehicleType\Details.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
@@ -13,6 +14,7 @@ D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé b�
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\js\site.js
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\css\VehicleType\Index.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
@@ -23,13 +25,16 @@ D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé b�
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\jquery-validation\dist\jquery.validate.js
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\jquery\dist\jquery.slim.min.map
+D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\css\VehicleType\Delete.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\css\VehicleType\Update.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\css\VehicleType\Create.css
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\jquery\dist\jquery.min.js
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
@@ -61,6 +66,11 @@ D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé b�
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
 D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
 wwwroot\css\site.css
+wwwroot\css\VehicleType\Create.css
+wwwroot\css\VehicleType\Delete.css
+wwwroot\css\VehicleType\Details.css
+wwwroot\css\VehicleType\Index.css
+wwwroot\css\VehicleType\Update.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css

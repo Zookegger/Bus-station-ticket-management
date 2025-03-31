@@ -1,0 +1,8 @@
+#VehicleTypeTable thead th {
+    background-color: #20874e;
+    color: white;
+}
+
+.clickable-row {
+    cursor: pointer;
+}

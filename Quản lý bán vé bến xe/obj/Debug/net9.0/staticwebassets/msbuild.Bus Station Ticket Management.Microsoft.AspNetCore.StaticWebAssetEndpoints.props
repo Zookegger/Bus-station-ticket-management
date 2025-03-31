@@ -12,17 +12,77 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"np28g9jbwn"},{"Name":"integrity","Value":"sha256-RXy5iJAQFgyS1tHlREo3jE3h7\u002BpMfXj2f85qBizIOQc="},{"Name":"label","Value":"_content/Bus Station Ticket Management/Bus Station Ticket Management.bundle.scp.css"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1147"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022RXy5iJAQFgyS1tHlREo3jE3h7\u002BpMfXj2f85qBizIOQc=\u0022"},{"Name":"Last-Modified","Value":"Wed, 19 Mar 2025 14:28:28 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/site.b9sayid5wm.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"b9sayid5wm"},{"Name":"integrity","Value":"sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/site.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"667"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\u0022"},{"Name":"Last-Modified","Value":"Wed, 19 Mar 2025 08:07:43 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/site.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"667"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022j6fhJSuuyLpOSLuPJU0TsDV0iNjor5S3rDnvxJrt4bg=\u0022"},{"Name":"Last-Modified","Value":"Wed, 19 Mar 2025 08:07:43 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG\u002BJkJ1wMWLbuzg="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"828"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00222Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG\u002BJkJ1wMWLbuzg=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 06:59:20 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/site.tfu3agkbny.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"tfu3agkbny"},{"Name":"integrity","Value":"sha256-2Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG\u002BJkJ1wMWLbuzg="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/site.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"828"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00222Ub2jLKdJUBC0dKBWKVRkcpBGxh1fG\u002BJkJ1wMWLbuzg=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 06:59:20 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Create.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Create.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP\u002BQXv/xk="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"149"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP\u002BQXv/xk=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Create.onlbjckwz7.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Create.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"onlbjckwz7"},{"Name":"integrity","Value":"sha256-ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP\u002BQXv/xk="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/VehicleType/Create.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"149"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022ZCXDm64ZfH9ZzEBJqxBDwpT4TuEaodcXZEKP\u002BQXv/xk=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Delete.1skziyfs3x.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Delete.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"1skziyfs3x"},{"Name":"integrity","Value":"sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/VehicleType/Delete.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00228V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Delete.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Delete.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-8V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00228V3Im2SRHYAF9WbGbjREEt1eqbR0mJzG6QTxcuRAaDU=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Details.27p3t2i2z1.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Details.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"27p3t2i2z1"},{"Name":"integrity","Value":"sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/VehicleType/Details.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Details.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Details.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022sjiO6ABbYeSCGVrsmx9yFJTKprqkOTzjHvnphMNl2e8=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Index.5ipweew5fc.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Index.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"5ipweew5fc"},{"Name":"integrity","Value":"sha256-47DEQpj8HBSa\u002B/TImW\u002B5JCeuQeRkm5NMpJWZG3hSuFU="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/VehicleType/Index.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"0"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u002247DEQpj8HBSa\u002B/TImW\u002B5JCeuQeRkm5NMpJWZG3hSuFU=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Index.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Index.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-47DEQpj8HBSa\u002B/TImW\u002B5JCeuQeRkm5NMpJWZG3hSuFU="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"0"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u002247DEQpj8HBSa\u002B/TImW\u002B5JCeuQeRkm5NMpJWZG3hSuFU=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Update.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Update.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/css/VehicleType/Update.upu51ud2oj.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\VehicleType\Update.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"upu51ud2oj"},{"Name":"integrity","Value":"sha256-wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY="},{"Name":"label","Value":"_content/Bus Station Ticket Management/css/VehicleType/Update.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"150"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022wlPRIQuoKG5tw/3L7nPetZDMJ66QjctC3EnWzOnL0KY=\u0022"},{"Name":"Last-Modified","Value":"Mon, 31 Mar 2025 07:01:03 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Bus Station Ticket Management/favicon.61n19gt1b8.ico">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.ico'))</AssetFile>
