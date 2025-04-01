@@ -17,65 +17,85 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Bus_Station_Ticket_Management
 build_property.RootNamespace = Bus_Station_Ticket_Management
-build_property.ProjectDir = D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe\
+build_property.ProjectDir = D:\Đồ án cơ sở\Bus-station-ticket-management\Quản lý bán vé bến xe\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\CodingStufts\C,C++, C#\C#\Quản lý bán vé bến xe\Quản lý bán vé bến xe\Quản lý bán vé bến xe
+build_property.MSBuildProjectDirectory = D:\Đồ án cơ sở\Bus-station-ticket-management\Quản lý bán vé bến xe
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Home/Index.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Home/Privacy.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Shared/Error.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Shared/_LoginPartial.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Create.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Trip/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Trip/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcFxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Trip/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Trip/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcFxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Trip/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/VehicleType/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Delete.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/VehicleType/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Details.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/VehicleType/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Edit.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/VehicleType/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/VehicleType/Index.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/VehicleType/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZVR5cGVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/_ViewImports.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/_ViewStart.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CodingStufts/C\,C++\, C\#/C\#/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Quản lý bán vé bến xe/Views/Shared/_Layout.cshtml]
+[D:/Đồ án cơ sở/Bus-station-ticket-management/Quản lý bán vé bến xe/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-i7ei7wypp7

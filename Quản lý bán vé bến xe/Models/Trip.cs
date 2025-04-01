@@ -16,10 +16,9 @@ namespace Bus_Station_Ticket_Management.Models
         public int TotalPrice { get; set; }
 
         public int RouteId { get; set; }
-        [ForeignKey(nameof(RouteId))]
-        public Routes Route { get; set; }
+        public Routes? Route { get; set; }
 
-        public ICollection<TripDriverAssignment> TripDriverAssignments { get; set; }
+        public List<TripDriverAssignment>? TripDriverAssignments { get; set; }
 
     }
 }
