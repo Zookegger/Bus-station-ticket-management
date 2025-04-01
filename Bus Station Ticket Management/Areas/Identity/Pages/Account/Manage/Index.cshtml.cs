@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -59,6 +60,18 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Required]
+            [DisplayName("Tên người dùng")]
+            public string FullName { get; set; }
+
+            [DisplayName("Địa chỉ")]
+            public string? Address { get; set; }
+
+            [DisplayName("Giới tính")]
+            public string Gender { get; set; }
+
+            [DisplayName("Ngày sinh")]
+            public DateOnly? DateOfBirth { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -70,7 +83,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FullName = user.FullName,
+                Address = user.Address,
+                Gender = user.Gender,
+                DateOfBirth = user.DateOfBirth,
             };
         }
 
@@ -111,6 +128,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            user.FullName = Input.FullName;
+            user.Address = Input.Address;
+            user.Gender = Input.Gender;
+            user.DateOfBirth = Input.DateOfBirth;
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
