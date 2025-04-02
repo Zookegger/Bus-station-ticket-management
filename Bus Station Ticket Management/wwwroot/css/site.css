@@ -5,16 +5,22 @@
 html {
   font-size: var(--global-font-size);
   height: 100vh;
+  width: 100vw;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 18px;
-  }
+    html {
+        font-size: 18px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.navbar-toggler-icon {
+    color: white;
+    filter: invert(1.25); 
 }
 
 html {
@@ -27,6 +33,7 @@ body {
     flex-direction: column;
     margin-bottom: 60px;
     height: 100%;
+    width: 100%;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {

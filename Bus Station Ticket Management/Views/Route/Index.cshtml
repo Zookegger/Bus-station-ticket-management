@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Routes>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestinationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartLocation.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Edit</button></a> |
+                <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-danger">Delete</button></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".clickable-row").forEach(row => {
+                row.addEventListener("click", function () {
+                    window.location = this.dataset.href;
+                });
+            });
+        });
+    </script>
+}
+

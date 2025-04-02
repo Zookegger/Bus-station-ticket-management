@@ -15,15 +15,15 @@ namespace Bus_Station_Ticket_Management.DataAccess
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Routes>()
-                .HasOne(r => r.StartId)
+                .HasOne(r => r.StartLocation)
                 .WithMany()
-                .HasForeignKey(r => r.StartLocation)
+                .HasForeignKey(r => r.StartId)
                 .OnDelete(DeleteBehavior.NoAction); // Chặn xóa cascade
 
             modelBuilder.Entity<Routes>()
-                .HasOne(r => r.DestinationId)
+                .HasOne(r => r.DestinationLocation)
                 .WithMany()
-                .HasForeignKey(r => r.DestinationLocation)
+                .HasForeignKey(r => r.DestinationId)
                 .OnDelete(DeleteBehavior.NoAction); // Chặn xóa cascade
 
             // Định nghĩa quan hệ và tắt xóa cascade
