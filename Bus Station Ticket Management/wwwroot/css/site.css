@@ -2,10 +2,21 @@
     --global-font-size: 16px;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html {
-  font-size: var(--global-font-size);
-  height: 100vh;
-  width: 100vw;
+    font-size: var(--global-font-size);
+    height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 60px;
+    height: 100%;
+    /* width: 100%;  */
 }
 
 @media (min-width: 768px) {
@@ -23,18 +34,6 @@ html {
     filter: invert(1.25); 
 }
 
-html {
-    /* min-width: 100vw;
-    min-height: 100vh; */
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 60px;
-    height: 100%;
-    width: 100%;
-}
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -56,6 +55,10 @@ header {
     margin-bottom: 1rem;
 }
 
+header .left-header {
+    display: flex;
+}
+
 header nav {
     position: relative;
     min-height: 70px;
@@ -74,27 +77,16 @@ header nav, footer {
     background-color: #20874e !important;
 }
 
-    header nav *, footer * {
-        color: white !important;
-    }
 
 .navbar-brand {
     font-weight: bold;
-
+    
 }
 
-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+footer * {
+    color: white !important;
+    width: 100%;
 }
-
-    footer > .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
 
 table {
     max-width: inherit;
@@ -118,18 +110,25 @@ table thead th, .accordion * {
     border-top: 2px solid rgb(3, 109, 50);
 }
 
-.nav-item:hover {
-    outline: 1px solid black;
+.nav-link {
+    border-radius: 6px;
+    transition: box-shadow 3.8s ease-out, background-color 0.3s ease-in-out;
 }
+
+    .nav-link:hover {
+        box-shadow: inset 0 0 0 2px #fff;
+    }
+
+    .nav-link:focus, 
+    .nav-link:active {
+        background-color: #125530;
+        color: white; /* Ensure text remains readable */
+    }
 
 .accordion-body, .accordion-collapse > .navbar-nav, .accordion-body > .navbar-nav .nav-link {
     background-color: #fff !important;
 }
 
-
-.navbar-nav .nav-link {
-    color: black !important;
-}
 
 .navbar-nav.nav-account .nav-link {
     display: flex;
@@ -146,6 +145,7 @@ table thead th, .accordion * {
     align-items: center;
     flex: 1;
 }
+
 
 @media (max-width: 426px) {
     main {
@@ -182,10 +182,20 @@ table thead th, .accordion * {
     .accordion-body.navbar-nav {
         flex-direction: column !important;
     }
+}
+@media (max-width: 1090px) {
     .navbar-toggler {
         display: block;
     }
 }
+
+@media (max-width: 990px) {
+    .nav-link {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+}
+
 
 @media (min-width: 800px) {
     .accordion-container {
@@ -254,4 +264,25 @@ table thead th, .accordion * {
     .accordion-body .navbar-nav {
         flex-direction: column !important;
     }
+}
+
+.login {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+    height: 100%;
+}
+
+.login > section {
+    max-width: 60%;
+    flex: 1;
+}
+
+.login > section .form-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.login > section .form-actions .btn {
+    flex-grow: 1;
 }

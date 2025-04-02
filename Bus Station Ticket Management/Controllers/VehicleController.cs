@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
+using X.PagedList;
+using X.PagedList.Mvc.Core;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
@@ -20,10 +23,27 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         // GET: Vehicle
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
-            var applicationDbContext = _context.Vehicles.Include(v => v.VehicleType);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 15; // Number of items per page
+            int pageNumber = page ?? 1; // Default to page 1
+
+            var vehicles = _context.Vehicles.Include(v => v.VehicleType).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                vehicles = _context.Vehicles.Where(v =>
+                    v.Name.Contains(searchString) ||
+                    v.LicensePlate.Contains(searchString) ||
+                    v.VehicleType.Name.Contains(searchString)
+                );
+            }
+
+            ViewBag.SearchString = searchString;
+
+            var vehicleList = await vehicles.Include(v => v.VehicleType).ToListAsync();
+
+            return View(vehicleList.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Vehicle/Details/5
@@ -59,6 +79,8 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,AcquiredDate,LicensePlate,Status,VehicleTypeId")] Vehicle vehicle)
         {
+            
+
             if (ModelState.IsValid)
             {
                 _context.Add(vehicle);

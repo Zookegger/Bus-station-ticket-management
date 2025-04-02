@@ -13,7 +13,8 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Tên xe")]
         public string? Name { get; set; }
         [DisplayName("Ngày nhập vào")]
-        public DateTime AcquiredDate { get; set; }
+        public DateTime AcquiredDate { get; set; } = DateTime.Now;  // Default to now
+
         [DisplayName("Biển số xe")]
         public string LicensePlate { get; set; }
         [DisplayName("Trạng thái")]

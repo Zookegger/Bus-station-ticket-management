@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
@@ -20,9 +21,20 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         // GET: Location
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
-            return View(await _context.Locations.ToListAsync());
+            int pageSize = 4;
+            int pageNumber = page ?? 1;
+
+            var locations = _context.Locations.AsQueryable();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                locations.Where(l => l.Name.Contains(searchString));
+            }
+
+            var locationList = await locations.ToListAsync();
+
+            return View(locationList.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Location/Details/5

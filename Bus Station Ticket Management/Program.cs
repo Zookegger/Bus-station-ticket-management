@@ -47,4 +47,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapControllerRoute(
+    name: "Vehicle",
+    pattern: "{controller=Vehicle}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "VehicleType",
+    pattern: "{controller=VehicleType}/{action=Index}/{id?}"
+);
+
 app.Run();

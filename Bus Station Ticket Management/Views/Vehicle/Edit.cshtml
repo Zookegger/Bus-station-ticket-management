@@ -30,7 +30,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                
+                <select asp-for="Status" class="form-control" required>
+                    <option value="" disabled selected>Select a status</option>
+                    <option value="Stand-By">Stand-By</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Repairing">Repairing</option>
+                    <option value="Maintainance">Maintainance</option>
+                </select>
+
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">

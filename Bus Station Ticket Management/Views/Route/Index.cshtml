@@ -5,11 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Route List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New Route</a>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString" placeholder="Search for routes...">
+        <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search" style="font-size: 18px"></i></button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -35,10 +41,10 @@
                 @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                $@Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Edit</button></a> |
+                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-secondary">Edit</button></a> |
                 <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-danger">Delete</button></a>
             </td>
         </tr>

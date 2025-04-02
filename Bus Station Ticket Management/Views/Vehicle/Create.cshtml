@@ -18,27 +18,12 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AcquiredDate" class="control-label"></label>
-                <input asp-for="AcquiredDate" class="form-control" />
-                <span asp-validation-for="AcquiredDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="LicensePlate" class="control-label"></label>
                 <input asp-for="LicensePlate" class="form-control" />
                 <span asp-validation-for="LicensePlate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                
-                <select asp-for="Status" class="form-control" required>
-                    <option value="" disabled selected>Select a status</option>
-                    <option value="Stand-By">Stand-By</option>
-                    <option value="Busy">Busy</option>
-                    <option value="Repairing">Repairing</option>
-                    <option value="Maintainance">Maintainance</option>
-                </select>
-
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <input type="hidden" asp-for="Status" value="Stand-By"/>
             </div>
             <div class="form-group">
                 <label asp-for="VehicleTypeId" class="control-label"></label>

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
+using X.PagedList;
+using X.PagedList.Mvc.Core;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
@@ -21,8 +24,9 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         // GET: VehicleType
         public async Task<IActionResult> Index()
-        {
-            return View(await _context.VehicleTypes.ToListAsync());
+        {    
+            var vehicleTypesList = await _context.VehicleTypes.ToListAsync();
+            return View(vehicleTypesList);
         }
 
         // GET: VehicleType/Details/5
@@ -56,6 +60,11 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring")] VehicleType vehicleType)
         {
+            if (VehicleTypeExists(vehicleType.Name))
+            {
+                ModelState.AddModelError("Name", "This Vehicle Type already exists!");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(vehicleType);
@@ -152,6 +161,11 @@ namespace Bus_Station_Ticket_Management.Controllers
         private bool VehicleTypeExists(int id)
         {
             return _context.VehicleTypes.Any(e => e.Id == id);
+        }
+
+        private bool VehicleTypeExists(string name)
+        {
+            return _context.VehicleTypes.Any(e => e.Name == name);
         }
     }
 }

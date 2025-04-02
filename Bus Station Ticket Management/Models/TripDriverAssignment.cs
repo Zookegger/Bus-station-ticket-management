@@ -16,7 +16,7 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public int DriverId { get; set; }
         [ForeignKey(nameof(DriverId))]
-        public Driver Driver { get; set; }
+        public Driver? Driver { get; set; }
 
         [Required]
         public DateTime DateAssigned { get; set; }
