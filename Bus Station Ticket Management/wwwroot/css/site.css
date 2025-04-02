@@ -1,288 +1,290 @@
 :root {
-    --global-font-size: 16px;
+	--global-font-size: 16px;
 }
 
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html {
-    font-size: var(--global-font-size);
-    height: 100vh;
+	font-size: var(--global-font-size);
+	height: 100vh;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 60px;
-    height: 100%;
-    /* width: 100%;  */
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 60px;
+	height: 100%;
+	/* width: 100%;  */
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 18px;
-    }
+	html {
+		font-size: 18px;
+	}
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+	box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .navbar-toggler-icon {
-    color: white;
-    filter: invert(1.25); 
+	color: white;
+	filter: invert(1.25);
 }
 
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+	color: var(--bs-secondary-color);
+	text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+	text-align: start;
 }
 
 .main-container {
-    display: flex;
-    flex: 1;
+	display: flex;
+	flex: 1;
 }
 
-    
 header {
-    background-color: #20874e !important;
-    margin-bottom: 1rem;
+	background-color: #20874e !important;
+	margin-bottom: 1rem;
 }
 
 header .left-header {
-    display: flex;
+	display: flex;
 }
 
 header nav {
-    position: relative;
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
+	position: relative;
+	min-height: 70px;
+	display: flex;
+	align-items: center;
+	padding: 0 16px;
 }
 
 main {
-    margin: 0 24px;
-    flex: 1;
+	margin: 0 24px;
+	flex: 1;
 }
 
-
-header nav, footer {
-    background-color: #20874e !important;
+header nav,
+footer {
+	background-color: #20874e !important;
 }
-
 
 .navbar-brand {
-    font-weight: bold;
-    
+	font-weight: bold;
 }
 
 footer * {
-    color: white !important;
-    width: 100%;
+	color: white !important;
+	width: 100%;
 }
 
 table {
-    max-width: inherit;
+	max-width: inherit;
 }
 
-table thead th, .accordion * {
-    background-color: #20874e !important;
-    color: white;
+table thead th,
+.accordion * {
+	background-color: #20874e !important;
+	color: white;
 }
 
 .clickable-row {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .accordion {
-    display: flex;
-    /* flex-direction: column; */
+	display: flex;
+	/* flex-direction: column; */
 }
 
 .accordion .nav-item:not(:first-child) {
-    border-top: 2px solid rgb(3, 109, 50);
+	border-top: 2px solid rgb(3, 109, 50);
 }
 
 .nav-link {
-    border-radius: 6px;
-    transition: box-shadow 3.8s ease-out, background-color 0.3s ease-in-out;
+	border-radius: 6px;
+	transition: box-shadow 3.8s ease-out, background-color 0.3s ease-in-out;
 }
 
-    .nav-link:hover {
-        box-shadow: inset 0 0 0 2px #fff;
-    }
-
-    .nav-link:focus, 
-    .nav-link:active {
-        background-color: #125530;
-        color: white; /* Ensure text remains readable */
-    }
-
-.accordion-body, .accordion-collapse > .navbar-nav, .accordion-body > .navbar-nav .nav-link {
-    background-color: #fff !important;
+.nav-link:hover {
+	box-shadow: inset 0 0 0 2px #fff;
 }
 
+.nav-link:focus,
+.nav-link:active {
+	background-color: #125530;
+	color: white; /* Ensure text remains readable */
+}
+
+.accordion-body,
+.accordion-collapse > .navbar-nav,
+.accordion-body > .navbar-nav .nav-link {
+	background-color: #fff !important;
+}
 
 .navbar-nav.nav-account .nav-link {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    height: 100%;
-    color: white !important;
+	display: flex;
+	align-items: center;
+	flex-grow: 1;
+	height: 100%;
+	color: white !important;
 }
 
 .form-inline button#logout {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex: 1;
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex: 1;
 }
 
-
 @media (max-width: 426px) {
-    main {
-        overflow-x: scroll;
-    }
+	main {
+		overflow-x: scroll;
+	}
 
-    .navbar-brand {
-        font-size: 18px !important;
-    }
+	.navbar-brand {
+		font-size: 18px !important;
+	}
 }
 
 @media (max-width: 397px) {
-    .navbar-brand {
-        font-size: 14px !important;
-    }
+	.navbar-brand {
+		font-size: 14px !important;
+	}
 }
 
 @media (max-width: 578px) {
-    .accordion {
-        flex-direction: column;
-        padding-top: 6px;
-    }
+	.accordion {
+		flex-direction: column;
+		padding-top: 6px;
+	}
 
-    .form-inline button#logout {
-        margin-top: 6px;
-    }
+	.form-inline button#logout {
+		margin-top: 6px;
+	}
 }
 
 @media (max-width: 768px) {
-    .navbar-collapse {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    .accordion-body.navbar-nav {
-        flex-direction: column !important;
-    }
+	.navbar-collapse {
+		width: 100%;
+		justify-content: flex-start;
+	}
+	.accordion-body.navbar-nav {
+		flex-direction: column !important;
+	}
 }
 @media (max-width: 1090px) {
-    .navbar-toggler {
-        display: block;
-    }
+	.navbar-toggler {
+		display: block;
+	}
 }
 
 @media (max-width: 990px) {
-    .nav-link {
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-    }
+	.nav-link {
+		padding-left: 8px !important;
+		padding-right: 8px !important;
+	}
 }
 
-
 @media (min-width: 800px) {
-    .accordion-container {
-        position: relative; /* Ensures absolute positioning inside */
-    }
-    
-    .accordion {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-    }
-    
-    .accordion-body {
-        position: absolute;
-        top: 100%; 
-        left: 0;
-        background: white;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        min-width: inherit;
-        flex-direction: column;
-        border-radius: 6px;
-        overflow: hidden;
-        z-index: 1000;
-        height: 0;
-        opacity: 0;
-        padding: 0 15px;
-        transition: height 0.1s ease-in-out, opacity 0.1s ease-in-out;
-    }
-    
-    /* When the accordion is expanded */
-        .accordion-collapse.show .accordion-body {
-            height: auto;
-            opacity: 1;
-            padding-top: 10px; 
-            padding-bottom: 10px; 
-        }
-        .accordion-item {
-            position: relative; 
-            min-width: 120px;
-            border-radius: 6px;
-        }
-    
-        .accordion-item:hover {
-            gap: 15px;
-        }
-    
-        .accordion-button {
-            width: 100%;
-            gap: 8px;
-            text-align: left;
-            border: none;
-            background: none;
-            color: white;
-            font-size: var(--global-font-size);
-            transition: font-size 0.125s ease-in-out, font-weight 0.125s ease-in;
-        }
-    
-        .accordion-button:hover {
-            font-weight: 600;
-            outline: 2px solid #1d5f29;
-            border-radius: 6px;
-            font-size: calc(var(--global-font-size) + 4px);
-        }
+	.accordion-container {
+		position: relative; /* Ensures absolute positioning inside */
+	}
 
-    .accordion-body .navbar-nav {
-        flex-direction: column !important;
-    }
+	.accordion {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.accordion-body {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background: white;
+		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+		min-width: inherit;
+		flex-direction: column;
+		border-radius: 6px;
+		overflow: hidden;
+		z-index: 1000;
+		height: 0;
+		opacity: 0;
+		padding: 0 15px;
+		transition: height 0.1s ease-in-out, opacity 0.1s ease-in-out;
+	}
+
+	/* When the accordion is expanded */
+	.accordion-collapse.show .accordion-body {
+		height: auto;
+		opacity: 1;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.accordion-item {
+		position: relative;
+		min-width: 120px;
+		border-radius: 6px;
+	}
+
+	.accordion-item:hover {
+		gap: 15px;
+	}
+
+	.accordion-button {
+		width: 100%;
+		gap: 8px;
+		text-align: left;
+		border: none;
+		background: none;
+		color: white;
+		font-size: var(--global-font-size);
+		transition: font-size 0.125s ease-in-out, font-weight 0.125s ease-in;
+	}
+
+	.accordion-button:hover {
+		font-weight: 600;
+		outline: 2px solid #1d5f29;
+		border-radius: 6px;
+		font-size: calc(var(--global-font-size) + 4px);
+	}
+
+	.accordion-body .navbar-nav {
+		flex-direction: column !important;
+	}
 }
 
 .login {
-    display: flex;
-    justify-content: center;
-    padding-top: 16px;
-    height: 100%;
+	display: flex;
+	justify-content: center;
+	padding-top: 16px;
+	height: 100%;
 }
 
 .login > section {
-    max-width: 60%;
-    flex: 1;
+	max-width: 60%;
+	flex: 1;
 }
 
 .login > section .form-actions {
-    display: flex;
-    gap: 16px;
+	display: flex;
+	gap: 16px;
 }
 
 .login > section .form-actions .btn {
-    flex-grow: 1;
+	flex-grow: 1;
 }
