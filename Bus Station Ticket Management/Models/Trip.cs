@@ -19,6 +19,10 @@ namespace Bus_Station_Ticket_Management.Models
         [ForeignKey(nameof(RouteId))]
         public Routes Route { get; set; }
 
+        public int VehicleId { get; set; }
+        [ForeignKey(nameof(VehicleId))]
+        public Vehicle Vehicle { get; set; }
+
         public ICollection<TripDriverAssignment> TripDriverAssignments { get; set; }
 
     }

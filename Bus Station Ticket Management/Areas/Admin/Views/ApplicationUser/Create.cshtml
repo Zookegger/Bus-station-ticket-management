@@ -1,0 +1,97 @@
+@model Bus_Station_Ticket_Management.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Add New User";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4>ApplicationUser</h4>
+<hr />
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <fieldset>
+                <legend>Create an Account</legend>
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password" class="control-label">Password</label>
+                    <input type="password" id="Password" name="Password" class="form-control" minlength="10" required pattern=".*[!#$%^&*(),.?\:{}|<>].*" />
+                    <span id="PasswordError" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="ConfirmPassword" class="control-label">Confirm Password</label>
+                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+                    <span id="PasswordConfirmError" class="text-danger"></span>
+                </div>
+
+            </fieldset>
+        </div>
+
+        <div class="col-md-6">
+            <fieldset>
+                <legend>User Information</legend>
+                <div class="form-group">
+                    <label asp-for="FullName" class="control-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label"></label>
+                    <select class="form-control" asp-for="Gender">
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DateOfBirth" class="control-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input id="submit" type="submit" value="Create" class="btn btn-primary" disabled />
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script src="~/js/password.js"></script>
+}
