@@ -99,7 +99,18 @@ app.MapControllerRoute(
 
 app.UseEndpoints(endpoints =>
 {
-    // Area Routing
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"
+    ).WithStaticAssets();
+
+    // Admin Area Routing
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"
+    ).WithStaticAssets();
+
+    // Admin Area Routing
     endpoints.MapControllerRoute(
         name: "admin",
         pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}",

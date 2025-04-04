@@ -129,7 +129,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     // Redirect based on role
                     if (roles.Contains("Admin"))
                     {
-                        return RedirectToAction("Index", "Admin", new {area = "Admin" }); // Redirect to Admin dashboard
+                        return RedirectToAction("Index", "Admin", new { Areas = "Admin" }); // Redirect to Admin dashboard
                     }
                     else if (roles.Contains("Employee"))
                     {
@@ -137,7 +137,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     }
                     else if (roles.Contains("Customer"))
                     {
-                        return RedirectToAction("Index", "Home"); // Redirect to Customer dashboard
+                        return RedirectToAction("Index", "Home", new { Areas = "" }); // Redirect to Customer dashboard
                     }
                     else
                     {

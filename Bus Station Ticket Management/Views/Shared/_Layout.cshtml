@@ -24,57 +24,9 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Navbar-left here-->
 
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Home
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="Home" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Home</a></li>
-                                <li><a asp-area="" asp-controller="Home" asp-action="Privacy" class="dropdown-item"
-                                        aria-current="page">Privacy</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Vehicle
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="Vehicle" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Vehicles</a></li>
-                                <li><a asp-area="" asp-controller="VehicleType" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Vehicle Types</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
-
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Trip
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="Location" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Locations</a></li>
-                                <li><a asp-area="" asp-controller="Route" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Routes</a></li>
-                                <li><a asp-area="" asp-controller="Trip" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Trips</a></li>
-                                <li><a asp-area="" asp-controller="TripDriverAssignment" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Trip Assignments</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
+                    <!-- Navbar-right here-->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item w-100">
                             <partial name="_LoginPartial" />
@@ -94,7 +46,8 @@
 
     <footer class="border-top footer text-muted">
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 border-top">
-            <p style="margin: 0; text-align: center;">&copy; 2025 Bus Station Ticket Management, All rights reserved.</p>
+            <p style="margin: 0; text-align: center;">&copy; 2025 Bus Station Ticket Management, All rights reserved. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></p>
+            
             <ul class="list-unstyled d-flex justify-content-center">
                 <li><a class="link-body-emphasis" class="w100" href="#">Contact info 3</a></li>
                 <li><a class="link-body-emphasis" class="w100" href="#">Contact info 1</a></li>
