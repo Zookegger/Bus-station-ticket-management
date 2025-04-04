@@ -33,7 +33,9 @@
                     <div class="card-body">
                         <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " + trip.Route.DestinationLocation?.Name) : "No Route").</h5>
                         <p class="card-text">
-                            Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm") | Giá:
+                            Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                            Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                                | Giá:
                             @trip.TotalPrice.ToString("N0") VNĐ
                         </p>
                         <a asp-controller="Seat" asp-action="SelectSeats" asp-route-busId=""

@@ -17,5 +17,8 @@ namespace Bus_Station_Ticket_Management.Models
         public int TotalSeats { get; set; }
         [DisplayName("Tổng số tầng")]
         public int TotalFlooring { get; set; }
+
+        public int TotalRow { get; set; }
+        public int TotalColumn { get; set; }
     }
 }

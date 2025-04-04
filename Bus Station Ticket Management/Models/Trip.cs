@@ -15,15 +15,17 @@ namespace Bus_Station_Ticket_Management.Models
         public string? Status { get; set; }
         public int TotalPrice { get; set; }
 
+        [Required]
         public int RouteId { get; set; }
         [ForeignKey(nameof(RouteId))]
-        public Routes Route { get; set; }
+        public Routes? Route { get; set; }
 
+        [Required]
         public int VehicleId { get; set; }
         [ForeignKey(nameof(VehicleId))]
-        public Vehicle Vehicle { get; set; }
+        public Vehicle? Vehicle { get; set; }
 
-        public ICollection<TripDriverAssignment> TripDriverAssignments { get; set; }
+        public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
 
     }
 }

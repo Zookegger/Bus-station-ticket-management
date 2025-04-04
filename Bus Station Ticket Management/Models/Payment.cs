@@ -5,7 +5,7 @@ namespace Bus_Station_Ticket_Management.Models
     public class Payment
     {
         public int Id { get; set; }
-        public int TicketId { get; set; }
+        public string TicketId { get; set; }
         [ForeignKey("TicketId")]
         public Ticket Ticket { get; set; }
 
