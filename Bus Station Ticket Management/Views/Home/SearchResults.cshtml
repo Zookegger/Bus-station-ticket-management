@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model List<Bus_Station_Ticket_Management.Models.Trip>
+
+
+<h1>Kết quả tìm kiếm</h1>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">
+        Chuyến xe mà bạn tìm không có.
+    </div>
+}
+else
+{
+
+@foreach (var trip in Model)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">
+                @(trip.Route != null ?
+                    (@Html.Raw(trip.Route.StartLocation?.Name) + " - " + @Html.Raw(trip.Route.DestinationLocation?.Name)) : "No Route")
+            </h5>
+            <p class="card-text">
+                Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                | Giá:
+                @trip.TotalPrice.ToString("N0") VNĐ
+            </p>
+            <a asp-controller="Seat" asp-action="SelectSeats" asp-route-busId=""
+               asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
+        </div>
+    </div>
+}
+}
+

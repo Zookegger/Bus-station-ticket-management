@@ -31,6 +31,43 @@ public class HomeController : Controller
 
     }
 
+    //chức năng tìm kiếm trip
+    [HttpPost]
+    public IActionResult SearchTrips(string departure, string destination, DateTime? departureTime)
+    {
+        var trips = _context.Trips
+            .Include(t => t.Route)
+                .ThenInclude(r => r.StartLocation)
+            .Include(t => t.Route)
+                .ThenInclude(r => r.DestinationLocation)
+            .Where(t => t.Route.StartLocation.Name.Contains(departure) && t.Route.DestinationLocation.Name.Contains(destination));
+
+        if (departureTime.HasValue)
+        {
+            trips = trips.Where(t => t.DepartureTime.Date == departureTime.Value.Date);
+        }
+
+        // Debugging line
+        Console.WriteLine($"Found {trips.Count()} trips.");
+
+        return View("SearchResults", trips.ToList());
+    }
+
+    [HttpGet]
+    public IActionResult GetLocations(string term)
+    {
+        // Tìm kiếm các địa điểm theo từ khóa (term)
+        var locations = _context.Locations
+            .Where(l => l.Name.Contains(term))
+            .Select(l => l.Name) // Lấy tên địa điểm
+            .ToList();
+
+        // Trả về danh sách địa điểm dưới dạng JSON
+        return Json(locations);
+    }
+
+
+
     public IActionResult Privacy()
     {
         return View();

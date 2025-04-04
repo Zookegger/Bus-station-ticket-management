@@ -14,8 +14,8 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <form asp-action="SearchTrips" method="post" class="input-group mb-4">
-            <input type="text" name="departure" class="form-control" placeholder="Điểm đi" required />
-            <input type="text" name="destination" class="form-control" placeholder="Điểm đến" required />
+            <input type="text" name="departure" id="departure" class="form-control" placeholder="Điểm đi" required />
+            <input type="text" name="destination" id="destination" class="form-control" placeholder="Điểm đến" required />
             <input type="date" name="departureTime" class="form-control" />
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </form>
@@ -31,12 +31,14 @@
             {
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " + trip.Route.DestinationLocation?.Name) : "No Route").</h5>
+                        <h5 class="card-title">
+                            @(trip.Route != null ?
+                                (@Html.Raw(trip.Route.StartLocation?.Name) + " - " + @Html.Raw(trip.Route.DestinationLocation?.Name)) : "No Route")
+                        </h5>
                         <p class="card-text">
                             Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
                             Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-                                | Giá:
-                            @trip.TotalPrice.ToString("N0") VNĐ
+                            | Giá: @trip.TotalPrice.ToString("N0") VNĐ
                         </p>
                         <a asp-controller="Seat" asp-action="SelectSeats" asp-route-busId=""
                            asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
@@ -50,41 +52,65 @@
         }
     </div>
 </div>
-@* 
-<div class="row">
-    <div class="col-12">
-        <h2>Ưu đãi</h2>
-        @if (Model.Promotions.Any())
-        {
-            @foreach (var promo in Model.Promotions)
-            {
-                <div class="alert alert-info">@promo.Title - @promo.Description</div>
-            }
-        }
-        else
-        {
-            <p>Chưa có ưu đãi nào.</p>
-        }
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-12">
-        <h2>Tin tức</h2>
-        @if (Model.News.Any())
-        {
-            @foreach (var news in Model.News)
-            {
-                <div class="alert alert-secondary">@news.Title - @news.Description</div>
-            }
-        }
-        else
-        {
-            <p>Chưa có tin tức nào.</p>
-        }
-    </div>
-</div>
-*@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function () {
+            // Gợi ý địa điểm cho ô "departure"
+            $("#departure").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("GetLocations", "Home")', // Controller và Action để lấy dữ liệu địa điểm
+                        data: { term: request.term }, // Dữ liệu gửi đi là từ khóa tìm kiếm
+                        dataType: "json",
+                        success: function (data) {
+                            response(data); // Hiển thị các kết quả gợi ý
+                        }
+                    });
+                },
+                minLength: 2, // Tìm kiếm khi người dùng nhập ít nhất 2 ký tự
+                select: function (event, ui) {
+                    // Khi người dùng chọn gợi ý, bạn có thể xử lý sự kiện này tại đây (nếu cần)
+                    console.log("Selected departure location: " + ui.item.value);
+                },
+                focus: function (event, ui) {
+                    // Cần chú ý để không làm thay đổi giá trị khi người dùng chỉ hover
+                    return false;
+                }
+            });
+
+            // Gợi ý địa điểm cho ô "destination"
+            $("#destination").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("GetLocations", "Home")', // Controller và Action để lấy dữ liệu địa điểm
+                        data: { term: request.term }, // Dữ liệu gửi đi là từ khóa tìm kiếm
+                        dataType: "json",
+                        success: function (data) {
+                            response(data); // Hiển thị các kết quả gợi ý
+                        }
+                    });
+                },
+                minLength: 2, // Tìm kiếm khi người dùng nhập ít nhất 2 ký tự
+                select: function (event, ui) {
+                    // Khi người dùng chọn gợi ý, bạn có thể xử lý sự kiện này tại đây (nếu cần)
+                    console.log("Selected destination location: " + ui.item.value);
+                },
+                focus: function (event, ui) {
+                    // Cần chú ý để không làm thay đổi giá trị khi người dùng chỉ hover
+                    return false;
+                }
+            });
+
+            // Khi người dùng bấm vào ô tìm kiếm, danh sách địa điểm sẽ tự động xổ ra
+            $("#departure, #destination").focus(function () {
+                $(this).autocomplete("search", "");  // Gọi lại hàm autocomplete để xổ ra danh sách gợi ý
+            });
+        });
+    </script>
 }

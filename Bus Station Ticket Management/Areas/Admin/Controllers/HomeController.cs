@@ -24,9 +24,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             var trips = _context.Trips
                             .Include(t => t.Route)
-                                .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
+                                .ThenInclude(r => r.StartLocation.Name)  // Nạp StartLocation
                             .Include(t => t.Route)
-                                .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
+                                .ThenInclude(r => r.DestinationLocation.Name)  // Nạp DestinationLocation
                             .Take(5)
                             .ToList();
 

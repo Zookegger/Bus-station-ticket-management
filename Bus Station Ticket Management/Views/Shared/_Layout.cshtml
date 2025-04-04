@@ -26,6 +26,16 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Navbar-left here-->
 
+                    @*nút admin*@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-primary" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                                <i class="fa fa-cogs"></i> Admin
+                            </a>
+                        </li>
+                    }
+
                     <!-- Navbar-right here-->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item w-100">
