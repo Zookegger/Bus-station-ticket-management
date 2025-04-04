@@ -21,13 +21,17 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+
+        public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
+
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -116,7 +120,29 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    // Get the user by email
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    // Get the user's roles
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    // Redirect based on role
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin", new {area = "Admin" }); // Redirect to Admin dashboard
+                    }
+                    // else if (roles.Contains("Employee"))
+                    // {
+                    //     return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
+                    // }
+                    // else if (roles.Contains("Customer"))
+                    // {
+                    //     return RedirectToAction("Index", "CustomerDashboard"); // Redirect to Customer dashboard
+                    // }
+                    else
+                    {
+                        return LocalRedirect(returnUrl); // Default redirect
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {

@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <head>
@@ -10,7 +11,6 @@
 </head>
 
 <h1>Vehicle List</h1>
-
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Add New Vehicle</a>
 
@@ -54,8 +54,8 @@
                     @Html.DisplayFor(modelItem => item.VehicleType.Name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-secondary">Edit</button></a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-danger">Delete</button></a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
                 </td>
             </tr>
         }
@@ -80,14 +80,7 @@
         }
 </nav>
 
+
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".clickable-row").forEach(row => {
-                row.addEventListener("click", function () {
-                    window.location = this.dataset.href;
-                });
-            });
-        });
-    </script>
+    <script src="~/js/table.js"></script>
 }

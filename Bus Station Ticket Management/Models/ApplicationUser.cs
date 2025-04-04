@@ -7,7 +7,7 @@ namespace Bus_Station_Ticket_Management.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [DisplayName("Tên người dùng")]
+        [DisplayName("Họ tên")]
         [Required]
         public string FullName { get; set; }
 

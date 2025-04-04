@@ -138,7 +138,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Location", b =>
@@ -159,7 +159,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
@@ -187,7 +187,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Rating", b =>
@@ -220,7 +220,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Routes", b =>
@@ -246,7 +246,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("StartId");
 
-                    b.ToTable("Routes", (string)null);
+                    b.ToTable("Routes");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Seat", b =>
@@ -271,7 +271,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Ticket", b =>
@@ -307,7 +307,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Trip", b =>
@@ -333,11 +333,16 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RouteId");
 
-                    b.ToTable("Trips", (string)null);
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("Trips");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.TripDriverAssignment", b =>
@@ -363,7 +368,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("TripDriverAssignments", (string)null);
+                    b.ToTable("TripDriverAssignments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Vehicle", b =>
@@ -395,7 +400,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleTypeId");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.VehicleType", b =>
@@ -421,7 +426,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VehicleTypes", (string)null);
+                    b.ToTable("VehicleTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -650,7 +655,15 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Bus_Station_Ticket_Management.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Route");
+
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.TripDriverAssignment", b =>
