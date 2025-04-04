@@ -131,14 +131,14 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     {
                         return RedirectToAction("Index", "Admin", new {area = "Admin" }); // Redirect to Admin dashboard
                     }
-                    // else if (roles.Contains("Employee"))
-                    // {
-                    //     return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
-                    // }
-                    // else if (roles.Contains("Customer"))
-                    // {
-                    //     return RedirectToAction("Index", "CustomerDashboard"); // Redirect to Customer dashboard
-                    // }
+                    else if (roles.Contains("Employee"))
+                    {
+                        return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
+                    }
+                    else if (roles.Contains("Customer"))
+                    {
+                        return RedirectToAction("Index", "Home"); // Redirect to Customer dashboard
+                    }
                     else
                     {
                         return LocalRedirect(returnUrl); // Default redirect

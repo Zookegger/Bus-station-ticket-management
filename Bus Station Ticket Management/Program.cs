@@ -1,4 +1,4 @@
-using Bus_Station_Ticket_Management.DataAccess;
+﻿using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
@@ -91,6 +91,12 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages();
 
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
 app.UseEndpoints(endpoints =>
 {
     // Area Routing
@@ -99,21 +105,26 @@ app.UseEndpoints(endpoints =>
         pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}",
         defaults: new { area = "Admin" }
     );
+
+    // Route mặc định
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
+
+    // Route cho Vehicle
+    endpoints.MapControllerRoute(
+        name: "vehicle",
+        pattern: "Vehicle/{action=Index}/{id?}",
+        defaults: new { controller = "Vehicle" }
+    );
+
+    // Route cho VehicleType
+    endpoints.MapControllerRoute(
+        name: "vehicletype",
+        pattern: "VehicleType/{action=Index}/{id?}",
+        defaults: new { controller = "VehicleType" }
+    );
 });
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-app.MapControllerRoute(
-    name: "Vehicle",
-    pattern: "{controller=Vehicle}/{action=Index}/{id?}"
-);
-
-app.MapControllerRoute(
-    name: "VehicleType",
-    pattern: "{controller=VehicleType}/{action=Index}/{id?}"
-);
 
 app.Run();
