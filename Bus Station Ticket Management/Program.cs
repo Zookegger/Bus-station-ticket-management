@@ -81,61 +81,29 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseStaticFiles();
 
+app.UseStaticFiles();
 //app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages();
 
 
+// Admin Area Route
+app.MapAreaControllerRoute(
+    name: "admin",
+    areaName: "Admin",
+    pattern: "Admin/{controller=Admin}/{action=Index}/{id?}"
+);
+
+// Default Route (non-area)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    ).WithStaticAssets();
-
-    // Admin Area Routing
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    ).WithStaticAssets();
-
-    // Admin Area Routing
-    endpoints.MapControllerRoute(
-        name: "admin",
-        pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}",
-        defaults: new { area = "Admin" }
-    );
-
-    // Route mặc định
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
-
-    // Route cho Vehicle
-    endpoints.MapControllerRoute(
-        name: "vehicle",
-        pattern: "Vehicle/{action=Index}/{id?}",
-        defaults: new { controller = "Vehicle" }
-    );
-
-    // Route cho VehicleType
-    endpoints.MapControllerRoute(
-        name: "vehicletype",
-        pattern: "VehicleType/{action=Index}/{id?}",
-        defaults: new { controller = "VehicleType" }
-    );
-});
 
 app.Run();

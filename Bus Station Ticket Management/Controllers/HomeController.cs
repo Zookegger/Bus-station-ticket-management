@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Controllers;
 
-//[Authorize]
 public class HomeController : Controller
 {
     private readonly ApplicationDbContext _context;

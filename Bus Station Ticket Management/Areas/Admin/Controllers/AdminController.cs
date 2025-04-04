@@ -25,7 +25,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Drivers.ToListAsync());
+            return View();
         }
     }
 }

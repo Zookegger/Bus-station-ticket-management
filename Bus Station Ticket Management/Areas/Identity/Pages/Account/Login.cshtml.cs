@@ -114,9 +114,15 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                string username = Input.Email;
+
+                if (Input.Email.Contains("@")) {
+                    username = (await _userManager.FindByEmailAsync(Input.Email)).UserName;
+                }
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -129,7 +135,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     // Redirect based on role
                     if (roles.Contains("Admin"))
                     {
-                        return RedirectToAction("Index", "Admin", new { Areas = "Admin" }); // Redirect to Admin dashboard
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" }); // Redirect to Admin dashboard
                     }
                     else if (roles.Contains("Employee"))
                     {
@@ -137,7 +143,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     }
                     else if (roles.Contains("Customer"))
                     {
-                        return RedirectToAction("Index", "Home", new { Areas = "" }); // Redirect to Customer dashboard
+                        return RedirectToAction("Index", "Home", new { area = "" }); // Redirect to Customer dashboard
                     }
                     else
                     {
@@ -155,7 +161,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid Email or Password, Please try again!");
                     return Page();
                 }
             }

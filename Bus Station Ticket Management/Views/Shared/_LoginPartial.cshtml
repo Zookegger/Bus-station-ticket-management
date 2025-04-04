@@ -14,7 +14,7 @@
         <li class="dropdown-header" style=" -webkit-user-select: none; /* Safari */
                                             -ms-user-select: none; /* IE 10 and IE 11 */
                                             user-select: none; /* Standard syntax */">
-                Hello @UserManager.GetUserName(User)!
+                Hello @UserManager.GetUserAsync(User).Result.UserName!
         </li>
         <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
         <li>

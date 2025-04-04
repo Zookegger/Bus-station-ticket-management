@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-
+    [Authorize(Roles = "Admin,Employee,Customer")]
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -33,12 +33,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(trips);
 
         }
-
         public IActionResult GoToUserHome()
         {
-            return RedirectToAction("Index", "Home", new { area = "" });
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
-        
         public IActionResult Privacy()
         {
             return View();
