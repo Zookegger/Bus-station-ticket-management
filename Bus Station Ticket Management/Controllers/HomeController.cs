@@ -2,22 +2,33 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Controllers;
 
 //[Authorize]
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext context)
     {
-        _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var trips = _context.Trips
+                        .Include(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
+                        .Include(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
+                        .Take(5)
+                        .ToList();
+
+        return View(trips);
+
     }
 
     public IActionResult Privacy()
