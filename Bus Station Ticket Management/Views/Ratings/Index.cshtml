@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Rating>
+
+@{
+    ViewData["Title"] = "Danh sách đánh giá";
+}
+
+<h2>Danh sách đánh giá chuyến đi</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Chuyến đi</th>
+            <th>Điểm chuyến xe</th>
+            <th>Nhận xét</th>
+            <th>Ngày tạo</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rating in Model)
+        {
+            <tr>
+                <td>@rating.Trip.TripDisplayName</td>
+                <td>@rating.TripRating</td>
+                <td>@rating.Comment</td>
+                <td>@rating.CreatedAt.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = rating.Id })" class="btn btn-warning">Sửa</a>
+                    <a href="@Url.Action("Details", new { id = rating.Id })" class="btn btn-info">Chi tiết</a>
+                    <a href="@Url.Action("Delete", new { id = rating.Id })" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

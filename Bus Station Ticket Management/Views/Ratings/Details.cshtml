@@ -1,0 +1,16 @@
+﻿@model Bus_Station_Ticket_Management.Models.Rating
+
+@{
+    ViewData["Title"] = "Chi tiết đánh giá";
+}
+
+<h2>Chi tiết đánh giá chuyến đi</h2>
+
+<div>
+    <h4>Chuyến đi: @Model.Trip.TripDisplayName</h4>
+    <p><strong>Điểm chuyến xe:</strong> @Model.TripRating</p>
+    <p><strong>Nhận xét:</strong> @Model.Comment</p>
+    <p><strong>Ngày tạo:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+</div>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Trở lại</a>
