@@ -12,7 +12,7 @@ namespace Bus_Station_Ticket_Management.Models
         public int Id { get; set; }
 
         [Required]
-        public string CustomerId { get; set; }
+        public required string CustomerId { get; set; }
         [ForeignKey(nameof(CustomerId))]
 
         [Required]
@@ -21,7 +21,7 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public int TripId { get; set; }
         [ForeignKey(nameof(TripId))]
-        public Trip Trip { get; set; }
+        public required Trip Trip { get; set; }
 
         [DisplayName("Nhận xét")]
         public string? Comment { get; set; }
@@ -32,6 +32,6 @@ namespace Bus_Station_Ticket_Management.Models
 
         [DisplayName("Ngày tạo ra")]
         public DateTime CreatedAt { get; set; }
-
+        
     }
 }

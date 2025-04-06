@@ -1,0 +1,20 @@
+﻿@model Bus_Station_Ticket_Management.Models.Rating
+
+@{
+    ViewData["Title"] = "Xóa đánh giá";
+}
+
+<h2>Xóa đánh giá</h2>
+
+<div>
+    <h4>Chuyến đi: @Model.Trip.TripDisplayName</h4>
+    <p><strong>Điểm chuyến xe:</strong> @Model.TripRating</p>
+    <p><strong>Nhận xét:</strong> @Model.Comment</p>
+    <p><strong>Ngày tạo:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Trở lại</a>
+</form>

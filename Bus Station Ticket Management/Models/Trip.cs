@@ -37,4 +37,5 @@ namespace Bus_Station_Ticket_Management.Models
 
         public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
     }
+    
 }
