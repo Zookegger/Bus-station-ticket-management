@@ -31,7 +31,7 @@
             <th>
                 Role
             </th>
-            <th>Actions</th>
+            <th style="width: 30px">Actions</th>
         </tr>
     </thead>
     <tbody class="table-group=divider">
@@ -53,9 +53,11 @@
                 <td>
                     @( (ViewBag.UserRoles as Dictionary<string, string>)[item.Id] )
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
+                <td class="d-flex justify-content-end">
+                    <div class="btn-group ">
+                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </div>
                 </td>
             </tr>
         }

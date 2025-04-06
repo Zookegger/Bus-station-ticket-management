@@ -15,13 +15,13 @@
             @Html.DisplayNameFor(model => model.StartId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartLocation.Id)
+            @Html.DisplayFor(model => model.StartLocation.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DestinationId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DestinationLocation.Id)
+            @Html.DisplayFor(model => model.DestinationLocation.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
@@ -31,7 +31,7 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="btn-group gap-1">
+    <a role="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
 </div>

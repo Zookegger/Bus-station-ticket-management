@@ -2,13 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Threading.Tasks;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
 {
@@ -38,8 +35,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
@@ -49,8 +45,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 

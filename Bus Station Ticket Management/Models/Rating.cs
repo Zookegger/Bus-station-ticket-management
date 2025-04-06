@@ -14,6 +14,8 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public string CustomerId { get; set; }
         [ForeignKey(nameof(CustomerId))]
+
+        [Required]
         public ApplicationUser User { get; set; }
 
         [Required]
@@ -24,7 +26,7 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Nhận xét")]
         public string? Comment { get; set; }
 
-        [Range(1, 10)]
+        [Range(1, 10, ErrorMessage = "Điểm đánh giá phải nằm trong khoảng từ 1 đến 10.")]
         [DisplayName("Điểm chuyến xe")]
         public byte TripRating { get; set; }
 

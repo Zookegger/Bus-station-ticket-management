@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
+﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
-using X.PagedList;
-using X.PagedList.Mvc.Core;
-using X.PagedList.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -27,7 +19,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         // GET: VehicleType
         public async Task<IActionResult> Index()
-        {    
+        {
             var vehicleTypesList = await _context.VehicleTypes.ToListAsync();
             return View(vehicleTypesList);
         }
@@ -35,15 +27,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicleType == null)
-            {
+            if (vehicleType == null) {
                 return NotFound();
             }
 
@@ -63,13 +53,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring,TotalRow,TotalColumn")] VehicleType vehicleType)
         {
-            if (VehicleTypeExists(vehicleType.Name))
-            {
+            if (VehicleTypeExists(vehicleType.Name)) {
                 ModelState.AddModelError("Name", "This Vehicle Type already exists!");
             }
 
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 _context.Add(vehicleType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -80,14 +68,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes.FindAsync(id);
-            if (vehicleType == null)
-            {
+            if (vehicleType == null) {
                 return NotFound();
             }
             return View(vehicleType);
@@ -100,26 +86,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring")] VehicleType vehicleType)
         {
-            if (id != vehicleType.Id)
-            {
+            if (id != vehicleType.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(vehicleType);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VehicleTypeExists(vehicleType.Id))
-                    {
+                catch (DbUpdateConcurrencyException) {
+                    if (!VehicleTypeExists(vehicleType.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -131,15 +111,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicleType == null)
-            {
+            if (vehicleType == null) {
                 return NotFound();
             }
 
@@ -152,8 +130,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicleType = await _context.VehicleTypes.FindAsync(id);
-            if (vehicleType != null)
-            {
+            if (vehicleType != null) {
                 _context.VehicleTypes.Remove(vehicleType);
             }
 

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
-using Bus_Station_Ticket_Management.Models;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace Bus_Station_Ticket_Management.Controllers
@@ -35,8 +31,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Include(t => t.Vehicle)
                 .FirstOrDefaultAsync(t => t.Id == tripId && t.VehicleId == busId);
 
-            if (trip == null)
-            {
+            if (trip == null) {
                 return NotFound("Chuyến xe không tồn tại hoặc không khớp với xe được chọn.");
             }
 
@@ -48,8 +43,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .ThenBy(s => s.Column)
                 .ToListAsync();
 
-            if (!seats.Any())
-            {
+            if (!seats.Any()) {
                 return NotFound("Xe này chưa có ghế nào được tạo. Vui lòng kiểm tra lại.");
             }
 
@@ -77,15 +71,13 @@ namespace Bus_Station_Ticket_Management.Controllers
         [Authorize]
         public async Task<IActionResult> BookSeats(int tripId, int busId, string selectedSeatIds, int numberOfTickets, Trip trip)
         {
-            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0)
-            {
+            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
                 TempData["Error"] = "Vui lòng chọn ít nhất một ghế và nhập số lượng vé hợp lệ.";
                 return RedirectToAction(nameof(SelectSeats), new { busId, tripId });
             }
 
             var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
-            if (seatIds.Count != numberOfTickets)
-            {
+            if (seatIds.Count != numberOfTickets) {
                 TempData["Error"] = "Số ghế chọn không khớp với số lượng vé.";
                 return RedirectToAction(nameof(SelectSeats), new { busId, tripId });
             }
@@ -95,22 +87,18 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .ToListAsync();
 
             var bookedSeats = seats.Where(s => s.IsAvailable).ToList();
-            if (bookedSeats.Any())
-            {
+            if (bookedSeats.Any()) {
                 TempData["Error"] = "Một số ghế đã được đặt: " + string.Join(", ", bookedSeats.Select(s => s.Number));
                 return RedirectToAction(nameof(SelectSeats), new { busId, tripId });
             }
 
-            foreach (var seat in seats)
-            {
+            foreach (var seat in seats) {
                 seat.IsAvailable = true;
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Sử dụng ClaimTypes và FindFirstValue
-            foreach (var seat in seats)
-            {
-                var ticket = new Ticket
-                {
+            foreach (var seat in seats) {
+                var ticket = new Ticket {
                     TripId = tripId,
                     SeatId = seat.Id,
                     UserId = userId ?? string.Empty,
@@ -133,16 +121,14 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Seat/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var seat = await _context.Seats
                 .Include(s => s.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (seat == null)
-            {
+            if (seat == null) {
                 return NotFound();
             }
 
@@ -163,8 +149,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Number,IsAvailable,VehicleId")] Seat seat)
         {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 _context.Add(seat);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -176,14 +161,12 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Seat/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var seat = await _context.Seats.FindAsync(id);
-            if (seat == null)
-            {
+            if (seat == null) {
                 return NotFound();
             }
             ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", seat.VehicleId);
@@ -197,26 +180,20 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Number,IsAvailable,VehicleId")] Seat seat)
         {
-            if (id != seat.Id)
-            {
+            if (id != seat.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(seat);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SeatExists(seat.Id))
-                    {
+                catch (DbUpdateConcurrencyException) {
+                    if (!SeatExists(seat.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -229,16 +206,14 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Seat/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var seat = await _context.Seats
                 .Include(s => s.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (seat == null)
-            {
+            if (seat == null) {
                 return NotFound();
             }
 
@@ -251,8 +226,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var seat = await _context.Seats.FindAsync(id);
-            if (seat != null)
-            {
+            if (seat != null) {
                 _context.Seats.Remove(seat);
             }
 

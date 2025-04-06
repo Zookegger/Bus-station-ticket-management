@@ -8,7 +8,7 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Key]
         public int Id { get; set; }
-        
+
         [DisplayName("Số ghế")]
         public string Number { get; set; }
 

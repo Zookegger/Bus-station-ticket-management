@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
+﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
-    
+
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class DriverController : Controller
@@ -32,15 +27,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var driver = await _context.Drivers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (driver == null)
-            {
+            if (driver == null) {
                 return NotFound();
             }
 
@@ -60,8 +53,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FullName,Address,LicenseId,Gender,DateOfBirth,Email,PhoneNumber")] Driver driver)
         {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 _context.Add(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -72,14 +64,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var driver = await _context.Drivers.FindAsync(id);
-            if (driver == null)
-            {
+            if (driver == null) {
                 return NotFound();
             }
             return View(driver);
@@ -92,26 +82,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,LicenseId,Gender,DateOfBirth,Email,PhoneNumber")] Driver driver)
         {
-            if (id != driver.Id)
-            {
+            if (id != driver.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(driver);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DriverExists(driver.Id))
-                    {
+                catch (DbUpdateConcurrencyException) {
+                    if (!DriverExists(driver.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -123,15 +107,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var driver = await _context.Drivers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (driver == null)
-            {
+            if (driver == null) {
                 return NotFound();
             }
 
@@ -144,8 +126,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var driver = await _context.Drivers.FindAsync(id);
-            if (driver != null)
-            {
+            if (driver != null) {
                 _context.Drivers.Remove(driver);
             }
 

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
-using Bus_Station_Ticket_Management.Models;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
@@ -29,8 +25,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Trip/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
@@ -38,8 +33,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Include(t => t.Route)
                 .Include(t => t.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (trip == null)
-            {
+            if (trip == null) {
                 return NotFound();
             }
 
@@ -61,8 +55,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DepartureTime,ArrivalTime,Status,TotalPrice,RouteId,VehicleId")] Trip trip)
         {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 _context.Add(trip);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -75,14 +68,12 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Trip/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var trip = await _context.Trips.FindAsync(id);
-            if (trip == null)
-            {
+            if (trip == null) {
                 return NotFound();
             }
             ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
@@ -97,26 +88,20 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DepartureTime,ArrivalTime,Status,TotalPrice,RouteId,VehicleId")] Trip trip)
         {
-            if (id != trip.Id)
-            {
+            if (id != trip.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(trip);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TripExists(trip.Id))
-                    {
+                catch (DbUpdateConcurrencyException) {
+                    if (!TripExists(trip.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -130,8 +115,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Trip/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
@@ -139,8 +123,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Include(t => t.Route)
                 .Include(t => t.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (trip == null)
-            {
+            if (trip == null) {
                 return NotFound();
             }
 
@@ -153,8 +136,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var trip = await _context.Trips.FindAsync(id);
-            if (trip != null)
-            {
+            if (trip != null) {
                 _context.Trips.Remove(trip);
             }
 

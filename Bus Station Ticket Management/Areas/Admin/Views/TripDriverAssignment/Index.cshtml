@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.TripDriverAssignment>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Assignment</h1>
+
+<a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
+
+<table id="AssigmentTable" class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Trip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Driver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAssigned)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody class="table-group=divider">
+@foreach (var item in Model) {
+        <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+            <td>
+                @Html.DisplayFor(modelItem => item.Trip.Route.StartLocation) - @Html.DisplayFor(modelItem => item.Trip.Route.DestinationLocation) 
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Driver.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAssigned)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/table.js"></script>
+}

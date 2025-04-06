@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Station_Ticket_Management.Models
@@ -7,25 +8,33 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Key]
         public int Id { get; set; }
-        //public bool IsTwoWay { get; set; }
+        public bool IsTwoWay { get; set; }
+        
         [Required]
+        [DisplayName("Departure Time")]
         public DateTime DepartureTime { get; set; }
+        
         [Required]
+        [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
+        
+        [DisplayName("Status")]
         public string? Status { get; set; }
+        [DisplayName("Total Price")]
         public int TotalPrice { get; set; }
 
         [Required]
+        [DisplayName("Route Name")]
         public int RouteId { get; set; }
         [ForeignKey(nameof(RouteId))]
         public Routes? Route { get; set; }
 
         [Required]
+        [DisplayName("Vehicle Name")]
         public int VehicleId { get; set; }
         [ForeignKey(nameof(VehicleId))]
         public Vehicle? Vehicle { get; set; }
 
         public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
-
     }
 }

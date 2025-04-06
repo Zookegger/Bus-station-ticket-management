@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-
 }
 
 <head>
@@ -22,17 +21,39 @@
         <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
                 style="font-size: 18px"></i></button>
     </div>
+    <div class="input-group">
+        <select name="sortBy" id="sortBy" onchange="this.form.submit()">
+            <option value="" disabled>Sort By...</option>
+            <optgroup label="Sort by Name">
+                <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc" ? "selected" : null)">
+                    Name Ascending ↑
+                </option>
+                <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc" ? "selected" : null)">
+                    Name Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by License Plate">
+                <option value="licenseplate_asc" selected="@(ViewBag.SortBy == "licenseplate_asc" ? "selected" : null)">
+                    License Plate Ascending ↑
+                </option>
+                <option value="licenseplate_desc"
+                    selected="@(ViewBag.SortBy == "licenseplate_desc" ? "selected" : null)">
+                    License Plate Descending ↓
+                </option>
+            </optgroup>
+        </select>
+    </div>
+
 </form>
 
-<table id="VehicleTable" class="table table-hover table-striped">
+<table id="VehicleTable" class="table table-hover table-striped pb-3">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Acquired Date</th>
             <th>License Plate</th>
             <th>Status</th>
             <th>Vehicle Type</th>
-            <th>Actions</th>
+            <th style="width: 30px">Actions</th>
         </tr>
     </thead>
     <tbody class="table-group=divider">
@@ -43,9 +64,6 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AcquiredDate)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.LicensePlate)
                 </td>
                 <td>
@@ -54,9 +72,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.VehicleType.Name)
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
+                <td class="d-flex justify-content-end">
+                    <div class="btn-group ">
+                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </div>
                 </td>
             </tr>
         }
@@ -80,7 +100,6 @@
         })
         }
 </nav>
-
 
 @section Scripts {
     <script src="~/js/table.js"></script>

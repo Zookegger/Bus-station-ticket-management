@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
+﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
-using X.PagedList.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -30,9 +25,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             int pageNumber = page ?? 1;
 
             var locations = _context.Locations.AsQueryable();
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                locations.Where(l => l.Name.Contains(searchString));
+            if (!string.IsNullOrEmpty(searchString)) {
+                locations = locations.Where(l => l.Name.Contains(searchString));
             }
 
             var locationList = await locations.ToListAsync();
@@ -43,15 +37,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Location/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var location = await _context.Locations
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (location == null)
-            {
+            if (location == null) {
                 return NotFound();
             }
 
@@ -71,8 +63,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address")] Location location)
         {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 _context.Add(location);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -83,14 +74,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Location/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var location = await _context.Locations.FindAsync(id);
-            if (location == null)
-            {
+            if (location == null) {
                 return NotFound();
             }
             return View(location);
@@ -103,26 +92,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address")] Location location)
         {
-            if (id != location.Id)
-            {
+            if (id != location.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(location);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocationExists(location.Id))
-                    {
+                catch (DbUpdateConcurrencyException) {
+                    if (!LocationExists(location.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -134,15 +117,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Location/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null) {
                 return NotFound();
             }
 
             var location = await _context.Locations
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (location == null)
-            {
+            if (location == null) {
                 return NotFound();
             }
 
@@ -155,8 +136,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var location = await _context.Locations.FindAsync(id);
-            if (location != null)
-            {
+            if (location != null) {
                 _context.Locations.Remove(location);
             }
 
