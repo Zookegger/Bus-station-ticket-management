@@ -14,8 +14,9 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public required string CustomerId { get; set; }
         [ForeignKey(nameof(CustomerId))]
-        
-        public required ApplicationUser User { get; set; }
+
+        [Required]
+        public ApplicationUser User { get; set; }
 
         [Required]
         public int TripId { get; set; }

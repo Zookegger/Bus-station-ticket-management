@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using Bus_Station_Ticket_Management.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
 {
@@ -36,8 +33,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public IActionResult OnGet()
         {
-            if (RecoveryCodes == null || RecoveryCodes.Length == 0)
-            {
+            if (RecoveryCodes == null || RecoveryCodes.Length == 0) {
                 return RedirectToPage("./TwoFactorAuthentication");
             }
 

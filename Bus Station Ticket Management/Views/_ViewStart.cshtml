@@ -1,3 +1,14 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity;
+@using Bus_Station_Ticket_Management.Models;
+@inject SignInManager<ApplicationUser> SignInManager;
+@inject UserManager<ApplicationUser> UserManager;
+@{
     Layout = "_Layout";
+
+    if (SignInManager.IsSignedIn(User)) {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Admin")) {
+            Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+        }
+    }
 }

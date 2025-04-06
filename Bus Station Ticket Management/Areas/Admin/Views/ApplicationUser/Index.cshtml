@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "User Table";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <head>
@@ -20,15 +20,6 @@
                 @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
@@ -37,7 +28,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
-            <th>Actions</th>
+            <th>
+                Role
+            </th>
+            <th style="width: 30px">Actions</th>
         </tr>
     </thead>
     <tbody class="table-group=divider">
@@ -46,15 +40,6 @@
             <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
                 <td>
                     @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
@@ -66,8 +51,13 @@
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
+                    @( (ViewBag.UserRoles as Dictionary<string, string>)[item.Id] )
+                </td>
+                <td class="d-flex justify-content-end">
+                    <div class="btn-group ">
+                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </div>
                 </td>
             </tr>
         }

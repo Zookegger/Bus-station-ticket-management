@@ -9,13 +9,23 @@ namespace Bus_Station_Ticket_Management.Models
         [Key]
         [DisplayName("Mã loại xe")]
         public int Id { get; set; }
+
         [DisplayName("Tên loại xe")]
         public string Name { get; set; }
+
         [DisplayName("Giá loại xe")]
         public int Price { get; set; }
+
         [DisplayName("Tổng số ghế")]
         public int TotalSeats { get; set; }
+
         [DisplayName("Tổng số tầng")]
         public int TotalFlooring { get; set; }
+
+        [DisplayName("Tổng số hàng")]
+        public int TotalRow { get; set; }
+
+        [DisplayName("Tổng số cột")]
+        public int TotalColumn { get; set; }
     }
 }

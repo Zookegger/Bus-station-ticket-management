@@ -2,19 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 {
@@ -91,8 +84,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!string.IsNullOrEmpty(ErrorMessage))
-            {
+            if (!string.IsNullOrEmpty(ErrorMessage)) {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
@@ -112,13 +104,17 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
+                string username = Input.Email;
+
+                if (Input.Email.Contains("@")) {
+                    username = (await _userManager.FindByEmailAsync(Input.Email)).UserName;
+                }
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
+                var result = await _signInManager.PasswordSignInAsync(username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded) {
                     _logger.LogInformation("User logged in.");
                     // Get the user by email
                     var user = await _userManager.FindByEmailAsync(Input.Email);
@@ -127,35 +123,28 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     var roles = await _userManager.GetRolesAsync(user);
 
                     // Redirect based on role
-                    if (roles.Contains("Admin"))
-                    {
-                        return RedirectToAction("Index", "Admin", new {area = "Admin" }); // Redirect to Admin dashboard
+                    if (roles.Contains("Admin")) {
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" }); // Redirect to Admin dashboard
                     }
-                    // else if (roles.Contains("Employee"))
-                    // {
-                    //     return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
-                    // }
-                    // else if (roles.Contains("Customer"))
-                    // {
-                    //     return RedirectToAction("Index", "CustomerDashboard"); // Redirect to Customer dashboard
-                    // }
-                    else
-                    {
+                    else if (roles.Contains("Employee")) {
+                        return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
+                    }
+                    else if (roles.Contains("Customer")) {
+                        return RedirectToAction("Index", "Home", new { area = "" }); // Redirect to Customer dashboard
+                    }
+                    else {
                         return LocalRedirect(returnUrl); // Default redirect
                     }
                 }
-                if (result.RequiresTwoFactor)
-                {
+                if (result.RequiresTwoFactor) {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
-                if (result.IsLockedOut)
-                {
+                if (result.IsLockedOut) {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                else {
+                    ModelState.AddModelError(string.Empty, "Invalid Email or Password, Please try again!");
                     return Page();
                 }
             }

@@ -1,9 +1,91 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model List<Bus_Station_Ticket_Management.Models.Trip>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <h1 class="display-4">Đặt vé xe online</h1>
+        <p class="lead">Tìm và đặt vé xe nhanh chóng, dễ dàng!</p>
+    </div>
 </div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="SearchTrips" method="post" class="input-group mb-4">
+            <input type="text" name="departure" class="form-control" placeholder="Điểm đi" required />
+            <input type="text" name="destination" class="form-control" placeholder="Điểm đến" required />
+            <input type="date" name="departureTime" class="form-control" />
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h2>Chuyến xe phổ biến</h2>
+        @if (Model.Any())
+        {
+            @foreach (var trip in Model)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " + trip.Route.DestinationLocation?.Name) : "No Route").</h5>
+                        <p class="card-text">
+                            Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                            Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                            | Giá:
+                            @trip.TotalPrice.ToString("N0") VNĐ
+                        </p>
+                        <a asp-area="Admin" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
+                           asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Chưa có chuyến xe nào.</p>
+        }
+    </div>
+</div>
+@* 
+<div class="row">
+    <div class="col-12">
+        <h2>Ưu đãi</h2>
+        @if (Model.Promotions.Any())
+        {
+            @foreach (var promo in Model.Promotions)
+            {
+                <div class="alert alert-info">@promo.Title - @promo.Description</div>
+            }
+        }
+        else
+        {
+            <p>Chưa có ưu đãi nào.</p>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h2>Tin tức</h2>
+        @if (Model.News.Any())
+        {
+            @foreach (var news in Model.News)
+            {
+                <div class="alert alert-secondary">@news.Title - @news.Description</div>
+            }
+        }
+        else
+        {
+            <p>Chưa có tin tức nào.</p>
+        }
+    </div>
+</div>
+*@
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}   

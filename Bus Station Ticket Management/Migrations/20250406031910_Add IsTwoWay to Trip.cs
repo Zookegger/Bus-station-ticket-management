@@ -5,25 +5,25 @@
 namespace Bus_Station_Ticket_Management.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAddresstoLocation : Migration
+    public partial class AddIsTwoWaytoTrip : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Address",
-                table: "Locations",
-                type: "nvarchar(max)",
+            migrationBuilder.AddColumn<bool>(
+                name: "IsTwoWay",
+                table: "Trips",
+                type: "bit",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Address",
-                table: "Locations");
+                name: "IsTwoWay",
+                table: "Trips");
         }
     }
 }

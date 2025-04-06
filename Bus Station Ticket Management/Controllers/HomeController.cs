@@ -1,13 +1,12 @@
-﻿using System.Diagnostics;
+﻿using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Bus_Station_Ticket_Management.Models;
-using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Bus_Station_Ticket_Management.Controllers;
 
-//[Authorize]
 public class HomeController : Controller
 {
     private readonly ApplicationDbContext _context;

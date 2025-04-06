@@ -2,24 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Bus_Station_Ticket_Management.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 {
@@ -125,8 +118,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
                 var user = CreateUser();
 
                 user.FullName = Input.FullName;
@@ -134,15 +126,17 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 user.Gender = Input.Gender;
                 user.DateOfBirth = Input.DateOfBirth;
 
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                if (result.Succeeded)
-                {
+                if (result.Succeeded) {
+                    await _userManager.AddToRoleAsync(user, "Customer");
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -154,18 +148,15 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount) {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
-                    else
-                    {
+                    else {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
-                foreach (var error in result.Errors)
-                {
+                foreach (var error in result.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -176,12 +167,10 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         private ApplicationUser CreateUser()
         {
-            try
-            {
+            try {
                 return Activator.CreateInstance<ApplicationUser>();
             }
-            catch
-            {
+            catch {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
@@ -190,8 +179,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
-            if (!_userManager.SupportsUserEmail)
-            {
+            if (!_userManager.SupportsUserEmail) {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;

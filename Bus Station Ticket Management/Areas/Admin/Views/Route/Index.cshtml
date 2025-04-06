@@ -1,8 +1,9 @@
-﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Routes>
+﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Routes>
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Route List";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>Route List</h1>
@@ -21,16 +22,10 @@
 <table id="RouteTable" class="table table-hover table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StartId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DestinationId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
+            <th>Start</th>
+            <th>Destination</th>
+            <th>Price</th>
+            <th style="width: 30px">Actions</th>
         </tr>
     </thead>
     <tbody class="table-group=divider">
@@ -46,14 +41,33 @@
                 <td>
                     $@Html.DisplayFor(modelItem => item.Price)
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
+                <td class="d-flex justify-content-end">
+                    <div class="btn-group ">
+                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
+    @if (Model.Any())
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, searchString =
+        ViewBag.SearchString }),
+        new PagedListRenderOptions
+        {
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" },
+            ActiveLiElementClass = "active",
+            LinkToPreviousPageFormat = "&laquo;",
+            LinkToNextPageFormat = "&raquo;"
+        })
+        }
+</nav>
 
 @section Scripts {
     <script src="~/js/table.js"></script>

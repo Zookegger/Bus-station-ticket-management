@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Station_Ticket_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250326183528_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250406063000_Test")]
+    partial class Test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,8 +40,8 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -115,8 +115,8 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -152,7 +152,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -183,8 +183,9 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<byte>("PaymentStatus")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
+                    b.Property<string>("TicketId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -234,20 +235,20 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DestinationLocation")
+                    b.Property<int>("DestinationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("StartLocation")
+                    b.Property<int>("StartId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DestinationLocation");
+                    b.HasIndex("DestinationId");
 
-                    b.HasIndex("StartLocation");
+                    b.HasIndex("StartId");
 
                     b.ToTable("Routes");
                 });
@@ -260,6 +261,12 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Column")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Floor")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
@@ -267,33 +274,38 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VehicleId")
+                    b.Property<int>("Row")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TripId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("TripId");
 
                     b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Ticket", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("CancelationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TripId")
                         .HasColumnType("int");
@@ -327,6 +339,9 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsTwoWay")
+                        .HasColumnType("bit");
+
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
@@ -336,9 +351,14 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RouteId");
+
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Trips");
                 });
@@ -380,6 +400,9 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<DateTime>("AcquiredDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LicensePlate")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -391,7 +414,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VehicleTypeId")
+                    b.Property<int>("VehicleTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -409,9 +432,6 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -419,7 +439,13 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalColumn")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalFlooring")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalRow")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalSeats")
@@ -595,30 +621,30 @@ namespace Bus_Station_Ticket_Management.Migrations
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Routes", b =>
                 {
-                    b.HasOne("Bus_Station_Ticket_Management.Models.Location", "DestinationId")
+                    b.HasOne("Bus_Station_Ticket_Management.Models.Location", "DestinationLocation")
                         .WithMany()
-                        .HasForeignKey("DestinationLocation")
+                        .HasForeignKey("DestinationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Bus_Station_Ticket_Management.Models.Location", "StartId")
+                    b.HasOne("Bus_Station_Ticket_Management.Models.Location", "StartLocation")
                         .WithMany()
-                        .HasForeignKey("StartLocation")
+                        .HasForeignKey("StartId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("DestinationId");
+                    b.Navigation("DestinationLocation");
 
-                    b.Navigation("StartId");
+                    b.Navigation("StartLocation");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Seat", b =>
                 {
-                    b.HasOne("Bus_Station_Ticket_Management.Models.Vehicle", "Vehicle")
+                    b.HasOne("Bus_Station_Ticket_Management.Models.Trip", "Trip")
                         .WithMany()
-                        .HasForeignKey("VehicleId");
+                        .HasForeignKey("TripId");
 
-                    b.Navigation("Vehicle");
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Ticket", b =>
@@ -656,7 +682,15 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Bus_Station_Ticket_Management.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Route");
+
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.TripDriverAssignment", b =>
@@ -682,7 +716,9 @@ namespace Bus_Station_Ticket_Management.Migrations
                 {
                     b.HasOne("Bus_Station_Ticket_Management.Models.VehicleType", "VehicleType")
                         .WithMany()
-                        .HasForeignKey("VehicleTypeId");
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("VehicleType");
                 });

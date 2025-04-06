@@ -27,7 +27,6 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Acquired Date</th>
             <th>License Plate</th>
             <th>Status</th>
             <th>Vehicle Type</th>
@@ -40,9 +39,6 @@
             <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AcquiredDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LicensePlate)

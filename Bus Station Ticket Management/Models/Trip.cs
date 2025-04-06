@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Station_Ticket_Management.Models
@@ -7,37 +8,34 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Key]
         public int Id { get; set; }
-        //public bool IsTwoWay { get; set; }
+        public bool IsTwoWay { get; set; }
+        
         [Required]
+        [DisplayName("Departure Time")]
         public DateTime DepartureTime { get; set; }
+        
         [Required]
+        [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
+        
+        [DisplayName("Status")]
         public string? Status { get; set; }
+        [DisplayName("Total Price")]
         public int TotalPrice { get; set; }
 
+        [Required]
+        [DisplayName("Route Name")]
         public int RouteId { get; set; }
         [ForeignKey(nameof(RouteId))]
-        
-        public required Routes Route { get; set; }
+        public Routes? Route { get; set; }
+
         [Required]
+        [DisplayName("Vehicle Name")]
         public int VehicleId { get; set; }
         [ForeignKey(nameof(VehicleId))]
-        public required Vehicle Vehicle { get; set; }
+        public Vehicle? Vehicle { get; set; }
 
-        public ICollection<TripDriverAssignment> TripDriverAssignments { get; set; } = new List<TripDriverAssignment>();
-        [NotMapped]
-        public string TripDisplayName
-        {
-            get
-            {
-                if (Route?.StartLocation?.Name != null && Route?.DestinationLocation?.Name != null)
-                {
-                    return $"{Route.StartLocation.Name} - {Route.DestinationLocation.Name}";
-                }
-                return $"Chuyến #{Id}";
-            }
-        }
-
+        public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
     }
     
 }

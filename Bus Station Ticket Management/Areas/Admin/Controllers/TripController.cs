@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Bus_Station_Ticket_Management.DataAccess;
-using Bus_Station_Ticket_Management.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -27,8 +23,33 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Trip
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Trips.Include(t => t.Route).Include(t => t.Vehicle);
-            return View(await applicationDbContext.ToListAsync());
+            var now = DateTime.Now;
+            var trips = await _context.Trips.Include(t => t.Route).Include(t => t.Vehicle).ToListAsync();
+
+            foreach (var trip in trips)
+            {
+                if (trip.DepartureTime > now)
+                {
+                    trip.Status = "Stand By";
+                }
+                else if (trip.DepartureTime <= now && trip.ArrivalTime > now)
+                {
+                    trip.Status = "In Progress";
+                }
+                else if (trip.DepartureTime < now && trip.ArrivalTime <= now)
+                {
+                    trip.Status = "Completed";
+                }
+            }
+
+            ViewBag.Routes = await _context.Routes
+                .Include(r => r.StartLocation)
+                .Include(r => r.DestinationLocation)
+                .ToListAsync();
+
+            await _context.SaveChangesAsync();
+
+            return View(trips);
         }
 
         // GET: Trip/Details/5
@@ -43,6 +64,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(t => t.Route)
                 .Include(t => t.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (trip == null)
             {
                 return NotFound();
@@ -54,8 +76,17 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Trip/Create
         public IActionResult Create()
         {
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id");
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id");
+            var routes = _context.Routes
+                .Include(r => r.StartLocation)
+                .Include(r => r.DestinationLocation).
+                Select(r => new
+                {
+                    Id = r.Id,
+                    Name = r.StartLocation.Name + " - " + r.DestinationLocation.Name
+                }).ToList();
+
+            ViewData["RouteId"] = new SelectList(routes, "Id", "Name");
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name");
             return View();
         }
 
@@ -64,16 +95,55 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DepartureTime,ArrivalTime,Status,TotalPrice,RouteId,VehicleId")] Trip trip)
+        public async Task<IActionResult> Create([Bind("Id,DepartureTime,ArrivalTime,RouteId,VehicleId")] Trip trip)
         {
             if (ModelState.IsValid)
             {
+                trip.Status = "StandBy";
+
+                var vehicle = await _context.Vehicles
+                    .Include(v => v.VehicleType)
+                    .FirstOrDefaultAsync(v => v.Id == trip.VehicleId);
+
+                var route = await _context.Routes
+                    .FirstOrDefaultAsync(r => r.Id == trip.RouteId);
+
+                if (vehicle == null || route == null)
+                    return NotFound();
+
+                int vehiclePrice = vehicle.VehicleType.Price;
+                int routePrice = route.Price;
+
+                int total = (trip.IsTwoWay) ? vehiclePrice + (routePrice * 2) : vehiclePrice + routePrice;
+
+                trip.TotalPrice = total;
+
+                int rows = vehicle.VehicleType.TotalRow;
+                int columns = vehicle.VehicleType.TotalColumn;
+                int floor = vehicle.VehicleType.TotalFlooring;
+
                 _context.Add(trip);
+                await _context.SaveChangesAsync();
+
+                for (int r = 1; r <= rows; r++) {
+                    for (int c = 1; c <= columns; c++) {
+                        _context.Seats.Add(new Seat {
+                            Row = r,
+                            Column = c,
+                            Floor = floor,
+                            Number = $"R{r}C{c}",
+                            IsAvailable = true,
+                            TripId = trip.Id
+                        });
+                    }
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
             return View(trip);
         }
 
@@ -90,8 +160,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
             return View(trip);
         }
 
@@ -127,8 +197,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "name", trip.VehicleId);
             return View(trip);
         }
 

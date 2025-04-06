@@ -2,11 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -59,8 +54,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
@@ -70,8 +64,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                 .ToList();
 
             string passwordHash = null;
-            if (_userStore is IUserPasswordStore<ApplicationUser> userPasswordStore)
-            {
+            if (_userStore is IUserPasswordStore<ApplicationUser> userPasswordStore) {
                 passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
             }
 
@@ -82,14 +75,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
-            if (!result.Succeeded)
-            {
+            if (!result.Succeeded) {
                 StatusMessage = "The external login was not removed.";
                 return RedirectToPage();
             }
@@ -113,21 +104,18 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetLinkLoginCallbackAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var userId = await _userManager.GetUserIdAsync(user);
             var info = await _signInManager.GetExternalLoginInfoAsync(userId);
-            if (info == null)
-            {
+            if (info == null) {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info.");
             }
 
             var result = await _userManager.AddLoginAsync(user, info);
-            if (!result.Succeeded)
-            {
+            if (!result.Succeeded) {
                 StatusMessage = "The external login was not added. External logins can only be associated with one account.";
                 return RedirectToPage();
             }
