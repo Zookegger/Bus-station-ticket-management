@@ -41,9 +41,9 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Azure Login
-      uses: azure/login@v2
+      uses: Azure/login@v2.3.0
       with:
-        creds: ${{ secrets.BusStationTicketManagement20250407050228_SPN }}
+        creds: ${{ secrets.BUSSTATIONTICKETMANAGEMENT20250407050228_SPN }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
