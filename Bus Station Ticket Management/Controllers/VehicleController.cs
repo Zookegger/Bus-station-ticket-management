@@ -70,8 +70,6 @@ namespace Bus_Station_Ticket_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,AcquiredDate,LicensePlate,Status,VehicleTypeId")] Vehicle vehicle)
         {
-
-
             if (ModelState.IsValid) {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();

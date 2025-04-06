@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 
-namespace Bus_Station_Ticket_Management.Controllers
+namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class SeatController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public SeatController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // GET: Seat
@@ -28,7 +29,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        [Route("Seat/SelectSeats", Name = "DefaultSelectSeats")]
+        [Route("Admin/Seat/SelectSeats", Name = "AdminSelectSeats")]
         public async Task<IActionResult> SelectSeats(int VehicleId, int TripId)
         {
             // Kiểm tra Trip và Bus có tồn tại không
@@ -74,13 +75,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                 TotalFloors = trip.Vehicle?.VehicleType.TotalFlooring ?? 0,
             };
             
-            if (User.Identity.IsAuthenticated == true) {
+            if (User.Identity.IsAuthenticated) {
                 try {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId)) {
-                        var user = await _userManager.FindByIdAsync(userId);
-                        if (user != null) viewModel.User = user;
-                    }
+                    var user = await _userManager.GetUserAsync(User);
+                    if (user != null) viewModel.User = user;
                 } catch (Exception ex) {
                     System.Diagnostics.Debug.WriteLine(ex);
                 }
@@ -90,6 +88,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, Trip trip)
         {
             if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
@@ -119,10 +118,6 @@ namespace Bus_Station_Ticket_Management.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Sử dụng ClaimTypes và FindFirstValue
             
-            if (userId == null) {
-                return NotFound("Không tìm thấy thông tin người dùng");
-            }
-
             foreach (var seat in seats) {
                 var ticket = new Ticket {
                     TripId = TripId,

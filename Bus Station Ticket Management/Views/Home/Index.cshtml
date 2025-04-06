@@ -38,7 +38,7 @@
                                 | Giá:
                             @trip.TotalPrice.ToString("N0") VNĐ
                         </p>
-                        <a asp-controller="Seat" asp-action="SelectSeats" asp-route-busId=""
+                        <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
                            asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
                     </div>
                 </div>

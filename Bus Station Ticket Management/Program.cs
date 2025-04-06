@@ -80,7 +80,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-app.MapRazorPages();
 
 
 // Admin Area Route
@@ -97,4 +96,5 @@ app.MapControllerRoute(
 );
 
 
+app.MapRazorPages();
 app.Run();

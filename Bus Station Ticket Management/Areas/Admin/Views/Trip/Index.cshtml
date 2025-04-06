@@ -53,10 +53,10 @@
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Route.Id)
+                @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) -> @Html.DisplayFor(modelItem => item.Route.DestinationLocation.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Vehicle.Id)
+                @Html.DisplayFor(modelItem => item.Vehicle.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a> |

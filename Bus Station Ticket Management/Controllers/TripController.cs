@@ -43,8 +43,8 @@ namespace Bus_Station_Ticket_Management.Controllers
         // GET: Trip/Create
         public IActionResult Create()
         {
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id");
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id");
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name");
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name");
             return View();
         }
 
@@ -60,8 +60,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
             return View(trip);
         }
 
@@ -76,8 +76,8 @@ namespace Bus_Station_Ticket_Management.Controllers
             if (trip == null) {
                 return NotFound();
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
             return View(trip);
         }
 
@@ -107,8 +107,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Id", trip.RouteId);
-            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Id", trip.VehicleId);
+            ViewData["RouteId"] = new SelectList(_context.Routes, "Id", "Name", trip.RouteId);
+            ViewData["VehicleId"] = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
             return View(trip);
         }
 

@@ -42,10 +42,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/TripDriverAssignment/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "Email");
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id");
+            var trips = await _context.Trips
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Vehicle)
+                .ToListAsync();
+
+            var tripSelectList = trips.Select(t => new {
+                t.Id,
+                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+            }).ToList();
+
+            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
+            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
             return View();
         }
 
@@ -56,13 +69,28 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TripId,DriverId,DateAssigned")] TripDriverAssignment tripDriverAssignment)
         {
+            var trips = await _context.Trips
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Vehicle)
+                .ToListAsync();
+
             if (ModelState.IsValid) {
                 _context.Add(tripDriverAssignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "Email", tripDriverAssignment.DriverId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", tripDriverAssignment.TripId);
+            
+            var tripSelectList = trips.Select(t => new {
+                t.Id,
+                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+            }).ToList();
+
+            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
+            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+            
             return View(tripDriverAssignment);
         }
 
@@ -77,8 +105,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (tripDriverAssignment == null) {
                 return NotFound();
             }
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "Email", tripDriverAssignment.DriverId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", tripDriverAssignment.TripId);
+            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Name", tripDriverAssignment.TripId);
             return View(tripDriverAssignment);
         }
 
@@ -108,8 +136,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "Email", tripDriverAssignment.DriverId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", tripDriverAssignment.TripId);
+            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Name", tripDriverAssignment.TripId);
             return View(tripDriverAssignment);
         }
 

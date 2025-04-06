@@ -277,12 +277,12 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<int>("Row")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VehicleId")
+                    b.Property<int?>("TripId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("TripId");
 
                     b.ToTable("Seats");
                 });
@@ -351,14 +351,14 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int>("TripId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RouteId");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("TripId");
 
                     b.ToTable("Trips");
                 });
@@ -642,7 +642,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                 {
                     b.HasOne("Bus_Station_Ticket_Management.Models.Vehicle", "Vehicle")
                         .WithMany()
-                        .HasForeignKey("VehicleId");
+                        .HasForeignKey("TripId");
 
                     b.Navigation("Vehicle");
                 });
@@ -684,7 +684,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasOne("Bus_Station_Ticket_Management.Models.Vehicle", "Vehicle")
                         .WithMany()
-                        .HasForeignKey("VehicleId")
+                        .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

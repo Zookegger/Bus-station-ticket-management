@@ -24,8 +24,8 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Trạng thái")]
         public bool IsAvailable { get; set; }
 
-        public int? VehicleId { get; set; }
-        [ForeignKey("VehicleId")]
-        public Vehicle? Vehicle { get; set; }
+        public int? TripId { get; set; }
+        [ForeignKey("TripId")]
+        public Trip? Trip { get; set; }
     }
 }
