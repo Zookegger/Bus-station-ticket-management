@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bus_Station_Ticket_Management.Controllers
+namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
-    
+    [Authorize]
+    [Area("Admin")]
     public class RatingsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,8 +38,11 @@ namespace Bus_Station_Ticket_Management.Controllers
         {
             var rating = _context.Ratings
                 .Include(r => r.Trip)
-                .ThenInclude(t => t.Route)
-                .ThenInclude(r => r.StartLocation)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
                 .FirstOrDefault(r => r.Id == id);
 
             if (rating == null)

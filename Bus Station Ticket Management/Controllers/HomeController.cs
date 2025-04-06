@@ -16,15 +16,15 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var trips = _context.Trips
+        var trips = await _context.Trips
                         .Include(t => t.Route)
                             .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
                         .Include(t => t.Route)
                             .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
                         .Take(5)
-                        .ToList();
+                        .ToListAsync();
 
         return View(trips);
 
@@ -33,6 +33,24 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime) {
+        departure = departure?.Trim() ?? "";
+        destination = destination?.Trim() ?? "";
+        
+        var trips = await _context.Trips
+            .Include(t => t.Route)
+                .ThenInclude(r => r.StartLocation)
+            .Include(t => t.Route)
+                .ThenInclude(r => r.DestinationLocation)
+            .Where(t => 
+                t.Route.StartLocation.Name.Contains(departure) &&
+                t.Route.DestinationLocation.Name.Contains(destination) &&
+                t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
+            ).OrderBy(t => t.DepartureTime).ToListAsync();
+
+        return View(trips);
     }
 
     [AllowAnonymous]

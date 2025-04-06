@@ -1,0 +1,40 @@
+@model IEnumerable<Bus_Station_Ticket_Management.Models.Trip>
+@using System.Globalization;
+
+@{
+    ViewData["Title"] = "Trips Available";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var trip in Model)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @(trip.Route != null 
+                                ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" 
+                                : "No Route")
+                        </h5>
+                        <p class="card-text">
+                            <strong>Khởi hành:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")<br/>
+                            <strong>Giờ đến:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")<br />
+                            <strong>Giá:</strong> @trip.TotalPrice.ToString("C", new CultureInfo("vi-VN"))
+                        </p>
+                        <a asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId" 
+                           asp-route-tripId="@trip.Id" class="btn btn-primary">Chọn ghế</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Không có chuyến xe nào phù hợp với tìm kiếm của bạn.</p>
+}

@@ -8,6 +8,8 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [DisplayName("Two way")]
         public bool IsTwoWay { get; set; }
         
         [Required]
@@ -20,7 +22,7 @@ namespace Bus_Station_Ticket_Management.Models
         
         [DisplayName("Status")]
         public string? Status { get; set; }
-        [DisplayName("Total Price")]
+        [DisplayName("Total Price")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int TotalPrice { get; set; }
 
         [Required]

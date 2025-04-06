@@ -20,7 +20,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Vehicle
-        public async Task<IActionResult> Index(string searchString, int? page, string? sortBy)
+        public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy)
         {
             int pageSize = 15; // Number of items per page
             int pageNumber = page ?? 1; // Default to page 1

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,22 +13,20 @@ namespace Bus_Station_Ticket_Management.Models
         public int Id { get; set; }
 
         [Required]
-        public required string CustomerId { get; set; }
-        [ForeignKey(nameof(CustomerId))]
-
-        [Required]
+        public string UserId { get; set; }
+        [ForeignKey(nameof(UserId))] [ValidateNever]
         public ApplicationUser User { get; set; }
 
-        [Required]
+        [Required] [DisplayName("Trip")]
         public int TripId { get; set; }
-        [ForeignKey(nameof(TripId))]
-        public required Trip Trip { get; set; }
+        [ForeignKey(nameof(TripId))] [ValidateNever]
+        public Trip Trip { get; set; }
 
-        [DisplayName("Nhận xét")]
+        [DisplayName("Comment")]
         public string? Comment { get; set; }
 
         [Range(1, 10, ErrorMessage = "Điểm đánh giá phải nằm trong khoảng từ 1 đến 10.")]
-        [DisplayName("Điểm chuyến xe")]
+        [DisplayName("Rating")]
         public byte TripRating { get; set; }
 
         [DisplayName("Ngày tạo ra")]

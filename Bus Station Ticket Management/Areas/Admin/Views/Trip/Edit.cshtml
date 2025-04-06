@@ -19,41 +19,45 @@
                 <input asp-for="DepartureTime" class="form-control" />
                 <span asp-validation-for="DepartureTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="ArrivalTime" class="control-label"></label>
                 <input asp-for="ArrivalTime" class="form-control" />
                 <span asp-validation-for="ArrivalTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control">
+                    <option value="Stand By">Stand By</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="TotalPrice" class="control-label"></label>
                 <input asp-for="TotalPrice" class="form-control" />
                 <span asp-validation-for="TotalPrice" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="RouteId" class="control-label"></label>
-                <select asp-for="RouteId" class="form-control" asp-items="ViewBag.RouteId"></select>
+                <select asp-for="RouteId" class="form-control route-select" asp-items="ViewBag.RouteId"></select>
                 <span asp-validation-for="RouteId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="VehicleId" class="control-label"></label>
-                <select asp-for="VehicleId" class="form-control" asp-items="ViewBag.VehicleId"></select>
+                <select asp-for="VehicleId" class="form-control route-select" asp-items="ViewBag.VehicleId"></select>
                 <span asp-validation-for="VehicleId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group btn-group mt-3 gap-1">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary" role="button">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

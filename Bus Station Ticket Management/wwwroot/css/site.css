@@ -154,13 +154,14 @@ table thead th,
 	flex: 1;
 }
 
+
 @media (max-width: 397px) {
 	.navbar-brand {
 		font-size: 14px !important;
 	}
 }
 
-@media (max-width: 426px) {
+@media (min-width: 398px) and (max-width: 426px) {
 	.navbar-brand {
 		font-size: 18px !important;
 	}
@@ -190,16 +191,17 @@ table thead th,
 		flex-direction: column !important;
 	}
 }
-@media (max-width: 1090px) {
-	.navbar-toggler {
-		display: block;
-	}
-}
 
 @media (max-width: 990px) {
 	.nav-link {
 		padding-left: 8px !important;
 		padding-right: 8px !important;
+	}
+}
+
+@media (max-width: 1090px) {
+	.navbar-toggler {
+		display: block;
 	}
 }
 

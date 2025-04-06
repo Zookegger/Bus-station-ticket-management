@@ -1,5 +1,5 @@
-﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Trip>
-
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Trip>;
+    
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -12,6 +12,59 @@
 <h1>Trips</h1>
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Add New Trip</a>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
+            placeholder="Search for trips..." />
+        <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
+                style="font-size: 18px"></i></button>
+    </div>
+    <div class="input-group mt-3">
+        <select name="sortBy" id="sortBy" onchange="this.form.submit()">
+            <option value="" disabled selected>Sort By ...</option>
+            <optgroup label="Sort by Route">
+                <option value="route_asc" selected="@(ViewBag.SortBy == "route_asc" ? "selected" : null)">
+                    Route Ascending ↑
+                </option>
+                <option value="route_desc" selected="@(ViewBag.SortBy == "route_desc" ? "selected" : null)">
+                    Route Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Vehicle">
+                <option value="vehicle_asc" selected="@(ViewBag.SortBy == "vehicle_asc" ? "selected" : null)">
+                    Vehicle Ascending ↑
+                </option>
+                <option value="vehicle_desc" selected="@(ViewBag.SortBy == "vehicle_desc" ? "selected" : null)">
+                    Vehicle Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Departure">
+                <option value="departure_asc" selected="@(ViewBag.SortBy == "departure_asc" ? "selected" : null)">
+                    Departure Ascending ↑
+                </option>
+                <option value="departure_desc" selected="@(ViewBag.SortBy == "departure_desc" ? "selected" : null)">
+                    Departure Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Arrival">
+                <option value="arrival_asc" selected="@(ViewBag.SortBy == "arrival_asc" ? "selected" : null)">
+                    Arrival Ascending ↑
+                </option>
+                <option value="arrival_desc" selected="@(ViewBag.SortBy == "arrival_desc" ? "selected" : null)">
+                    Arrival Descending ↓
+                </option>
+            </optgroup>
+        </select>
+        <select name="filterBy" id="filterBy" onchange="this.form.submit()">
+            <option value="" disabled selected>Filter</option>
+            <option value="All" selected="@(ViewBag.FilterBy == "All" ? "selected" : null)">All</option>
+            <option value="Stand By" selected="@(ViewBag.FilterBy == "Stand By" ? "selected" : null)">Stand By</option>
+            <option value="In Progress" selected="@(ViewBag.FilterBy == "In Progress" ? "selected" : null)">In Progress</option>
+            <option value="Completed" selected="@(ViewBag.FilterBy == "Completed" ? "selected" : null)">Completed</option>
+        </select>
+    </div>
+</form>
 
 <table id="TripTable" class="table table-hover table-striped">
     <thead>
@@ -38,22 +91,24 @@
         </tr>
     </thead>
     <tbody class="table-group=divider">
-@foreach (var item in Model) {
-        <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-            <td>
-                @Html.DisplayFor(modelItem => item.DepartureTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArrivalTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) -> @Html.DisplayFor(modelItem => item.Route.DestinationLocation.Name)
+        @foreach (var item in Model)
+        {
+            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                <td>
+                    @Html.DisplayFor(modelItem => item.DepartureTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) ➞ @Html.DisplayFor(modelItem =>
+                    item.Route.DestinationLocation.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Vehicle.Name)
@@ -63,7 +118,7 @@
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" role="button">Delete</a>
             </td>
         </tr>
-}
+                }
     </tbody>
 </table>
 

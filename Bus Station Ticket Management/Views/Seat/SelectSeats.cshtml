@@ -11,7 +11,7 @@
 <div class="container mt-4">
     <div class="row">
         <!-- Seat Map Section -->
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="mb-3">
                 <label class="form-label">Thông tin xe</label>
                 <div class="seat-legend-box">
@@ -36,11 +36,11 @@
                 <div class="mb-3">
                     <div class="seat-map">
                         <h4>Sơ đồ ghế</h4>
-                        <div class="seat-grid">
+                        <div class="seat-grid d-flex justify-content-center">
                             @for (int floor = 1; floor <= Model.TotalFloors; floor++)
                             {
                                 System.Diagnostics.Debug.WriteLine($"\nTotal Floors: {Model.TotalFloors}\n");
-                                <div class="floor">
+                                <div class="floor my-3">
                                     <h5>Tầng @floor</h5>
                                     @for (int row = 1; row <= Model.TotalRows; row++)
                                     {
@@ -82,7 +82,7 @@
         </div>
 
         <!-- Trip Information Section -->
-        <div class="col-md-4" id="TripInfo">
+        <div class="col-md-5" id="TripInfo">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Thông tin chuyến đi</h5>
@@ -96,38 +96,38 @@
                 </div>
 
                 <hr>
-                <div class="card-body"></div>
-                <h5 class="card-title">Thông tin khách hàng</h5>
-                @if (@Model.User != null)
-                {
-                    <p><strong>Họ Tên: </strong> @Model.User.FullName</p>
-                    <p><strong>Địa chỉ: </strong> @Model.User.Address</p>
-                    <p><strong>Email: </strong> @Model.User.Email</p>
-                    <p><strong>Số Điện Thoại: </strong> @Model.User.PhoneNumber</p>
-                }
-                else
-                {
-                    <form asp-action="BookSeats" method="post" id="seatForm">
-                        <div class="form-group">
-                            <label for="user_FullName">Họ Tên</label>
-                            <input type="text" name="user_FullName" id="user_FullName" class="form-control"
-                                placeholder="Nguyễn Văn A" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="user_Email">Email</label>
-                            <input type="email" name="user_Email" id="user_Email" class="form-control"
-                                placeholder="example@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="user_PhoneNumber">Số Điện Thoại</label>
-                            <input type="tel" name="user_PhoneNumber" id="user_PhoneNumber" class="form-control"
-                                placeholder="0123456789" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Đặt vé</button>
-                    </form>
-                }
+                <div class="card-body ">
+                    <h5 class="card-title">Thông tin khách hàng</h5>
+                    @if (@Model.User != null)
+                    {
+                        <p><strong>Họ Tên: </strong> @Model.User.FullName</p>
+                        <p><strong>Địa chỉ: </strong> @Model.User.Address</p>
+                        <p><strong>Email: </strong> @Model.User.Email</p>
+                        <p><strong>Số Điện Thoại: </strong> @Model.User.PhoneNumber</p>
+                    }
+                    else
+                    {
+                        <form asp-action="BookSeats" method="post" id="seatForm" >
+                            <div class="form-group mb-3">
+                                <label for="user_FullName">Họ Tên</label>
+                                <input type="text" name="user_FullName" id="user_FullName" class="form-control"
+                                    placeholder="Nguyễn Văn A" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="user_Email">Email</label>
+                                <input type="email" name="user_Email" id="user_Email" class="form-control"
+                                    placeholder="example@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_PhoneNumber">Số Điện Thoại</label>
+                                <input type="tel" name="user_PhoneNumber" id="user_PhoneNumber" class="form-control"
+                                    placeholder="0123456789" required>
+                            </div>
+                        </form>
+                    }
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary" form="seatForm">Đặt vé</button>
+            <button type="submit" class="btn btn-primary mt-3 w-100" form="seatForm">Đặt vé</button>
         </div>
     </div>
 </div>

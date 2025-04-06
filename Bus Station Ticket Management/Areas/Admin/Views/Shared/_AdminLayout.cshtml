@@ -8,20 +8,24 @@
     <script type="importmap"></script>
     @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 </head>
 
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-light border-bottom box-shadow ">
             <div class="container-fluid">
-                <a class="navbar-brand text-light" asp-area="Admin" asp-controller="Admin" asp-action="Index">Bus Station
+                <a class="navbar-brand text-light" asp-area="Admin" asp-controller="Admin" asp-action="Index">Bus
+                    Station
                     Ticket
                     Management - ADMIN</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -37,8 +41,8 @@
                                 <li><a asp-controller="Admin" asp-action="Index" class="dropdown-item"
                                         aria-current="page">Home</a></li>
                                 <li>
-                                    <a asp-area="Admin" asp-controller="Home" asp-action="GoToUserHome" class="dropdown-item"
-                                       aria-current="page">UserHome</a>
+                                    <a asp-area="Admin" asp-controller="Home" asp-action="GoToUserHome"
+                                        class="dropdown-item" aria-current="page">UserHome</a>
                                 </li>
                                 <li><a asp-controller="Home" asp-action="Privacy" class="dropdown-item"
                                         aria-current="page">Privacy</a></li>
@@ -53,10 +57,10 @@
                                 Vehicle
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="Admin" asp-controller="Vehicle" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Vehicles</a></li>
-                                <li><a asp-area="Admin" asp-controller="VehicleType" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Vehicle Types</a></li>
+                                <li><a asp-area="Admin" asp-controller="Vehicle" asp-action="Index"
+                                        class="dropdown-item" aria-current="page">Vehicles</a></li>
+                                <li><a asp-area="Admin" asp-controller="VehicleType" asp-action="Index"
+                                        class="dropdown-item" aria-current="page">Vehicle Types</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -69,8 +73,8 @@
                                 Trip
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="Admin" asp-controller="Location" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Locations</a></li>
+                                <li><a asp-area="Admin" asp-controller="Location" asp-action="Index"
+                                        class="dropdown-item" aria-current="page">Locations</a></li>
                                 <li><a asp-area="Admin" asp-controller="Route" asp-action="Index" class="dropdown-item"
                                         aria-current="page">Routes</a></li>
                                 <li><a asp-area="Admin" asp-controller="Trip" asp-action="Index" class="dropdown-item"
@@ -82,16 +86,22 @@
                             </ul>
                         </li>
                     </ul>
-                    
+
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                Admin
+                                User
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Application Users</a></li>
+                                <li>
+                                    <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index"
+                                        class="dropdown-item" aria-current="page">Application Users</a>
+                                </li>
+                                <li>
+                                    <a asp-area="Admin" asp-controller="RatingsController" asp-action="Index"
+                                        class="dropdown-item" aria-current="page">Ratings</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -115,7 +125,8 @@
 
     <footer class="border-top footer text-muted">
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 border-top">
-            <p style="margin: 0; text-align: center;">&copy; 2025 Bus Station Ticket Management, All rights reserved.</p>
+            <p style="margin: 0; text-align: center;">&copy; 2025 Bus Station Ticket Management, All rights reserved.
+            </p>
             <ul class="list-unstyled d-flex justify-content-center">
                 <li><a class="link-body-emphasis" class="w100" href="#">Contact info 3</a></li>
                 <li><a class="link-body-emphasis" class="w100" href="#">Contact info 1</a></li>

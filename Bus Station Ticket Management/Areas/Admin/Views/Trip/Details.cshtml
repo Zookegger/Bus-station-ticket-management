@@ -39,13 +39,13 @@
             @Html.DisplayNameFor(model => model.Route)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Route.Id)
+            @Html.DisplayFor(model => model.Route.StartLocation.Name) ➞ @Html.DisplayFor(model => model.Route.DestinationLocation.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Vehicle)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Vehicle.Id)
+            @Html.DisplayFor(model => model.Vehicle.Name)
         </dd>
     </dl>
 </div>

@@ -10,29 +10,49 @@
 <h4>Trip</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8 col-lg-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Departure Time -->
             <div class="form-group">
                 <label asp-for="DepartureTime" class="control-label"></label>
                 <input asp-for="DepartureTime" class="form-control" />
                 <span asp-validation-for="DepartureTime" class="text-danger"></span>
             </div>
+            
+            <!-- Arrival Time -->
             <div class="form-group mt-3">
                 <label asp-for="ArrivalTime" class="control-label"></label>
                 <input asp-for="ArrivalTime" class="form-control" />
                 <span asp-validation-for="ArrivalTime" class="text-danger"></span>
             </div>
+
+            <!-- Is Two Way -->
+            <div class="form-group mt-3">
+                <div class="form-check">
+                    <input asp-for="IsTwoWay" class="form-check-input" type="checkbox" id="IsTwoWay" />
+                    <label class="form-check-label" for="IsTwoWay">
+                        Is Two Way?
+                    </label>
+                </div>
+            </div>
+
+            <!-- Route Selection -->
             <div class="form-group mt-3">
                 <label asp-for="RouteId" class="control-label"></label>
                 <select asp-for="RouteId" class="form-control route-select" asp-items="ViewBag.RouteId"></select>
                 <span asp-validation-for="RouteId" class="text-danger"></span>
             </div>
+
+            <!-- Vehicle Selection -->
             <div class="form-group mt-3">
                 <label asp-for="VehicleId" class="control-label"></label>
-                <select asp-for="VehicleId" class ="form-control route-select" asp-items="ViewBag.VehicleId"></select>
+                <select asp-for="VehicleId" class="form-control route-select" asp-items="ViewBag.VehicleId"></select>
                 <span asp-validation-for="VehicleId" class="text-danger"></span>
             </div>
+
+            <!-- Submit Button -->
             <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
@@ -41,9 +61,7 @@
     </div>
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
     <script src="~/js/site.js"></script>
 }
