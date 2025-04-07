@@ -43,6 +43,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
+        auth-type: SERVICE_PRINCIPAL
         creds: ${{ secrets.BusStationTicketManagement20250407050228_SPN }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
