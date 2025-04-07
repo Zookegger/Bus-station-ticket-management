@@ -118,7 +118,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     // Get the user by email
                     var user = await _userManager.FindByEmailAsync(Input.Email);
-
                     // Get the user's roles
                     var roles = await _userManager.GetRolesAsync(user);
 

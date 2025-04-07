@@ -17,9 +17,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeatController(ApplicationDbContext context)
+        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Seat
@@ -48,7 +49,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Lấy danh sách ghế
             var seats = await _context.Seats
-                .Where(s => s.Trip.VehicleId == VehicleId)
+                .Where(s => s.TripId == trip.Id && s.Trip.VehicleId == VehicleId)
                 .OrderBy(s => s.Floor)
                 .ThenBy(s => s.Row)
                 .ThenBy(s => s.Column)
@@ -58,21 +59,25 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound("Xe này chưa có ghế nào được tạo. Vui lòng kiểm tra lại.");
             }
 
+            var routeName = trip.Route != null 
+                ? $"{trip.Route.StartLocation?.Name ?? "N/A"} → {trip.Route.DestinationLocation?.Name ?? "N/A"}" 
+                : "N/A";
+
             SelectSeatsViewModel viewModel = new SelectSeatsViewModel {
                 TripId = trip.Id,
                 VehicleId = trip.VehicleId,
-                RouteName = trip.Route != null ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" : "N/A",
+                RouteName = routeName,
                 DepartureLocation = trip.Route?.StartLocation?.Name ?? "N/A",
                 DestinationLocation = trip.Route?.DestinationLocation?.Name ?? "N/A",
                 DepartureTime = trip.DepartureTime,
-                VehicleName = trip.Vehicle?.Name ?? "",
-                LicensePlate = trip.Vehicle?.LicensePlate ?? "",
+                VehicleName = trip.Vehicle?.Name ?? "N/A",
+                LicensePlate = trip.Vehicle?.LicensePlate ?? "N/A",
                 Price = trip.TotalPrice,
                 Seats = seats,
-                TotalSeats = trip.Vehicle?.VehicleType.TotalSeats ?? 0,
-                TotalColumns = trip.Vehicle?.VehicleType.TotalColumn ?? 0,
-                TotalRows = trip.Vehicle?.VehicleType.TotalRow ?? 0,
-                TotalFloors = trip.Vehicle?.VehicleType.TotalFlooring ?? 0,
+                TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
+                TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
+                TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
+                TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
             };
             
             if (User.Identity.IsAuthenticated) {
@@ -135,9 +140,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             TempData["Success"] = "Đặt vé thành công!";
             return RedirectToAction("MyTickets", "Ticket");
         }
-
-
-
 
         // GET: Seat/Details/5
         public async Task<IActionResult> Details(int? id)

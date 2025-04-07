@@ -17,6 +17,50 @@
         <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
                 style="font-size: 18px"></i></button>
     </div>
+    <div class="input-group mt-3">
+        <select name="sortBy" id="sortBy" onchange="this.form.submit()">
+            <option value="" disabled selected>Sort By ...</option>
+            <optgroup label="Sort by Route">
+                <option value="route_asc" selected="@(ViewBag.SortBy == "route_asc" ? "selected" : null)">
+                    Route Ascending ↑
+                </option>
+                <option value="route_desc" selected="@(ViewBag.SortBy == "route_desc" ? "selected" : null)">
+                    Route Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Vehicle">
+                <option value="vehicle_asc" selected="@(ViewBag.SortBy == "vehicle_asc" ? "selected" : null)">
+                    Vehicle Ascending ↑
+                </option>
+                <option value="vehicle_desc" selected="@(ViewBag.SortBy == "vehicle_desc" ? "selected" : null)">
+                    Vehicle Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Departure">
+                <option value="departure_asc" selected="@(ViewBag.SortBy == "departure_asc" ? "selected" : null)">
+                    Departure Ascending ↑
+                </option>
+                <option value="departure_desc" selected="@(ViewBag.SortBy == "departure_desc" ? "selected" : null)">
+                    Departure Descending ↓
+                </option>
+            </optgroup>
+            <optgroup label="Sort by Arrival">
+                <option value="arrival_asc" selected="@(ViewBag.SortBy == "arrival_asc" ? "selected" : null)">
+                    Arrival Ascending ↑
+                </option>
+                <option value="arrival_desc" selected="@(ViewBag.SortBy == "arrival_desc" ? "selected" : null)">
+                    Arrival Descending ↓
+                </option>
+            </optgroup>
+        </select>
+        <select name="filterBy" id="filterBy" onchange="this.form.submit()">
+            <option value="" disabled selected>Filter</option>
+            <option value="All" selected="@(ViewBag.FilterBy == "All" ? "selected" : null)">All</option>
+            <option value="Stand By" selected="@(ViewBag.FilterBy == "Stand By" ? "selected" : null)">Stand By</option>
+            <option value="In Progress" selected="@(ViewBag.FilterBy == "In Progress" ? "selected" : null)">In Progress</option>
+            <option value="Completed" selected="@(ViewBag.FilterBy == "Completed" ? "selected" : null)">Completed</option>
+        </select>
+    </div>
 </form>
 
 <table id="RouteTable" class="table table-hover table-striped">

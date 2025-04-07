@@ -99,7 +99,7 @@
                                         class="dropdown-item" aria-current="page">Application Users</a>
                                 </li>
                                 <li>
-                                    <a asp-area="Admin" asp-controller="RatingsController" asp-action="Index"
+                                    <a asp-area="Admin" asp-controller="Ratings" asp-action="Index"
                                         class="dropdown-item" aria-current="page">Ratings</a>
                                 </li>
                             </ul>
@@ -124,13 +124,13 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 border-top">
-            <p style="margin: 0; text-align: center;">&copy; 2025 Bus Station Ticket Management, All rights reserved.
-            </p>
-            <ul class="list-unstyled d-flex justify-content-center">
-                <li><a class="link-body-emphasis" class="w100" href="#">Contact info 3</a></li>
-                <li><a class="link-body-emphasis" class="w100" href="#">Contact info 1</a></li>
-                <li><a class="link-body-emphasis" class="w100" href="#">Contact info 2</a></li>
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between py-4 px-4 px-sm-5">
+            <span style="margin: 0; height: min-content; text-align: center; vertical-align: middle;">&copy; 2025 Bus Station Ticket Management, All rights reserved. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></span>
+            
+            <ul class="list-unstyled d-flex gap-0 gap-sm-3 mb-0">
+                <li><a class="link-body-emphasis" href="#">Contact info 3</a></li>
+                <li><a class="link-body-emphasis" href="#">Contact info 1</a></li>
+                <li><a class="link-body-emphasis" href="#">Contact info 2</a></li>
             </ul>
         </div>
     </footer>

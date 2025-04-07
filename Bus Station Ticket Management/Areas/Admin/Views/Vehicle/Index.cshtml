@@ -21,9 +21,9 @@
         <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
                 style="font-size: 18px"></i></button>
     </div>
-    <div class="input-group">
-        <select name="sortBy" id="sortBy" onchange="this.form.submit()">
-            <option value="" disabled>Sort By...</option>
+    <div class="input-group mt-3">
+        <select title="Sort" class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
+            <option value="" disabled selected>Sort By...</option>
             <optgroup label="Sort by Name">
                 <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc" ? "selected" : null)">
                     Name Ascending ↑
@@ -41,6 +41,24 @@
                     License Plate Descending ↓
                 </option>
             </optgroup>
+        </select>
+    
+        <select class="form-control" name="filterByStatus" id="filterByStatus" onchange="this.form.submit()">
+            <option value="" disabled selected>Filter</option>
+            <option value="All" selected="@(ViewBag.FilterByStatus == "All" ? "selected" : null)">All</option>
+            <option value="Stand-By" selected="@(ViewBag.FilterByStatus == "Stand-By" ? "selected" : null)">Stand By</option>
+            <option value="In-Progress" selected="@(ViewBag.FilterByStatus == "In-Progress" ? "selected" : null)">In Progress</option>
+            <option value="Completed" selected="@(ViewBag.FilterByStatus == "Completed" ? "selected" : null)">Completed</option>
+        </select>
+
+        <select class="form-control route-select" name="filterByType" id="filterByType" onchange="this.form.submit()">
+            <option value="All" selected="@(ViewBag.FilterByType == "All" ? "selected" : null)">All Vehicle Types</option>
+            @foreach (var type in ViewBag.VehicleTypes as IEnumerable<SelectListItem>)
+            {
+            <option value="@type.Value" selected="@(ViewBag.FilterByType == type.Value ? "selected" : null)">
+                @type.Text
+            </option>
+            }
         </select>
     </div>
 </form>

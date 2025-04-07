@@ -3,6 +3,7 @@ using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
@@ -13,12 +14,17 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationUser> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ApplicationUserController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: ApplicationUser
@@ -40,13 +46,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: ApplicationUser/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var applicationUser = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (applicationUser == null) {
+            if (applicationUser == null)
+            {
                 return NotFound();
             }
 
@@ -65,6 +73,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: ApplicationUser/Create
         public IActionResult Create()
         {
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            ViewBag.Roles = roles;
             return View();
         }
 
@@ -73,10 +83,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Address,Gender,DateOfBirth,UserName,Email,PhoneNumber")] ApplicationUser applicationUser, string Password)
+        public async Task<IActionResult> Create([Bind("FullName,Address,Gender,DateOfBirth,UserName,Email,PhoneNumber")] ApplicationUser applicationUser, string Password, string selectedRole)
         {
-            if (ModelState.IsValid) {
-                var user = new ApplicationUser {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
                     UserName = applicationUser.UserName,
                     Email = applicationUser.Email,
                     FullName = applicationUser.FullName,
@@ -88,12 +100,22 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
                 var result = await _userManager.CreateAsync(user, Password);
 
-                if (result.Succeeded) {
-                    return RedirectToAction(nameof(Index));
+                if (result.Succeeded)
+                {
+
+                    if (!string.IsNullOrEmpty(selectedRole))
+                    {
+                        await _userManager.AddToRoleAsync(user, selectedRole);
+
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    ModelState.AddModelError(string.Empty, "No role selected!");
                 }
 
                 // If creation fails, add errors to ModelState
-                foreach (var error in result.Errors) {
+                foreach (var error in result.Errors)
+                {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -103,12 +125,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: ApplicationUser/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var applicationUser = await _context.Users.FindAsync(id);
-            if (applicationUser == null) {
+            if (applicationUser == null)
+            {
                 return NotFound();
             }
             return View(applicationUser);
@@ -121,14 +145,18 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
         {
-            if (id != applicationUser.Id) {
+            if (id != applicationUser.Id)
+            {
                 return NotFound();
             }
 
-            if (ModelState.IsValid) {
-                try {
+            if (ModelState.IsValid)
+            {
+                try
+                {
                     var user = await _userManager.FindByIdAsync(id);
-                    if (user == null) {
+                    if (user == null)
+                    {
                         return NotFound();
                     }
                     // User information properties
@@ -150,18 +178,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
 
                     var result = await _userManager.UpdateAsync(user);
-                    if (!result.Succeeded) {
-                        foreach (var error in result.Errors) {
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
                         return View(applicationUser);
                     }
                 }
-                catch (DbUpdateConcurrencyException) {
-                    if (!ApplicationUserExists(applicationUser.Id)) {
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ApplicationUserExists(applicationUser.Id))
+                    {
                         return NotFound();
                     }
-                    else {
+                    else
+                    {
                         throw;
                     }
                 }
@@ -173,13 +206,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: ApplicationUser/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var applicationUser = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (applicationUser == null) {
+            if (applicationUser == null)
+            {
                 return NotFound();
             }
 
@@ -192,7 +227,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var applicationUser = await _context.Users.FindAsync(id);
-            if (applicationUser != null) {
+            if (applicationUser != null)
+            {
                 _context.Users.Remove(applicationUser);
             }
 

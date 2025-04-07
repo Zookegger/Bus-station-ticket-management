@@ -15,12 +15,12 @@ using Google.Apis.Auth.AspNetCore3;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => {
+builder.Services.AddSession(options =>
+{
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -33,20 +33,54 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
+builder.Services.AddHttpClient<GooglePeopleApiHelper>();
+builder.Services.AddScoped<GooglePeopleApiHelper>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    options.CallbackPath = "/signin-google";
+
+    // // Request extra scopes for additional profile details.
+    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+    // // Request access to birthday, phone number, address, and gender information.
+    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+    // options.SaveTokens = true;
+});
+
 //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
-    .AddDefaultUI()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddDefaultUI();
 
 builder.Services.AddRazorPages()
-    .AddMicrosoftIdentityUI();
+    .AddMicrosoftIdentityUI()
+    .AddRazorPagesOptions(options =>
+    {
+        options.Conventions.AuthorizePage("/Account/ExternalLogin");
+    });
+    
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) {
+using (var scope = app.Services.CreateScope())
+{
     var services = scope.ServiceProvider;
 
     // Get the UserManager and RoleManager
@@ -54,22 +88,27 @@ using (var scope = app.Services.CreateScope()) {
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
     // Create the Admin role if it doesn't exist
-    if (!await roleManager.RoleExistsAsync("Admin")) {
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
         await roleManager.CreateAsync(new IdentityRole("Admin"));
     }
 
-    if (!await roleManager.RoleExistsAsync("Employee")) {
+    if (!await roleManager.RoleExistsAsync("Employee"))
+    {
         await roleManager.CreateAsync(new IdentityRole("Employee"));
     }
 
-    if (!await roleManager.RoleExistsAsync("Customer")) {
+    if (!await roleManager.RoleExistsAsync("Customer"))
+    {
         await roleManager.CreateAsync(new IdentityRole("Customer"));
     }
 
     // Create an admin user if it doesn't exist
     var adminUser = await userManager.FindByEmailAsync("admin@example.com");
-    if (adminUser == null) {
-        adminUser = new ApplicationUser {
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
             UserName = "admin@example.com",
             Email = "admin@example.com",
             FullName = "Admin User",
@@ -83,7 +122,8 @@ using (var scope = app.Services.CreateScope()) {
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
+if (!app.Environment.IsDevelopment())
+{
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
@@ -110,7 +150,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
-
 
 app.MapRazorPages();
 app.MapControllers();

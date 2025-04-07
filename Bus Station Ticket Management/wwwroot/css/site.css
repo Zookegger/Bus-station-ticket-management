@@ -53,7 +53,7 @@ body {
 	display: flex;
 	flex: 1;
 	overflow-x: auto;
-}	
+}
 
 header {
 	background-color: #20874e !important;
@@ -92,6 +92,10 @@ footer * {
 
 footer li {
 	text-align: center;
+}
+
+footer ul {
+	margin: 0 !important;
 }
 
 table {
@@ -154,16 +158,25 @@ table thead th,
 	flex: 1;
 }
 
-
 @media (max-width: 397px) {
-	.navbar-brand {
+	.navbar-brand, footer * {
 		font-size: 14px !important;
+	}
+
+	.btn {
+		font-size: calc(--global-font-size - 10px) !important;
 	}
 }
 
 @media (min-width: 398px) and (max-width: 426px) {
 	.navbar-brand {
 		font-size: 18px !important;
+	}
+}
+
+@media (max-width: 576px) {
+	footer ul {
+		margin: 1em 0 0 0 !important;
 	}
 }
 
@@ -283,6 +296,7 @@ table thead th,
 
 .login > section {
 	max-width: 60%;
+	min-width: 351px;
 	flex: 1;
 }
 
@@ -296,12 +310,12 @@ table thead th,
 }
 
 .select2-container--bootstrap4 .select2-selection--single {
-    height: calc(2.25rem + 2px);
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.375rem;
+	height: calc(2.25rem + 2px);
+	padding: 0.375rem 0.75rem;
+	border-radius: 0.375rem;
 }
 
 .select2-container--bootstrap4 .select2-selection__rendered {
-    color: #212529;
-    line-height: 1.5;
+	color: #212529;
+	line-height: 1.5;
 }

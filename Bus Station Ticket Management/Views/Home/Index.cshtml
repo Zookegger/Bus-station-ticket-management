@@ -39,21 +39,23 @@
         {
             @foreach (var trip in Model)
             {
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " +
-                                                trip.Route.DestinationLocation?.Name) : "No Route").</h5>
-                <p class="card-text">
-                    Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
-                    Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-                    | Giá:
-                    @trip.TotalPrice.ToString("N0") VNĐ
-                </p>
-                <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
-                    asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
-            </div>
-        </div>
-                }
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " +
+                                        trip.Route.DestinationLocation?.Name) : "No Route").</h5>
+        <p class="card-text">
+            Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+            Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+            | Giá:
+            @trip.TotalPrice.ToString("N0") VNĐ
+        </p>
+        <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
+            asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
+    </div>
+</div>
+                
+            }
         }
         else
         {

@@ -13,7 +13,8 @@
         "cwd": "${workspaceFolder}",
         "console": "integratedTerminal",
         "stopAtEntry": false,
-        "internalConsoleOptions": "openOnSessionStart"
+        "internalConsoleOptions": "openOnSessionStart",
+        "justMyCode": false
       },
       {
         "name": "Attach to .NET Core",

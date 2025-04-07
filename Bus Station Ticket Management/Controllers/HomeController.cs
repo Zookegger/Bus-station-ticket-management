@@ -7,6 +7,10 @@ using System.Diagnostics;
 using Google.Apis.Auth.AspNetCore3;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bus_Station_Ticket_Management.Controllers;
 
@@ -27,6 +31,7 @@ public class HomeController : Controller
                         .Include(t => t.Route)
                             .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
                         .Take(5)
+                        .Where(t => t.Status == "Stand By")
                         .ToListAsync();
 
         return View(trips);
@@ -36,6 +41,32 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [AllowAnonymous]
+    public IActionResult Login()
+    {
+        var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme); // Use Identity's scheme
+        if (result?.Principal == null)
+            return RedirectToAction(nameof(Index));
+
+        var claims = result.Principal.Identities
+            .FirstOrDefault()?.Claims
+            .Select(claim => new {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+
+        return Json(claims);
     }
 
     public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime) {

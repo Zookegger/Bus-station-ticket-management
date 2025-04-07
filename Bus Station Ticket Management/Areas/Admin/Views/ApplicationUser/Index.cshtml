@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/ApplicationUser/Index.css">
 </head>
 
-<h1>Application Users</h1> 
+<h1>Application Users</h1>
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
 
@@ -51,7 +51,17 @@
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    @( (ViewBag.UserRoles as Dictionary<string, string>)[item.Id] )
+                    @{
+                        string roleName;
+                        if ((ViewBag.UserRoles as Dictionary<string, string>).TryGetValue(item.Id, out roleName))
+                        {
+                            @roleName
+                        }
+                        else
+                        {
+                            <span class="text-muted">No Role</span>
+                        }
+                    }
                 </td>
                 <td class="d-flex justify-content-end">
                     <div class="btn-group ">
