@@ -18,10 +18,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: VehicleType
-        public async Task<IActionResult> Index()
+        // [Route("Admin/VehicleType/Index")]
+        public async Task<IActionResult> Index(string? sortBy, string? searchString)
         {
-            var vehicleTypesList = await _context.VehicleTypes.ToListAsync();
-            return View(vehicleTypesList);
+            var vehicleTypesList = _context.VehicleTypes.AsQueryable();
+            if (!string.IsNullOrEmpty(searchString)) {
+                vehicleTypesList = vehicleTypesList.Where(vt => vt.Name.Contains(searchString));
+            }
+            return View(await vehicleTypesList.ToListAsync());
         }
 
         // GET: VehicleType/Details/5

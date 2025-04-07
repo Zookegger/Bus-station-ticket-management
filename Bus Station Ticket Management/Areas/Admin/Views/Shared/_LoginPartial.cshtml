@@ -4,34 +4,49 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav nav-account">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item dropdown">
-    <a id="manage" class="nav-link dropdown-toggle text-light" id="userDropdown" role="button" data-bs-toggle="dropdown">
-        <i class="fa fa-user" style="padding-right: 6px"></i> Account
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-        <li class="dropdown-header" style=" -webkit-user-select: none; /* Safari */
-                                            -ms-user-select: none; /* IE 10 and IE 11 */
-                                            user-select: none; /* Standard syntax */">
-                Hello @UserManager.GetUserAsync(User).Result.UserName!
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown">
+            <a id="manage" class="nav-link dropdown-toggle text-light" id="userDropdown" role="button"
+                data-bs-toggle="dropdown">
+                <i class="fa fa-user" style="padding-right: 6px"></i> Account
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li class="dropdown-header" style=" -webkit-user-select: none; /* Safari */
+                                                    -ms-user-select: none; /* IE 10 and IE 11 */
+                                                    user-select: none; /* Standard syntax */">
+                    Hello @UserManager.GetUserAsync(User).Result.UserName!
+                </li>
+                <li class="nav-item">
+                    <a class="dropdown-item gap-2" style="color: #000 !important" asp-area="Identity"
+                        asp-page="/Account/Manage/Index"><i class="fa fa-user-circle" aria-hidden="true"></i>
+                        Profile</a>
+                        </li>
+                <li class="nav-item">
+                    <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout"
+                        asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button id="logout" type="submit" class="dropdown-item">
+                            <div class="d-flex align-items-center gap-2"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Logout</span></div>
+                        </button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a class="dropdown-item" style="color: #000 !important" asp-area="Admin" asp-controller="Tickets"
+                        asp-action="MyTickets">
+                        <div class="d-flex align-items-center gap-2"><i class="fa fa-shopping-cart"></i><span>My
+                                Tickets</span></div>
+                    </a>
+                </li>
+            </ul>
         </li>
-        <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
-        <li>
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="dropdown-item">Logout</button>
-            </form>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
         </li>
-    </ul>
-</li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-}
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+    }
 </ul>

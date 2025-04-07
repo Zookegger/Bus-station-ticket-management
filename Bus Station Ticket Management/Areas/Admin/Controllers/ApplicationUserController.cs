@@ -135,6 +135,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            var user = await _userManager.FindByIdAsync(id);
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            ViewBag.Roles = roles;
+            ViewBag.CurrentRole = userRoles.FirstOrDefault();
+
             return View(applicationUser);
         }
 
@@ -143,7 +151,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
+        public async Task<IActionResult> Edit(
+    string id,
+    [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser,
+    string SelectedRole,
+    string NewPassword)
         {
             if (id != applicationUser.Id)
             {
@@ -159,7 +171,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     {
                         return NotFound();
                     }
-                    // User information properties
+
+                    // Update user properties
                     user.UserName = applicationUser.UserName;
                     user.NormalizedUserName = applicationUser.UserName.ToUpper();
                     user.Email = applicationUser.Email;
@@ -169,23 +182,46 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     user.Gender = applicationUser.Gender;
                     user.DateOfBirth = applicationUser.DateOfBirth;
                     user.PhoneNumber = applicationUser.PhoneNumber;
-
-                    // User account settings
                     user.LockoutEnabled = applicationUser.LockoutEnabled;
                     user.LockoutEnd = applicationUser.LockoutEnd;
                     user.AccessFailedCount = applicationUser.AccessFailedCount;
 
-
-
-                    var result = await _userManager.UpdateAsync(user);
-                    if (!result.Succeeded)
+                    // Update the user
+                    var updateResult = await _userManager.UpdateAsync(user);
+                    if (!updateResult.Succeeded)
                     {
-                        foreach (var error in result.Errors)
+                        foreach (var error in updateResult.Errors)
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
                         return View(applicationUser);
                     }
+
+                    // Change password if new password is provided
+                    if (!string.IsNullOrWhiteSpace(NewPassword))
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        var passwordResult = await _userManager.ResetPasswordAsync(user, token, NewPassword);
+
+                        if (!passwordResult.Succeeded)
+                        {
+                            foreach (var error in passwordResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(applicationUser);
+                        }
+                    }
+
+                    // Update role
+                    var currentRoles = await _userManager.GetRolesAsync(user);
+                    if (!string.IsNullOrEmpty(SelectedRole) && !currentRoles.Contains(SelectedRole))
+                    {
+                        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                        await _userManager.AddToRoleAsync(user, SelectedRole);
+                    }
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -198,8 +234,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            // Load roles back in case of error
+            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            ViewBag.CurrentRole = (await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(id))).FirstOrDefault();
+
             return View(applicationUser);
         }
 

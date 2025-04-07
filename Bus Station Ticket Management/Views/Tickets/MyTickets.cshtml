@@ -1,0 +1,49 @@
+@model List<Bus_Station_Ticket_Management.Models.Ticket>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Tickets";
+}
+
+<h2>Vé đã đặt của bạn</h2>
+
+@if (Model.Count == 0)
+{
+    <p>Bạn chưa đặt vé nào.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mã vé</th>
+                <th>Chuyến đi</th>
+                <th>Số ghế</th>
+                <th>Ngày đặt</th>
+                <th>Đã thanh toán</th>
+                <th>Đã hủy</th>
+                <th>Thời gian hủy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.Id</td>
+                    <td>
+                        @(
+                            ticket.Trip?.Route != null
+                            ? (ticket.Trip.Route.StartLocation?.Name + " - " + ticket.Trip.Route.DestinationLocation?.Name)
+                            : "No Route"
+                            )
+                    </td>
+                    <td>@ticket.Seat?.Number</td>
+                    <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(ticket.IsPaid ? "✔️" : "❌")</td>
+                    <td>@(ticket.IsCanceled ? "✔️" : "❌")</td>
+                    <td>@(ticket.IsCanceled ? ticket.CancelationTime.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

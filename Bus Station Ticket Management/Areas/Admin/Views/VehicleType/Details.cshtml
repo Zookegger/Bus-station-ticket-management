@@ -8,15 +8,9 @@
 <h1>Details</h1>
 
 <div>
-    <h4>VehicleType</h4>
+    <h4>@Html.DisplayFor(model => model.Name)</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
@@ -30,6 +24,18 @@
             @Html.DisplayFor(model => model.TotalSeats)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalColumn)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TotalColumn)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalRow)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TotalRow)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TotalFlooring)
         </dt>
         <dd class = "col-sm-10">
@@ -37,7 +43,7 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="btn-group gap-1">
+    <a asp-action="Edit" role="button" class="btn btn-success" asp-route-id="@Model?.Id">Edit</a>
+    <a asp-action="Index" role="button" class="btn btn-outline-secondary" >Back to List</a>
 </div>

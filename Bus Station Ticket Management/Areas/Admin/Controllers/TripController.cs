@@ -104,7 +104,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             ViewBag.PageNumber = pageNumber;
             ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            return View(trips);
+            return View(trips.ToPagedList());
         }
 
 
@@ -122,6 +122,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(t => t.Route)
                     .ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Vehicle)
+                    .ThenInclude(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (trip == null)

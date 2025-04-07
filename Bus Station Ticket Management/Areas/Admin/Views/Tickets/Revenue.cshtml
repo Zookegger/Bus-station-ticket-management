@@ -1,0 +1,57 @@
+﻿@model List<Bus_Station_Ticket_Management.Models.Ticket>
+
+<h2>Revenue Statistics</h2>
+
+<form method="get" class="mb-3">
+    <label>
+        From date:
+        <input type="date" name="fromDate" value="@ViewBag.FromDate" />
+    </label>
+    <label>
+        To date:
+        <input type="date" name="toDate" value="@ViewBag.ToDate" />
+    </label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<p><strong>Total tickets sold:</strong> @ViewBag.TotalTickets</p>
+<p><strong>Total revenue:</strong> @ViewBag.TotalRevenue.ToString("N0") VND</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Trip</th>
+            <th>Vehicle</th>
+            <th>Seat Number</th>
+            <th>Ticket Price</th>
+            <th>Booking Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Id</td>
+                <!-- Display start and destination location name (if not null) -->
+                <td>
+                    @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
+                </td>
+                <!-- Display vehicle name (if not null) -->
+                <td>
+                    @ticket.Trip?.Vehicle?.Name
+                </td>
+                <!-- Display seat number (if not null) -->
+                <td>
+                    @ticket.Seat?.Number
+                </td>
+                <!-- Display ticket price (if not null) -->
+                <td>
+                    @ticket.Trip?.TotalPrice.ToString("N0") VND
+                </td>
+                <!-- Display booking date -->
+                <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

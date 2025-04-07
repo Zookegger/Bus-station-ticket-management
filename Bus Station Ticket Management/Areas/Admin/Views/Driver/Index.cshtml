@@ -1,8 +1,9 @@
-﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Driver>
+﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Driver>
+@using X.PagedList.Mvc.Core
 
 @{
 	ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+	Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>Drivers List</h1>
@@ -13,27 +14,27 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.FullName)
+				FullName
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Address)
+				Address
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.LicenseId)
+				Drivers License
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Gender)
+				Gender
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.DateOfBirth)
+				DateOfBirth
+			</th>
+			<th style="max-width: 328px">
+				Email
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Email)
+				Phone Number
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.PhoneNumber)
-			</th>
-            <th style="width: 30px">Actions</th>
+			<th style="width: 30px">Actions</th>
 		</tr>
 	</thead>
 	<tbody class="table-group=divider">
@@ -55,24 +56,43 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.DateOfBirth)
 				</td>
-				<td>
+				<td style="max-width: 328px; word-wrap: break-word; white-space: normal;">
 					@Html.DisplayFor(modelItem => item.Email)
 				</td>
+
 				<td>
 					@Html.DisplayFor(modelItem => item.PhoneNumber)
 				</td>
-				<td class="d-flex justify-content-end">
-                    <div class="btn-group ">
-                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </div>
-                </td>
+				<td>
+					<div class="btn-group" role="group">
+						<a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+							asp-route-id="@item.Id">Edit</a>
+						<a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
+							asp-route-id="@item.Id">Delete</a>
+					</div>
+				</td>
 			</tr>
 		}
 	</tbody>
 </table>
 
+<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
+    @if (Model.Any())
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, searchString =
+        ViewBag.SearchString }),
+        new PagedListRenderOptions
+        {
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" },
+            ActiveLiElementClass = "active",
+            LinkToPreviousPageFormat = "&laquo;",
+            LinkToNextPageFormat = "&raquo;"
+        })
+        }
+</nav>
 
 @section Scripts {
-    <script src="~/js/table.js"></script>
+	<script src="~/js/table.js"></script>
 }

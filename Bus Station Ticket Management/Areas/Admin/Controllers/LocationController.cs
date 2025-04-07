@@ -19,15 +19,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Location
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string? searchString, string? sortBy, int? page)
         {
-            int pageSize = 4;
+            int pageSize = 10;
             int pageNumber = page ?? 1;
 
             var locations = _context.Locations.AsQueryable();
             if (!string.IsNullOrEmpty(searchString)) {
                 locations = locations.Where(l => l.Name.Contains(searchString));
             }
+
+            locations = sortBy switch {
+                "name_asc" => locations.OrderBy(l => l.Name),
+                "name_desc" => locations.OrderByDescending(l => l.Name),
+                _ => locations.OrderBy(l => l.Name),
+            };
+
+            ViewBag.SortBy = sortBy;
 
             var locationList = await locations.ToListAsync();
 

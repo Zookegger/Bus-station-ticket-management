@@ -3,6 +3,7 @@ using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -19,9 +20,47 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Driver
-        public async Task<IActionResult> Index()
+        [Route("Admin/Driver/Index")]
+        public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterByStatus, string? filterByGender)
         {
-            return View(await _context.Drivers.ToListAsync());
+            int pageSize = 15;
+            int pageNumber = page ?? 1;
+
+            var driversQuery = _context.Drivers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                driversQuery = driversQuery.Where(d =>
+                    d.FullName.Contains(searchString) ||
+                    d.Email.Contains(searchString) ||
+                    d.LicenseId.Contains(searchString)
+                );
+            }
+
+            // Filter by type
+            if (!string.IsNullOrEmpty(filterByGender))
+            {
+                driversQuery = driversQuery.Where(d => d.Gender == filterByGender);
+            }
+
+            driversQuery = sortBy switch
+            {
+                "name_asc" => driversQuery.OrderBy(d => d.FullName),
+                "name_desc" => driversQuery.OrderByDescending(d => d.FullName),
+                "email_asc" => driversQuery.OrderBy(d => d.Email),
+                "email_desc" => driversQuery.OrderByDescending(d => d.Email),
+                "license_asc" => driversQuery.OrderBy(d => d.LicenseId),
+                "license_desc" => driversQuery.OrderByDescending(d => d.LicenseId),
+                _ => driversQuery.OrderBy(d => d.Id) // Default sort
+            };
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.SearchString = searchString;
+            ViewBag.FilterByGender = filterByGender;
+
+            var drivers = await driversQuery.ToListAsync();
+
+            return View(drivers.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Driver/Details/5

@@ -10,11 +10,11 @@
 </head>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         let searchBox = document.querySelector("input[name='searchString']");
         if (!searchBox) return;
 
-        searchBox.addEventListener("input", function() {
+        searchBox.addEventListener("input", function () {
             let searchText = searchBox.value.toLowerCase();
             let tableRows = document.querySelectorAll("#VehicleTypeTable tbody tr")
 
@@ -38,7 +38,8 @@
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
 
 <div class="input-group mb-3">
-    <input type="text" class="form-control" name="searchString" value="@ViewBag.searchString" placeholder="Search Vehicle Types..."/>
+    <input type="text" class="form-control" name="searchString" value="@ViewBag.searchString"
+        placeholder="Search Vehicle Types..." />
 </div>
 
 <table id="VehicleTypeTable" class="table table-hover table-striped">
@@ -58,15 +59,17 @@
         {
             <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>$@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
                 <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
                 <td>@Html.DisplayFor(modelItem => item.TotalFlooring)</td>
                 <td>@Html.DisplayFor(modelItem => item.TotalRow)</td>
                 <td>@Html.DisplayFor(modelItem => item.TotalColumn)</td>
-                <td class="d-flex justify-content-end">
-                    <div class="btn-group ">
-                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                            asp-route-id="@item.Id">Edit</a>
+                        <a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
+                            asp-route-id="@item.Id">Delete</a>
                     </div>
                 </td>
             </tr>

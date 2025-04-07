@@ -13,7 +13,7 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Tên loại xe")]
         public string Name { get; set; }
 
-        [DisplayName("Giá loại xe")]
+        [DisplayName("Giá loại xe")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int Price { get; set; }
 
         [DisplayName("Tổng số ghế")]

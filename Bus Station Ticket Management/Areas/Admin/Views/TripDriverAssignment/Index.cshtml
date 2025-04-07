@@ -25,10 +25,12 @@
         </tr>
     </thead>
     <tbody class="table-group=divider">
-@foreach (var item in Model) {
-        <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+        @foreach (var item in Model)
+        {
+            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
             <td>
-                @Html.DisplayFor(modelItem => item.Trip.Route.StartLocation) - @Html.DisplayFor(modelItem => item.Trip.Route.DestinationLocation) 
+                @Html.DisplayFor(modelItem => item.Trip.Route.StartLocation.Name) ➞ @Html.DisplayFor(modelItem =>
+                item.Trip.Route.DestinationLocation.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Driver.FullName)
@@ -37,12 +39,15 @@
                 @Html.DisplayFor(modelItem => item.DateAssigned)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <div class="btn-group" role="group">
+                    <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                        asp-route-id="@item.Id">Edit</a>
+                    <a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
+                        asp-route-id="@item.Id">Delete</a>
+                </div>
             </td>
         </tr>
-}
+                }
     </tbody>
 </table>
 

@@ -19,7 +19,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Admin/TripDriverAssignment
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TripDriverAssignments.Include(t => t.Driver).Include(t => t.Trip);
+            var applicationDbContext = _context.TripDriverAssignments
+                .Include(t => t.Driver)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation);
+            
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -33,7 +41,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             var tripDriverAssignment = await _context.TripDriverAssignments
                 .Include(t => t.Driver)
                 .Include(t => t.Trip)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Vehicle)
+                        .ThenInclude(v => v.VehicleType)
+                        .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (tripDriverAssignment == null) {
                 return NotFound();
             }
@@ -76,6 +93,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     .ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Vehicle)
                 .ToListAsync();
+
+            tripDriverAssignment.DateAssigned = DateTime.Now;
 
             if (ModelState.IsValid) {
                 _context.Add(tripDriverAssignment);

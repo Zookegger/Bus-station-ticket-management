@@ -6,14 +6,14 @@
     var hasTripsToRate = tripList != null && tripList.Any();
 }
 
-<h1>Đánh giá chuyến đi</h1>
+<h1>Trip Rating</h1>
 
 @if (!hasTripsToRate)
 {
     <div class="alert alert-info">
-        Bạn đã đánh giá tất cả các chuyến đi của mình rồi. Cảm ơn bạn rất nhiều! ❤️
+        You already rated all of your trips. Thank you! ❤️
     </div>
-    <a href="@Url.Action("Index", "Ratings")" class="btn btn-secondary">Quay lại danh sách đánh giá</a>
+    <a href="@Url.Action("Index", "Ratings")" class="btn btn-secondary">Return</a>
 }
 else
 {
@@ -44,13 +44,12 @@ else
             <textarea asp-for="Comment" class="form-control"></textarea>
             <span asp-validation-for="Comment" class="text-danger"></span>
         </div>
+        
         <div class="btn-group gap-1 mt-3" role="group" aria-label="Button">
-            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-            <a asp-action="Index" class="btn btn-secondary" role="button">Quay lại</a>
+            <button type="submit" class="btn btn-primary">Send</button>
+            <a asp-action="Index" class="btn btn-secondary" role="button">Return</a>
         </div>
     </form>
-
-
 }
 @section Scripts {
     @{

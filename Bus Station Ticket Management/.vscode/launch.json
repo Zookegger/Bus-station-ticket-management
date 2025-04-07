@@ -1,27 +1,26 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": ".NET Core Watch",
-        "type": "coreclr",
-        "request": "launch",
-        "program": "dotnet",
-        "args": [
-          "watch",
-          "run"
-        ],
-        "cwd": "${workspaceFolder}",
-        "console": "integratedTerminal",
-        "stopAtEntry": false,
-        "internalConsoleOptions": "openOnSessionStart",
-        "justMyCode": false
-      },
-      {
-        "name": "Attach to .NET Core",
-        "type": "coreclr",
-        "request": "attach",
-        "processId": "${command:pickProcess}"
-      }
-    ]
-  }
-  
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (Watch + Hot Reload)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "watch",
+        "run"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "hotReloadEnabled": true,
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": "Attach to .NET Core",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    }
+  ]
+}
