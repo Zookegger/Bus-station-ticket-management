@@ -15,7 +15,7 @@ public class HomeController : Controller
     {
         _context = context;
     }
-
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var trips = await _context.Trips
