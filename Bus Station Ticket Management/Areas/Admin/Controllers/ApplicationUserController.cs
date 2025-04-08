@@ -28,19 +28,58 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: ApplicationUser
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString, string? sortBy, string? roleFilter)
         {
-            // Query to get user roles (mapping user Id to role name)
-            var userRoles = await (from user in _context.Users
-                                   join userRole in _context.UserRoles on user.Id equals userRole.UserId
-                                   join role in _context.Roles on userRole.RoleId equals role.Id
-                                   select new { user.Id, RoleName = role.Name }).ToListAsync();
+            var usersQuery = _context.Users.AsQueryable();
 
-            // Create a dictionary mapping user Id to role name
-            ViewBag.UserRoles = userRoles.ToDictionary(x => x.Id, x => x.RoleName);
+            var userRolesList = await (from user in _context.Users
+                                       join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                       join role in _context.Roles on userRole.RoleId equals role.Id
+                                       select new { user.Id, RoleName = role.Name }).ToListAsync();
 
-            // Return all users as the model
-            return View(await _context.Users.ToListAsync());
+            var userRolesDict = userRolesList.ToDictionary(x => x.Id, x => x.RoleName);
+            ViewBag.UserRoles = userRolesDict;
+
+            // Role filter
+            if (!string.IsNullOrEmpty(roleFilter))
+            {
+                var userIdsInRole = userRolesList
+                    .Where(x => x.RoleName == roleFilter)
+                    .Select(x => x.Id)
+                    .ToHashSet();
+
+                usersQuery = usersQuery.Where(u => userIdsInRole.Contains(u.Id));
+            }
+
+            // Search filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                usersQuery = usersQuery.Where(u =>
+                    u.FullName.Contains(searchString) ||
+                    u.UserName.Contains(searchString) ||
+                    u.Email.Contains(searchString) ||
+                    u.PhoneNumber.Contains(searchString));
+            }
+
+            // Sorting
+            usersQuery = sortBy switch
+            {
+                "name_asc" => usersQuery.OrderBy(u => u.FullName),
+                "name_desc" => usersQuery.OrderByDescending(u => u.FullName),
+                "username_asc" => usersQuery.OrderBy(u => u.UserName),
+                "username_desc" => usersQuery.OrderByDescending(u => u.UserName),
+                "email_asc" => usersQuery.OrderBy(u => u.Email),
+                "email_desc" => usersQuery.OrderByDescending(u => u.Email),
+                _ => usersQuery.OrderBy(u => u.Id)
+            };
+
+            // For role filter dropdown
+            ViewBag.Roles = await _context.Roles.Select(r => r.Name).Distinct().ToListAsync();
+            ViewBag.SearchString = searchString;
+            ViewBag.SortBy = sortBy;
+            ViewBag.RoleFilter = roleFilter;
+
+            return View(await usersQuery.ToListAsync());
         }
 
         // GET: ApplicationUser/Details/5

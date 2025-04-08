@@ -12,6 +12,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
+
     public class RouteController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +24,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Route
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string searchString, int? page, string? sortBy)
         {
             int pageSize = 10;
             int pageNumber = page ?? 1;
@@ -32,6 +34,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString)) {
                 routes = routes.Where(r => r.DestinationLocation.Name.Contains(searchString) || r.StartLocation.Name.Contains(searchString));
             }
+
+            routes = sortBy switch {
+                "departure_asc" => routes.OrderBy(r => r.StartLocation.Name),
+                "departure_desc" => routes.OrderByDescending(r => r.StartLocation.Name),
+                "destination_asc" => routes.OrderBy(r => r.DestinationLocation.Name),
+                "destination_desc" => routes.OrderByDescending(r => r.DestinationLocation.Name),
+                "price_asc" => routes.OrderBy(r => r.Price),
+                "price_desc" => routes.OrderByDescending(r => r.Price),
+                _ => routes
+            };
 
             var routeList = await routes.ToPagedListAsync(pageNumber, pageSize);
 

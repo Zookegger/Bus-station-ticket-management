@@ -10,6 +10,46 @@
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Add New Driver</a>
 
+<form asp-action="Index" method="get" class="mb-3">
+	<div class="form-group input-group mb-2">
+		<input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
+			placeholder="Search for drivers..." />
+		<button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
+				style="font-size: 18px"></i></button>
+	</div>
+
+	<div class="form-group input-group">
+		<select title="Sort" class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
+			<option value="" disabled selected>Sort By...</option>
+			<optgroup label="Sort by Name">
+				<option value="name_asc" selected="@(ViewBag.SortBy == "name_asc" ? "selected" : null)">Name Ascending ↑
+				</option>
+				<option value="name_desc" selected="@(ViewBag.SortBy == "name_desc" ? "selected" : null)">Name
+					Descending ↓</option>
+			</optgroup>
+			<optgroup label="Sort by Email">
+				<option value="email_asc" selected="@(ViewBag.SortBy == "email_asc" ? "selected" : null)">Email
+					Ascending ↑</option>
+				<option value="email_desc" selected="@(ViewBag.SortBy == "email_desc" ? "selected" : null)">Email
+					Descending ↓</option>
+			</optgroup>
+			<optgroup label="Sort by License">
+				<option value="license_asc" selected="@(ViewBag.SortBy == "license_asc" ? "selected" : null)">License
+					Ascending ↑</option>
+				<option value="license_desc" selected="@(ViewBag.SortBy == "license_desc" ? "selected" : null)">License
+					Descending ↓</option>
+			</optgroup>
+		</select>
+
+		<select class="form-control ms-2" name="filterByGender" id="filterByGender" onchange="this.form.submit()">
+			<option value="" disabled selected>Filter By Gender</option>
+			<option value="Male" selected="@(ViewBag.FilterByGender == "Male" ? "selected" : null)">Male</option>
+			<option value="Female" selected="@(ViewBag.FilterByGender == "Female" ? "selected" : null)">Female</option>
+			<option value="Other" selected="@(ViewBag.FilterByGender == "Other" ? "selected" : null)">Other</option>
+		</select>
+	</div>
+</form>
+
 <table id="DriversTable" class="table table-hover table-striped">
 	<thead>
 		<tr>
@@ -77,20 +117,24 @@
 </table>
 
 <nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
-    @if (Model.Any())
-    {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, searchString =
-        ViewBag.SearchString }),
-        new PagedListRenderOptions
-        {
-            UlElementClasses = new[] { "pagination", "justify-content-center" },
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            ActiveLiElementClass = "active",
-            LinkToPreviousPageFormat = "&laquo;",
-            LinkToNextPageFormat = "&raquo;"
-        })
-        }
+	@if (Model.Any())
+	{
+		@Html.PagedListPager(Model, pageNumber => Url.Action("Index", new
+		{
+			page = pageNumber,
+			searchString = ViewBag.SearchString,
+			sortBy = ViewBag.SortBy,
+			filterByGender = ViewBag.FilterByGender
+		}), new PagedListRenderOptions
+		{
+			UlElementClasses = new[] { "pagination", "justify-content-center" },
+			LiElementClasses = new[] { "page-item" },
+			PageClasses = new[] { "page-link" },
+			ActiveLiElementClass = "active",
+			LinkToPreviousPageFormat = "&laquo;",
+			LinkToNextPageFormat = "&raquo;"
+		})
+	}
 </nav>
 
 @section Scripts {

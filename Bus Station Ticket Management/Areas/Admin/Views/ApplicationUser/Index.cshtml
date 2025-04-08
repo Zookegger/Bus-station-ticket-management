@@ -13,6 +13,40 @@
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
 
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search users..." />
+        </div>
+
+        <div class="col-md-3">
+            <select name="roleFilter" class="form-control" onchange="this.form.submit()">
+                <option value="">All Roles</option>
+                @foreach (var role in ViewBag.Roles as List<string>)
+                {
+                    <option value="@role" selected=@(ViewBag.RoleFilter == role ? "selected" : "")>@role</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="sortBy" class="form-control" onchange="this.form.submit()">
+                <option value="">Sort by</option>
+                <option value="name_asc" selected=@(ViewBag.SortBy == "name_asc" ? "selected" : "")>Name ↑</option>
+                <option value="name_desc" selected=@(ViewBag.SortBy == "name_desc" ? "selected" : "")>Name ↓</option>
+                <option value="username_asc" selected=@(ViewBag.SortBy == "username_asc" ? "selected" : "")>Username ↑</option>
+                <option value="username_desc" selected=@(ViewBag.SortBy == "username_desc" ? "selected" : "")>Username ↓</option>
+                <option value="email_asc" selected=@(ViewBag.SortBy == "email_asc" ? "selected" : "")>Email ↑</option>
+                <option value="email_desc" selected=@(ViewBag.SortBy == "email_desc" ? "selected" : "")>Email ↓</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Apply</button>
+        </div>
+    </div>
+</form>
+
 <table id="ApplicationUserTable" class="table table-hover table-striped">
     <thead>
         <tr>
