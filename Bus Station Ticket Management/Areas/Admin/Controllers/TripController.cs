@@ -104,7 +104,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             ViewBag.PageNumber = pageNumber;
             ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            return View(trips.ToPagedList());
+            return View(trips.ToPagedList(pageNumber, pageSize));
         }
 
 

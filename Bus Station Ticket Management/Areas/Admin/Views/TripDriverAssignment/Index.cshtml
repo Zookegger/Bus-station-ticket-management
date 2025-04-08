@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.TripDriverAssignment>
+﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.TripDriverAssignment>
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Index";
@@ -67,6 +68,23 @@
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
+    @if (Model.Any())
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, searchString =
+        ViewBag.SearchString }),
+        new PagedListRenderOptions
+        {
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" },
+            ActiveLiElementClass = "active",
+            LinkToPreviousPageFormat = "&laquo;",
+            LinkToNextPageFormat = "&raquo;"
+        })
+        }
+</nav>
 
 @section Scripts {
     <script src="~/js/table.js"></script>

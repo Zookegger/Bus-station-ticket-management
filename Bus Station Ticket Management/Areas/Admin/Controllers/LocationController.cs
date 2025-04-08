@@ -9,6 +9,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class LocationController : Controller
     {
         private readonly ApplicationDbContext _context;

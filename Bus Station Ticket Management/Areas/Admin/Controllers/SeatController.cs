@@ -12,6 +12,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class SeatController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -138,7 +139,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             await _context.SaveChangesAsync();
             TempData["Success"] = "Đặt vé thành công!";
-            return RedirectToAction("MyTickets", "Ticket");
+            return RedirectToAction("MyTickets", "Tickets");
         }
 
         // GET: Seat/Details/5

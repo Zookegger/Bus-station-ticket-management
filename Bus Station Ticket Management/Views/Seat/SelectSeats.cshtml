@@ -6,18 +6,34 @@
 
 <link rel="stylesheet" href="~/css/Seat/SelectSeats.css">
 
-<h1>Chọn ghế</h1>
+<div class="error">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+        @* <script>
+            setTimeout(function () {
+                window.location.href = '@Url.Action("Tickets", "MyTickets")';
+            }, 3000); // 3 seconds delay before redirect
+        </script> *@
+    }
+</div>
+
+<h1>Select your seats</h1>
 
 <div class="container mt-4">
     <div class="row">
         <!-- Seat Map Section -->
         <div class="col-md-7">
             <div class="mb-3">
-                <label class="form-label">Thông tin xe</label>
+                <label class="form-label">Seat Information</label>
                 <div class="seat-legend-box">
-                    <span class="seat-legend booked">Đã bán</span>
-                    <span class="seat-legend available">Còn trống</span>
-                    <span class="seat-legend selected">Đang chọn</span>
+                    <span class="seat-legend booked">Booked</span>
+                    <span class="seat-legend available">Available</span>
+                    <span class="seat-legend selected">Selected</span>
                 </div>
             </div>
 
@@ -28,20 +44,20 @@
                 <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" value="" />
 
                 <div class="mb-3">
-                    <label class="form-label">Số lượng vé muốn mua:</label>
+                    <label class="form-label">Total Ticket:</label>
                     <input type="number" name="numberOfTickets" id="numberOfTickets" value="1" class="form-control"
                         min="1" max="@Model.Seats.Count(s => s.IsAvailable)" required />
                 </div>
 
                 <div class="mb-3">
                     <div class="seat-map">
-                        <h4>Sơ đồ ghế</h4>
+                        <h4>Seat Map</h4>
                         <div class="seat-grid d-flex justify-content-center">
                             @for (int floor = 1; floor <= Model.TotalFloors; floor++)
                             {
                                 System.Diagnostics.Debug.WriteLine($"\nTotal Floors: {Model.TotalFloors}\n");
                                 <div class="floor my-3">
-                                    <h5>Tầng @floor</h5>
+                                    <h5>Flooring @floor</h5>
                                     @for (int row = 1; row <= Model.TotalRows; row++)
                                     {
                                         <div class="seat-row">
@@ -71,76 +87,63 @@
                     </div>
                 </div>
 
-
-
-                <div class="mb-3">
-                    <label class="form-label">Điều khoản & Lưu ý</label>
-                    <p>Vui lòng kiểm tra kỹ thông tin trước khi đặt vé. Vé đã đặt không thể hoàn trả.</p>
-                </div>
-
             </form>
         </div>
 
         <!-- Trip Information Section -->
         <div class="col-md-5" id="TripInfo">
+            <h4 style="text-align: center;">Please review your information before purchasing.</h4>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Thông tin chuyến đi</h5>
-                    <p><strong>Địa điểm xuất phát:</strong> @Model.DepartureLocation</p>
-                    <p><strong>Địa điểm đến:</strong> @Model.DestinationLocation</p>
-                    <p><strong>Thời gian xuất bến:</strong> @Model.DepartureTime.ToString("HH:mm dd/MM/yyyy")</p>
-                    <p><strong>Biển số xe:</strong> @Model.LicensePlate</p>
-                    <p><strong>Số lượng ghế:</strong> <span id="selectedSeatCount">0</span> ghế</p>
-                    <p><strong>Số ghế:</strong> <span id="selectedSeats"></span></p>
-                    <p><strong>Tổng tiền:</strong> <span id="totalPrice">0đ</span></p>
+                    <h5 class="card-title">Trip Information</h5>
+                    <p><strong>Departure Point:</strong> @Model.DepartureLocation</p>
+                    <p><strong>Arrival Point:</strong> @Model.DestinationLocation</p>
+                    <p><strong>Departure Time:</strong> @Model.DepartureTime.ToString("HH:mm dd/MM/yyyy")</p>
+                    <p><strong>License Plate:</strong> @Model.LicensePlate</p>
+                    <p><strong>Total Seats:</strong> <span id="selectedSeatCount">0</span> ghế</p>
+                    <p><strong>Seat Number:</strong> <span id="selectedSeats"></span></p>
+                    <p><strong>Total:</strong> <span id="totalPrice">0đ</span></p>
                 </div>
 
                 <hr>
-                <div class="card-body ">
-                    <h5 class="card-title">Thông tin khách hàng</h5>
-                    @if (@Model.User != null)
+                <div class="card-body">
+                    <h5 class="card-title">User Information</h5>
+                    @if (@Model.User != null && !User.Identity.IsAuthenticated)
                     {
-                        <p><strong>Họ Tên: </strong> @Model.User.FullName</p>
-                        <p><strong>Địa chỉ: </strong> @Model.User.Address</p>
+                        <p><strong>Full Name: </strong> @Model.User.FullName</p>
+                        <p><strong>Address: </strong> @Model.User.Address</p>
                         <p><strong>Email: </strong> @Model.User.Email</p>
-                        <p><strong>Số Điện Thoại: </strong> @Model.User.PhoneNumber</p>
+                        <p><strong>Phone Number: </strong> @Model.User.PhoneNumber</p>
                     }
                     else
                     {
-                        <form asp-action="BookSeats" method="post" id="seatForm" >
-                            <div class="form-group mb-3">
-                                <label for="user_FullName">Họ Tên</label>
-                                <input type="text" name="user_FullName" id="user_FullName" class="form-control"
-                                    placeholder="Nguyễn Văn A" required>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="user_Email">Email</label>
-                                <input type="email" name="user_Email" id="user_Email" class="form-control"
-                                    placeholder="example@example.com" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="user_PhoneNumber">Số Điện Thoại</label>
-                                <input type="tel" name="user_PhoneNumber" id="user_PhoneNumber" class="form-control"
-                                    placeholder="0123456789" required>
-                            </div>
-                        </form>
+                        <div class="form-group">
+                            <label for="guestName">Full Name</label>
+                            <input type="text" id="guestName" name="guestName" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="guestEmail">Email</label>
+                            <input type="email" id="guestEmail" name="guestEmail" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="guestPhone">Phone Number</label>
+                            <input type="tel" id="guestPhone" name="guestPhone" class="form-control" required />
+                        </div>
                     }
                 </div>
+                <form class="card-body" asp-action="ApplyCoupon" asp-controller="Coupons" method="post">
+                    <h5 class="card-title">Coupon</h5>
+                    <input type="hidden" name="tripId" value="@Model.TripId" />
+                    <div class="input-group mb-2">
+                        <input type="text" name="couponCode" class="form-control" placeholder="Enter Coupon Code" />
+                        <button type="submit" class="btn btn-outline-primary">Apply</button>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary mt-3 w-100" form="seatForm">Đặt vé</button>
+            <button type="submit" class="btn btn-primary mt-3 w-100" form="seatForm">Purchase</button>
         </div>
     </div>
 </div>
-</div>
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -164,7 +167,7 @@
                     $(this).addClass('selected');
                     selectedSeats.push({ id: seatId, number: seatNumber });
                 } else {
-                    alert('Bạn đã chọn đủ số ghế theo số lượng vé!');
+                    alert('You have selected the maximum number of seats based on the ticket quantity!');
                     return;
                 }
 
@@ -179,7 +182,7 @@
             $('#numberOfTickets').change(function () {
                 const numTickets = parseInt($(this).val());
                 if (numTickets > maxSeats) {
-                    alert('Số lượng vé vượt quá số ghế trống!');
+                    alert('Ticket quantity exceeds available seats!');
                     $(this).val(maxSeats);
                 }
                 if (numTickets < selectedSeats.length) {

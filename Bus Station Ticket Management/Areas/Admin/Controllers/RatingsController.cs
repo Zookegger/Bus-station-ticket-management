@@ -10,6 +10,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Authorize]
     [Area("Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class RatingsController : Controller
     {
         private readonly ApplicationDbContext _context;

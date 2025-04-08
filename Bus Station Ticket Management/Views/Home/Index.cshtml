@@ -7,67 +7,61 @@
 
 <div class="row mt-3">
     <div class="col-12 text-center">
-        <h1 class="display-4">Đặt vé xe online</h1>
-        <p class="lead">Tìm và đặt vé xe nhanh chóng, dễ dàng!</p>
+        <h1 class="display-4">Online Bus Ticket Booking</h1>
+        <p class="lead">Search and book bus tickets quickly and easily!</p>
     </div>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <form asp-action="SearchTrips" method="post" class="row g-2">
-            <div class="col-12 col-md-3">
-                <input type="text" name="departure" class="form-control" placeholder="Điểm đi" required />
-            </div>
-            <div class="col-12 col-md-3">
-                <input type="text" name="destination" class="form-control" placeholder="Điểm đến" required />
-            </div>
-            <div class="col-12 col-md-3">
-                <input type="date" name="departureTime" class="form-control" required />
-            </div>
-            <div class="col-12 col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
-            </div>
-        </form>
+<form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-0 g-md-3 col-md-10 col-lg-8">
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <input type="text" name="departure" class="form-control" placeholder="Departure" required />
     </div>
-</div>
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <input type="text" name="destination" class="form-control" placeholder="Destination" required />
+    </div>
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <input type="date" name="departureTime" class="form-control" required />
+    </div>
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
 
 <hr class="divider my-4">
 
 <div class="row">
     <div class="col-12">
-        <h2>Chuyến xe phổ biến</h2>
+        <h2>Popular Trips</h2>
         @if (Model.Any(t => t.Status == "Stand By"))
         {
             @foreach (var trip in Model)
             {
-
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title"> @(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " +
-                                        trip.Route.DestinationLocation?.Name) : "No Route").</h5>
-        <p class="card-text">
-            Khởi hành: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
-            Giờ đến: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-            | Giá:
-            @trip.TotalPrice.ToString("N0") VNĐ
-        </p>
-        <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
-            asp-route-tripId="@trip.Id" class="btn btn-success">Chọn ghế</a>
-    </div>
-</div>
-                
-            }
+                <div class="card mb-3 shadow-sm trip-card">
+                    <div class="card-body">
+                        <h5 class="card-title">@(trip.Route != null ? (trip.Route.StartLocation?.Name + " - " +
+                                                trip.Route.DestinationLocation?.Name) : "No Route")</h5>
+                <p class="card-text">
+                    Departure: @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                    Arrival: @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                    | Price: @trip.TotalPrice.ToString("N0") VND
+                </p>
+                <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
+                    asp-route-tripId="@trip.Id" class="btn btn-success">Select Seat</a>
+            </div>
+        </div>
+                }
         }
         else
         {
-            <p>Chưa có chuyến xe nào.</p>
+            <p>No trips available.</p>
         }
     </div>
 </div>
-@* 
+
+@*
 <div class="row">
     <div class="col-12">
-        <h2>Ưu đãi</h2>
+        <h2>Promotions</h2>
         @if (Model.Promotions.Any())
         {
             @foreach (var promo in Model.Promotions)
@@ -77,14 +71,14 @@
         }
         else
         {
-            <p>Chưa có ưu đãi nào.</p>
+            <p>No promotions available.</p>
         }
     </div>
 </div>
 
 <div class="row">
     <div class="col-12">
-        <h2>Tin tức</h2>
+        <h2>News</h2>
         @if (Model.News.Any())
         {
             @foreach (var news in Model.News)
@@ -94,11 +88,22 @@
         }
         else
         {
-            <p>Chưa có tin tức nào.</p>
+            <p>No news available.</p>
         }
     </div>
 </div>
 *@
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <style>
+        .trip-card {
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .trip-card:hover {
+            box-shadow: 1.5rem 1.5rem 1.5rem 1.5rem rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
 }

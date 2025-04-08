@@ -1,12 +1,17 @@
 ﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
+
     public class TripDriverAssignmentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,8 +22,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/TripDriverAssignment
-        public async Task<IActionResult> Index(string? searchString, string? sortBy)
+        public async Task<IActionResult> Index(string? searchString, string? sortBy, int? page)
         {
+            int pageSize = 15;
+            int pageNumber = page ?? 1;
+
             var query = _context.TripDriverAssignments
                 .Include(t => t.Driver)
                 .Include(t => t.Trip)
@@ -51,7 +59,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             ViewBag.SortBy = sortBy;
             ViewBag.SearchString = searchString;
 
-            return View(await query.ToListAsync());
+            var assigments = await query.ToListAsync();
+
+            return View(assigments.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/TripDriverAssignment/Details/5
@@ -154,8 +164,24 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            var trips = await _context.Trips
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Vehicle)
+                .ToListAsync();
+
+            var tripSelectList = trips.Select(t => new
+            {
+                t.Id,
+                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+            }).ToList();
+
+            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name", tripDriverAssignment.TripId);
             ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Name", tripDriverAssignment.TripId);
+
             return View(tripDriverAssignment);
         }
 

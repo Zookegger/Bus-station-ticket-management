@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.DataAccess;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 [Authorize] // Yêu cầu người dùng phải đăng nhập
+[Route("[controller]/[action]")]
 public class TicketsController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -41,5 +43,10 @@ public class TicketsController : Controller
             .ToListAsync();
 
         return View(tickets);
+    }
+
+    public async Task<IActionResult> View() {
+        var ticket =
+        return View();
     }
 }

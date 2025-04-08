@@ -10,6 +10,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class VehicleController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -61,11 +62,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 if (trip.DepartureTime <= now && trip.ArrivalTime > now)
                 {
-                    trip.Vehicle.Status = "In Progress";
+                    trip.Vehicle.Status = "In-Progress";
                 }
                 else if (trip.ArrivalTime <= now)
                 {
-                    trip.Vehicle.Status = "Stand By";
+                    trip.Vehicle.Status = "Stand-By";
                 }
             }
             await _context.SaveChangesAsync();

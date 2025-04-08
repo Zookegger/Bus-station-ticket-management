@@ -55,7 +55,7 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="btn-group gap-1">
+    <a class="btn btn-outline-primary" role="button" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    <a class="btn btn-outline-secondary" role="button" asp-action="Index">Back to List</a>
 </div>

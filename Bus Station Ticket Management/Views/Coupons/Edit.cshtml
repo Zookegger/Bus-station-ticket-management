@@ -1,0 +1,45 @@
+﻿@model Bus_Station_Ticket_Management.Models.Coupon
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Coupon</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="CouponString" class="control-label"></label>
+                <input asp-for="CouponString" class="form-control" />
+                <span asp-validation-for="CouponString" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartPeriod" class="control-label"></label>
+                <input asp-for="StartPeriod" class="form-control" />
+                <span asp-validation-for="StartPeriod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndPeriod" class="control-label"></label>
+                <input asp-for="EndPeriod" class="form-control" />
+                <span asp-validation-for="EndPeriod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

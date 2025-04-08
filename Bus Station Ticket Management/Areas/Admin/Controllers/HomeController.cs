@@ -11,7 +11,8 @@ using System.Diagnostics;
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee,Customer")]
+    [Authorize(Roles = "Admin")]
+    [Route("Admin/[controller]/[action]")]
 
     public class HomeController : Controller
     {

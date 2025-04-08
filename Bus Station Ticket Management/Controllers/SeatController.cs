@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
+    
+    [Route("[controller]/[action]")]
     public class SeatController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -42,7 +44,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .FirstOrDefaultAsync(t => t.Id == TripId && t.VehicleId == VehicleId);
 
             if (trip == null) {
-                return NotFound("Chuyến xe không tồn tại hoặc không khớp với xe được chọn.");
+                return NotFound("Trip not found or doesn't match with vehicle.");
             }
 
             // Lấy danh sách ghế
@@ -54,7 +56,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .ToListAsync();
 
             if (!seats.Any()) {
-                return NotFound("Xe này chưa có ghế nào được tạo. Vui lòng kiểm tra lại.");
+                return NotFound("Seat hasn't been generated.");
             }
 
             SelectSeatsViewModel viewModel = new SelectSeatsViewModel {
@@ -90,16 +92,16 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, Trip trip)
+        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone)
         {
             if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
-                TempData["Error"] = "Vui lòng chọn ít nhất một ghế và nhập số lượng vé hợp lệ.";
+                TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
             var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
             if (seatIds.Count != numberOfTickets) {
-                TempData["Error"] = "Số ghế chọn không khớp với số lượng vé.";
+                TempData["Error"] = "Number of seats doesn't match number of tickets.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
@@ -117,32 +119,31 @@ namespace Bus_Station_Ticket_Management.Controllers
                 seat.IsAvailable = false;
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Sử dụng ClaimTypes và FindFirstValue
-            
-            if (userId == null) {
-                return NotFound("Không tìm thấy thông tin người dùng");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
+            if (!string.IsNullOrEmpty(userId) && User.Identity.IsAuthenticated) {
+                userId = _userManager.GetUserId(User);
             }
 
             foreach (var seat in seats) {
                 var ticket = new Ticket {
+                    Id = Guid.NewGuid().ToString(),
                     TripId = TripId,
                     SeatId = seat.Id,
-                    UserId = userId ?? string.Empty,
-                    Id = Guid.NewGuid().ToString(),
+                    UserId = userId,
                     BookingDate = DateTime.Now,
                     IsCanceled = false,
-                    IsPaid = false
+                    IsPaid = false,
+                    GuestName = guestName,
+                    GuestEmail = guestEmail,
+                    GuestPhone = guestPhone
                 };
                 _context.Tickets.Add(ticket);
             }
 
             await _context.SaveChangesAsync();
             TempData["Success"] = "Đặt vé thành công!";
-            return RedirectToAction("MyTickets", "Ticket");
+            return RedirectToAction("MyTickets", "Tickets");
         }
-
-
-
 
         // GET: Seat/Details/5
         public async Task<IActionResult> Details(int? id)
