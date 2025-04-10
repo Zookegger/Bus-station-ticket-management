@@ -140,7 +140,9 @@
                     <button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
                 </div>
                 <div id="couponFeedback" class="mt-2"></div>
-                <div class="total-price"><strong>Total:</strong> <span id="totalPrice">0đ</span></div>
+                <div class="total-price"></div><strong>Total:</strong> <span id="totalPrice">0đ</span></div>
+                <input type="hidden" id="totalPriceInput" name="totalPrice" value="0" />
+
             </div>
         </div>
         <!-- Notice: Remove onsubmit attribute from the form since confirmation is handled by the modal -->
@@ -165,6 +167,9 @@
                 var confirmationModalEl = document.getElementById('confirmationModal');
                 var confirmationModal = bootstrap.Modal.getInstance(confirmationModalEl);
                 confirmationModal.hide();
+                
+                $('#totalPriceInput').val($('#totalPrice').text().replace('đ', '').trim());
+
                 $('#seatForm').submit();
             });
 

@@ -1,46 +1,56 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Vehicle
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Vehicle";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <h1 class="text-success fw-bold mb-4">Create Vehicle</h1>
+    <h4 class="mb-3">Vehicle Details</h4>
+    <hr />
 
-<h4>Vehicle</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" placeholder="Brand Name..."/>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="LicensePlate" class="control-label"></label>
-                <input asp-for="LicensePlate" class="form-control" placeholder="5353-EJKS"/>
-                <span asp-validation-for="LicensePlate" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <input type="hidden" asp-for="Status" value="Stand-By"/>
-            </div>
-            <div class="form-group mt-2">
-                <label asp-for="VehicleTypeId" class="control-label"></label>
-                <select asp-for="VehicleTypeId" class ="form-control" asp-items="ViewBag.VehicleTypeId" required>
+    <div class="row">
+        <div class="col-md-9 col-lg-12  mx-auto">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="VehicleTypeId" class="form-label">Vehicle Type</label>
+                    <select asp-for="VehicleTypeId" class="form-control route-select" asp-items="ViewBag.VehicleTypeId" required>
                         <option value="" disabled selected>Select a vehicle type</option>
-                </select>
-                <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group btn-group gap-2 mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
-            </div>
-        </form>
+                    </select>
+                    <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label">Vehicle Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter vehicle name..." />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="LicensePlate" class="form-label">License Plate</label>
+                    <input asp-for="LicensePlate" class="form-control" placeholder="e.g., 5353-EJKS" />
+                    <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                </div>
+
+                <input type="hidden" asp-for="Status" value="Stand-By" />
+
+                
+                <div class="form-group d-flex justify-content-between mt-3">
+                    <a role="button" class="btn btn-outline-secondary" asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Create
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

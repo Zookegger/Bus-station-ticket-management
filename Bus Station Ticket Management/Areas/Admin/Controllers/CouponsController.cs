@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -25,19 +26,55 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/Coupons
-        public async Task<IActionResult> Index()
+        [Route("Admin/Coupons/Index")]
+        public async Task<IActionResult> Index(string searchString, string sortBy, bool? isActive, int? page)
         {
-            var tickets = await _context.Tickets
-                .Include(t => t.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.DestinationLocation)
-                .Include(t => t.Seat)
-                .ToListAsync();
-            return View(tickets);
+            // Start with all coupons
+            var query = _context.Coupons.AsQueryable();
+
+            // Filtering: search by coupon string (or include additional fields)
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(c => c.CouponString.Contains(searchString));
+            }
+
+            // Filter
+            if (isActive.HasValue)
+            {
+                query = query.Where(c => c.IsActive == isActive.Value);
+            }
+
+            // Sorting: using a simple switch (add more cases as needed)
+            query = sortBy switch
+            {
+                "name_asc" => query.OrderBy(c => c.CouponString),
+                "name_desc" => query.OrderByDescending(c => c.CouponString),
+                "discount_asc" => query.OrderBy(c => c.DiscountAmount),
+                "discount_desc" => query.OrderByDescending(c => c.DiscountAmount),
+                "start_asc" => query.OrderBy(c => c.StartPeriod),
+                "start_desc" => query.OrderByDescending(c => c.StartPeriod),
+                "end_asc" => query.OrderBy(c => c.EndPeriod),
+                "end_desc" => query.OrderByDescending(c => c.EndPeriod),
+                _ => query.OrderBy(c => c.Id), // default sort
+            };
+
+            // Paging: assuming you want, say, 10 coupons per page
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+            int totalRecords = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var coupons = await query.ToListAsync();
+
+            // Pass filter/sort values to the view via ViewBag
+            ViewBag.SearchString = searchString;
+            ViewBag.SortBy = sortBy;
+            ViewBag.Page = pageNumber;
+            ViewBag.TotalPages = totalPages;
+
+            return View(coupons.ToPagedList(pageNumber, pageSize, totalPages));
         }
+
 
         // GET: Admin/Coupons/Details/5
         public async Task<IActionResult> Details(int? id)

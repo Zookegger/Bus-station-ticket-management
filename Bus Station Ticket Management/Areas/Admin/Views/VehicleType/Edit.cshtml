@@ -3,56 +3,75 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-
 }
 
-<h1>Edit</h1>
+<h1 class="display-4 text-center">Edit Vehicle Type</h1>
 
-<h4>VehicleType</h4>
+<h4 class="text-muted text-center">Modify vehicle details below</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
             <input type="hidden" asp-for="Id" />
+            
+            <!-- Name Input -->
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="Name" class="form-label">Vehicle Type Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter vehicle name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            
+            <!-- Price Input -->
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <label asp-for="Price" class="form-label">Price</label>
+                <input asp-for="Price" class="form-control" placeholder="Enter price" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            
+            <!-- Total Seats Input -->
             <div class="form-group">
-                <label asp-for="TotalSeats" class="control-label"></label>
-                <input asp-for="TotalSeats" class="form-control" />
+                <label asp-for="TotalSeats" class="form-label">Total Seats</label>
+                <input asp-for="TotalSeats" class="form-control" placeholder="Enter total seats" />
                 <span asp-validation-for="TotalSeats" class="text-danger"></span>
             </div>
+            
+            <!-- Total Flooring Input -->
             <div class="form-group">
-                <label asp-for="TotalFlooring" class="control-label"></label>
-                <input asp-for="TotalFlooring" class="form-control" />
+                <label asp-for="TotalFlooring" class="form-label">Total Flooring</label>
+                <input asp-for="TotalFlooring" class="form-control" placeholder="Enter total flooring" />
                 <span asp-validation-for="TotalFlooring" class="text-danger"></span>
             </div>
+            
+            <!-- Total Row Input -->
             <div class="form-group">
-                <label asp-for="TotalRow" class="control-label"></label>
-                <input asp-for="TotalRow" class="form-control" />
+                <label asp-for="TotalRow" class="form-label">Total Rows</label>
+                <input asp-for="TotalRow" class="form-control" placeholder="Enter total rows" />
                 <span asp-validation-for="TotalRow" class="text-danger"></span>
             </div>
+            
+            <!-- Total Column Input -->
             <div class="form-group">
-                <label asp-for="TotalColumn" class="control-label"></label>
-                <input asp-for="TotalColumn" class="form-control" />
+                <label asp-for="TotalColumn" class="form-label">Total Columns</label>
+                <input asp-for="TotalColumn" class="form-control" placeholder="Enter total columns" />
                 <span asp-validation-for="TotalColumn" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
+            
+            <!-- Submit and Back Buttons -->
+            <div class="form-group d-flex justify-content-between mt-3">
+                <a asp-action="Index" role="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -134,7 +134,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                         IsPersistent = Input.RememberMe,
                         ExpiresUtc = isAdmin 
                             ? DateTimeOffset.UtcNow.AddHours(1) // Admin session: 1 hour
-                            : DateTimeOffset.MaxValue
+                            : DateTimeOffset.UtcNow.AddYears(1)
                     };
 
                     await _signInManager.SignInAsync(user, authProperties);

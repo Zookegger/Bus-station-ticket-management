@@ -38,6 +38,10 @@ namespace Bus_Station_Ticket_Management.DataAccess
                 .WithMany(d => d.TripDriverAssignments)
                 .HasForeignKey(tda => tda.DriverId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Coupon>()
+                .Property(c => c.DiscountAmount)
+                .HasColumnType("decimal(18, 2)");
         }
 
         public DbSet<Driver> Drivers { get; set; }

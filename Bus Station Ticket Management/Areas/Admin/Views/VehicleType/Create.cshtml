@@ -5,53 +5,70 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <h1 class="text-success fw-bold mb-4">Create Vehicle</h1>
+    <h4 class="mb-3">Vehicle Details</h4>
+    <hr />
 
-<h4>VehicleType</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" placeholder="Electric Bus..."/>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" placeholder="100000..." />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalSeats" class="control-label"></label>
-                <input asp-for="TotalSeats" class="form-control" placeholder="42..."/>
-                <span asp-validation-for="TotalSeats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalFlooring" class="control-label"></label>
-                <input asp-for="TotalFlooring" class="form-control" />
-                <span asp-validation-for="TotalFlooring" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalRow" class="control-label"></label>
-                <input asp-for="TotalRow" class="form-control" />
-                <span asp-validation-for="TotalRow" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalColumn" class="control-label"></label>
-                <input asp-for="TotalColumn" class="form-control" />
-                <span asp-validation-for="TotalColumn" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary" role="button">Back to List</a>
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-md-9 col-lg-12 mx-auto">
+            <form asp-action="Create" class="bg-light p-4 rounded shadow-sm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
+                    Please correct the errors below.
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-control"
+                        placeholder="Enter vehicle type name (e.g., Electric Bus)" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Price" class="form-label">Price</label>
+                    <input asp-for="Price" class="form-control" placeholder="Enter base fare (e.g., 100000)" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="TotalSeats" class="form-label">Total Seats</label>
+                    <input asp-for="TotalSeats" class="form-control" placeholder="Enter total seats (e.g., 42)" />
+                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="TotalFlooring" class="form-label">Total Flooring</label>
+                    <input asp-for="TotalFlooring" class="form-control" placeholder="Enter total flooring (e.g., 3)" />
+                    <span asp-validation-for="TotalFlooring" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="TotalRow" class="form-label">Total Rows</label>
+                    <input asp-for="TotalRow" class="form-control" placeholder="Enter number of rows (e.g., 7)" />
+                    <span asp-validation-for="TotalRow" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="TotalColumn" class="form-label">Total Columns</label>
+                    <input asp-for="TotalColumn" class="form-control" placeholder="Enter number of columns (e.g., 6)" />
+                    <span asp-validation-for="TotalColumn" class="text-danger"></span>
+                </div>
+
+                <div class="form-group btn-group gap-2 mt-3 w-100">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Create
+                    </button>
+                    <a role="button" class="btn btn-outline-secondary" asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

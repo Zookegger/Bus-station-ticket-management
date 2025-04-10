@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
-    
+    [Authorize]
     public class RatingsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,7 +27,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Include(r => r.Trip)  
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
-                .Include(r => r.User)  
+                .Include(r => r.User)
+                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))  
                 .ToList();
 
             return View(ratings);

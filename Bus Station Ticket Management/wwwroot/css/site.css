@@ -2,10 +2,6 @@
 	--global-font-size: 16px;
 }
 
-* {
-	box-sizing: border-box;
-}
-
 html {
 	font-size: var(--global-font-size);
 	height: 100vh;
@@ -36,7 +32,7 @@ body {
 
 .navbar-toggler-icon {
 	color: white;
-	filter: invert(1.25);
+	/* filter: invert(1.25); */
 }
 
 .form-floating > .form-control-plaintext::placeholder,
@@ -99,14 +95,14 @@ footer ul {
 	margin: 0 !important;
 }
 
-table {
-	max-width: inherit;
-}
-
 table thead th,
 .accordion * {
 	background-color: #20874e !important;
-	color: white;
+	color: white !important;
+}
+
+table tbody td {
+	height: 100%;
 }
 
 .clickable-row {
@@ -133,7 +129,6 @@ table thead th,
 
 .nav-link:focus,
 .nav-link:active {
-	background-color: #125530;
 	color: white; /* Ensure text remains readable */
 }
 
@@ -319,4 +314,14 @@ table thead th,
 .select2-container--bootstrap4 .select2-selection__rendered {
 	color: #212529;
 	line-height: 1.5;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: #20874e !important;
+    color: white;
+}
+
+.bg-primary {
+    background-color: #20874e !important;
 }

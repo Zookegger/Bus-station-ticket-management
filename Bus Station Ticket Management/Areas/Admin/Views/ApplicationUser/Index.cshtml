@@ -16,7 +16,8 @@
 <form method="get" asp-action="Index" class="mb-3">
     <div class="row">
         <div class="col-md-4">
-            <input name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search users..." />
+            <input name="searchString" value="@ViewBag.SearchString" class="form-control"
+                placeholder="Search users..." />
         </div>
 
         <div class="col-md-3">
@@ -34,8 +35,10 @@
                 <option value="">Sort by</option>
                 <option value="name_asc" selected=@(ViewBag.SortBy == "name_asc" ? "selected" : "")>Name ↑</option>
                 <option value="name_desc" selected=@(ViewBag.SortBy == "name_desc" ? "selected" : "")>Name ↓</option>
-                <option value="username_asc" selected=@(ViewBag.SortBy == "username_asc" ? "selected" : "")>Username ↑</option>
-                <option value="username_desc" selected=@(ViewBag.SortBy == "username_desc" ? "selected" : "")>Username ↓</option>
+                <option value="username_asc" selected=@(ViewBag.SortBy == "username_asc" ? "selected" : "")>Username ↑
+                </option>
+                <option value="username_desc" selected=@(ViewBag.SortBy == "username_desc" ? "selected" : "")>Username ↓
+                </option>
                 <option value="email_asc" selected=@(ViewBag.SortBy == "email_asc" ? "selected" : "")>Email ↑</option>
                 <option value="email_desc" selected=@(ViewBag.SortBy == "email_desc" ? "selected" : "")>Email ↓</option>
             </select>
@@ -46,67 +49,62 @@
         </div>
     </div>
 </form>
-
-<table id="ApplicationUserTable" class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                Role
-            </th>
-            <th style="width: 30px">Actions</th>
-        </tr>
-    </thead>
-    <tbody class="table-group=divider">
-        @foreach (var item in Model)
-        {
-            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @{
-                        string roleName;
-                        if ((ViewBag.UserRoles as Dictionary<string, string>).TryGetValue(item.Id, out roleName))
-                        {
-                            @roleName
-                        }
-                        else
-                        {
-                            <span class="text-muted">No Role</span>
-                        }
-                    }
-                </td>
-                <td class="d-flex justify-content-end">
-                    <div class="btn-group ">
-                        <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </div>
-                </td>
+<div class="table-responsive">
+    <table id="ApplicationUserTable" class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    Role
+                </th>
+                <th style="width: 30px">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var item in Model)
+            {
+                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @{
+                            string roleName;
+                            if ((ViewBag.UserRoles as Dictionary<string, string>).TryGetValue(item.Id, out roleName))
+                            {
+                                @roleName
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Role</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" style="border-radius: 0;">
+                            <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @section Scripts {
     <script src="~/js/table.js"></script>

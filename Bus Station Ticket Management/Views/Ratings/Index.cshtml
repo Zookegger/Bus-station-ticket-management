@@ -14,20 +14,23 @@
             <th>Trip Date</th>
             <th>User</th>
             <th>Rating</th>
-            <th>Thao tác</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody class="table-group=divider">
         @foreach (var rating in Model)
         {
             <tr class="clickable-row" data-href="@Url.Action("Details", new { id = rating.Id })">
-                <td>@rating.Trip.Route.StartLocation.Name → @rating.Trip.Route.DestinationLocation.Name</td>
+                <td>
+                    @(rating.Trip?.Route?.StartLocation?.Name ?? "Unknown") → 
+                    @(rating.Trip?.Route?.DestinationLocation?.Name ?? "Unknown")
+                </td>
                 <td>@rating.Trip.ArrivalTime - @rating.Trip.DepartureTime</td>
                 <td>@rating.User.UserName</td>
                 <td>@rating.TripRating</td>
                 <td class="btn-group">
-                    <a href="@Url.Action("Edit", new { id = rating.Id })" class="btn btn-secondary">Sửa</a>
-                    <a href="@Url.Action("Delete", new { id = rating.Id })" class="btn btn-danger">Xóa</a>
+                    <a href="@Url.Action("Edit", new { id = rating.Id })" class="btn btn-secondary">Update</a>
+                    <a href="@Url.Action("Delete", new { id = rating.Id })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

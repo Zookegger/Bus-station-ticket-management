@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
-    
+
     [Route("[controller]/[action]")]
     public class SeatController : Controller
     {
@@ -43,11 +43,17 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .ThenInclude(r => r.DestinationLocation)
                 .FirstOrDefaultAsync(t => t.Id == TripId && t.VehicleId == VehicleId);
 
-            if (trip == null) {
+            if (trip == null)
+            {
                 return NotFound("Trip not found or doesn't match with vehicle.");
             }
 
             // Lấy danh sách ghế
+            if (_context.Seats == null)
+            {
+                return NotFound("Seats data is not available.");
+            }
+
             var seats = await _context.Seats
                 .Where(s => s.Trip.VehicleId == VehicleId)
                 .OrderBy(s => s.Floor)
@@ -55,11 +61,13 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .ThenBy(s => s.Column)
                 .ToListAsync();
 
-            if (!seats.Any()) {
+            if (!seats.Any())
+            {
                 return NotFound("Seat hasn't been generated.");
             }
 
-            SelectSeatsViewModel viewModel = new SelectSeatsViewModel {
+            SelectSeatsViewModel viewModel = new SelectSeatsViewModel
+            {
                 TripId = trip.Id,
                 VehicleId = trip.VehicleId,
                 RouteName = trip.Route != null ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" : "N/A",
@@ -70,20 +78,25 @@ namespace Bus_Station_Ticket_Management.Controllers
                 LicensePlate = trip.Vehicle?.LicensePlate ?? "",
                 Price = trip.TotalPrice,
                 Seats = seats,
-                TotalSeats = trip.Vehicle?.VehicleType.TotalSeats ?? 0,
-                TotalColumns = trip.Vehicle?.VehicleType.TotalColumn ?? 0,
-                TotalRows = trip.Vehicle?.VehicleType.TotalRow ?? 0,
-                TotalFloors = trip.Vehicle?.VehicleType.TotalFlooring ?? 0,
+                TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
+                TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
+                TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
+                TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
             };
-            
-            if (User.Identity.IsAuthenticated == true) {
-                try {
+
+            if (User.Identity.IsAuthenticated == true)
+            {
+                try
+                {
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId)) {
+                    if (!string.IsNullOrEmpty(userId))
+                    {
                         var user = await _userManager.FindByIdAsync(userId);
                         if (user != null) viewModel.User = user;
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
@@ -92,46 +105,53 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int couponId)
+        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int couponId)
         {
-            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
+            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0)
+            {
                 TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
-            if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestEmail) || string.IsNullOrEmpty(guestPhone)) {
+            if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestEmail) || string.IsNullOrEmpty(guestPhone))
+            {
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
             var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
-            if (seatIds.Count != numberOfTickets) {
+            if (seatIds.Count != numberOfTickets)
+            {
                 TempData["Error"] = "Number of seats doesn't match number of tickets.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
             var seats = await _context.Seats
-                .Where(s => seatIds.Contains(s.Id) && s.Trip.VehicleId == VehicleId)
+                .Where(s => seatIds.Contains(s.Id) && s.Trip != null && s.Trip.VehicleId == VehicleId)
                 .ToListAsync();
 
             var bookedSeats = seats.Where(s => !s.IsAvailable).ToList();
-            if (bookedSeats.Any()) {
-                TempData["Error"] = "These seats is already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
+            if (bookedSeats.Any())
+            {
+                TempData["Error"] = "These seats are already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
-            if (!string.IsNullOrEmpty(userId) && User.Identity.IsAuthenticated) {
+            if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated)
+            {
                 userId = _userManager.GetUserId(User);
             }
-            
+
             List<string> ticketIds = new List<string>();
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                foreach (var seat in seats) {
+                foreach (var seat in seats)
+                {
                     seat.IsAvailable = false;
-                    
-                    var ticket = new Ticket {
+
+                    var ticket = new Ticket
+                    {
                         Id = Guid.NewGuid().ToString(),
                         TripId = TripId,
                         SeatId = seat.Id,
@@ -142,7 +162,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                         CouponId = couponId,
                         GuestName = guestName,
                         GuestEmail = guestEmail,
-                        GuestPhone = guestPhone
+                        GuestPhone = guestPhone,
+                        TotalPrice = totalPrice
                     };
 
                     _context.Tickets.Add(ticket);
@@ -150,13 +171,14 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();   
+                await transaction.CommitAsync();
             }
-                
+
             TempData["Success"] = "Successfully booked seat!";
             string ticketIdsList = string.Join(",", ticketIds);
-            return RedirectToAction("Details", "Tickets", new { ids = ticketIdsList});
+            return RedirectToAction("Details", "Tickets", new { ids = ticketIdsList });
         }
+
 
         private bool SeatExists(int id)
         {

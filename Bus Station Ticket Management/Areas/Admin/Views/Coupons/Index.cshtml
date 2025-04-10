@@ -1,66 +1,109 @@
-﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Coupon>
+﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Coupon>
+@using X.PagedList.Mvc.Core
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Coupon List";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CouponString)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiscountType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiscountAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartPeriod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndPeriod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CouponString)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiscountType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiscountAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartPeriod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndPeriod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search by coupon..." />
+    </div>
+    <div class="col-md-3">
+        <select name="isActive" class="form-select" onchange="this.form.submit()">
+            <option value="">All Status</option>
+            <option value="true" selected=@(ViewBag.IsActive?.ToString() == "True" ? "selected" : "")>Active</option>
+            <option value="false" selected=@(ViewBag.IsActive?.ToString() == "False" ? "selected" : "")>Inactive</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="sortBy" class="form-select" onchange="this.form.submit()">
+            <option value="">Sort by</option>
+            <option value="name_desc" selected=@(ViewBag.SortBy == "name_desc" ? "selected" : "")>Name ↓</option>
+            <option value="start_asc" selected=@(ViewBag.SortBy == "start_asc" ? "selected" : "")>Start Period ↑</option>
+            <option value="start_desc" selected=@(ViewBag.SortBy == "start_desc" ? "selected" : "")>Start Period ↓</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table id="ApplicationUserTable" class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Coupon Code</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Start Period</th>
+                <th>End Period</th>
+                <th>Active</th>
+                <th style="width: 30px">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var item in Model)
+            {
+                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CouponString)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DiscountType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DiscountAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartPeriod)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndPeriod)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsActive)
+                    </td>
+                    <td>
+                        <div class="btn-group ">
+                            <a role="button" class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a role="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
+    @if (Model.Any())
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, 
+            searchString = ViewBag.SearchString,
+			sortBy = ViewBag.SortBy, 
+            filterByStatus = ViewBag.FilterByStatus,
+            filterByType = ViewBag.FilterByType}),
+        new PagedListRenderOptions
+        {
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" },
+            ActiveLiElementClass = "active",
+            LinkToPreviousPageFormat = "&laquo;",
+            LinkToNextPageFormat = "&raquo;"
+        })
+        }
+</nav>
+
+
+@section Scripts {
+    <script src="~/js/table.js"></script>
 }
-    </tbody>
-</table>

@@ -138,8 +138,9 @@ using (var scope = app.Services.CreateScope())
             UserName = "admin@example.com",
             Email = "admin@example.com",
             FullName = "Admin User",
+            PhoneNumber = "0902124234",
             Gender = "Male",
-            DateOfBirth = new DateOnly(1982, 11, 11)
+            DateOfBirth = new DateOnly(1982, 11, 11),
         };
 
         await userManager.CreateAsync(adminUser, "Admin@123");
@@ -156,27 +157,36 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseRouting();
 app.UseCookiePolicy();
 app.UseSession();
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.Equals("/Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Redirect("/Admin/Admin/Index");
+        return;
+    }
+    await next();
+});
+
+app.UseEndpoints(endpoints =>
+{
+    // Area route
+    endpoints.MapControllerRoute(
+        name: "areas",
+        pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+
+    // Default route
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
 app.MapStaticAssets();
-
-// Admin Area Route
-app.MapAreaControllerRoute(
-    name: "admin",
-    areaName: "Admin",
-    pattern: "Admin/{controller=Admin}/{action=Index}/{id?}"
-);
-
-// Default Route (non-area)
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
-);
-
 app.MapRazorPages();
 app.MapControllers();
 app.Run();

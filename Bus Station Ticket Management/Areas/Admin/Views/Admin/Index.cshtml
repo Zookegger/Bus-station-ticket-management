@@ -1,7 +1,220 @@
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-
 }
 
-<h1>Welcome To Admin Dashboard</h1>
+<div class="container-fluid pb-5" onload="fetchDashboardStats()">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-success fw-bold d-flex align-items-center gap-2">
+            <i class="fa-solid fa-gauge-high fa-xl"></i> Welcome to the Admin Dashboard
+        </h1>
+    </div>
+
+    <div class="row g-4">
+        <!-- Users -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow border-start border-success border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-success fs-3">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">Manage Users</h5>
+                            <a asp-controller="ApplicationUser" asp-action="Index" class="text-decoration-none">View
+                                All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicles -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow border-start border-primary border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-primary fs-3">
+                            <i class="fa-solid fa-bus"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">Manage Vehicles</h5>
+                            <a asp-controller="Vehicle" asp-action="Index" class="text-decoration-none">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trips -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow border-start border-warning border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-warning fs-3">
+                            <i class="fa-solid fa-route"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">Manage Trips</h5>
+                            <a asp-controller="Trip" asp-action="Index" class="text-decoration-none">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow border-start border-danger border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-danger fs-3">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">View Revenue</h5>
+                            <a asp-controller="Tickets" asp-action="Revenue" class="text-decoration-none">Reports</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="row g-4">
+        <!-- Stats Cards -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card text-bg-success shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-user-tie fa-2x mb-2"></i>
+                    <h5 class="card-title">Users</h5>
+                    <p class="fs-4 fw-bold" id="userCount">--</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card text-bg-info shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-bus-simple fa-2x mb-2"></i>
+                    <h5 class="card-title">Vehicles</h5>
+                    <p class="fs-4 fw-bold" id="vehicleCount">--</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card text-bg-warning shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-road fa-2x mb-2"></i>
+                    <h5 class="card-title">Trips</h5>
+                    <p class="fs-4 fw-bold" id="tripCount">--</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card text-bg-danger shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-coins fa-2x mb-2"></i>
+                    <h5 class="card-title">Earnings</h5>
+                    <p class="fs-4 fw-bold" id="revenueCount">VND--</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-5 shadow">
+        <div class="card-header bg-success text-white fw-semibold">
+            Monthly Revenue Overview
+        </div>
+        <div class="card-body">
+            <canvas id="revenueChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Fetch Data from server
+        const fetchDashboardStats = async () => {
+            const baseUrl = window.location.origin;
+            console.log(baseUrl);
+            const fullUrl = `${baseUrl}/Admin/Admin/GetDashboardStats`
+            console.log(fullUrl);
+
+            try {
+                // Get data from server
+                const response = await fetch(fullUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log(data);
+
+                // Update Stats
+                animateNumber("userCount", data.userCount);
+                animateNumber("vehicleCount", data.vehicleCount);
+                animateNumber("tripCount", data.tripCount);
+                animateNumber("revenueCount", data.revenueCount);
+
+                // Update Chart
+                revenueChart = new Chart(document.getElementById('revenueChart'), {
+                    type: 'line',
+                    data: {
+                        labels: data.revenueLabels,
+                        datasets: [{
+                            label: 'Monthly Revenue',
+                            data: data.revenueValues,
+                            fill: false,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Earnings (VND)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                alert('Error fetching dashboard stats: ' + error.message);
+                console.error('Error fetching dashboard stats:', error);
+            }
+        }
+
+        // Animate fake stats (just for style)
+        const animateNumber = (id, end) => {
+            let start = 0;
+            const el = document.getElementById(id);
+            const duration = 800;
+            const step = Math.ceil(end / (duration / 30));
+
+            const counter = setInterval(() => {
+                start += step;
+                if (start >= end) {
+                    start = end;
+                    clearInterval(counter);
+                }
+                el.textContent = id === "revenueCount" ? `${start.toLocaleString()} VND` : start.toLocaleString();
+            }, 30);
+        };
+
+        // Call the function to fetch and process the data
+        fetchDashboardStats();
+    </script>
+}

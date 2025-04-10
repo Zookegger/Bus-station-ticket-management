@@ -4,153 +4,126 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Bus Station Ticket Management</title>
-    <script type="importmap"></script>
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        integrity="sha512-RXf+QSDCUQs6c+8Is2V8s3ICb9n1v+4eE2eZ5OYi2s6C8DYshZL9PzXZcdEkxN+q4Y/f1lB8u9rGHEZBfV1I1Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>@ViewData["Title"] - Bus Station Ticket Management - Admin</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Site & Shared Styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/_Layout.cshtml.css" asp-append-version="true" />
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-light border-bottom box-shadow ">
+    <!-- Header -->
+    <header class="shadow-sm">
+        <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand text-light" asp-area="Admin" asp-controller="Admin" asp-action="Index">Bus
-                    Station
-                    Ticket
-                    Management - ADMIN</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                    <i class="fa-solid fa-bus me-2"></i>Bus Station Admin
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar"
+                    aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-
-                    <ul class="navbar-nav">
+                <div class="collapse navbar-collapse" id="adminNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Home -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Home
-                            </a>
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Home</a>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a asp-area="Admin" asp-controller="Tickets" asp-action="Revenue"
-                                        class="dropdown-item" aria-current="page">Revenue</a>
-                                </li>
-                                <li>
-                                    <a asp-area="Admin" asp-controller="Home" asp-action="GoToUserHome"
-                                        class="dropdown-item" aria-current="page">UserHome</a>
-                                </li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">Revenue</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="GoToUserHome">User Home</a></li>
                             </ul>
                         </li>
-                    </ul>
-
-                    <ul class="navbar-nav">
+                        <!-- Vehicle -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Vehicle
-                            </a>
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Vehicle</a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="Admin" asp-controller="Vehicle" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Vehicles</a></li>
-                                <li><a asp-area="Admin" asp-controller="VehicleType" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Vehicle Types</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Vehicle" asp-action="Index">Vehicles</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="VehicleType" asp-action="Index">Vehicle Types</a></li>
                             </ul>
                         </li>
-                    </ul>
-
-
-                    <ul class="navbar-nav">
+                        <!-- Trip -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Trip
-                            </a>
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Trip</a>
                             <ul class="dropdown-menu">
-                                <li><a asp-area="Admin" asp-controller="Location" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Locations</a></li>
-                                <li><a asp-area="Admin" asp-controller="Route" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Routes</a></li>
-                                <li><a asp-area="Admin" asp-controller="Trip" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Trips</a></li>
-                                <li><a asp-area="Admin" asp-controller="Driver" asp-action="Index" class="dropdown-item"
-                                        aria-current="page">Drivers</a></li>
-                                <li><a asp-area="Admin" asp-controller="TripDriverAssignment" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Trip Assignments</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Location" asp-action="Index">Locations</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Route" asp-action="Index">Routes</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Trip" asp-action="Index">Trips</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Driver" asp-action="Index">Drivers</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="TripDriverAssignment" asp-action="Index">Trip Assignments</a></li>
                             </ul>
                         </li>
-                    </ul>
-
-                    <ul class="navbar-nav">
+                        <!-- User -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link text-light" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                User
-                            </a>
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">User</a>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Application Users</a>
-                                </li>
-                                <li>
-                                    <a asp-area="Admin" asp-controller="Ratings" asp-action="Index"
-                                        class="dropdown-item" aria-current="page">Ratings</a>
-                                </li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">Application Users</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ratings" asp-action="Index">Ratings</a></li>
                             </ul>
                         </li>
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item w-100">
-                            <partial name="_LoginPartial" />
-                        </li>
+                        <li class="nav-item"><partial name="_LoginPartial" /></li>
                     </ul>
-
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="main-container">
-        <main role="main" class="py-3">
+    <!-- Main Content -->
+    <div class="main-container bg-light">
+        <main role="main" class="container py-4">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between py-4 px-4 px-sm-5">
-            <span style="margin: 0; height: min-content; text-align: center; vertical-align: middle;">&copy; 2025 Bus
-                Station Ticket Management, All rights reserved. - <a asp-area="" asp-controller="Home"
-                    asp-action="Privacy">Privacy Policy</a></span>
+    <!-- Footer -->
+    <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
+        <div class="container py-4">
+            <div class="row align-items-center gy-3 text-center text-md-start">
+                <!-- Left side -->
+                <div class="col-md-6">
+                    <div class="small">
+                        &copy; 2025 <strong>Bus Station Ticket Management</strong><br />
+                        All rights reserved.
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy"
+                            class="text-white text-decoration-underline ms-1">Privacy Policy</a>
+                    </div>
+                </div>
 
-            <ul class="list-unstyled d-flex gap-0 gap-sm-3 mb-0">
-                <li><a class="link-body-emphasis" href="#">FaceBook</a></li>
-                <li><a class="link-body-emphasis" href="#">LinkdeIn</a></li>
-                <li><a class="link-body-emphasis" href="#">Gmail</a></li>
-            </ul>
+                <!-- Right side -->
+                <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4">
+                    <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
+                        <i class="fab fa-facebook d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Facebook</span>
+                    </a>
+                    <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
+                        <i class="fab fa-linkedin d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">LinkedIn</span>
+                    </a>
+                    <a href="mailto:support@example.com"
+                        class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
+                        <i class="fas fa-envelope d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Email</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-        crossorigin="anonymous"></script>
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

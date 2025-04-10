@@ -5,57 +5,72 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container">
+    <h1 class="text-success fw-bold mb-4">Edit Vehicle Details</h1>
+    <h4 class="mb-3">Edit the details of the selected vehicle</h4>
+    <hr />
 
-<h4>Vehicle</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 mx-auto">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+            
+            <!-- Hidden ID -->
+            <input type="hidden" asp-for="Id" />            
+
+            <!-- Vehicle Type -->
+            <div class="form-group mb-3">
+                <label asp-for="VehicleTypeId" class="form-label">Vehicle Type</label>
+                <select asp-for="VehicleTypeId" class="form-select route-select" asp-items="ViewBag.VehicleTypeId">
+                    <option value="" disabled selected>Select a vehicle type</option>
+                </select>
+                <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
+            </div>
+
+            <!-- Vehicle Name -->
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label">Vehicle Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter Vehicle Name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AcquiredDate" class="control-label"></label>
-                <input asp-for="AcquiredDate" class="form-control" />
+
+            <!-- Acquired Date -->
+            <div class="form-group mb-3">
+                <label asp-for="AcquiredDate" class="form-label">Acquired Date</label>
+                <input asp-for="AcquiredDate" class="form-control" type="date" />
                 <span asp-validation-for="AcquiredDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="LicensePlate" class="control-label"></label>
-                <input asp-for="LicensePlate" class="form-control" />
+
+            <!-- License Plate -->
+            <div class="form-group mb-3">
+                <label asp-for="LicensePlate" class="form-label">License Plate</label>
+                <input asp-for="LicensePlate" class="form-control" placeholder="Enter License Plate" />
                 <span asp-validation-for="LicensePlate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                
-                <select asp-for="Status" class="form-control" required>
-                    <option value="" disabled selected>Select a status</option>
+
+            <!-- Status -->
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select" required>
+                    <option value="" disabled selected>Select Status</option>
                     <option value="Stand-By">Stand-By</option>
                     <option value="Busy">Busy</option>
                     <option value="Repairing">Repairing</option>
-                    <option value="Maintainance">Maintainance</option>
+                    <option value="Maintainance">Maintenance</option>
                 </select>
-
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="VehicleTypeId" class="control-label"></label>
-                <select asp-for="VehicleTypeId" class="form-control" asp-items="ViewBag.VehicleTypeId"></select>
-                <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <!-- Save Button -->
+            <div class="form-group d-flex justify-content-between mt-3">
+                <a asp-action="Index" role="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save
+                </button>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

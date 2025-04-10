@@ -23,6 +23,9 @@ namespace Bus_Station_Ticket_Management.Models
 
         public DateTime BookingDate { get; set; }
 
+        [Display(Name = "Final Pricing")]
+        public long TotalPrice { get; set; }
+
         public bool IsPaid { get; set; }
 
         public bool IsCanceled { get; set; }
