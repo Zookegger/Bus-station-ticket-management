@@ -17,10 +17,19 @@
                 @Html.DisplayNameFor(model => model.CouponString)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.DiscountType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountAmount)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.StartPeriod)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.EndPeriod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th></th>
         </tr>
@@ -32,10 +41,19 @@
                 @Html.DisplayFor(modelItem => item.CouponString)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.DiscountType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountAmount)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.StartPeriod)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EndPeriod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

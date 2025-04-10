@@ -117,6 +117,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
+                    
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
                     "Confirm your email",

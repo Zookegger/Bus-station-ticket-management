@@ -42,7 +42,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
-            _userManager = userManager;
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
@@ -74,6 +73,8 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
+        [TempData]
+        public string SuccessMessage { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -135,12 +136,41 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 // If the user does not have an account, ask to create an account
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
+
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
-                    Input = new InputModel
+                    var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                    var existingUser = await _userManager.FindByEmailAsync(email);
+
+                    if (existingUser != null)
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                        var alreadyLinked = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                        if (alreadyLinked == null)
+                        {
+                            var result_add = await _userManager.AddLoginAsync(existingUser, info);
+                            if (!result_add.Succeeded)
+                            {
+                                ErrorMessage = "Failed to link external login to existing user account.";
+                                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                            }
+                            _logger.LogInformation("Linked {LoginProvider} to existing user {Email}", info.LoginProvider, email);
+                        }
+                        else
+                        {
+                            _logger.LogInformation("{LoginProvider} is already linked to user {Email}", info.LoginProvider, email);
+                        }
+
+                        await _signInManager.SignInAsync(existingUser, isPersistent: false);
+                        SuccessMessage = "Welcome back!";
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        Input = new InputModel
+                        {
+                            Email = email
+                        };
+                    }
                 }
                 return Page();
             }

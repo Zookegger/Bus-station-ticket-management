@@ -10,45 +10,70 @@ using Bus_Station_Ticket_Management.Models;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
-    public class CouponsController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	public class CouponsController : Controller
+	{
+		private readonly ApplicationDbContext _context;
 
-        public CouponsController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public CouponsController(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
-        // GET: Coupons
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Coupons.ToListAsync());
-        }
+		// GET: Coupons
+		public async Task<IActionResult> Index()
+		{
+			return View(await _context.Coupons.ToListAsync());
+		}
 
-        // POST: Coupons/Apply
-        [HttpPost]
-        public async Task<IActionResult> ApplyCoupon(int tripId, string couponCode)
-        {
-            if (string.IsNullOrWhiteSpace(couponCode)) {
-                TempData["Error"] = "Vui lòng nhập mã giảm giá.";
-                return RedirectToAction("SelectSeats", "Trips", new { id = tripId });
-            }
+		// POST: Coupons/Apply
+		[HttpPost]
+		public IActionResult ApplyCoupon(string couponCode, int tripId)
+		{
+			var coupon = _context.Coupons.FirstOrDefault(c => c.CouponString == couponCode);
+			var now = DateTime.Now;
 
-            var now = DateTime.Now;
-            var coupon = await _context.Coupons
-                .FirstOrDefaultAsync(c => c.CouponString == couponCode && c.StartPeriod <= now && c.EndPeriod >= now);
+			if (!(coupon != null && now >= coupon.StartPeriod && now <= coupon.EndPeriod && coupon.IsActive == true))
+			{
+				return Json(new { success = false, message = "Invalid or expired coupon." });	
+			}
+			// Coupon is valid and active
 
-            //if (coupon == null) {
-            //    TempData["Error"] = "Mã giảm giá không hợp lệ hoặc đã hết hạn.";
-            //}
-            //else {
-            //    TempData["Success"] = $"Áp dụng mã thành công! Giảm {coupon.DiscountAmount:N0}đ.";
-            //    TempData["CouponCode"] = coupon.CouponString;
-            //    TempData["DiscountAmount"] = coupon.DiscountAmount;
-            //}
+			if (coupon.StartPeriod > now || coupon.EndPeriod < now)
+			{
+				if (coupon.IsActive == true) 
+				{
+					coupon.IsActive = false;
+					_context.SaveChangesAsync();
+				}
+				return Json(new { success = false, message = "Coupon is not valid for this period." });
+			}	
 
-            return RedirectToAction("SelectSeats", "Trips", new { id = tripId });
-        }
+			// Get trip price (assuming one seat)
+			var trip = _context.Trips.Find(tripId);
+			if (trip == null)
+			{
+				return Json(new { success = false, message = "Trip not found." });
+			}
 
-    }
+			decimal discountAmount = 0;
+
+			if (coupon.DiscountType == DiscountType.Percentage)
+			{
+				discountAmount = trip.TotalPrice * (coupon.DiscountAmount / 100);
+			}
+			else
+			{
+				discountAmount = coupon.DiscountAmount;
+			}
+
+			return Json(new
+			{
+				success = true,
+				discountedAmount = discountAmount,
+				couponType = coupon.DiscountType.ToString(),
+				discountValue = coupon.DiscountAmount,
+				message = $"Coupon applied! You saved {(coupon.DiscountType == DiscountType.Percentage ? $"{coupon.DiscountAmount}%" : $"{discountAmount:N0}đ")}."
+			});
+		}
+	}
 }

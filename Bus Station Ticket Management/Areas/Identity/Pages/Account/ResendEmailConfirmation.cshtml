@@ -11,6 +11,10 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="text-success" role="alert">@Model.SuccessMessage</div>
+            }
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email" class="form-label"></label>

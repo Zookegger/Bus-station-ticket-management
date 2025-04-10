@@ -1,6 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+#nullable enable
 
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -24,13 +24,16 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailBackgroundQueue _emailQueue;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IEmailBackgroundQueue emailQueue
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -38,6 +41,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _emailQueue = emailQueue;
         }
 
         /// <summary>
@@ -93,18 +97,19 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [DisplayName("Họ tên")]
             [Required]
+            [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
-            [DisplayName("Địa chỉ")]
             public string? Address { get; set; }
 
-            [DisplayName("Giới tính")]
             public string Gender { get; set; }
 
-            [DisplayName("Ngày sinh")]
             public DateOnly? DateOfBirth { get; set; }
+
+            [Phone]
+            [Required]
+            public string PhoneNumber { get; set; }
         }
 
 
@@ -118,20 +123,22 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 var user = CreateUser();
 
                 user.FullName = Input.FullName;
                 user.Address = Input.Address;
                 user.Gender = Input.Gender;
                 user.DateOfBirth = Input.DateOfBirth;
-
+                user.PhoneNumber = Input.PhoneNumber;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                if (result.Succeeded) {
+                if (result.Succeeded)
+                {
                     await _userManager.AddToRoleAsync(user, "Customer");
                     _logger.LogInformation("User created a new account with password.");
 
@@ -145,18 +152,47 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
+                    var htmlBody = $@"
+                        <div style=""margin: 0 auto; padding: 12px;"">
+                            <header style=""margin-top: 1rem;"">
+                                <span style=""font-size: 28px; font-weight: 700;"">Confirm your account</span>
+                            </header>
+                            <main style=""margin-top: 1.5rem;"">
+                                <span style=""font-size: 20px; font-weight: 400;"">
+                                    Please click the button below to confirm your email address and finish setting up your account.
+                                </span>
+                            </main>
+                            <footer style=""margin-top: 1rem;"">
+                                <a href=""{encodedUrl}"" 
+                                style=""display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; 
+                                        cursor: pointer; user-select: none; padding: 0.375rem 0.75rem; font-size: 1rem; 
+                                        line-height: 1.5; border-radius: 0.25rem; color: #fff; background-color: #007bff; 
+                                        text-decoration: none;"">
+                                Confirm
+                                </a>
+                            </footer>
+                        </div>";
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount) {
+                    _emailQueue.QueueEmail(new EmailMessage
+                    {
+                        To = Input.Email,
+                        Subject = "Confirm your email",
+                        HtmlBody = htmlBody
+                    });
+
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
-                    else {
+                    else
+                    {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
-                foreach (var error in result.Errors) {
+                foreach (var error in result.Errors)
+                {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -167,10 +203,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         private ApplicationUser CreateUser()
         {
-            try {
+            try
+            {
                 return Activator.CreateInstance<ApplicationUser>();
             }
-            catch {
+            catch
+            {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
@@ -179,7 +217,8 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
-            if (!_userManager.SupportsUserEmail) {
+            if (!_userManager.SupportsUserEmail)
+            {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;

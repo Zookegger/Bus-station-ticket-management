@@ -9,7 +9,16 @@
         <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h1>@ViewData["Title"]</h1>
             <hr />
+
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            @if (Model.ShowResendConfirmation)
+            {
+                <p class="text-danger">
+                    Didn't receive the confirmation email? <a asp-page="/Account/ResendEmailConfirmation"
+                        asp-route-email="@Model.Input.Email">Resend it</a>
+                </p>
+            }
+
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username"
                     placeholder="name@example.com" />
@@ -36,7 +45,8 @@
             </p>
             <div class="form-actions">
                 <button id="login-submit" type="submit" class="btn btn-lg btn-primary">Log in</button>
-                <a class="btn btn-lg btn-secondary" role="button" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register</a>
+                <a class="btn btn-lg btn-secondary" role="button" asp-page="./Register"
+                    asp-route-returnUrl="@Model.ReturnUrl">Register</a>
             </div>
         </form>
         <hr />
@@ -46,8 +56,17 @@
                 <div class="form-group">
                     @foreach (var provider in Model.ExternalLogins)
                     {
-                        <button type="submit" class="btn btn-danger w-100 mb-2" name="provider" value="@provider.Name">
-                            <i class="fa fa-@provider.DisplayName.ToLower() me-2"></i> Log in using @provider.DisplayName
+                        var providerLower = provider.Name.ToLower();
+                        var btnClass = providerLower switch
+                        {
+                            "facebook" => "btn-outline-primary",
+                            "google" => "btn-outline-danger",
+                            _ => "btn-outline-secondary"
+                        };
+
+                        <button type="submit" class="btn btn-danger w-md-100 w-auto mb-2" name="provider" value="@provider.Name">
+                            <i class="fa fa-@provider.DisplayName.ToLower()" style="display: flex; align-items: center; justify-items: center;"></i> 
+                            <span class="login">Log in using @provider.DisplayName</span>
                         </button>
                     }
                 </div>

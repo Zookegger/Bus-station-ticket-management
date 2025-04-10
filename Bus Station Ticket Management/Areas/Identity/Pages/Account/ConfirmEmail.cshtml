@@ -3,6 +3,16 @@
 @{
     ViewData["Title"] = "Confirm email";
 }
-
+    
 <h1>@ViewData["Title"]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+@section Scripts {
+    <script>
+        const message = "Forwading you back to homepage";
+        alert(message);
+        setTimeout(() => {
+            window.location.href = '/'; // Or wherever you want
+        }, 2000);
+    </script>
+}

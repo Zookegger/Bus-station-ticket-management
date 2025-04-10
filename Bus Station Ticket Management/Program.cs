@@ -11,9 +11,17 @@ using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Google.Apis.Auth.AspNetCore3;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\"))
+    .SetApplicationName("BusStationTicketApp");
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -26,6 +34,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax; // Ensure cookies are sent with cross-site requests
     options.Secure = CookieSecurePolicy.Always; // Use secure cookies
+    options.CheckConsentNeeded = context => false;
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -39,8 +48,13 @@ builder.Services.AddScoped<GooglePeopleApiHelper>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    options.SlidingExpiration = true;
 })
 .AddGoogle(options =>
 {
@@ -59,14 +73,26 @@ builder.Services.AddAuthentication(options =>
     // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
 
     // options.SaveTokens = true;
+})
+.AddFacebook(options =>
+{
+    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+    options.CallbackPath = "/signin-facebook";
 });
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromHours(6); // Set to 6 hours, or whatever you prefer
+});
+
+builder.Services.AddSingleton<IEmailBackgroundQueue, EmailBackgroundQueue>();
+builder.Services.AddHostedService<EmailBackgroundService>();
 
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI()
@@ -74,7 +100,7 @@ builder.Services.AddRazorPages()
     {
         options.Conventions.AuthorizePage("/Account/ExternalLogin");
     });
-    
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

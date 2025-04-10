@@ -1,0 +1,70 @@
+@model Bus_Station_Ticket_Management.Models.Ticket;
+@using System.Globalization;
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4 class="card-title">Ticket Info</h4>
+        <hr />
+
+        <dl class="row">
+            @if (Model.User != null)
+            {
+                <dt class="col-sm-3">Passenger Name</dt>
+                <dd class="col-sm-9">@Model.User.FullName</dd>
+            }
+            else
+            {
+                <dt class="col-sm-3">Guest Name</dt>
+                <dd class="col-sm-9">@Model.GuestName</dd>
+
+                <dt class="col-sm-3">Guest Email</dt>
+                <dd class="col-sm-9">@Model.GuestEmail</dd>
+
+                <dt class="col-sm-3">Guest Phone</dt>
+                <dd class="col-sm-9">@Model.GuestPhone</dd>
+            }
+
+            <dt class="col-sm-3">Trip</dt>
+            <dd class="col-sm-9">
+                @Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name<br />
+                Departure: @Model.Trip?.DepartureTime.ToString("f")
+            </dd>
+
+            <dt class="col-sm-3">Seat Number</dt>
+            <dd class="col-sm-9">@Model.Seat?.Number</dd>
+
+            <dt class="col-sm-3">Floor / Row / Column</dt>
+            <dd class="col-sm-9">
+                Floor: @Model.Seat?.Floor, Row: @Model.Seat?.Row, Column: @Model.Seat?.Column
+            </dd>
+
+            <dt class="col-sm-3">Booking Date</dt>
+            <dd class="col-sm-9">@Model.BookingDate.ToString("f")</dd>
+
+            <dt class="col-sm-3">Is Paid?</dt>
+            <dd class="col-sm-9">
+                @(Model.IsPaid ? "Yes" : "No")
+            </dd>
+
+            <dt class="col-sm-3">Is Canceled?</dt>
+            <dd class="col-sm-9">
+                @(Model.IsCanceled ? "Yes" : "No")
+            </dd>
+
+            @if (Model.IsCanceled)
+            {
+                <dt class="col-sm-3">Cancellation Time</dt>
+                <dd class="col-sm-9">@Model.CancelationTime.ToString("f")</dd>
+            }
+
+            @* @if (Model.Coupon != null)
+            {
+                <dt class="col-sm-3">Applied Coupon</dt>
+                <dd class="col-sm-9">@Model.Coupon.CouponString</dd>
+            } *@
+
+            <dt class="col-sm-3">Ticket Price</dt>
+            <dd class="col-sm-9">@Model.Trip?.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
+        </dl>
+    </div>
+</div>

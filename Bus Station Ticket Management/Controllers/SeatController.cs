@@ -92,10 +92,14 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone)
+        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int couponId)
         {
             if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
                 TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
+            }
+
+            if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestEmail) || string.IsNullOrEmpty(guestPhone)) {
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
@@ -111,156 +115,47 @@ namespace Bus_Station_Ticket_Management.Controllers
 
             var bookedSeats = seats.Where(s => !s.IsAvailable).ToList();
             if (bookedSeats.Any()) {
-                TempData["Error"] = "Một số ghế đã được đặt: " + string.Join(", ", bookedSeats.Select(s => s.Number));
+                TempData["Error"] = "These seats is already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
-            }
-
-            foreach (var seat in seats) {
-                seat.IsAvailable = false;
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
             if (!string.IsNullOrEmpty(userId) && User.Identity.IsAuthenticated) {
                 userId = _userManager.GetUserId(User);
             }
+            
+            List<string> ticketIds = new List<string>();
 
-            foreach (var seat in seats) {
-                var ticket = new Ticket {
-                    Id = Guid.NewGuid().ToString(),
-                    TripId = TripId,
-                    SeatId = seat.Id,
-                    UserId = userId,
-                    BookingDate = DateTime.Now,
-                    IsCanceled = false,
-                    IsPaid = false,
-                    GuestName = guestName,
-                    GuestEmail = guestEmail,
-                    GuestPhone = guestPhone
-                };
-                _context.Tickets.Add(ticket);
-            }
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                foreach (var seat in seats) {
+                    seat.IsAvailable = false;
+                    
+                    var ticket = new Ticket {
+                        Id = Guid.NewGuid().ToString(),
+                        TripId = TripId,
+                        SeatId = seat.Id,
+                        UserId = userId,
+                        BookingDate = DateTime.Now,
+                        IsCanceled = false,
+                        IsPaid = false,
+                        CouponId = couponId,
+                        GuestName = guestName,
+                        GuestEmail = guestEmail,
+                        GuestPhone = guestPhone
+                    };
 
-            await _context.SaveChangesAsync();
-            TempData["Success"] = "Đặt vé thành công!";
-            return RedirectToAction("MyTickets", "Tickets");
-        }
+                    _context.Tickets.Add(ticket);
+                    ticketIds.Add(ticket.Id);
+                }
 
-        // GET: Seat/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var seat = await _context.Seats
-                .Include(s => s.Trip)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (seat == null) {
-                return NotFound();
-            }
-
-            return View(seat);
-        }
-
-        // GET: Seat/Create
-        public IActionResult Create()
-        {
-            ViewData["TripId"] = new SelectList(_context.Vehicles, "Id", "Name");
-            return View();
-        }
-
-        // POST: Seat/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,IsAvailable,VehicleId")] Seat seat)
-        {
-            if (ModelState.IsValid) {
-                _context.Add(seat);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await transaction.CommitAsync();   
             }
-            ViewData["TripId"] = new SelectList(_context.Vehicles, "Id", "Name", seat.TripId);
-            return View(seat);
-        }
-
-        // GET: Seat/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var seat = await _context.Seats.FindAsync(id);
-            if (seat == null) {
-                return NotFound();
-            }
-
-            ViewData["TripId"] = new SelectList(_context.Vehicles, "Id", "Name", seat.TripId);
-            return View(seat);
-        }
-
-        // POST: Seat/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,IsAvailable,VehicleId")] Seat seat)
-        {
-            if (id != seat.Id) {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid) {
-                try {
-                    _context.Update(seat);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException) {
-                    if (!SeatExists(seat.Id)) {
-                        return NotFound();
-                    }
-                    else {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewData["TripId"] = new SelectList(_context.Vehicles, "Id", "Name", seat.TripId);
-            return View(seat);
-        }
-
-        // GET: Seat/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var seat = await _context.Seats
-                .Include(s => s.Trip)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (seat == null) {
-                return NotFound();
-            }
-
-            return View(seat);
-        }
-
-        // POST: Seat/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var seat = await _context.Seats.FindAsync(id);
-            if (seat != null) {
-                _context.Seats.Remove(seat);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                
+            TempData["Success"] = "Successfully booked seat!";
+            string ticketIdsList = string.Join(",", ticketIds);
+            return RedirectToAction("Details", "Tickets", new { ids = ticketIdsList});
         }
 
         private bool SeatExists(int id)

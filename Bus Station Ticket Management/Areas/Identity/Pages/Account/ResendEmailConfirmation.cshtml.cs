@@ -20,30 +20,23 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailBackgroundQueue _emailQueue;
 
-        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBackgroundQueue emailQueue)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _emailQueue = emailQueue;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+        [TempData]
+        public string SuccessMessage { get; set; }
+
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             public string Email { get; set; }
@@ -55,12 +48,14 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return Page();
             }
 
             var user = await _userManager.FindByEmailAsync(Input.Email);
-            if (user == null) {
+            if (user == null)
+            {
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
                 return Page();
             }
@@ -73,12 +68,38 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
+            var htmlBody = $@"
+                <div style=""margin: 0 auto; padding: 12px;"">
+                    <header style=""margin-top: 1rem;"">
+                        <span style=""font-size: 28px; font-weight: 700;"">Confirm your account</span>
+                    </header>
+                    <main style=""margin-top: 1.5rem;"">
+                        <span style=""font-size: 20px; font-weight: 400;"">
+                            Please click the button below to confirm your email address and finish setting up your account.
+                        </span>
+                    </main>
+                    <footer style=""margin-top: 1rem;"">
+                        <a href=""{encodedUrl}"" 
+                        style=""display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; 
+                                cursor: pointer; user-select: none; padding: 0.375rem 0.75rem; font-size: 1rem; 
+                                line-height: 1.5; border-radius: 0.25rem; color: #fff; background-color: #007bff; 
+                                text-decoration: none;"">
+                        Confirm
+                        </a>
+                    </footer>
+                </div>";
+
+            _emailQueue.QueueEmail(new EmailMessage
+            {
+                To = Input.Email,
+                Subject = "Confirm your email",
+                HtmlBody = htmlBody
+            });
+
+
+            SuccessMessage = "Verification email sent. Please check your email.";
             return Page();
         }
     }

@@ -14,6 +14,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     [Route("Admin/[controller]/[action]")]
+
     public class CouponsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,7 +27,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Admin/Coupons
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Coupons.ToListAsync());
+            var tickets = await _context.Tickets
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Seat)
+                .ToListAsync();
+            return View(tickets);
         }
 
         // GET: Admin/Coupons/Details/5
@@ -54,11 +64,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // POST: Admin/Coupons/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CouponString,StartPeriod,EndPeriod")] Coupon coupon)
+        public async Task<IActionResult> Create([Bind("Id,CouponString,DiscountType,DiscountAmount,StartPeriod,EndPeriod,IsActive")] Coupon coupon)
         {
             if (ModelState.IsValid)
             {
@@ -85,12 +93,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(coupon);
         }
 
-        // POST: Admin/Coupons/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Admin/Coupons/Edit/Id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CouponString,StartPeriod,EndPeriod")] Coupon coupon)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CouponString,DiscountType,DiscountAmount,StartPeriod,EndPeriod,IsActive")] Coupon coupon)
         {
             if (id != coupon.Id)
             {
@@ -120,7 +126,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(coupon);
         }
 
-        // GET: Admin/Coupons/Delete/5
+        // GET: Admin/Coupons/Delete/Id
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,7 +144,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(coupon);
         }
 
-        // POST: Admin/Coupons/Delete/5
+        // POST: Admin/Coupons/Delete/Id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

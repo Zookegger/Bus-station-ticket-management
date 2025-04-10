@@ -6,7 +6,6 @@ using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-[Authorize] // Yêu cầu người dùng phải đăng nhập
 [Route("[controller]/[action]")]
 public class TicketsController : Controller
 {
@@ -20,6 +19,7 @@ public class TicketsController : Controller
     }
 
     // Action để hiển thị các vé của người dùng đã đăng nhập
+    [Authorize]
     public async Task<IActionResult> MyTickets()
     {
         // Lấy thông tin người dùng hiện tại
@@ -45,8 +45,23 @@ public class TicketsController : Controller
         return View(tickets);
     }
 
-    public async Task<IActionResult> View() {
-        var ticket =
-        return View();
+    public async Task<IActionResult> Details(string ids) {
+        var ticketIds = ids.Split(",").ToList();
+        var tickets = await _context.Tickets
+            .Include(t => t.Trip)
+                .ThenInclude(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+            .Include(t => t.Trip)
+                .ThenInclude(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
+            .Include(t => t.Seat)
+            .Include(t => t.User)
+            .Where(t => ticketIds.Contains(t.Id))
+            .ToListAsync();
+
+        if (tickets == null || tickets.Count == 0)
+            return NotFound();
+
+        return View("Details", tickets);
     }
 }

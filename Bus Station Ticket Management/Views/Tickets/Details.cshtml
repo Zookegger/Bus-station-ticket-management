@@ -1,0 +1,15 @@
+﻿@model List<Bus_Station_Ticket_Management.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Ticket Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ticket Details</h1>
+
+@foreach (var ticket in Model)
+{
+    <partial name="_DetailsPartial" model="ticket" />
+}
+
+<a class="btn btn-outline-secondary mt-3" asp-action="Index">Back to List</a>
