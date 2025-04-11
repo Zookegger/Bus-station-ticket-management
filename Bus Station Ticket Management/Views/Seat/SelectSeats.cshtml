@@ -140,13 +140,12 @@
                     <button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
                 </div>
                 <div id="couponFeedback" class="mt-2"></div>
-                <div class="total-price"></div><strong>Total:</strong> <span id="totalPrice">0đ</span></div>
+                <div class="total-price"><strong>Total:</strong> <span id="totalPrice">0đ</span></div>
                 <input type="hidden" id="totalPriceInput" name="totalPrice" value="0" />
 
             </div>
+            <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
         </div>
-        <!-- Notice: Remove onsubmit attribute from the form since confirmation is handled by the modal -->
-        <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
     </div>
 </form>
 
@@ -168,6 +167,8 @@
                 var confirmationModal = bootstrap.Modal.getInstance(confirmationModalEl);
                 confirmationModal.hide();
                 
+                document.getElementById('totalPriceInput').value = document.getElementById('totalPrice').textContent.replace('đ', '').trim();
+
                 $('#totalPriceInput').val($('#totalPrice').text().replace('đ', '').trim());
 
                 $('#seatForm').submit();
@@ -189,6 +190,9 @@
             function updateTotalPrice() {
                 const total = selectedSeats.length * pricePerSeat;
                 const finalTotal = total - discountedAmount;
+                if (finalTotal < 0) {
+                    finalTotal = 0;
+                }
                 $('#totalPrice').text(finalTotal.toLocaleString('vi-VN') + 'đ');
             }
 
@@ -241,7 +245,7 @@
 
             $('#applyCouponBtn').click(function () {
                 const couponCode = $('#couponCode').val();
-                const tripId = $('input[name="tripId"]').val();
+                const tripId = document.getElementById('tripId').value;
 
                 if (!couponCode) {
                     $('#couponFeedback').html('<div class="text-danger">Please enter a coupon code.</div>');
@@ -257,13 +261,16 @@
                     url: '@Url.Action("ApplyCoupon", "Coupons")',
                     type: "POST",
                     data: {
-                        couponCode: couponCode
+                        couponCode: couponCode,
+                        tripId: tripId,
                     },
                     success: function (response) {
                         if (response.success) {
                             discountedAmount = response.discountedAmount;
-                            $('#couponId').val(response.couponId);
+                            document.getElementById('couponId').value = response.couponId;
                             couponApplied = true;
+
+                            console.log(document.getElementById('couponId'));
 
                             $('#couponFeedback').html(`
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">

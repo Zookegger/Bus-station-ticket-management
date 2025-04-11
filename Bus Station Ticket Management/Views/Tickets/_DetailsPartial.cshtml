@@ -1,12 +1,32 @@
 @model Bus_Station_Ticket_Management.Models.Ticket;
 @using System.Globalization;
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h4 class="card-title">Ticket Info</h4>
-        <hr />
+<div class="modal fade" id="modal-@Model.Id" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelModalLabel">Cancel Ticket</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to cancel your ticket?
+      </div>
+      <div class="modal-footer">
+        <form asp-action="CancelTicket" method="post">
+            <input type="hidden" for="id" name="id" value="@Model.Id">
+            <button type="submit" class="btn btn-danger">Proceed</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <dl class="row">
+
+<div class="card mb-4">
+    <h4 class="card-header">Ticket Info</h4>
+    <div class="card-body">
+        <div class="row">
             @if (Model.User != null)
             {
                 <dt class="col-sm-3">Passenger Name</dt>
@@ -25,18 +45,22 @@
             }
 
             <dt class="col-sm-3">Trip</dt>
-            <dd class="col-sm-9">
-                @Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name<br />
-                Departure: @Model.Trip?.DepartureTime.ToString("f")
-            </dd>
+            <dd class="col-sm-9">@Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name</dd>
+            
+            <dt class="col-sm-3">Departure</dt>
+            <dd class="col-sm-9">@Model.Trip?.DepartureTime.ToString("f")</dd>
 
             <dt class="col-sm-3">Seat Number</dt>
             <dd class="col-sm-9">@Model.Seat?.Number</dd>
 
-            <dt class="col-sm-3">Floor / Row / Column</dt>
-            <dd class="col-sm-9">
-                Floor: @Model.Seat?.Floor, Row: @Model.Seat?.Row, Column: @Model.Seat?.Column
-            </dd>
+            <dt class="col-sm-3">Floor</dt>
+            <dd class="col-sm-9">@Model.Seat?.Floor</dd>
+
+            <dt class="col-sm-3">Row</dt>
+            <dd class="col-sm-9">@Model.Seat?.Row</dd>
+
+            <dt class="col-sm-3">Column</dt>
+            <dd class="col-sm-9">@Model.Seat?.Column</dd>
 
             <dt class="col-sm-3">Booking Date</dt>
             <dd class="col-sm-9">@Model.BookingDate.ToString("f")</dd>
@@ -54,7 +78,7 @@
             @if (Model.IsCanceled)
             {
                 <dt class="col-sm-3">Cancellation Time</dt>
-                <dd class="col-sm-9">@Model.CancelationTime.ToString("f")</dd>
+                <dd class="col-sm-9">@Model.CancelationTime?.ToString("f")</dd>
             }
 
             @* @if (Model.Coupon != null)
@@ -65,7 +89,11 @@
 
             <dt class="col-sm-3">Ticket Price</dt>
             <dd class="col-sm-9">@Model.Trip?.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
-        </dl>
+
+            <div class="btn-group">
+                <a role="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">Cancel Ticket</a>
+            </div>
+        </div>
     </div>
 </div>
 

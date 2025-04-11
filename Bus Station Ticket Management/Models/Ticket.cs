@@ -30,7 +30,7 @@ namespace Bus_Station_Ticket_Management.Models
 
         public bool IsCanceled { get; set; }
 
-        public DateTime CancelationTime { get; set; }
+        public DateTime? CancelationTime { get; set; }
     
         public int? CouponId { get; set; }
         [ForeignKey(nameof(CouponId))]

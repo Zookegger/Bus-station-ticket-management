@@ -21,14 +21,14 @@ namespace Bus_Station_Ticket_Management.Controllers
         public IActionResult Index()
         {
             var ratings = _context.Ratings
-                .Include(r => r.Trip)  
+                .Include(r => r.Trip)
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.StartLocation)
-                .Include(r => r.Trip)  
+                .Include(r => r.Trip)
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
                 .Include(r => r.User)
-                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))  
+                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 .ToList();
 
             return View(ratings);
@@ -38,8 +38,11 @@ namespace Bus_Station_Ticket_Management.Controllers
         {
             var rating = _context.Ratings
                 .Include(r => r.Trip)
-                .ThenInclude(t => t.Route)
-                .ThenInclude(r => r.StartLocation)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
                 .FirstOrDefault(r => r.Id == id);
 
             if (rating == null)
@@ -55,13 +58,11 @@ namespace Bus_Station_Ticket_Management.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Get list of TripIds that the user has already rated
             var ratedTripIds = _context.Ratings
                 .Where(r => r.UserId == userId)
                 .Select(r => r.TripId)
                 .ToList();
 
-            // Get trips that the user hasn't rated yet
             var trips = _context.Trips
                 .Include(t => t.Route)
                     .ThenInclude(r => r.StartLocation)
@@ -70,9 +71,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Where(t => !ratedTripIds.Contains(t.Id))
                 .ToList();
 
-            var tripOptions = trips.Select(t => new {
+            var tripOptions = trips.Select(t => new
+            {
                 Id = t.Id,
-                Display = $"{t.Route.StartLocation.Name} → {t.Route.DestinationLocation.Name}"
+                Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.DepartureTime:dd/MM/yyyy HH:mm}"
             }).ToList();
 
             ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", tripId);
@@ -86,7 +88,8 @@ namespace Bus_Station_Ticket_Management.Controllers
             return View(rating);
         }
 
-        
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TripId,UserId,TripRating,Comment")] Rating rating)
@@ -94,20 +97,25 @@ namespace Bus_Station_Ticket_Management.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             rating.UserId = userId ?? throw new Exception("Unable to get UserId");
 
+            // Check if already rated
             var alreadyRated = _context.Ratings.Any(r => r.UserId == userId && r.TripId == rating.TripId);
-    
-            if (alreadyRated) {
-                ModelState.AddModelError(string.Empty, "Bạn đã đánh giá chuyến đi này rồi.");
+            if (alreadyRated)
+            {
+                ModelState.AddModelError(string.Empty, "You have already rated this trip.");
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !alreadyRated)
             {
                 rating.CreatedAt = DateTime.Now;
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
-                
-                return RedirectToAction("Details", "Trips", new { id = rating.TripId });
+
+                // Stay on the same page with a clean model
+                ModelState.Clear();
+                rating = new Rating { UserId = userId };
             }
+
+            // Get updated trip list for the form
             var ratedTripIds = _context.Ratings
                 .Where(r => r.UserId == userId)
                 .Select(r => r.TripId)
@@ -121,9 +129,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .Where(t => !ratedTripIds.Contains(t.Id))
                 .ToList();
 
-            var tripOptions = trips.Select(t => new {
+            var tripOptions = trips.Select(t => new
+            {
                 Id = t.Id,
-                Display = $"{t.Route.StartLocation.Name} → {t.Route.DestinationLocation.Name}"
+                Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name}"
             }).ToList();
 
             ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", rating.TripId);
@@ -148,7 +157,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .ThenInclude(r => r.DestinationLocation)
                 .ToList();
 
-            var tripOptions = trips.Select(t => new {
+            var tripOptions = trips.Select(t => new
+            {
                 Id = t.Id,
                 Display = $"{t.Route.StartLocation.Name} → {t.Route.DestinationLocation.Name}"
             }).ToList();

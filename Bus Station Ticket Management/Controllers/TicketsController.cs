@@ -25,8 +25,7 @@ public class TicketsController : Controller
         // Lấy thông tin người dùng hiện tại
         var user = await _userManager.GetUserAsync(User);
 
-        if (user == null)
-        {
+        if (user == null) {
             return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập nếu người dùng chưa đăng nhập
         }
 
@@ -45,23 +44,57 @@ public class TicketsController : Controller
         return View(tickets);
     }
 
-    public async Task<IActionResult> Details(string ids) {
-        var ticketIds = ids.Split(",").ToList();
-        var tickets = await _context.Tickets
-            .Include(t => t.Trip)
-                .ThenInclude(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-            .Include(t => t.Trip)
-                .ThenInclude(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-            .Include(t => t.Seat)
-            .Include(t => t.User)
-            .Where(t => ticketIds.Contains(t.Id))
-            .ToListAsync();
+    public async Task<IActionResult> Details(string id)
+    {
+        try {
+            var ticketIds = id.Split(",").ToList();
+            var tickets = await _context.Tickets
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Seat)
+                .Include(t => t.User)
+                .Where(t => ticketIds.Contains(t.Id))
+                .ToListAsync();
 
-        if (tickets == null || tickets.Count == 0)
-            return NotFound();
+            if (tickets == null || tickets.Count == 0)
+                return NotFound();
 
-        return View("Details", tickets);
+            return View("Details", tickets);
+        }
+        catch (Exception ex) {
+            System.Diagnostics.Debug.WriteLine($"\nError: {ex}\n");
+            return NotFound("Error: Cannot find Ticket Id(s)");
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CancelTicket(string id)
+    {
+        try {
+            var ticket = await _context.Tickets
+                .Include(t => t.Seat)
+                .FirstOrDefaultAsync(t => t.Id == id);
+            if (ticket == null) {
+                return NotFound();
+            }
+
+            // Perform cancellation
+            ticket.IsCanceled = true;
+            ticket.CancelationTime = DateTime.Now;
+            ticket.Seat.IsAvailable = true;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Ticket canceled successfully.";
+            return RedirectToAction("MyTickets");
+        }
+        catch (Exception) {
+            TempData["ErrorMessage"] = "There was a problem canceling your ticket.";
+            return RedirectToAction("MyTickets");
+        }
     }
 }

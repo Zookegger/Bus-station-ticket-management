@@ -7,17 +7,17 @@
     <title>@ViewData["Title"] - Bus Station Ticket Management</title>
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Shared/_Layout.cshtml.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/Shared/_Layout.cshtml.css" asp-append-version="true" /> *@
 
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- Select2 Theme -->
+    <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+        
 </head>
 
 <body>
@@ -69,14 +69,17 @@
                 <!-- Right side -->
                 <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4">
                     <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                        <i class="fab fa-facebook d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Facebook</span>
+                        <i class="fab fa-facebook d-inline-flex justify-content-end fa-lg"></i><span
+                            class="d-none d-sm-inline">Facebook</span>
                     </a>
                     <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                        <i class="fab fa-linkedin d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">LinkedIn</span>
+                        <i class="fab fa-linkedin d-inline-flex justify-content-end fa-lg"></i><span
+                            class="d-none d-sm-inline">LinkedIn</span>
                     </a>
                     <a href="mailto:support@example.com"
                         class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                        <i class="fas fa-envelope d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Email</span>
+                        <i class="fas fa-envelope d-inline-flex justify-content-end fa-lg"></i><span
+                            class="d-none d-sm-inline">Email</span>
                     </a>
                 </div>
             </div>
@@ -85,7 +88,7 @@
 
 
     <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>

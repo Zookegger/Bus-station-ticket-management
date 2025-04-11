@@ -41,7 +41,7 @@ else
                     <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@(!ticket.IsPaid ? "✔️" : "❌")</td>
                     <td>@(ticket.IsCanceled ? "✔️" : "❌")</td>
-                    <td>@(ticket.IsCanceled? ticket.CancelationTime.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                    <td>@(ticket.IsCanceled? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</td>
                 </tr>
                 }
         </tbody>

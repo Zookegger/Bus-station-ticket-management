@@ -69,6 +69,7 @@ namespace Bus_Station_Ticket_Management.Controllers
 			return Json(new
 			{
 				success = true,
+				couponId = coupon.Id,
 				discountedAmount = discountAmount,
 				couponType = coupon.DiscountType.ToString(),
 				discountValue = coupon.DiscountAmount,

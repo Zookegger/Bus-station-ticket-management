@@ -1,59 +1,90 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Rating
 
 @{
-    ViewData["Title"] = "Đánh giá chuyến đi";
+    ViewData["Title"] = "Rate Your Trip";
     var tripList = ViewBag.TripList as SelectList;
     var hasTripsToRate = tripList != null && tripList.Any();
 }
 
-<h1>Đánh giá chuyến đi</h1>
+<h1 class="mb-4">Rate Your Trip</h1>
 
 @if (!hasTripsToRate)
 {
     <div class="alert alert-info">
-        Bạn đã đánh giá tất cả các chuyến đi của mình rồi. Cảm ơn bạn rất nhiều! ❤️
+        You've already rated all your trips. Thanks a lot! ❤️
     </div>
-    <a href="@Url.Action("Index", "Ratings")" class="btn btn-secondary">Quay lại danh sách đánh giá</a>
+    <a href="@Url.Action("Index", "Ratings")" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Ratings
+    </a>
 }
 else
 {
     <form asp-action="Create" method="post">
-        <input type="hidden" asp-for="UserId">
+        <input type="hidden" asp-for="UserId" />
 
-        <div class="form-group mt-3">
-            <label asp-for="TripId" class="control-label"></label>
-            <select asp-for="TripId" class="form-control" asp-items="ViewBag.TripList"></select>
+        <div class="form-group mb-3">
+            <label asp-for="TripId" class="form-label">Trip</label>
+            <select asp-for="TripId" class="form-select select2" asp-items="ViewBag.TripList"></select>
             <span asp-validation-for="TripId" class="text-danger"></span>
         </div>
 
-        <div class="form-group mt-3">
-            <label asp-for="TripRating" class="control-label d-block"></label>
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="form-group mb-3">
+            <label asp-for="TripRating" class="form-label d-block">Your Rating</label>
+            <div class="btn-group flex-wrap" role="group">
                 @for (int i = 1; i <= 10; i++)
                 {
-                    <label class="btn btn-outline-primary m-1">
-                        <input type="radio" name="TripRating" value="@i" autocomplete="off" /> @i
-                    </label>
+                    <input type="radio" class="btn-check" name="TripRating" value="@i" id="rate-@i" autocomplete="off" />
+                    <label class="btn btn-outline-primary m-1" for="rate-@i">@i</label>
                 }
             </div>
+            <div id="ratingComment" class="mt-2 text-muted small"></div>
             <span asp-validation-for="TripRating" class="text-danger"></span>
         </div>
 
-        <div class="form-group mt-3">
-            <label asp-for="Comment" class="control-label"></label>
-            <textarea asp-for="Comment" class="form-control"></textarea>
+        <div class="form-group mb-3">
+            <label asp-for="Comment" class="form-label">Comment (optional)</label>
+            <textarea asp-for="Comment" class="form-control" rows="3"></textarea>
             <span asp-validation-for="Comment" class="text-danger"></span>
         </div>
-        <div class="btn-group gap-1 mt-3" role="group" aria-label="Button">
-            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-            <a asp-action="Index" class="btn btn-secondary" role="button">Quay lại</a>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane me-1"></i> Submit
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Cancel
+            </a>
         </div>
     </form>
-
-
 }
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+
+        const comments = {
+            1: { text: "Awful", cls: "text-danger" },
+            2: { text: "Very bad", cls: "text-danger" },
+            3: { text: "Bad", cls: "text-warning" },
+            4: { text: "Below average", cls: "text-warning" },
+            5: { text: "Okay", cls: "text-secondary" },
+            6: { text: "Decent", cls: "text-secondary" },
+            7: { text: "Good", cls: "text-info" },
+            8: { text: "Great", cls: "text-info" },
+            9: { text: "Excellent", cls: "text-success" },
+            10: { text: "Awesome!", cls: "text-success fw-bold" },
+        };
+
+        document.querySelectorAll('input[name="TripRating"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const comment = comments[this.value];
+                const commentDiv = document.getElementById("ratingComment");
+                commentDiv.textContent = comment.text;
+                commentDiv.className = `mt-2 small ${comment.cls}`;
+            });
+        });
+    </script>
 }

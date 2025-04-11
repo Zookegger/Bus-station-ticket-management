@@ -7,14 +7,14 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item dropdown">
-            <a id="manage" class="nav-link dropdown-toggle text-light" id="userDropdown" role="button"
+            <a id="manage" class="nav-link dropdown-toggle text-light gap-1" id="userDropdown" role="button"
                 data-bs-toggle="dropdown">
                 <i class="fa fa-user" style="padding-right: 6px"></i> Account
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li class="dropdown-header" style=" -webkit-user-select: none; /* Safari */
-                                                        -ms-user-select: none; /* IE 10 and IE 11 */
-                                                        user-select: none; /* Standard syntax */">
+                                                            -ms-user-select: none; /* IE 10 and IE 11 */
+                                                            user-select: none; /* Standard syntax */">
                     @{
                         var currentUser = UserManager.GetUserAsync(User).Result;
                         var userName = currentUser?.UserName ?? "Guest";
@@ -22,9 +22,15 @@
                     Hello @userName!
                 </li>
                 <li class="nav-item">
-                    <a class="dropdown-item gap-2" asp-area="Identity"
-                        asp-page="/Account/Manage/Index"><i class="fa fa-user-circle" aria-hidden="true"></i>
+                    <a class="dropdown-item gap-2" asp-area="Identity" asp-page="/Account/Manage/Index"><i
+                            class="fa fa-user-circle" aria-hidden="true"></i>
                         Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="dropdown-item" asp-controller="Tickets" asp-action="MyTickets">
+                        <div class="d-flex align-items-center gap-2"><i class="fa fa-shopping-cart"></i><span>My
+                                Tickets</span></div>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout"
@@ -34,12 +40,6 @@
                                     aria-hidden="true"></i><span>Logout</span></div>
                         </button>
                     </form>
-                </li>
-                <li class="nav-item">
-                    <a class="dropdown-item" asp-controller="Tickets" asp-action="MyTickets">
-                        <div class="d-flex align-items-center gap-2"><i class="fa fa-shopping-cart"></i><span>My
-                                Tickets</span></div>
-                    </a>
                 </li>
             </ul>
         </li>

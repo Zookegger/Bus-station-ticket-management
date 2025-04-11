@@ -1,8 +1,10 @@
 ﻿@model List<Bus_Station_Ticket_Management.Models.Ticket>
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Ticket Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
 }
 
 <h1>Ticket Details</h1>
@@ -12,8 +14,11 @@
     <partial name="_DetailsPartial" model="ticket" />
 }
 
-<a class="btn btn-outline-secondary mt-3" asp-action="Index">Back to List</a>
-
+@if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated) {
+    <a class="btn btn-outline-secondary mt-3" asp-action="MyTickets">Back to List</a>
+} else {
+    <h3>Please screenshot this or save the details to your device.</h3>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

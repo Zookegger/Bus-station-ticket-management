@@ -92,17 +92,21 @@
                             @foreach (var provider in Model.ExternalLogins!)
                             {
                                 var providerLower = provider.Name.ToLower();
+                                if (providerLower == "facebook")
+                                {
+                                    providerLower = "facebook-f";
+                                }
                                 var btnClass = providerLower switch
                                 {
-                                    "facebook" => "btn-outline-primary",
+                                    "facebook-f" => "btn-outline-primary",
                                     "google" => "btn-outline-danger",
                                     _ => "btn-outline-secondary"
                                 };
 
                                 <button type="submit" class="btn w-100 @btnClass d-flex align-items-center gap-2"
                                     name="provider" value="@provider.Name">
-                                    <i class="fa fa-@providerLower" style="font-size: 1.25rem;"></i>
-                                    <span>@provider.DisplayName</span>
+                                    <i class="fa-brands fa-@providerLower" style="font-size: 1.25rem; min-width: 24px"></i>
+                                    <span class="fw-bold">@provider.DisplayName</span>
                                 </button>
                             }
                         </div>
