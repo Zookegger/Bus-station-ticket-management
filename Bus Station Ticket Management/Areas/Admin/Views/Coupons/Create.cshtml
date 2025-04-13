@@ -20,12 +20,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="DiscountType" class="control-label"></label>
-                <select asp-for="DiscountType" class="form-control"></select>
+                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()" asp-items="ViewBag.DiscountType"></select>
                 <span asp-validation-for="DiscountType" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DiscountAmount" class="control-label"></label>
-                <input asp-for="DiscountAmount" class="form-control" />
+                <input asp-for="DiscountAmount" type="number" min="0" id='discountValue' class="form-control" oninput="checkInput()"/>
                 <span asp-validation-for="DiscountAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,8 +39,7 @@
                 <span asp-validation-for="EndPeriod" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IsActive" class="control-label"></label>
-                <input asp-for="IsActive" class="form-control" />
+                <input asp-for="IsActive" type="hidden" class="form-control" />
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -56,4 +55,34 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function updateDiscountType() {
+            const type = document.getElementById('discountType').value;
+            const value = document.getElementById('discountValue');
+
+            if (type == "Percentage") {
+                value.placeholder = "%";
+                value.setAttribute("max", 100);
+            } else {
+                value.placeholder = "VND";
+            }
+
+            console.log(type);
+            console.log(value);
+            window.addEventListener("load", updateDiscountSuffix);
+        }
+
+        function checkInput() {
+            const type = document.getElementById('discountType').value;
+            const value = document.getElementById('discountValue');
+
+            if (type == "Percentage") {
+                if (value.value > 100) {
+                    value.value = 100;
+                }
+            } 
+        }
+
+        updateDiscountType();
+    </script>
 }

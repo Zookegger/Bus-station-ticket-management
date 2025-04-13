@@ -9,6 +9,7 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -39,13 +40,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             // Lấy danh sách vé của người dùng từ cơ sở dữ liệu, bao gồm thông tin về chuyến đi và tuyến đường
             var tickets = await _context.Tickets
                 .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route) // Nạp thông tin về Route
-                    .ThenInclude(route => route.StartLocation) // Nạp thông tin về StartLocation
+                    .ThenInclude(trip => trip.Route)
+                    .ThenInclude(route => route.StartLocation)
                 .Include(t => t.Trip)
                     .ThenInclude(trip => trip.Route)
-                    .ThenInclude(route => route.DestinationLocation) // Nạp thông tin về DestinationLocation
-                .Include(t => t.Seat) // Nạp thông tin về ghế ngồi
-                .Where(t => t.UserId == user.Id) // Lọc theo UserId của người dùng hiện tại
+                    .ThenInclude(route => route.DestinationLocation)
+                .Include(t => t.Seat)
+                .Where(t => t.UserId == user.Id)
                 .ToListAsync();
 
             return View(tickets);
@@ -97,10 +98,87 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, bool? IsPaid, bool? IsCanceled)
         {
-            var applicationDbContext = _context.Tickets.Include(t => t.Seat).Include(t => t.Trip).Include(t => t.User);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 15;
+            int pageNumber = page ?? 1;
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.IsPaid = IsPaid;
+            ViewBag.IsCanceled = IsCanceled;
+            ViewBag.SearchString = searchString;
+
+            searchString = searchString?.ToLower();
+
+            var ticketsQuery = _context.Tickets
+                .Include(t => t.Trip)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.DestinationLocation)
+                .Include(t => t.Seat)
+                .Include(t => t.User)
+                .AsQueryable();
+
+            if (searchString != null)
+            {
+                ticketsQuery = ticketsQuery.Where(t =>
+                    t.BookingDate.Date == DateTime.Parse(searchString) ||
+                    t.GuestName != null && t.GuestName.Contains(searchString.ToLower()) ||
+                    t.GuestEmail != null && t.GuestEmail.Contains(searchString.ToLower()) ||
+                    t.GuestPhone != null && t.GuestPhone.Contains(searchString.ToLower()) ||
+                    t.User != null && t.User.FullName.ToLower().Contains(searchString) ||
+                    t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && t.Trip.Route.StartLocation.Name.ToLower().Contains(searchString) ||
+                    t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && t.Trip.Route.DestinationLocation.Name.ToLower().Contains(searchString) ||
+                    t.Seat != null && t.Seat.Number != null && t.Seat.Number.ToLower().Contains(searchString) ||
+                    t.User != null && t.User.UserName != null && t.User.UserName.ToLower().Contains(searchString) ||
+                    t.User != null && t.User.FullName != null && t.User.FullName.ToLower().Contains(searchString) ||
+                    t.User != null && t.User.PhoneNumber != null && t.User.PhoneNumber.ToLower().Contains(searchString) ||
+                    t.User != null && t.User.Email != null && t.User.Email.ToLower().Contains(searchString)
+                );
+            }
+
+            // Apply sorting based on sortBy parameter
+            ticketsQuery = sortBy switch
+            {
+                "customer_asc" => ticketsQuery.OrderBy(t => t.User != null ? t.User.FullName : string.Empty),
+                "customer_desc" => ticketsQuery.OrderByDescending(t => t.User != null ? t.User.FullName : string.Empty),
+                "trip_StartLocation_asc" => ticketsQuery.OrderBy(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null ? t.Trip.Route.StartLocation.Name : string.Empty),
+                "trip_StartLocation_desc" => ticketsQuery.OrderByDescending(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null ? t.Trip.Route.StartLocation.Name : string.Empty),
+                "trip_DestinationLocation_asc" => ticketsQuery.OrderBy(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null ? t.Trip.Route.DestinationLocation.Name : string.Empty),
+                "trip_DestinationLocation_desc" => ticketsQuery.OrderByDescending(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null ? t.Trip.Route.DestinationLocation.Name : string.Empty),
+                "bookingDate_asc" => ticketsQuery.OrderBy(t => t.BookingDate),
+                "bookingDate_desc" => ticketsQuery.OrderByDescending(t => t.BookingDate),
+                "cancelationTime_asc" => ticketsQuery.OrderBy(t => t.CancelationTime),
+                "cancelationTime_desc" => ticketsQuery.OrderByDescending(t => t.CancelationTime),
+                _ => ticketsQuery,
+            };
+
+            // Apply filtering based on IsPaid and IsCancelled
+            if (IsPaid.HasValue)
+            {
+                ticketsQuery = ticketsQuery.Where(t => t.IsPaid == IsPaid.Value);
+            }
+
+            if (IsCanceled.HasValue)
+            {
+                ticketsQuery = ticketsQuery.Where(t => t.IsCanceled == IsCanceled.Value);
+            }
+
+            // Retrieve total count for pagination
+            int totalCount = await ticketsQuery.CountAsync();
+
+            // Apply pagination
+
+
+            var tickets = await ticketsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return View(tickets.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/Tickets/Details/5
@@ -111,44 +189,22 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets
-                .Include(t => t.Seat)
+            var ticket = await _context.Tickets.Include(t => t.Trip)
                 .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.DestinationLocation)
+                .Include(t => t.Seat)
                 .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id);
+                
             if (ticket == null)
             {
                 return NotFound();
             }
 
-            return View(ticket);
-        }
-
-        // GET: Admin/Tickets/Create
-        public IActionResult Create()
-        {
-            ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id");
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
-        }
-
-        // POST: Admin/Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,TripId,SeatId,BookingDate,IsPaid,IsCanceled,CancelationTime")] Ticket ticket)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id", ticket.SeatId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", ticket.TripId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticket.UserId);
             return View(ticket);
         }
 
@@ -160,14 +216,22 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets.Include(t => t.Trip)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.StartLocation)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                        .ThenInclude(route => route.DestinationLocation)
+                .Include(t => t.Seat)
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();
             }
-            ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id", ticket.SeatId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", ticket.TripId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticket.UserId);
+
             return View(ticket);
         }
 
@@ -176,7 +240,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,TripId,SeatId,BookingDate,IsPaid,IsCanceled,CancelationTime")] Ticket ticket)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,TripId,SeatId,BookingDate,IsPaid")] Ticket ticket)
         {
             if (id != ticket.Id)
             {

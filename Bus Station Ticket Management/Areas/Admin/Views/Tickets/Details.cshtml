@@ -1,60 +1,71 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Ticket
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Ticket Details";
 }
 
-<h1>Details</h1>
+<h1 class="text-primary fw-bold mb-4">Ticket Details</h1>
 
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Trip)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Trip.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Seat)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Seat.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BookingDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BookingDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPaid)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsCanceled)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsCanceled)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CancelationTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CancelationTime)
-        </dd>
-    </dl>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3 fw-semibold text-muted">Customer</dt>
+            <dd class="col-sm-9">@Model.User?.FullName (@Model.User?.Email)</dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Trip</dt>
+            <dd class="col-sm-9">
+                <span>@Model.Trip?.Route?.StartLocation?.Name ➞ @Model.Trip?.Route?.DestinationLocation?.Name</span>
+                <small class="text-muted">(Trip ID: @Model.Trip?.Id)</small>
+            </dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Seat</dt>
+            <dd class="col-sm-9">
+                <span>#@Model.Seat?.Number</span>
+                <small class="text-muted">(ID: @Model.Seat?.Id)</small>
+            </dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Booking Date</dt>
+            <dd class="col-sm-9">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Paid</dt>
+            <dd class="col-sm-9">
+                @if (Model.IsPaid)
+                {
+                    <span class="badge bg-success">Yes</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">No</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Canceled</dt>
+            <dd class="col-sm-9">
+                @if (Model.IsCanceled)
+                {
+                    <span class="badge bg-warning text-dark">Yes</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">No</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3 fw-semibold text-muted">Cancellation Time</dt>
+            <dd class="col-sm-9">
+                @(Model.CancelationTime.HasValue 
+                    ? Model.CancelationTime.Value.ToString("dd/MM/yyyy HH:mm:ss") 
+                    : "—")
+            </dd>
+        </dl>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="mt-4 d-flex justify-content-between">
+    <a asp-action="Index" role="button" class="btn btn-outline-secondary">
+        <i class="fa fa-arrow-left me-1"></i> Back to List
+    </a>
+    <a asp-action="Edit"  role="button" asp-route-id="@Model?.Id" class="btn btn-outline-primary">
+        <i class="fa fa-edit me-1"></i> Edit
+    </a>
 </div>

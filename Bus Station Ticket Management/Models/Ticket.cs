@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Station_Ticket_Management.Models
@@ -13,13 +14,15 @@ namespace Bus_Station_Ticket_Management.Models
         public ApplicationUser? User { get; set; }
 
         public int TripId { get; set; }
-        [ForeignKey(nameof(TripId))]
-        public Trip Trip { get; set; }
+        [ForeignKey(nameof(TripId))] 
+        [ValidateNever]
+        public Trip? Trip { get; set; }
 
         [Required(ErrorMessage = "Seat number is required")]
         public int SeatId { get; set; }
         [ForeignKey(nameof(SeatId))]
-        public Seat Seat { get; set; }
+        [ValidateNever]
+        public Seat? Seat { get; set; }
 
         public DateTime BookingDate { get; set; }
 

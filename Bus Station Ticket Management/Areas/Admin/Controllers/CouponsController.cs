@@ -97,6 +97,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Admin/Coupons/Create
         public IActionResult Create()
         {
+            ViewBag.DiscountType = new SelectList(
+                Enum.GetValues(typeof (DiscountType))
+                .Cast<DiscountType>()
+                .Select(dt => new {
+                    Value = dt,
+                    Text = dt.ToString()
+                }),
+                "Value", "Text");
             return View();
         }
 

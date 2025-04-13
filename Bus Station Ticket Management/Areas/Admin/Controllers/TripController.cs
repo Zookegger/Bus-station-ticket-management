@@ -54,9 +54,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 tripsQuery = tripsQuery.Where(t =>
-                    t.Route.StartLocation.Name.Contains(searchString) ||
-                    t.Route.DestinationLocation.Name.Contains(searchString) ||
-                    t.Vehicle.Name.Contains(searchString));
+                    t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                    t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                    t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                );
             }
 
             // Apply sorting based on sortBy parameter
