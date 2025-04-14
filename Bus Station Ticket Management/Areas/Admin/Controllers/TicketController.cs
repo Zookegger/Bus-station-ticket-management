@@ -81,14 +81,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(t => t.Seat);  // Bao gồm thông tin ghế trong vé
 
             // Tính tổng doanh thu và số lượng vé
-            var totalRevenue = await query.SumAsync(t => t.Trip.TotalPrice); // Tính tổng giá trị vé
+            var totalRevenue = await query.SumAsync(t => t.TotalPrice); // Tính tổng giá trị vé
             var totalTickets = await query.CountAsync();  // Đếm số lượng vé
 
             // Lưu giá trị vào ViewBag để hiển thị trên view
             ViewBag.TotalRevenue = totalRevenue;
             ViewBag.TotalTickets = totalTickets;
-            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");  // Gán lại giá trị từDate cho ViewBag
-            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");  // Gán lại giá trị toDate cho ViewBag
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd"); 
 
             // Lấy danh sách vé sau khi đã lọc
             var tickets = await query.ToListAsync();
@@ -112,7 +112,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             var ticketsQuery = _context.Tickets
                 .Include(t => t.Trip)
-                .Include(t => t.Trip)
                     .ThenInclude(trip => trip.Route)
                         .ThenInclude(route => route.StartLocation)
                 .Include(t => t.Trip)
@@ -122,22 +121,25 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(t => t.User)
                 .AsQueryable();
 
+
             if (searchString != null)
             {
-                ticketsQuery = ticketsQuery.Where(t =>
-                    t.BookingDate.Date == DateTime.Parse(searchString) ||
-                    t.GuestName != null && t.GuestName.Contains(searchString.ToLower()) ||
-                    t.GuestEmail != null && t.GuestEmail.Contains(searchString.ToLower()) ||
-                    t.GuestPhone != null && t.GuestPhone.Contains(searchString.ToLower()) ||
-                    t.User != null && t.User.FullName.ToLower().Contains(searchString) ||
-                    t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && t.Trip.Route.StartLocation.Name.ToLower().Contains(searchString) ||
-                    t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && t.Trip.Route.DestinationLocation.Name.ToLower().Contains(searchString) ||
-                    t.Seat != null && t.Seat.Number != null && t.Seat.Number.ToLower().Contains(searchString) ||
-                    t.User != null && t.User.UserName != null && t.User.UserName.ToLower().Contains(searchString) ||
-                    t.User != null && t.User.FullName != null && t.User.FullName.ToLower().Contains(searchString) ||
-                    t.User != null && t.User.PhoneNumber != null && t.User.PhoneNumber.ToLower().Contains(searchString) ||
-                    t.User != null && t.User.Email != null && t.User.Email.ToLower().Contains(searchString)
-                );
+                if (DateTime.TryParse(searchString, out DateTime searchByDateTime)) {
+                    ticketsQuery = ticketsQuery.Where(t => t.BookingDate == searchByDateTime);
+                } else {
+                    ticketsQuery = ticketsQuery.Where(t =>
+                        t.GuestName != null && t.GuestName.ToLower().Contains(searchString) ||
+                        t.GuestEmail != null && t.GuestEmail.ToLower().Contains(searchString) ||
+                        t.GuestPhone != null && t.GuestPhone.ToLower().Contains(searchString) ||
+                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && t.Trip.Route.StartLocation.Name.ToLower().Contains(searchString) ||
+                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && t.Trip.Route.DestinationLocation.Name.ToLower().Contains(searchString) ||
+                        t.Seat != null && t.Seat.Number != null && t.Seat.Number.ToLower().Contains(searchString) ||
+                        t.User != null && t.User.UserName != null && t.User.UserName.ToLower().Contains(searchString) ||
+                        t.User != null && t.User.FullName != null && t.User.FullName.ToLower().Contains(searchString) ||
+                        t.User != null && t.User.PhoneNumber != null && t.User.PhoneNumber.ToLower().Contains(searchString) ||
+                        t.User != null && t.User.Email != null && t.User.Email.ToLower().Contains(searchString)
+                    );
+                }
             }
 
             // Apply sorting based on sortBy parameter
@@ -171,8 +173,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             int totalCount = await ticketsQuery.CountAsync();
 
             // Apply pagination
-
-
             var tickets = await ticketsQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

@@ -4,24 +4,43 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-        <p>
-            This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these
-                docs</a> for how to configure a real email sender.
-            Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your
-                account</a>
-        </p>
-    }
-    else
-    {
-        <p>
-            Please check your email to confirm your account.
-        </p>
-    }
-}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow rounded-4">
+                <div class="card-header bg-success-subtle border-0 text-center">
+                    <h2 class="mb-0"><i class="fa fa-envelope-circle-check text-success me-2"></i>@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body fs-5 text-center">
+
+                    @if (Model.DisplayConfirmAccountLink)
+                    {
+                        <p>
+                            <i class="fa fa-triangle-exclamation text-warning me-2"></i>
+                            This app does not currently have a real email sender registered. See 
+                            <a href="https://aka.ms/aspaccountconf" target="_blank">these docs</a> to configure one.
+                        </p>
+                        <p>
+                            <i class="fa fa-link me-2 text-secondary"></i>
+                            Normally, a confirmation link would be emailed to you. For now, click here to confirm:
+                        </p>
+                        <a id="confirm-link" class="btn btn-outline-primary px-4" href="@Model.EmailConfirmationUrl">
+                            <i class="fa fa-check-circle me-2"></i>Confirm Your Account
+                        </a>
+                    }
+                    else
+                    {
+                        <p>
+                            <i class="fa fa-envelope me-2 text-success"></i>
+                            Please check your email to confirm your account.
+                        </p>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <!-- Optional: put any page-specific scripts here -->

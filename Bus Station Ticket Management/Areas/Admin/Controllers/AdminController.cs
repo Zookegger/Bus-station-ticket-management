@@ -25,7 +25,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Driver
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -41,6 +41,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
 
             // Await the GetUsersInRoleAsync method to get the count of users in the "Customer" role
+            if (string.IsNullOrEmpty(userRole.Name))
+            {
+                return NotFound("Error: Role name is null or empty");
+            }
+
             var userCount = await _userManager.GetUsersInRoleAsync(userRole.Name);
 
             var tripCount = await _context.Trips.CountAsync();

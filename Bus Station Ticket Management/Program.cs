@@ -124,6 +124,16 @@ using (var scope = app.Services.CreateScope())
         await roleManager.CreateAsync(new IdentityRole("Employee"));
     }
 
+    if (!await roleManager.RoleExistsAsync("Conductor"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Conductor"));
+    }
+
+    if (!await roleManager.RoleExistsAsync("Driver"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Driver"));
+    }
+
     if (!await roleManager.RoleExistsAsync("Customer"))
     {
         await roleManager.CreateAsync(new IdentityRole("Customer"));
@@ -173,18 +183,17 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseEndpoints(endpoints =>
-{
-    // Area route
-    endpoints.MapControllerRoute(
-        name: "areas",
-        pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+// Area route
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}"
+);
 
-    // Default route
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+// Default route
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.MapStaticAssets();
 app.MapRazorPages();

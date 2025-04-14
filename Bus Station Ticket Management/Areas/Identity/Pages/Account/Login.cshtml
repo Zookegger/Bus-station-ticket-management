@@ -22,23 +22,29 @@
                     </div>
                 }
 
-                <div class="form-floating mb-3 ">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                        placeholder="name@example.com" />
-                    <label asp-for="Input.Email">Email</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
+                    <div class="form-floating flex-grow-1">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                            placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                    </div>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
 
-                <div class="form-floating mb-3 position-relative">
-                    <input asp-for="Input.Password" class="form-control" type="password" id="passwordInput"
-                        autocomplete="current-password" placeholder="password" />
-                    <label asp-for="Input.Password">Password</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
+                    <div class="form-floating flex-grow-1 position-relative">
+                        <input asp-for="Input.Password" class="form-control" type="password" id="passwordInput"
+                            autocomplete="current-password" placeholder="password" />
+                        <label asp-for="Input.Password">Password</label>
+                        <button type="button"
+                            class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                            onclick="togglePasswordVisibility()" tabindex="-1">
+                            <i id="eyeIcon" class="fa fa-eye"></i>
+                        </button>
+                    </div>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    <button type="button"
-                        class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
-                        onclick="togglePasswordVisibility()" tabindex="-1">
-                        <i id="eyeIcon" class="fa fa-eye"></i>
-                    </button>
                 </div>
 
                 <div class="form-check mb-3">

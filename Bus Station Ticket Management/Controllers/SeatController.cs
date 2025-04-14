@@ -33,6 +33,8 @@ namespace Bus_Station_Ticket_Management.Controllers
         [Route("Seat/SelectSeats", Name = "DefaultSelectSeats")]
         public async Task<IActionResult> SelectSeats(int VehicleId, int TripId)
         {
+            TempData.Keep();
+
             // Kiểm tra Trip và Bus có tồn tại không
             var trip = await _context.Trips
                 .Include(t => t.Vehicle)
@@ -53,7 +55,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             }
 
             var seats = await _context.Seats
-                .Where(s => s.Trip.VehicleId == VehicleId)
+                .Where(s => s.Trip.VehicleId == VehicleId && s.Trip.Id == TripId)
                 .OrderBy(s => s.Floor)
                 .ThenBy(s => s.Row)
                 .ThenBy(s => s.Column)
@@ -100,52 +102,62 @@ namespace Bus_Station_Ticket_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId)
         {
-
-            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0) {
+            if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0)
+            {
                 TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
-            if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated) {
+            if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated)
+            {
                 userId = _userManager.GetUserId(User);
             }
 
-            if (userId == null) {
-                if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestEmail) || string.IsNullOrEmpty(guestPhone)) {
-                    TempData["Error"] = "Please fill out your information";
+            if (userId == null)
+            {
+                if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestEmail) || string.IsNullOrEmpty(guestPhone))
+                {
+                    TempData["Error"] = "Please fill out your information.";
                     return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
                 }
             }
 
             var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
-            if (seatIds.Count != numberOfTickets) {
-                TempData["Error"] = "Number of seats doesn't match number of tickets.";
+            if (seatIds.Count != numberOfTickets)
+            {
+                TempData["Error"] = "Number of seats doesn't match the number of tickets.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
             }
 
-            try {
-                // Updated code to fix CS8602: Dereference of a possibly null reference.
+            try
+            {
                 var seats = await _context.Seats
-                    .Where(s => 
-                        seatIds.Contains(s.Id) && 
-                        s.TripId == TripId && 
-                        s.Trip != null && 
+                    .Include(s => s.Trip)
+                    .Where(s =>
+                        seatIds.Contains(s.Id) &&
+                        s.TripId == TripId &&
+                        s.Trip != null &&
                         s.Trip.VehicleId == VehicleId)
                     .ToListAsync();
 
                 var bookedSeats = seats.Where(s => !s.IsAvailable).ToList();
-                if (bookedSeats.Any()) {
+                if (bookedSeats.Any())
+                {
                     TempData["Error"] = "These seats are already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
                     return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
                 }
+
                 List<string> ticketIds = new List<string>();
 
-                using (var transaction = await _context.Database.BeginTransactionAsync()) {
-                    foreach (var seat in seats) {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    foreach (var seat in seats)
+                    {
                         seat.IsAvailable = false;
 
-                        var ticket = new Ticket {
+                        var ticket = new Ticket
+                        {
                             Id = Guid.NewGuid().ToString(),
                             TripId = TripId,
                             SeatId = seat.Id,
@@ -167,17 +179,21 @@ namespace Bus_Station_Ticket_Management.Controllers
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
+
                 TempData["Success"] = "Successfully booked seat!";
                 string ticketIdsList = string.Join(",", ticketIds);
-                return RedirectToAction("Details", "Tickets", new { id = ticketIdsList });
+
+                // Redirect to the SelectSeats view with TempData
+                TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
-            catch (DbUpdateException ex) {
+            catch (DbUpdateException ex)
+            {
                 System.Diagnostics.Debug.WriteLine($"\nError: {ex}\n");
                 TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
             }
         }
-
 
         private bool SeatExists(int id)
         {

@@ -23,7 +23,7 @@ else
                 <th>Paid</th>
                 <th>Canceled</th>
                 <th>Cancellation Time</th>
-                <th>User</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -42,17 +42,8 @@ else
                     <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@(ticket.IsPaid ? "✔️" : "❌")</td>
                     <td>@(ticket.IsCanceled ? "✔️" : "❌")</td>
-                    <td>@(ticket.IsCanceled? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(ticket.UserId) && ticket.UserId.StartsWith("Guest_"))
-                        {
-                            <span>Guest: @ticket.GuestName</span>
-                        }
-                        else
-                        {
-                            <span>@ticket.User?.FullName</span>
-                        }
-                    </td>
+                    <td>@(ticket.IsCanceled ? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                    <td>@(ticket.IsCanceled ? "Cancelled" : @ticket.Trip.Status)</td>
                 </tr>
             }
         </tbody>

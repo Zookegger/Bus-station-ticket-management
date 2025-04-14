@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let createButton = document.getElementById("submit");
     let specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
+    console.log(createButton);
+
     function checkPasswordRequirements() {
         if (password.value.length < 8) {
             passwordError.textContent = "Password must be 8 character long";
@@ -17,13 +19,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function validatePasswords() {
+        let valid = true;
+
         if (password.value !== confirmPassword.value || password.value === "") {
             passwordConfirmError.textContent = "Password do not match";
-            createButton.disabled = true;
+            valid = false;
         } else {
             passwordConfirmError.textContent = "";
-            createButton.disabled = false;
         }
+        createButton.disabled = !valid;
     }
 
     password.addEventListener("input", checkPasswordRequirements);

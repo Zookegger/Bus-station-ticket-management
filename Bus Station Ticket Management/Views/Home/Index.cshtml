@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home";
+    var now = DateTime.Now;
 }
 @model List<Bus_Station_Ticket_Management.Models.Trip>
 
@@ -31,11 +32,10 @@
 
     <div class="container">
         <h2 class="mb-4">🚍 Popular Trips</h2>
-
-        @if (Model.Any(t => t.Status == "Stand By"))
+        @if (Model != null && Model.Any(t => t.Status == "Stand By" && t.DepartureTime > now))
         {
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                @foreach (var trip in Model.Where(t => t.Status == "Stand By"))
+                @foreach (var trip in Model)
                 {
                     <div class="col">
                         <div class="card h-100 shadow-sm trip-card border-0">
@@ -67,6 +67,7 @@
                         }
             </div>
         }
+
         else
         {
             <p class="text-muted">No trips available at the moment.</p>

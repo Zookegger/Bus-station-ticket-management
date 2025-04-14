@@ -19,25 +19,37 @@
                     <h2 class="h4 mb-3 border-bottom pb-2">Create a new account.</h2>
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control" placeholder="name@example.com"
-                            autocomplete="username" aria-required="true" />
-                        <label asp-for="Input.Email">Email</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
+                        <div class="form-floating flex-grow-1">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                                placeholder="name@example.com" aria-required="true" />
+                            <label asp-for="Input.Email">Email</label>
+                        </div>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Password" class="form-control" placeholder="password"
-                            autocomplete="new-password" aria-required="true" />
-                        <label asp-for="Input.Password">Password</label>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
+                        <div class="form-floating flex-grow-1 position-relative">
+                            <input asp-for="Input.Password" class="form-control" id="Password" placeholder="password"
+                                autocomplete="new-password" aria-required="true" />
+                            <label asp-for="Input.Password">Password</label>
+                            <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                                onclick="togglePasswordVisibility()" tabindex="-1">
+                                <i id="eyeIcon" class="fa fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
+                        <span asp-validation-for="Input.Password" class="text-danger" id="PasswordError"></span>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="password"
-                            autocomplete="new-password" aria-required="true" />
+                        <input asp-for="Input.ConfirmPassword" id="ConfirmPassword" class="form-control"
+                            placeholder="password" autocomplete="new-password" aria-required="true" />
                         <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"
+                            id="PasswordConfirmError"></span>
                     </div>
 
                     <div class="form-floating mb-3">
@@ -72,12 +84,12 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" />
+                        <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" required/>
                         <label asp-for="Input.DateOfBirth">Date Of Birth</label>
                         <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
                     </div>
 
-                    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                    <button type="submit" id="submit" disabled class="w-100 btn btn-lg btn-primary">Register</button>
                 </form>
             </section>
 
@@ -118,4 +130,20 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("Password");
+            const eyeIcon = document.getElementById("eyeIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+    <script src="~/js/password.js"></script>
 }

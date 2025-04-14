@@ -9,13 +9,36 @@
 <div class="error">
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger">@TempData.Peek("Error")</div>
     }
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success">
+            @TempData.Peek("Success")
+            @if (TempData["RedirectAfterDelay"] != null && (bool)TempData["RedirectAfterDelay"])
+            {
+                <span><br>Redirecting in <span id="countdown">5</span> seconds...</span>
+            }
+        </div>
     }
 </div>
+
+<script>
+    const countdownElement = document.getElementById('countdown');
+    if (countdownElement) {
+        let countdown = 5; // 5 seconds
+
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(timer);
+                window.location.href = '@Url.Action("MyTickets", "Tickets")';
+            }
+        }, 1000); // Update every second
+    }
+</script>
 
 <!-- Bootstrap 5 Confirmation Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">

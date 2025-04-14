@@ -60,7 +60,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     u.FullName.Contains(searchString) ||
                     u.UserName.Contains(searchString) ||
                     u.Email.Contains(searchString) ||
-                    u.PhoneNumber.Contains(searchString));
+                    u.PhoneNumber.Contains(searchString)
+                );
             }
 
             // Sorting
@@ -126,6 +127,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FullName,Address,Gender,DateOfBirth,UserName,Email,PhoneNumber")] ApplicationUser applicationUser, string Password, string selectedRole)
         {
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
@@ -193,12 +195,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-    string id,
-    [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser,
-    string SelectedRole,
-    string NewPassword)
+        string id,
+        [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser,
+        string SelectedRole,
+        string? NewPassword)
         {
             if (id != applicationUser.Id)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(applicationUser?.PhoneNumber) && applicationUser?.PhoneNumber?.Length > 11 || applicationUser?.PhoneNumber?.Length < 8) {
+                ModelState.AddModelError("PhoneNumber", "Invalid Phone number!");
+                return View(applicationUser);
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
@@ -207,25 +220,21 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 try
                 {
-                    var user = await _userManager.FindByIdAsync(id);
-                    if (user == null)
-                    {
-                        return NotFound();
-                    }
-
                     // Update user properties
-                    user.UserName = applicationUser.UserName;
-                    user.NormalizedUserName = applicationUser.UserName.ToUpper();
-                    user.Email = applicationUser.Email;
-                    user.NormalizedEmail = applicationUser.Email.ToUpper();
-                    user.FullName = applicationUser.FullName;
-                    user.Address = applicationUser.Address;
-                    user.Gender = applicationUser.Gender;
-                    user.DateOfBirth = applicationUser.DateOfBirth;
-                    user.PhoneNumber = applicationUser.PhoneNumber;
-                    user.LockoutEnabled = applicationUser.LockoutEnabled;
-                    user.LockoutEnd = applicationUser.LockoutEnd;
-                    user.AccessFailedCount = applicationUser.AccessFailedCount;
+                    if (applicationUser != null) {
+                        user.UserName = applicationUser?.UserName;
+                        user.NormalizedUserName = applicationUser?.UserName?.ToUpper();
+                        user.Email = applicationUser?.Email;
+                        user.NormalizedEmail = applicationUser?.Email?.ToUpper();
+                        user.FullName = applicationUser?.FullName ?? "Unknown";
+                        user.Address = applicationUser?.Address;
+                        user.Gender = applicationUser?.Gender ?? "Other";
+                        user.DateOfBirth = applicationUser?.DateOfBirth;
+                        user.PhoneNumber = applicationUser?.PhoneNumber;
+                        user.LockoutEnabled = applicationUser?.LockoutEnabled ?? false;
+                        user.LockoutEnd = applicationUser?.LockoutEnd;
+                        user.AccessFailedCount = applicationUser?.AccessFailedCount ?? 0;
+                    }
 
                     // Update the user
                     var updateResult = await _userManager.UpdateAsync(user);
@@ -266,7 +275,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ApplicationUserExists(applicationUser.Id))
+                    if (applicationUser == null || !ApplicationUserExists(applicationUser.Id))
                     {
                         return NotFound();
                     }
@@ -279,7 +288,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Load roles back in case of error
             ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
-            ViewBag.CurrentRole = (await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(id))).FirstOrDefault();
+            ViewBag.CurrentRole = user != null ? (await _userManager.GetRolesAsync(user)).FirstOrDefault() : null;
 
             return View(applicationUser);
         }

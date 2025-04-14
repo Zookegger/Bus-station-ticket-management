@@ -26,16 +26,15 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var trips = await _context.Trips
-                        .Include(t => t.Route)
-                            .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
-                        .Include(t => t.Route)
-                            .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
-                        .Take(5)
-                        .Where(t => t.Status == "Stand By")
-                        .ToListAsync();
+            .Include(t => t.Route)
+                .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
+            .Include(t => t.Route)
+                .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
+            .Where(t => t.Status == "Stand By" && t.DepartureTime > DateTime.Now)
+            .Take(8)
+            .ToListAsync();
 
         return View(trips);
-
     }
 
     public IActionResult Privacy()

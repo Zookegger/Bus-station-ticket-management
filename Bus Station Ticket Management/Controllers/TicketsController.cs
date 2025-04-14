@@ -39,6 +39,7 @@ public class TicketsController : Controller
                 .ThenInclude(route => route.DestinationLocation) // Nạp thông tin về DestinationLocation
             .Include(t => t.Seat) // Nạp thông tin về ghế ngồi
             .Where(t => t.UserId == user.Id) // Lọc theo UserId của người dùng hiện tại
+            .OrderByDescending(t => t.BookingDate)
             .ToListAsync();
 
         return View(tickets);
