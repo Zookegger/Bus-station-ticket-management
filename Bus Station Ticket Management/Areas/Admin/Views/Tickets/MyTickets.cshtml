@@ -5,45 +5,77 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Your Booked Tickets</h2>
+<h2 class="mb-4">Your Booked Tickets</h2>
 
 @if (Model.Count == 0)
 {
-    <p>You haven't booked any tickets.</p>
+    <div class="alert alert-info">You haven't booked any tickets.</div>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Ticket ID</th>
-                <th>Trip</th>
-                <th>Seat Number</th>
-                <th>Booking Date</th>
-                <th>Paid</th>
-                <th>Canceled</th>
-                <th>Cancellation Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ticket in Model)
-            {
+    <!-- Desktop View: Table -->
+    <div class="d-none d-md-block table-responsive pb-4">
+        <table class="table table-striped align-middle">
+            <thead class="table-success">
                 <tr>
-                    <td>@ticket.Id</td>
-                    <td>
+                    <th>Ticket ID</th>
+                    <th>Trip</th>
+                    <th>Seat Number</th>
+                    <th>Booking Date</th>
+                    <th>Paid</th>
+                    <th>Canceled</th>
+                    <th>Cancellation Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = ticket.Id })">
+                        <td>@ticket.Id</td>
+                        <td>
+                            @(
+                                ticket.Trip?.Route != null
+                                ? (ticket.Trip.Route.StartLocation?.Name + " - " + ticket.Trip.Route.DestinationLocation?.Name)
+                                : "No Route"
+                            )
+                        </td>
+                        <td>@ticket.Seat?.Number</td>
+                        <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(ticket.IsPaid ? "✔️" : "❌")</td>
+                        <td>@(ticket.IsCanceled ? "✔️" : "❌")</td>
+                        <td>@(ticket.IsCanceled ? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile View: Card Layout -->
+    <div class="d-md-none d-flex flex-column gap-3 pb-3">
+        @foreach (var ticket in Model)
+        {
+            <div class="card shadow-sm">
+                <div class="card-body clickable-row" data-href="@Url.Action("Details", new { id = ticket.Id })">
+                    <h5 class="card-title mb-2">Ticket #@ticket.Id</h5>
+                    <p class="mb-1"><strong>Trip:</strong> 
                         @(
                             ticket.Trip?.Route != null
                             ? (ticket.Trip.Route.StartLocation?.Name + " - " + ticket.Trip.Route.DestinationLocation?.Name)
                             : "No Route"
                         )
-                    </td>
-                    <td>@ticket.Seat?.Number</td>
-                    <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@(!ticket.IsPaid ? "✔️" : "❌")</td>
-                    <td>@(ticket.IsCanceled ? "✔️" : "❌")</td>
-                    <td>@(ticket.IsCanceled? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</td>
-                </tr>
-                }
-        </tbody>
-    </table>
+                    </p>
+                    <p class="mb-1"><strong>Seat:</strong> @ticket.Seat?.Number</p>
+                    <p class="mb-1"><strong>Booking Date:</strong> @ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-1"><strong>Paid:</strong> @(ticket.IsPaid ? "✔️" : "❌")</p>
+                    <p class="mb-1"><strong>Canceled:</strong> @(ticket.IsCanceled ? "✔️" : "❌")</p>
+                    <p class="mb-0"><strong>Cancellation Time:</strong> @(ticket.IsCanceled ? ticket.CancelationTime?.ToString("dd/MM/yyyy HH:mm") : "-")</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/table.js"></script>
 }

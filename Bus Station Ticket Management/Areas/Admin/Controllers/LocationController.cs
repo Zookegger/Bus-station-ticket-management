@@ -25,9 +25,18 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
+            ViewBag.SortBy = sortBy;
+            ViewBag.SearchString = searchString;
+            ViewBag.PageNumber = pageNumber;
+
+            searchString = searchString?.Trim().ToLower();
+
             var locations = _context.Locations.AsQueryable();
             if (!string.IsNullOrEmpty(searchString)) {
-                locations = locations.Where(l => l.Name.Contains(searchString));
+                locations = locations.Where(l => 
+                    EF.Functions.Collate(l.Name, "Latin1_General_CI_AI").Contains(searchString) ||
+                    EF.Functions.Collate(l.Address, "Latin1_General_CI_AI").Contains(searchString)
+                );
             }
 
             locations = sortBy switch {
@@ -36,8 +45,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 _ => locations.OrderBy(l => l.Name),
             };
 
-            ViewBag.SortBy = sortBy;
-
+            
             var locationList = await locations.ToListAsync();
 
             return View(locationList.ToPagedList(pageNumber, pageSize));

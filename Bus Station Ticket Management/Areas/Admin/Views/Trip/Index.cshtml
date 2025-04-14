@@ -7,7 +7,7 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/Trip/Index.css">
+    <link rel="stylesheet" href="~/css/Index.css">
 </head>
 
 <h1>Trips</h1>
@@ -68,58 +68,59 @@
         </select>
     </div>
 </form>
-
-<table id="TripTable" class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
-            <th>Status</th>
-            <th>Total Price</th>
-            <th>Route</th>
-            <th>Vehicle</th>
-            <th style="width: 30px">Actions</th>
-        </tr>
-    </thead>
-    <tbody class="table-group=divider">
-        @foreach (var item in Model)
-        {
-            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-                <td>
-                    @Html.DisplayFor(modelItem => item.DepartureTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ArrivalTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) ➞ @Html.DisplayFor(modelItem => item.Route.DestinationLocation.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Vehicle.Name)
-                </td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                            asp-route-id="@item.Id">Edit</a>
-                        <a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
-                            asp-route-id="@item.Id">Delete</a>
-                    </div>
-                </td>
+<div class="table-responsive">
+    <table id="TripTable" class="table table-hover table-striped align-middle">
+        <thead>
+            <tr>
+                <th style="min-width: 200px">Route</th>
+                <th style="min-width: 150px">Vehicle</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th style="width: 30px">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var item in Model)
+            {
+                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) ➞ @Html.DisplayFor(modelItem => item.Route.DestinationLocation.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DepartureTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ArrivalTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                asp-route-id="@item.Id">Edit</a>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
+                                asp-route-id="@item.Id">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
     @if (Model.Any())
     {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, 
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber,
         searchString = ViewBag.SearchString,
         sortBy = ViewBag.SortBy,
         filterBy = ViewBag.FilterBy }),

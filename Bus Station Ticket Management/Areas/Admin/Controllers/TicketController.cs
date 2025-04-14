@@ -128,16 +128,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     ticketsQuery = ticketsQuery.Where(t => t.BookingDate == searchByDateTime);
                 } else {
                     ticketsQuery = ticketsQuery.Where(t =>
-                        t.GuestName != null && t.GuestName.ToLower().Contains(searchString) ||
-                        t.GuestEmail != null && t.GuestEmail.ToLower().Contains(searchString) ||
-                        t.GuestPhone != null && t.GuestPhone.ToLower().Contains(searchString) ||
-                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && t.Trip.Route.StartLocation.Name.ToLower().Contains(searchString) ||
-                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && t.Trip.Route.DestinationLocation.Name.ToLower().Contains(searchString) ||
-                        t.Seat != null && t.Seat.Number != null && t.Seat.Number.ToLower().Contains(searchString) ||
-                        t.User != null && t.User.UserName != null && t.User.UserName.ToLower().Contains(searchString) ||
-                        t.User != null && t.User.FullName != null && t.User.FullName.ToLower().Contains(searchString) ||
-                        t.User != null && t.User.PhoneNumber != null && t.User.PhoneNumber.ToLower().Contains(searchString) ||
-                        t.User != null && t.User.Email != null && t.User.Email.ToLower().Contains(searchString)
+                        t.GuestName != null && EF.Functions.Collate(t.GuestName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.GuestEmail != null && EF.Functions.Collate(t.GuestEmail.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.GuestPhone != null && EF.Functions.Collate(t.GuestPhone.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && EF.Functions.Collate(t.Trip.Route.StartLocation.Name.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && EF.Functions.Collate(t.Trip.Route.DestinationLocation.Name.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.Seat != null && t.Seat.Number != null && EF.Functions.Collate(t.Seat.Number.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.User != null && t.User.UserName != null && EF.Functions.Collate(t.User.UserName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.User != null && t.User.FullName != null && EF.Functions.Collate(t.User.FullName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.User != null && t.User.PhoneNumber != null && EF.Functions.Collate(t.User.PhoneNumber.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
+                        t.User != null && t.User.Email != null && EF.Functions.Collate(t.User.Email.ToLower(), "Latin1_General_CI_AI").Contains(searchString)
                     );
                 }
             }

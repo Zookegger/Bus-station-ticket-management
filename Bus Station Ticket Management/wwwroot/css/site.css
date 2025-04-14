@@ -95,8 +95,7 @@ footer ul {
 	margin: 0 !important;
 }
 
-table thead th,
-.accordion * {
+table thead th {
 	background-color: #20874e !important;
 	color: white !important;
 }
@@ -107,15 +106,6 @@ table tbody td {
 
 .clickable-row {
 	cursor: pointer;
-}
-
-.accordion {
-	display: flex;
-	/* flex-direction: column; */
-}
-
-.accordion .nav-item:not(:first-child) {
-	border-top: 2px solid rgb(3, 109, 50);
 }
 
 .nav-link {
@@ -130,12 +120,6 @@ table tbody td {
 .nav-link:focus,
 .nav-link:active {
 	color: white; /* Ensure text remains readable */
-}
-
-.accordion-body,
-.accordion-collapse > .navbar-nav,
-.accordion-body > .navbar-nav .nav-link {
-	background-color: #fff !important;
 }
 
 .navbar-nav.nav-account .nav-link {
@@ -177,15 +161,6 @@ table tbody td {
 }
 
 @media (max-width: 588px) {
-	.accordion {
-		flex-direction: column;
-		padding-top: 6px;
-	}
-
-	th {
-		font-size: 14px;
-	}
-
 	.form-inline button#logout {
 		margin-top: 6px;
 	}
@@ -196,8 +171,10 @@ table tbody td {
 		width: 100%;
 		justify-content: flex-start;
 	}
-	.accordion-body.navbar-nav {
-		flex-direction: column !important;
+
+	
+	.table th {
+		font-size: 14px !important;
 	}
 }
 
@@ -214,72 +191,9 @@ table tbody td {
 	}
 }
 
-@media (min-width: 800px) {
-	.accordion-container {
-		position: relative; /* Ensures absolute positioning inside */
-	}
-
-	.accordion {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 4px;
-	}
-
-	.accordion-body {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		background: white;
-		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-		min-width: inherit;
-		flex-direction: column;
-		border-radius: 6px;
-		overflow: hidden;
-		z-index: 1000;
-		height: 0;
-		opacity: 0;
-		padding: 0 15px;
-		transition: height 0.1s ease-in-out, opacity 0.1s ease-in-out;
-	}
-
-	/* When the accordion is expanded */
-	.accordion-collapse.show .accordion-body {
-		height: auto;
-		opacity: 1;
-		padding-top: 10px;
-		padding-bottom: 10px;
-	}
-	.accordion-item {
-		position: relative;
-		min-width: 120px;
-		border-radius: 6px;
-	}
-
-	.accordion-item:hover {
-		gap: 15px;
-	}
-
-	.accordion-button {
-		width: 100%;
-		gap: 8px;
-		text-align: left;
-		border: none;
-		background: none;
-		color: white;
-		font-size: var(--global-font-size);
-		transition: font-size 0.125s ease-in-out, font-weight 0.125s ease-in;
-	}
-
-	.accordion-button:hover {
-		font-weight: 600;
-		outline: 2px solid #1d5f29;
-		border-radius: 6px;
-		font-size: calc(var(--global-font-size) + 4px);
-	}
-
-	.accordion-body .navbar-nav {
-		flex-direction: column !important;
+@media (min-width: 1024px) {
+	.table * {
+		font-size: 16px;
 	}
 }
 

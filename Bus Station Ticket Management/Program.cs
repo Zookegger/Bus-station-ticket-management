@@ -186,13 +186,15 @@ app.Use(async (context, next) =>
 // Area route
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}"
+    pattern: "{area:exists}/{controller}/{action}/{id?}",
+    defaults: new { controller = "Home", action = "" }
 );
 
 // Default route
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+    pattern: "{controller}/{action}/{id?}",
+    defaults: new { controller = "Home", action = "Index" }
 );
 
 app.MapStaticAssets();

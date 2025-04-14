@@ -1,0 +1,9 @@
+td {
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 200px;
+}
+
+th {
+    vertical-align: middle;
+}

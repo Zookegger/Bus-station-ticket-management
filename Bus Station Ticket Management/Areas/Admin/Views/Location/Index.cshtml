@@ -62,8 +62,16 @@
 <nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
     @if (Model.Any())
     {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, searchString =
-        ViewBag.SearchString }),
+        @Html.PagedListPager(Model, pageNumber => Url.Action(
+            action: "Index",
+            controller: "Location",
+            values: new
+        {
+            area = "Admin",
+            page = pageNumber,
+            sortBy = ViewBag.SortBy,
+            searchString = ViewBag.SearchString
+        }),
         new PagedListRenderOptions
         {
             UlElementClasses = new[] { "pagination", "justify-content-center" },
@@ -71,9 +79,13 @@
             PageClasses = new[] { "page-link" },
             ActiveLiElementClass = "active",
             LinkToPreviousPageFormat = "&laquo;",
-            LinkToNextPageFormat = "&raquo;"
+            LinkToNextPageFormat = "&raquo;",
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
         })
-        }
+    }
 </nav>
 
 @section Scripts {

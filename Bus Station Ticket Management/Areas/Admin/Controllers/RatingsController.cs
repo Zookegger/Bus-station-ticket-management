@@ -35,6 +35,21 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(ratings);
         }
 
+        public IActionResult MyRatings()
+        {
+            var ratings = _context.Ratings
+                .Include(r => r.Trip)  
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(r => r.Trip)  
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) 
+                .ToList();
+
+            return View(ratings);
+        }
+
         public IActionResult Details(int id)
         {
             var rating = _context.Ratings
