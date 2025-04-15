@@ -26,6 +26,26 @@ namespace Bus_Station_Ticket_Management.DataAccess
                 .HasForeignKey(r => r.DestinationId)
                 .OnDelete(DeleteBehavior.NoAction); // Chặn xóa cascade
 
+            modelBuilder.Entity<Seat>()
+                .HasOne(s => s.Trip)
+                .WithMany()
+                .HasForeignKey(s => s.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // When a Trip is deleted, restrict deletion if it has related Tickets
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Trip)
+                .WithMany()
+                .HasForeignKey(t => t.TripId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent trip deletion if tickets exist
+
+            // When a Seat is deleted, restrict deletion if it has related Tickets
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Seat)
+                .WithMany()
+                .HasForeignKey(t => t.SeatId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent seat deletion if tickets exist
+
             // Định nghĩa quan hệ và tắt xóa cascade
             modelBuilder.Entity<TripDriverAssignment>()
                 .HasOne(tda => tda.Trip)
