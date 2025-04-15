@@ -1,0 +1,44 @@
+@model Bus_Station_Ticket_Management.Models.TripDriverAssignment
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header"><h4>Trip Assignment</h4></div>
+        
+        <form asp-action="Create" class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="TripId" class="control-label">Trip</label>
+                <input asp-for="TripId" class="form-control" type="hidden" />
+                <p class="form-control">@ViewData["TripDisplayName"]</p>
+            </div>
+            <div class="form-group mb-3">
+                <label class="control-label">Vehicle</label>
+                <p class="form-control">@ViewData["TripVehicle"]</p>
+            </div>
+            <div class="form-group mb-3">
+                <label class="control-label">Time</label>
+                <p class="form-control">@ViewData["TripTime"]</p>
+            </div>
+            <!-- Driver Assigment -->
+            <div class="form-group mb-3">
+                <label asp-for="DriverId" class="control-label">Driver</label>
+                <select asp-for="DriverId" class="form-control route-select" asp-items="ViewBag.DriverId"></select>
+            </div>
+            <div class="d-flex gap-3 justify-content-end" role="group" aria-label="Button">
+                <input type="submit" value="Assign" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

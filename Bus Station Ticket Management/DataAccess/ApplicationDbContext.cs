@@ -46,18 +46,19 @@ namespace Bus_Station_Ticket_Management.DataAccess
                 .HasForeignKey(t => t.SeatId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent seat deletion if tickets exist
 
-            // Định nghĩa quan hệ và tắt xóa cascade
-            modelBuilder.Entity<TripDriverAssignment>()
-                .HasOne(tda => tda.Trip)
-                .WithMany(t => t.TripDriverAssignments)
+            // When a Trip is deleted, delete the related TripDriverAssignments
+            modelBuilder.Entity<Trip>()
+                .HasMany(t => t.TripDriverAssignments)
+                .WithOne(tda => tda.Trip)
                 .HasForeignKey(tda => tda.TripId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
+            // When a Driver is deleted, keep the TripDriverAssignment (Driver will become null if nullable)
             modelBuilder.Entity<TripDriverAssignment>()
                 .HasOne(tda => tda.Driver)
                 .WithMany(d => d.TripDriverAssignments)
                 .HasForeignKey(tda => tda.DriverId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Coupon>()
                 .Property(c => c.DiscountAmount)

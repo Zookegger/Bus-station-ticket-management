@@ -57,6 +57,7 @@ public class TicketsController : Controller
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Seat)
+                .Include(t => t.Trip.Vehicle)
                 .Include(t => t.User)
                 .Where(t => ticketIds.Contains(t.Id))
                 .ToListAsync();

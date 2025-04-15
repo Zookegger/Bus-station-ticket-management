@@ -175,52 +175,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid Time!");
             }
 
-            if (ModelState.IsValid)
+            var existingTrip = await _context.Trips.FirstOrDefaultAsync(t =>
+                t.IsTwoWay == trip.IsTwoWay &&
+                t.DepartureTime == trip.DepartureTime &&
+                t.ArrivalTime == trip.ArrivalTime &&
+                t.RouteId == trip.RouteId
+            );
+
+            if (existingTrip != null)
             {
-                trip.Status = "StandBy";
-
-                var vehicle = await _context.Vehicles
-                    .Include(v => v.VehicleType)
-                    .FirstOrDefaultAsync(v => v.Id == trip.VehicleId);
-
-                var route = await _context.Routes
-                    .FirstOrDefaultAsync(r => r.Id == trip.RouteId);
-
-                if (vehicle == null || route == null)
-                    return NotFound();
-
-                int vehiclePrice = vehicle.VehicleType.Price;
-                int routePrice = route.Price;
-
-                int total = (trip.IsTwoWay) ? vehiclePrice + (routePrice * 2) : vehiclePrice + routePrice;
-
-                trip.TotalPrice = total;
-
-                int rows = vehicle.VehicleType.TotalRow;
-                int columns = vehicle.VehicleType.TotalColumn;
-                int floor = vehicle.VehicleType.TotalFlooring;
-
-                _context.Add(trip);
-                await _context.SaveChangesAsync();
-
-                for (int r = 1; r <= rows; r++)
-                {
-                    for (int c = 1; c <= columns; c++)
-                    {
-                        _context.Seats.Add(new Seat
-                        {
-                            Row = r,
-                            Column = c,
-                            Floor = floor,
-                            Number = $"R{r}C{c}",
-                            IsAvailable = true,
-                            TripId = trip.Id
-                        });
-                    }
-                }
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(string.Empty, "Trip already exists!");
             }
 
             var routes = await _context.Routes
@@ -231,7 +195,52 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             ViewBag.RouteId = new SelectList(routes, "Id", "Name", trip.RouteId);
             ViewBag.VehicleId = new SelectList(_context.Vehicles, "Id", "Name", trip.VehicleId);
-            return View(trip);
+
+            if (!ModelState.IsValid)
+            {
+                return View(trip);
+            }
+
+            var vehicle = await _context.Vehicles
+                .Include(v => v.VehicleType)
+                .FirstOrDefaultAsync(v => v.Id == trip.VehicleId);
+
+            var route = await _context.Routes.FirstOrDefaultAsync(r => r.Id == trip.RouteId);
+
+            if (vehicle == null || route == null)
+                return NotFound();
+
+            var vehicleType = vehicle.VehicleType;
+            trip.Status = "StandBy";
+            trip.TotalPrice = trip.IsTwoWay
+                ? vehicleType.Price + (route.Price * 2)
+                : vehicleType.Price + route.Price;
+
+            _context.Trips.Add(trip);
+            await _context.SaveChangesAsync();
+
+            // Generate seats after saving trip
+            var seats = new List<Seat>();
+            for (int r = 1; r <= vehicleType.TotalRow; r++)
+            {
+                for (int c = 1; c <= vehicleType.TotalColumn; c++)
+                {
+                    seats.Add(new Seat
+                    {
+                        Row = r,
+                        Column = c,
+                        Floor = vehicleType.TotalFlooring,
+                        Number = $"R{r}C{c}",
+                        IsAvailable = true,
+                        TripId = trip.Id
+                    });
+                }
+            }
+
+            await _context.Seats.AddRangeAsync(seats);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Create", "TripDriverAssignment", new { tripId = trip.Id });
         }
 
         // GET: Trip/Edit/5
@@ -325,8 +334,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             var trip = await _context.Trips
                 .Include(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (trip == null)
             {
                 return NotFound();
@@ -340,14 +353,39 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var trip = await _context.Trips.FindAsync(id);
-            if (trip != null)
+            try
             {
-                _context.Trips.Remove(trip);
-            }
+                var trip = await _context.Trips.FindAsync(id);
+                if (trip != null)
+                {
+                    _context.Trips.Remove(trip);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException dbEx)
+            {
+                var trip = await _context.Trips
+                    .Include(t => t.Route)
+                    .Include(t => t.Vehicle)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+                System.Diagnostics.Debug.WriteLine($"Trip Deletion Database Error: {dbEx}");
+                ModelState.AddModelError(string.Empty, "Cannot delete this trip because it has related data such as tickets.");
+                return View(trip);
+            }
+            catch (Exception ex)
+            {
+                var trip = await _context.Trips
+                    .Include(t => t.Route)
+                    .Include(t => t.Vehicle)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                // Optional: Log ex.ToString() for diagnostics
+                System.Diagnostics.Debug.WriteLine($"Trip Deletion Exception: {ex}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return View(trip);
+            }
         }
 
         private bool TripExists(int id)

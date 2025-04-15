@@ -93,14 +93,33 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(tripDriverAssignment);
         }
 
-        // GET: Admin/TripDriverAssignment/Create
-        public async Task<IActionResult> Create()
+        // GET: Admin/TripDriverAssignment/Create or Create?tripId=5
+        public async Task<IActionResult> Create(int? tripId)
         {
+            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
+
+            if (tripId != null)
+            {
+                var selectedTrip = await _context.Trips
+                    .Include(t => t.Route).ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
+                    .Include(t => t.Vehicle)
+                    .FirstOrDefaultAsync(t => t.Id == tripId);
+
+                if (selectedTrip == null)
+                    return NotFound($"Cannot find trip with id: {tripId}");
+
+                ViewData["TripId"] = tripId;
+                ViewData["TripDisplayName"] = $"{selectedTrip.Route?.StartLocation?.Name} → {selectedTrip.Route?.DestinationLocation?.Name}";
+                ViewData["TripVehicle"] = $"{selectedTrip.Vehicle?.Name} : {selectedTrip.Vehicle?.LicensePlate}";
+                ViewData["TripTime"] = $"{selectedTrip.DepartureTime:g} → {selectedTrip.DepartureTime:g}";
+                return View("CreateWithPreselectedTrip", new TripDriverAssignment { TripId = tripId.Value });
+            }
+
+            // No preselected trip — show dropdown
             var trips = await _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Route).ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Vehicle)
                 .ToListAsync();
 
@@ -110,8 +129,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
             }).ToList();
 
-            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
+            ViewData["TripSelectList"] = new SelectList(tripSelectList, "Id", "Name");
             return View();
         }
 

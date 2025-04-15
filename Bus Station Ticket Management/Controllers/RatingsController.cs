@@ -20,6 +20,8 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         public IActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var ratings = _context.Ratings
                 .Include(r => r.Trip)
                     .ThenInclude(t => t.Route)
@@ -28,8 +30,16 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
                 .Include(r => r.User)
-                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                .Where(r => r.UserId == userId)
                 .ToList();
+
+            var unratedTrips = _context.Tickets
+            .Include(t => t.Trip)
+            .Where(t => t.UserId == userId)
+            .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
+            .ToList();
+
+            ViewBag.HasUnratedTrips = unratedTrips.Any();
 
             return View(ratings);
         }
@@ -143,27 +153,18 @@ namespace Bus_Station_Ticket_Management.Controllers
         public IActionResult Edit(int id)
         {
             var rating = _context.Ratings
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
                 .FirstOrDefault(r => r.Id == id);
 
             if (rating == null)
             {
                 return NotFound();
             }
-
-            var trips = _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .ToList();
-
-            var tripOptions = trips.Select(t => new
-            {
-                Id = t.Id,
-                Display = $"{t.Route.StartLocation.Name} → {t.Route.DestinationLocation.Name}"
-            }).ToList();
-
-            ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", rating.TripId);
 
             return View(rating);
         }

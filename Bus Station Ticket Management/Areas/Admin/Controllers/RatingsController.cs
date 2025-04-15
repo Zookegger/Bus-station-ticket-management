@@ -37,6 +37,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         public IActionResult MyRatings()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var ratings = _context.Ratings
                 .Include(r => r.Trip)  
                     .ThenInclude(t => t.Route)
@@ -44,8 +46,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(r => r.Trip)  
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
-                .Where(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) 
+                .Where(r => r.UserId == userId) 
                 .ToList();
+
+            var unratedTrips = _context.Tickets
+            .Include(t => t.Trip)
+            .Where(t => t.UserId == userId)
+            .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
+            .ToList();
+
+            ViewBag.HasUnratedTrips = unratedTrips.Any();
 
             return View(ratings);
         }

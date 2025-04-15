@@ -29,66 +29,69 @@
         <div class="row">
             @if (Model.User != null)
             {
-                <dt class="col-sm-3">Passenger Name</dt>
-                <dd class="col-sm-9">@Model.User.FullName</dd>
+                <dt class="col-sm-4">Passenger Name</dt>
+                <dd class="col-sm-8">@Model.User.FullName</dd>
             }
             else
             {
-                <dt class="col-sm-3">Guest Name</dt>
-                <dd class="col-sm-9">@Model.GuestName</dd>
+                <dt class="col-sm-4">Guest Name</dt>
+                <dd class="col-sm-8">@Model.GuestName</dd>
 
-                <dt class="col-sm-3">Guest Email</dt>
-                <dd class="col-sm-9">@Model.GuestEmail</dd>
+                <dt class="col-sm-4">Guest Email</dt>
+                <dd class="col-sm-8">@Model.GuestEmail</dd>
 
-                <dt class="col-sm-3">Guest Phone</dt>
-                <dd class="col-sm-9">@Model.GuestPhone</dd>
+                <dt class="col-sm-4">Guest Phone</dt>
+                <dd class="col-sm-8">@Model.GuestPhone</dd>
             }
 
-            <dt class="col-sm-3">Trip</dt>
-            <dd class="col-sm-9">@Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name</dd>
+            <dt class="col-sm-4">Trip</dt>
+            <dd class="col-sm-8">@Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name</dd>
             
-            <dt class="col-sm-3">Departure</dt>
-            <dd class="col-sm-9">@Model.Trip?.DepartureTime.ToString("f")</dd>
+            <dt class="col-sm-4">Departure</dt>
+            <dd class="col-sm-8">@Model.Trip?.DepartureTime.ToString("f")</dd>
 
-            <dt class="col-sm-3">Seat Number</dt>
-            <dd class="col-sm-9">@Model.Seat?.Number</dd>
+            <dt class="col-sm-4">Seat Number</dt>
+            <dd class="col-sm-8">@Model.Seat?.Number</dd>
 
-            <dt class="col-sm-3">Floor</dt>
-            <dd class="col-sm-9">@Model.Seat?.Floor</dd>
+            <dt class="col-sm-4">Vehicle License Plate</dt>
+            <dd class="col-sm-8">@Model.Trip?.Vehicle.LicensePlate</dd>
 
-            <dt class="col-sm-3">Row</dt>
-            <dd class="col-sm-9">@Model.Seat?.Row</dd>
+            <dt class="col-sm-4">Floor</dt>
+            <dd class="col-sm-8">@Model.Seat?.Floor</dd>
 
-            <dt class="col-sm-3">Column</dt>
-            <dd class="col-sm-9">@Model.Seat?.Column</dd>
+            <dt class="col-sm-4">Row</dt>
+            <dd class="col-sm-8">@Model.Seat?.Row</dd>
 
-            <dt class="col-sm-3">Booking Date</dt>
-            <dd class="col-sm-9">@Model.BookingDate.ToString("f")</dd>
+            <dt class="col-sm-4">Column</dt>
+            <dd class="col-sm-8">@Model.Seat?.Column</dd>
 
-            <dt class="col-sm-3">Is Paid?</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4">Booking Date</dt>
+            <dd class="col-sm-8">@Model.BookingDate.ToString("f")</dd>
+
+            <dt class="col-sm-4">Is Paid?</dt>
+            <dd class="col-sm-8">
                 @(Model.IsPaid ? "Yes" : "No")
             </dd>
 
-            <dt class="col-sm-3">Is Canceled?</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4">Is Canceled?</dt>
+            <dd class="col-sm-8">
                 @(Model.IsCanceled ? "Yes" : "No")
             </dd>
 
             @if (Model.IsCanceled)
             {
-                <dt class="col-sm-3">Cancellation Time</dt>
-                <dd class="col-sm-9">@Model.CancelationTime?.ToString("f")</dd>
+                <dt class="col-sm-4">Cancellation Time</dt>
+                <dd class="col-sm-8">@Model.CancelationTime?.ToString("f")</dd>
             }
 
             @* @if (Model.Coupon != null)
             {
-                <dt class="col-sm-3">Applied Coupon</dt>
-                <dd class="col-sm-9">@Model.Coupon.CouponString</dd>
+                <dt class="col-sm-4">Applied Coupon</dt>
+                <dd class="col-sm-8">@Model.Coupon.CouponString</dd>
             } *@
 
-            <dt class="col-sm-3">Ticket Price</dt>
-            <dd class="col-sm-9">@Model.Trip?.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
+            <dt class="col-sm-4">Ticket Price</dt>
+            <dd class="col-sm-8">@Model.Trip?.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
 
             <div class="btn-group">
                 <a role="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">Cancel Ticket</a>
