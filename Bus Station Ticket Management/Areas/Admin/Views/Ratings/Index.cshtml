@@ -5,29 +5,34 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Rating List</h2>
+<head>
+    <link rel="stylesheet" href="~/css/Index.css">
+</head>
 
-<table id="RatingTable" class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>Trip</th>
-            <th>Trip Date</th>
-            <th>User</th>
-            <th>Rating</th>
-        </tr>
-    </thead>
-    <tbody class="table-group=divider">
-        @foreach (var rating in Model)
-        {
-            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = rating.Id })">
-                <td>@rating.Trip.Route.StartLocation.Name → @rating.Trip.Route.DestinationLocation.Name</td>
-                <td>@rating.Trip.ArrivalTime - @rating.Trip.DepartureTime</td>
-                <td>@rating.User.UserName</td>
-                <td>@rating.TripRating</td>
+<h2>Rating List</h2>
+<div class="table-responsive mb-3">
+    <table id="RatingTable" class="table table-hover table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Trip</th>
+                <th>Trip Date</th>
+                <th>User</th>
+                <th>Rating</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var rating in Model)
+            {
+                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = rating.Id })">
+                    <td>@rating.Trip.Route.StartLocation.Name → @rating.Trip.Route.DestinationLocation.Name</td>
+                    <td>@rating.Trip.ArrivalTime - @rating.Trip.DepartureTime</td>
+                    <td>@rating.User.UserName</td>
+                    <td>@rating.TripRating</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @section Scripts {
     <script src="~/js/table.js"></script>

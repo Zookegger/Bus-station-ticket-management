@@ -5,6 +5,10 @@
     ViewData["Title"] = "Index";
 }
 
+<head>
+    <link rel="stylesheet" href="~/css/Index.css">
+</head>
+
 <h1 class="text-success fw-bold mb-4">Tickets</h1>
 
 <form asp-action="Index" method="get" class="mb-3" role="group">
@@ -70,7 +74,7 @@
 </form>
 
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped align-middle">
         <thead>
             <tr>
                 <th>Customer</th>

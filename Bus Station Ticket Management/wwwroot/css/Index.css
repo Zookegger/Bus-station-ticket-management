@@ -7,3 +7,9 @@ td {
 th {
     vertical-align: middle;
 }
+
+@media (min-width: 1200px) {
+    table td {
+        font-size: 0.875rem !important;
+    }
+}

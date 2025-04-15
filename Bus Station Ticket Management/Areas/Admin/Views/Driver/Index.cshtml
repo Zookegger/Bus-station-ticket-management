@@ -6,6 +6,10 @@
 	Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
+<head>
+    <link rel="stylesheet" href="~/css/Index.css">
+</head>
+
 <h1>Drivers List</h1>
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Add New Driver</a>
@@ -49,72 +53,59 @@
 		</select>
 	</div>
 </form>
-
-<table id="DriversTable" class="table table-hover table-striped">
-	<thead>
-		<tr>
-			<th>
-				FullName
-			</th>
-			<th>
-				Address
-			</th>
-			<th>
-				Drivers License
-			</th>
-			<th>
-				Gender
-			</th>
-			<th>
-				DateOfBirth
-			</th>
-			<th style="max-width: 328px">
-				Email
-			</th>
-			<th>
-				Phone Number
-			</th>
-			<th style="width: 30px">Actions</th>
-		</tr>
-	</thead>
-	<tbody class="table-group=divider">
-		@foreach (var item in Model)
-		{
-			<tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-				<td>
-					@Html.DisplayFor(modelItem => item.FullName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Address)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.LicenseId)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Gender)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.DateOfBirth)
-				</td>
-				<td style="max-width: 328px; word-wrap: break-word; white-space: normal;">
-					@Html.DisplayFor(modelItem => item.Email)
-				</td>
-
-				<td>
-					@Html.DisplayFor(modelItem => item.PhoneNumber)
-				</td>
-				<td>
-					<div class="btn-group" role="group">
-						<a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-							asp-route-id="@item.Id">Edit</a>
-						<a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
-							asp-route-id="@item.Id">Delete</a>
-					</div>
-				</td>
+<div class="table-responsive mb-3">
+	<table id="DriversTable" class="table table-hover table-striped align-middle">
+		<thead class="align-middle">
+			<tr>
+				<th style="min-width: 200px;">FullName</th>
+				<th style="min-width: 250px;">Address</th>
+				<th style="min-width: 150px;">Drivers License</th>
+				<th style="min-width: 100px;">Gender</th>
+				<th>DateOfBirth</th>
+				<th>Email</th>
+				<th>Phone Number</th>
+				<th style="width: 30px">Actions</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody class="table-group=divider">
+			@foreach (var item in Model)
+			{
+				<tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+					<td>
+						@Html.DisplayFor(modelItem => item.FullName)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Address)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.LicenseId)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Gender)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.DateOfBirth)
+					</td>
+					<td style="max-width: 328px; word-wrap: break-word; white-space: normal;">
+						@Html.DisplayFor(modelItem => item.Email)
+					</td>
+
+					<td>
+						@Html.DisplayFor(modelItem => item.PhoneNumber)
+					</td>
+					<td>
+						<div class="btn-group" role="group">
+							<a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+								asp-route-id="@item.Id">Edit</a>
+							<a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
+								asp-route-id="@item.Id">Delete</a>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
 
 <nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
 	@if (Model.Any())
@@ -122,9 +113,9 @@
 		@Html.PagedListPager(Model, pageNumber => Url.Action("Index", new
 		{
 			page = pageNumber,
-			searchString = ViewBag.SearchString,
-			sortBy = ViewBag.SortBy,
-			filterByGender = ViewBag.FilterByGender
+		searchString = ViewBag.SearchString,
+		sortBy = ViewBag.SortBy,
+		filterByGender = ViewBag.FilterByGender
 		}), new PagedListRenderOptions
 		{
 			UlElementClasses = new[] { "pagination", "justify-content-center" },
@@ -134,7 +125,7 @@
 			LinkToPreviousPageFormat = "&laquo;",
 			LinkToNextPageFormat = "&raquo;"
 		})
-	}
+		}
 </nav>
 
 @section Scripts {
