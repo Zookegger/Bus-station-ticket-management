@@ -7,18 +7,23 @@
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
 }
 
-<h1>Ticket Details</h1>
+<a class="btn btn-outline-secondary mb-3" asp-action="MyTickets">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i> <span>Back to List</span>
+</a>
 
-@foreach (var ticket in Model)
-{
-    <partial name="_DetailsPartial" model="ticket" />
-}
+<div class="container pb-3">
+    <h1>Ticket Details</h1>
 
-@if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated) {
-    <a class="btn btn-outline-secondary mt-3" asp-action="MyTickets">Back to List</a>
-} else {
-    <h3>Please screenshot this or save the details to your device.</h3>
-}
+    @foreach (var ticket in Model)
+    {
+        <partial name="_DetailsPartial" model="ticket" />
+    }
+
+    @if (string.IsNullOrEmpty(userId) && User.Identity == null && !User.Identity.IsAuthenticated)
+    {
+        <h3>Please screenshot this or save the details to your device.</h3>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

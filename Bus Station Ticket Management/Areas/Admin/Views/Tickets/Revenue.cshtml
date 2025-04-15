@@ -4,20 +4,20 @@
     ViewData["Title"] = "Revenue Statistics";
 }
 
-<div class="container-fluid">
-    <h2 class="text-success fw-bold mb-4">Revenue Statistics</h2>
+<h2 class="text-success fw-bold mb-4">Revenue Statistics</h2>
 
+<div class="row align-items-end mb-4 justify-content-between gap-4">
     <!-- Filter Form -->
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-md-3">
+    <form method="get" class="row g-3 col-md-9 col-lg-8">
+        <div class="col-md-4">
             <label for="fromDate" class="form-label">From date</label>
             <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label for="toDate" class="form-label">To date</label>
             <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
         </div>
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100">
                 <i class="fa-solid fa-filter"></i> Filter
             </button>
@@ -25,58 +25,56 @@
     </form>
 
     <!-- Statistics Summary -->
-    <div class="row mb-4">
-        <div class="col-md-6 col-xl-4">
-            <div class="card text-bg-info shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fa-solid fa-ticket fa-2x mb-2"></i>
-                    <h5 class="card-title">Total Tickets Sold</h5>
-                    <span class="fs-4 fw-bold">@ViewBag.TotalTickets</span>
-                </div>
+    <div class="d-flex gap-3 justify-content-end col-lg-12 col-xl-3">
+        <div class="card text-bg-info shadow-sm flex-fill" style="min-width: 200px;">
+            <div class="card-body text-center p-3">
+                <i class="fa-solid fa-ticket fa-xl mb-2"></i>
+                <h6 class="card-title mb-1">Total Tickets Sold</h6>
+                <span class="fs-5 fw-bold">@ViewBag.TotalTickets</span>
             </div>
         </div>
 
-        <div class="col-md-6 col-xl-4">
-            <div class="card bg-warning bg-gradient shadow-sm">
-                <div class="card-body text-center text-dark">
-                    <i class="fa-solid fa-coins fa-2x mb-2"></i>
-                    <h5 class="card-title">Total Revenue</h5>
-                    <span class="fs-4 fw-bold">@ViewBag.TotalRevenue.ToString("N0") VND</span>
-                </div>
+        <div class="card bg-warning bg-gradient shadow-sm flex-fill text-dark" style="min-width: 200px;">
+            <div class="card-body text-center p-3">
+                <i class="fa-solid fa-coins fa-xl mb-2"></i>
+                <h6 class="card-title mb-1">Total Revenue</h6>
+                <span class="fs-5 fw-bold">@ViewBag.TotalRevenue.ToString("N0") VND</span>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Tickets Table -->
-    <div class="table-responsive mb-3 shadow rounded">
-        <table class="table table-striped table-hover">
-            <thead>
+
+
+<!-- Tickets Table -->
+<div class="table-responsive mb-3 shadow rounded">
+    <table id="RevenueTable" class="table table-hover table-striped align-middle mb-0">
+        <thead>
+            <tr>
+                <th>Ticket ID</th>
+                <th>Trip</th>
+                <th>Vehicle</th>
+                <th>Seat Number</th>
+                <th>Ticket Price</th>
+                <th>Booking Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
                 <tr>
-                    <th>Ticket ID</th>
-                    <th>Trip</th>
-                    <th>Vehicle</th>
-                    <th>Seat Number</th>
-                    <th>Ticket Price</th>
-                    <th>Booking Date</th>
+                    <td>@ticket.Id</td>
+                    <td>
+                        @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
+                    </td>
+                    <td>@ticket.Trip?.Vehicle?.Name</td>
+                    <td>@ticket.Seat?.Number</td>
+                    <td>@ticket.TotalPrice.ToString("N0") VND</td>
+                    <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var ticket in Model)
-                {
-                    <tr>
-                        <td>@ticket.Id</td>
-                        <td>
-                            @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
-                        </td>
-                        <td>@ticket.Trip?.Vehicle?.Name</td>
-                        <td>@ticket.Seat?.Number</td>
-                        <td>@ticket.TotalPrice.ToString("N0") VND</td>
-                        <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
 
 <!-- Add some optional JS for interactivity (e.g., Bootstrap tooltips) -->

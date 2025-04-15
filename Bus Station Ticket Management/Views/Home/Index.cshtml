@@ -5,7 +5,7 @@
 }
 @model List<Bus_Station_Ticket_Management.Models.Trip>
 
-<div class="pb-4">
+<div class="container pb-4">
     <div class="text-center">
         <h1 class="display-3 fw-bold text-primary">Book Your Bus Ticket Online</h1>
         <p class="lead text-muted">Fast, easy, and secure travel reservations</p>
@@ -30,49 +30,46 @@
 
     <hr class="mb-5">
 
-    <div class="container">
-        <h2 class="mb-4">🚍 Popular Trips</h2>
-        @if (Model != null && Model.Any(t => t.Status == "Stand By" && t.DepartureTime > now))
-        {
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                @foreach (var trip in Model)
-                {
-                    <div class="col">
-                        <div class="card h-100 shadow-sm trip-card border-0">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold text-primary">
-                                    @(trip.Route != null ? (trip.Route.StartLocation?.Name + " → " +
-                                                                trip.Route.DestinationLocation?.Name) : "No Route Info")
-                            </h5>
-                            <p class="card-text text-secondary mb-1">
-                                <i class="fas fa-clock me-1"></i>
-                                <strong>Departure:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
-                            </p>
-                            <p class="card-text text-secondary mb-1">
-                                <i class="fas fa-flag-checkered me-1"></i>
-                                <strong>Arrival:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-                            </p>
-                            <p class="card-text text-success fw-bold mb-3">
-                                <i class="fas fa-money-bill-wave me-1"></i>
-                                Price: @trip.TotalPrice.ToString("N0") VND
-                            </p>
-                            <a asp-area="" asp-controller="Seat" asp-action="SelectSeats"
-                                asp-route-vehicleId="@trip.VehicleId" asp-route-tripId="@trip.Id"
-                                class="btn btn-success w-100">
-                                <i class="fas fa-chair me-1"></i> Select Seat
-                            </a>
-                        </div>
+    <h2 class="mb-4">🚍 Popular Trips</h2>
+    @if (Model != null && Model.Any(t => t.Status == "Stand By" && t.DepartureTime > now))
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var trip in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm trip-card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">
+                                @(trip.Route != null ? (trip.Route.StartLocation?.Name + " → " +
+                                                        trip.Route.DestinationLocation?.Name) : "No Route Info")
+                        </h5>
+                        <p class="card-text text-secondary mb-1">
+                            <i class="fas fa-clock me-1"></i>
+                            <strong>Departure:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                        <p class="card-text text-secondary mb-1">
+                            <i class="fas fa-flag-checkered me-1"></i>
+                            <strong>Arrival:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                        <p class="card-text text-success fw-bold mb-3">
+                            <i class="fas fa-money-bill-wave me-1"></i>
+                            Price: @trip.TotalPrice.ToString("N0") VND
+                        </p>
+                        <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
+                            asp-route-tripId="@trip.Id" class="btn btn-success w-100">
+                            <i class="fas fa-chair me-1"></i> Select Seat
+                        </a>
                     </div>
                 </div>
-                        }
             </div>
-        }
+                }
+        </div>
+    }
 
-        else
-        {
-            <p class="text-muted">No trips available at the moment.</p>
-        }
-    </div>
+    else
+    {
+        <p class="text-muted">No trips available at the moment.</p>
+    }
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

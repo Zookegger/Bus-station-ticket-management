@@ -11,7 +11,7 @@
 
 <h2>Rating List</h2>
 <div class="table-responsive mb-3 shadow rounded">
-    <table id="RatingTable" class="table table-hover table-striped align-middle">
+    <table id="RatingsTable" class="table table-hover table-striped align-middle mb-0">
         <thead>
             <tr>
                 <th>Trip</th>
@@ -24,10 +24,18 @@
             @foreach (var rating in Model)
             {
                 <tr class="clickable-row" data-href="@Url.Action("Details", new { id = rating.Id })">
-                    <td>@rating.Trip.Route.StartLocation.Name → @rating.Trip.Route.DestinationLocation.Name</td>
+                    <td>
+                        <div class="fw-semibold">
+                            @rating.Trip.Route.StartLocation.Name → @rating.Trip.Route.DestinationLocation.Name
+                        </div>
+                    </td>
                     <td>@rating.Trip.ArrivalTime - @rating.Trip.DepartureTime</td>
                     <td>@rating.User.UserName</td>
-                    <td>@rating.TripRating</td>
+                    <td>
+                        <span class="badge bg-warning text-dark fs-6">
+                            @rating.TripRating ★
+                        </span>
+                    </td>
                 </tr>
             }
         </tbody>

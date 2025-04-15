@@ -74,7 +74,7 @@
 </form>
 
 <div class="table-responsive mb-3 shadow rounded">
-    <table class="table table-hover table-striped align-middle">
+    <table class="table table-hover table-striped align-middle mb-0">
         <thead>
             <tr>
                 <th>Customer</th>
@@ -115,12 +115,13 @@
                     </td>
                     <td>
                         <div class="btn-group" role="group">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                                asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i> Edit
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fa fa-edit"></i> 
+                                <span>Edit</span>
                             </a>
                             <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                <i class="fa fa-trash"></i> Delete
+                                <i class="fa fa-trash"></i> 
+                                <span>Delete</span>
                             </a>
                         </div>
                     </td>

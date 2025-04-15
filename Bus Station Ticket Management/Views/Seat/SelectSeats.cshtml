@@ -163,8 +163,8 @@
                     <button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
                 </div>
                 <div id="couponFeedback" class="mt-2"></div>
-                <div class="total-price"><strong>Total:</strong> <span id="totalPrice">0đ</span></div>
-                <input type="hidden" id="totalPriceInput" name="totalPrice" value="0" />
+                <div class="total-price"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
+                <input type="hidden" id="totalPrice" name="totalPrice" value="0" />
 
             </div>
             <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
@@ -190,10 +190,8 @@
                 var confirmationModal = bootstrap.Modal.getInstance(confirmationModalEl);
                 confirmationModal.hide();
                 
-                document.getElementById('totalPriceInput').value = document.getElementById('totalPrice').textContent.replace('đ', '').trim();
-
-                $('#totalPriceInput').val($('#totalPrice').text().replace('đ', '').trim());
-
+                document.getElementById('totalPrice').value = document.getElementById('totalPrice').value;
+                console.log("Total Price: " + document.getElementById('totalPrice').value);
                 $('#seatForm').submit();
             });
 
@@ -216,7 +214,8 @@
                 if (finalTotal < 0) {
                     finalTotal = 0;
                 }
-                $('#totalPrice').text(finalTotal.toLocaleString('vi-VN') + 'đ');
+                $('#totalPriceText').text(finalTotal.toLocaleString('vi-VN') + 'đ');
+                $('#totalPrice').val(finalTotal);
             }
 
             $('.seat.available').click(function () {

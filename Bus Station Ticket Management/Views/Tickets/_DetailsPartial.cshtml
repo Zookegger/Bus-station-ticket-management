@@ -91,7 +91,7 @@
             } *@
 
             <dt class="col-sm-4">Ticket Price</dt>
-            <dd class="col-sm-8">@Model.Trip?.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
+            <dd class="col-sm-8">@Model.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
 
             <div class="btn-group">
                 <a role="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">Cancel Ticket</a>

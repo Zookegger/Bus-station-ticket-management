@@ -18,7 +18,7 @@
 <form asp-action="Index" method="get" class="mb-3">
     <div class="form-group input-group">
         <input type="text" class="form-control" name="searchString" value="@ViewBag.SearchString"
-               placeholder="Search by driver or route..." />
+            placeholder="Search by driver or route..." />
         <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"></i></button>
     </div>
 
@@ -27,21 +27,25 @@
             <option value="" disabled selected>Sort by...</option>
             <optgroup label="Date Assigned">
                 <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc" ? "selected" : null)">Date ↑</option>
-                <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc" ? "selected" : null)">Date ↓</option>
+                <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc" ? "selected" : null)">Date ↓
+                </option>
             </optgroup>
             <optgroup label="Driver">
-                <option value="driver_asc" selected="@(ViewBag.SortBy == "driver_asc" ? "selected" : null)">Driver ↑</option>
-                <option value="driver_desc" selected="@(ViewBag.SortBy == "driver_desc" ? "selected" : null)">Driver ↓</option>
+                <option value="driver_asc" selected="@(ViewBag.SortBy == "driver_asc" ? "selected" : null)">Driver ↑
+                </option>
+                <option value="driver_desc" selected="@(ViewBag.SortBy == "driver_desc" ? "selected" : null)">Driver ↓
+                </option>
             </optgroup>
             <optgroup label="Trip Route">
                 <option value="trip_asc" selected="@(ViewBag.SortBy == "trip_asc" ? "selected" : null)">Route ↑</option>
-                <option value="trip_desc" selected="@(ViewBag.SortBy == "trip_desc" ? "selected" : null)">Route ↓</option>
+                <option value="trip_desc" selected="@(ViewBag.SortBy == "trip_desc" ? "selected" : null)">Route ↓
+                </option>
             </optgroup>
         </select>
     </div>
 </form>
 
-<table id="AssigmentTable" class="table table-hover table-striped align-middle">
+<table id="AssigmentTable" class="table table-hover table-striped align-middle mb-0">
     <thead>
         <tr>
             <th>Trip</th>
@@ -65,8 +69,14 @@
                 </td>
                 <td>
                     <div class="btn-group" role="group">
-                        <a class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fa fa-edit"></i>
+                            <span>Edit</span>
+                        </a>
+                        <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fa fa-trash"></i>
+                            <span>Delete</span>
+                        </a>
                     </div>
                 </td>
             </tr>
