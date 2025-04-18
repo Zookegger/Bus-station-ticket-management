@@ -49,11 +49,11 @@
 
                 <div class="form-check mb-3">
                     <input asp-for="Input.RememberMe" class="form-check-input" />
-                    <label asp-for="Input.RememberMe" class="form-check-label">Remember me</label>
+                    <label asp-for="Input.RememberMe" class="form-check-label prevent-select" >Remember me</label>
                 </div>
 
                 <div class="mb-3">
-                    <a asp-page="./ForgotPassword">Forgot your password?</a>
+                    <a asp-page="./ForgotPassword" class="prevent-select">Forgot your password?</a>
                 </div>
 
                 <div class="d-grid gap-2">

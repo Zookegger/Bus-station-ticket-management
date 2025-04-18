@@ -6,128 +6,126 @@
 
 <link rel="stylesheet" href="~/css/Account/Register.css">
 
-<div class="pb-3">
-    <div class="card shadow mx-auto" style="max-width: 880px;">
-        <div class="card-header bg-success-subtle">
-            <h1 class="mb-0">@ViewData["Title"]</h1>
-        </div>
+<div class="card shadow mx-auto" style="max-width: 880px;">
+    <div class="card-header bg-success-subtle">
+        <h1 class="mb-0">@ViewData["Title"]</h1>
+    </div>
 
-        <div class="d-flex flex-column flex-md-row p-4 gap-4">
-            <!-- Form Column -->
-            <section class="col-12 col-md-8">
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <h2 class="h4 mb-3 border-bottom pb-2">Create a new account.</h2>
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="d-flex flex-column flex-md-row p-4 gap-4">
+        <!-- Form Column -->
+        <section class="col-12 col-md-8">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2 class="h4 mb-3 border-bottom pb-2">Create a new account.</h2>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
-                        <div class="form-floating flex-grow-1">
-                            <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                                placeholder="name@example.com" aria-required="true" />
-                            <label asp-for="Input.Email">Email</label>
-                        </div>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
+                    <div class="form-floating flex-grow-1">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                            placeholder="name@example.com" aria-required="true" />
+                        <label asp-for="Input.Email">Email</label>
                     </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
-                        <div class="form-floating flex-grow-1 position-relative">
-                            <input asp-for="Input.Password" class="form-control" id="Password" placeholder="password"
-                                autocomplete="new-password" aria-required="true" />
-                            <label asp-for="Input.Password">Password</label>
-                            <button type="button"
-                                class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
-                                onclick="togglePasswordVisibility()" tabindex="-1">
-                                <i id="eyeIcon" class="fa fa-eye"></i>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
+                    <div class="form-floating flex-grow-1 position-relative">
+                        <input asp-for="Input.Password" class="form-control" id="Password" placeholder="password"
+                            autocomplete="new-password" aria-required="true" />
+                        <label asp-for="Input.Password">Password</label>
+                        <button type="button"
+                            class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                            onclick="togglePasswordVisibility()" tabindex="-1">
+                            <i id="eyeIcon" class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <span asp-validation-for="Input.Password" class="text-danger" id="PasswordError"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" id="ConfirmPassword" class="form-control"
+                        placeholder="password" autocomplete="new-password" aria-required="true" />
+                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"
+                        id="PasswordConfirmError"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.FullName" class="form-control" placeholder="John Doe" autocomplete="name"
+                        aria-required="true" />
+                    <label asp-for="Input.FullName">Full Name</label>
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="09090232123" autocomplete="tel"
+                        aria-required="true" />
+                    <label asp-for="Input.PhoneNumber">Phone Number</label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Address" class="form-control" placeholder="123 Aladin St"
+                        autocomplete="street-address" aria-required="true" />
+                    <label asp-for="Input.Address">Address</label>
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select asp-for="Input.Gender" class="form-select" aria-required="true">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label asp-for="Input.Gender">Gender</label>
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" required />
+                    <label asp-for="Input.DateOfBirth">Date Of Birth</label>
+                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <button type="submit" id="submit" disabled class="w-100 btn btn-lg btn-primary">Register</button>
+            </form>
+        </section>
+
+        <!-- Social Login Column -->
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <section class="flex-grow-1">
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <h2 class="h5 border-bottom pb-2 mb-3">Or sign up using</h2>
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            var providerLower = provider.Name.ToLower();
+                            if (providerLower == "facebook")
+                            {
+                                providerLower = "facebook-f";
+                            }
+                            var btnClass = providerLower switch
+                            {
+                                "facebook-f" => "btn-outline-primary",
+                                "google" => "btn-outline-danger",
+                                _ => "btn-outline-secondary"
+                            };
+
+                            <button type="submit" class="btn w-100 @btnClass d-flex align-items-center gap-2" name="provider"
+                                value="@provider.Name">
+                                <i class="fa-brands fa-@providerLower" style="font-size: 1.25rem; min-width: 24px"></i>
+                                <span class="fw-bold">@provider.DisplayName</span>
                             </button>
-                        </div>
+                        }
                     </div>
-                        <span asp-validation-for="Input.Password" class="text-danger" id="PasswordError"></span>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.ConfirmPassword" id="ConfirmPassword" class="form-control"
-                            placeholder="password" autocomplete="new-password" aria-required="true" />
-                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"
-                            id="PasswordConfirmError"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.FullName" class="form-control" placeholder="John Doe" autocomplete="name"
-                            aria-required="true" />
-                        <label asp-for="Input.FullName">Full Name</label>
-                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="09090232123"
-                            autocomplete="tel" aria-required="true" />
-                        <label asp-for="Input.PhoneNumber">Phone Number</label>
-                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Address" class="form-control" placeholder="123 Aladin St"
-                            autocomplete="street-address" aria-required="true" />
-                        <label asp-for="Input.Address">Address</label>
-                        <span asp-validation-for="Input.Address" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <select asp-for="Input.Gender" class="form-select" aria-required="true">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <label asp-for="Input.Gender">Gender</label>
-                        <span asp-validation-for="Input.Gender" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" required/>
-                        <label asp-for="Input.DateOfBirth">Date Of Birth</label>
-                        <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
-                    </div>
-
-                    <button type="submit" id="submit" disabled class="w-100 btn btn-lg btn-primary">Register</button>
                 </form>
             </section>
-
-            <!-- Social Login Column -->
-            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-            {
-                <section class="flex-grow-1">
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
-                        method="post">
-                        <h2 class="h5 border-bottom pb-2 mb-3">Or sign up using</h2>
-                        <div class="d-flex flex-column gap-2">
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                var providerLower = provider.Name.ToLower();
-                                if (providerLower == "facebook")
-                                {
-                                    providerLower = "facebook-f";
-                                }
-                                var btnClass = providerLower switch
-                                {
-                                    "facebook-f" => "btn-outline-primary",
-                                    "google" => "btn-outline-danger",
-                                    _ => "btn-outline-secondary"
-                                };
-
-                                <button type="submit" class="btn w-100 @btnClass d-flex align-items-center gap-2"
-                                    name="provider" value="@provider.Name">
-                                    <i class="fa-brands fa-@providerLower" style="font-size: 1.25rem; min-width: 24px"></i>
-                                    <span class="fw-bold">@provider.DisplayName</span>
-                                </button>
-                            }
-                        </div>
-                    </form>
-                </section>
-            }
-        </div>
+        }
     </div>
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -146,4 +144,22 @@
         }
     </script>
     <script src="~/js/password.js"></script>
+    <style>
+        .btn i {
+            font-size: 1.5em;
+        }
+
+        .btn i::before {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex: 1;
+            vertical-align: middle;
+        }
+
+        span.sign-up {
+            flex: 1;
+        }
+    </style>
 }

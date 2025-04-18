@@ -149,7 +149,7 @@ table tbody td {
 	}
 }
 
-@media (min-width: 398px) and (max-width: 426px) {
+@media (min-width: 396px) and (max-width: 467px) {
 	.navbar-brand {
 		font-size: 18px !important;
 	}
@@ -172,8 +172,9 @@ table tbody td {
 		width: 100%;
 		justify-content: flex-start;
 	}
-
 	
+	
+
 	.table th {
 		font-size: 14px !important;
 	}
@@ -233,4 +234,10 @@ table tbody td {
 
 .bg-primary {
     background-color: #20874e !important;
+}
+
+.prevent-select {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }

@@ -5,147 +5,183 @@
     var now = DateTime.Now;
 }
 
-<div class="container pb-4">
+<div class="background-img">
+    <div class="container py-5">
+        @if (!Model.IsSearchResult)
+        {
 
-    @if (!Model.IsSearchResult)
-    {
-        <div class="text-center">
-            <h1 class="display-3 fw-bold text-primary">Book Your Bus Ticket Online</h1>
-            <p class="lead text-muted">Fast, easy, and secure travel reservations</p>
+            <div class="text-center">
+                <h1 class="display-3 fw-bold text-primary" style="text-shadow: 0 2px 5px rgb(78, 78, 78);">Book Your Bus Ticket Online</h1>
+                <p class="lead text-muted fw-bold" style="text-shadow: 0 10px 10px rgba(119, 118, 118, 0.4);">Fast, easy, and secure travel reservations</p>
+            </div>
+        }
+
+        <!-- Hidden Popover Content Template -->
+        <div id="locationPopoverContent" class="d-none px-0 py-0">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control mb-2" id="location-search" placeholder="e.g. Hanoi, Saigon">
+                <label for="location-search" class="form-label">Search Location</label>
+            </div>
+
+            <ul class="list-group" id="location-suggestions" style="max-height: 150px; overflow-y: auto;"></ul>
+            <button class="btn btn-primary btn-sm w-100 mt-3">Select</button>
         </div>
-    }
 
-    <!-- Hidden Popover Content Template -->
-    <div id="departurePopoverContent" class="d-none px-0 py-0">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control mb-2" id="location-search" placeholder="e.g. Hanoi, Saigon">
-            <label for="location-search" class="form-label">Search Location</label>
-        </div>
-        
-        <ul class="list-group" id="location-suggestions" style="max-height: 150px; overflow-y: auto;"></ul>
-        <button class="btn btn-primary btn-sm w-100 mt-3">Select</button>
-    </div>
-
-    <!-- Search Form -->
-    <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-5">
-        <div class="col-8 col-md-4 mb-2 mb-md-0 position-relative">
-            <div class="input-group input-group-lg">
-                <input type="text" name="departure" class="form-control" placeholder="From" required />
-                <button type="button" class="btn btn-outline-secondary" id="popoverDepartureBtn"
-                    data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
-                    data-bs-custom-class="custom-popover">
-                    <i class="fas fa-map-marker-alt mr-2"></i>
+        <!-- Search Form -->
+        <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-md-5">
+            <div class="col-8 col-md-4 mb-md-2 mb-0 position-relative">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="departure" class="form-control" placeholder="From" required />
+                    <button type="button" class="btn btn-secondary" id="popoverDepartureBtn" data-bs-toggle="popover"
+                        data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
+                        data-bs-custom-class="custom-popover">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-8 col-md-4 mb-2 mb-md-0">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="destination" class="form-control" placeholder="To" required />
+                    <button type="button" class="btn btn-secondary" id="popoverDestinationBtn" data-bs-toggle="popover"
+                        data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
+                        data-bs-custom-class="custom-popover">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-8 col-md-4 mb-2 mb-md-0">
+                <input type="date" name="departureTime" class="form-control form-control-lg" placeholder="dd/MM/yyyy"
+                    required />
+            </div>
+            <div class="col-8 col-md-12 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-lg btn-primary w-100">
+                    <i class="fas fa-search"></i> Search
                 </button>
             </div>
-        </div>
-        <div class="col-8 col-md-4 mb-2 mb-md-0">
-            <input type="text" name="destination" class="form-control form-control-lg" placeholder="To" required />
-        </div>
-        <div class="col-8 col-md-4 mb-2 mb-md-0">
-            <input type="date" name="departureTime" class="form-control form-control-lg" placeholder="dd/MM/yyyy"
-                required />
-        </div>
-        <div class="col-8 col-md-12 mb-2 mb-md-0">
-            <button type="submit" class="btn btn-lg btn-primary w-100">
-                <i class="fas fa-search"></i> Search
-            </button>
-        </div>
-    </form>
-
-    <hr class="mb-5">
-
-    <partial name="_DisplayTrips" model="Model" />
+        </form>
+    </div>
 </div>
+<hr class="mb-5">
+
+<partial name="_DisplayTrips" model="Model" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const trigger = document.getElementById('popoverDepartureBtn');
-            const template = document.getElementById('departurePopoverContent');
+            const triggerDepart = document.getElementById('popoverDepartureBtn');
+            const triggerDest = document.getElementById('popoverDestinationBtn');
+            const template = document.getElementById('locationPopoverContent');
 
-            let popover = new bootstrap.Popover(trigger, {
+            let departPopover = new bootstrap.Popover(triggerDepart, {
                 html: true,
                 trigger: 'manual',
                 placement: 'bottom',
                 container: 'main',
                 sanitize: false,
                 title: `
-                            <strong style="flex: 1; font-size: 1.5em">Choose departure point</strong>
-                            <button class="btn btn-outline-secondary btn-sm" id="close-popover-btn" style="display: none"><i class="fa-solid fa-x"></i></button>
-                        `,
-                content: function () {
-                    return template.innerHTML;
-                },
-                popperConfig: function (defaultBsPopperConfig) {
-                    // Lock placement to bottom
-                    defaultBsPopperConfig.modifiers = defaultBsPopperConfig.modifiers || [];
-                    defaultBsPopperConfig.modifiers.push({
-                        name: 'flip',
-                        options: {
-                            fallbackPlacements: []
-                        }
-                    });
-
-                    defaultBsPopperConfig.modifiers.push({
-                        name: 'preventOverflow',
-                        options: {
-                            boundary: 'window' // Allow it to overflow container
-                        }
-                    });
-
-                    return defaultBsPopperConfig;
-                }
+                <strong style="flex: 1; font-size: 1.5em">Choose departure point</strong>
+                <button class="btn btn-outline-secondary btn-sm" id="close-depart-btn"><i class="fa-solid fa-x"></i></button>
+            `,
+                content: () => template.innerHTML
             });
 
-            let popoverVisible = false;
+            let destPopover = new bootstrap.Popover(triggerDest, {
+                html: true,
+                trigger: 'manual',
+                placement: 'bottom',
+                container: 'main',
+                sanitize: false,
+                title: `
+                <strong style="flex: 1; font-size: 1.5em">Choose destination point</strong>
+                <button class="btn btn-outline-secondary btn-sm" id="close-dest-btn"><i class="fa-solid fa-x"></i></button>
+            `,
+                content: () => template.innerHTML
+            });
 
-            trigger.addEventListener('click', function (e) {
+            let isDepartVisible = false;
+            let isDestVisible = false;
+
+            triggerDepart.addEventListener('click', (e) => {
                 e.stopPropagation();
-
-                if (popoverVisible) {
-                    popover.hide();
+                if (isDepartVisible) {
+                    document.body.style.overflowY = 'auto';
+                    departPopover.hide();
                 } else {
-                    popover.show();
+                    if (isDestVisible) {
+                        destPopover.hide();
+                    }
+                    document.body.style.overflowY = 'hidden';
+                    departPopover.show();
                 }
 
-                popoverVisible = !popoverVisible;
+                isDepartVisible = !isDepartVisible;
+                isDestVisible = false;
+            });
+
+            triggerDest.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isDestVisible) {
+                    document.body.style.overflowY = 'auto';
+                    destPopover.hide();
+                } else {
+                    if (isDepartVisible) {
+                        departPopover.hide();
+                    }
+                    document.body.style.overflowY = 'hidden';
+                    destPopover.show();
+                }
+                isDestVisible = !isDestVisible;
+                isDepartVisible = false;
             });
 
             document.addEventListener('click', function (e) {
                 const popoverEl = document.querySelector('.popover');
-                if (popoverVisible && popoverEl && !trigger.contains(e.target) && !popoverEl.contains(e.target)) {
-                    popover.hide();
-                    popoverVisible = false;
+                if (isDepartVisible && !triggerDepart.contains(e.target) && !popoverEl?.contains(e.target)) {
+                    departPopover.hide();
+                    isDepartVisible = false;
+                }
+                if (isDestVisible && !triggerDest.contains(e.target) && !popoverEl?.contains(e.target)) {
+                    destPopover.hide();
+                    isDestVisible = false;
                 }
             });
 
-            trigger.addEventListener('shown.bs.popover', () => {
+            // Setup search for both popovers
+            triggerDepart.addEventListener('shown.bs.popover', () => {
+                setupSearch('departure', departPopover, () => isDepartVisible = false);
+            });
+
+            triggerDest.addEventListener('shown.bs.popover', () => {
+                setupSearch('destination', destPopover, () => isDestVisible = false);
+            });
+
+            function setupSearch(type, popoverRef, hideCallback) {
                 const popoverEl = document.querySelector('.popover');
-                const closeBtn = popoverEl?.querySelector("#close-popover-btn");
+                const input = popoverEl?.querySelector('#location-search');
+                const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
+                const closeBtn = popoverEl?.querySelector(type === 'departure' ? '#close-depart-btn' : '#close-dest-btn');
+                closeBtn.style = "display: none";
+
+                let activeIndex = -1;
 
                 if (closeBtn) {
                     closeBtn.addEventListener('click', () => {
-                        popover.hide();
-                        popoverVisible = false;
+                        popoverRef.hide();
+                        hideCallback();
                     });
                 }
-
-                const input = popoverEl?.querySelector('#location-search');
-                const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
-                let activeIndex = -1;     
 
                 if (!input || !suggestionsBox) return;
 
                 input.focus();
-                fetchLocationData('');
+                fetchSuggestions('', type, suggestionsBox, popoverRef, hideCallback);
 
-                input.oninput = async function () {
-                    const term = input.value.trim();
-                    fetchLocationData(term);
+                input.oninput = () => {
+                    fetchSuggestions(input.value.trim(), type, suggestionsBox, popoverRef, hideCallback);
                 };
 
-                input.onkeydown = function (e) {
+                input.onkeydown = (e) => {
                     const items = suggestionsBox.querySelectorAll('li');
                     if (!items.length) return;
 
@@ -168,60 +204,49 @@
                         item.classList.toggle('active', i === activeIndex);
                     });
                 }
-            });
+            }
 
-            async function fetchLocationData(term) {
+            async function fetchSuggestions(term, type, box, popoverRef, hideCallback) {
                 try {
                     const res = await fetch(`/Location/Search?term=${encodeURIComponent(term)}`);
-                    if (!res.ok) throw new Error('Failed to fetch locations');
+                    if (!res.ok) throw new Error('Fetch failed');
 
                     const data = await res.json();
-                    let locations = data.locationList;
+                    const locations = data.locationList;
+                    box.innerHTML = '';
 
-                    const popoverEl = document.querySelector('.popover');
-                    const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
-                    if (!suggestionsBox) return;
-
-                    suggestionsBox.innerHTML = '';
-                    activeIndex = -1;
-
-                    if (locations.length === 0) {
-                        suggestionsBox.innerHTML = '<li class="list-group-item text-muted">No results found</li>';
+                    if (!locations.length) {
+                        box.innerHTML = '<li class="list-group-item text-muted">No results found</li>';
                         return;
                     }
 
-                    locations.forEach((loc, index) => {
+                    locations.forEach(loc => {
                         const li = document.createElement('li');
-                        li.innerHTML = `
-                            <div><strong>${loc.name}</strong></div>
-                            <small class="text-muted">${loc.address}</small>
-                        `;
                         li.className = 'list-group-item list-group-item-action';
-                        li.style = "cursor: pointer;"
-                        li.setAttribute('data-index', index);
+                        li.style.cursor = 'pointer';
+                        li.innerHTML = `
+                        <div><strong class="fs-5">${loc.name}</strong></div>
+                        <small class="text-muted fs-6">${loc.address}</small>
+                    `;
 
                         li.onclick = () => {
-                            const departureInput = document.querySelector('input[name="departure"]');
-                            if (departureInput) {
-                                departureInput.value = loc.name;
-                                popover.hide();
-                                popoverVisible = false;
-                            }
+                            const inputField = document.querySelector(`input[name="${type}"]`);
+                            if (inputField) inputField.value = loc.name;
+                            popoverRef.hide();
+                            hideCallback();
                         };
 
-                        suggestionsBox.appendChild(li);
+                        box.appendChild(li);
                     });
 
-                } catch (error) {
-                    console.error(error);
-                    const popoverEl = document.querySelector('.popover');
-                    const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
-                    if (suggestionsBox)
-                        suggestionsBox.innerHTML = '<li class="list-group-item text-danger">Error fetching locations</li>';
+                } catch (err) {
+                    console.error(err);
+                    box.innerHTML = '<li class="list-group-item text-danger">Error loading results</li>';
                 }
             }
         });
     </script>
+
     <style>
         #location-suggestions {
             flex: 1;
@@ -246,6 +271,10 @@
         .popover-body {
             width: 100%;
             max-height: 100%;
+        }
+
+        main.py-4 {
+            padding-top: 0px !important;
         }
     </style>
     <link rel="stylesheet" href="~/css/Home.css">
