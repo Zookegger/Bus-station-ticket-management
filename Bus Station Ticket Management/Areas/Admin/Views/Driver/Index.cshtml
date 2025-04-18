@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="~/css/Index.css">
 </head>
 
-<h1>Drivers List</h1>
+<h1 class="text-success fw-bold mb-4">Drivers List</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button">Add New Driver</a>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Add New Driver</a>
 
 <form asp-action="Index" method="get" class="mb-3">
 	<div class="form-group input-group mb-2">
@@ -96,12 +96,10 @@
 					<td>
                         <div class="btn-group" role="group">
                             <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i> 
-                                <span>Edit</span>
+                                <i class="fa fa-edit"></i>
                             </a>
                             <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                <i class="fa fa-trash"></i> 
-                                <span>Delete</span>
+                                <i class="fa fa-trash"></i>
                             </a>
                         </div>
                     </td>
@@ -117,10 +115,11 @@
 		@Html.PagedListPager(Model, pageNumber => Url.Action("Index", new
 		{
 			page = pageNumber,
-		searchString = ViewBag.SearchString,
-		sortBy = ViewBag.SortBy,
-		filterByGender = ViewBag.FilterByGender
-		}), new PagedListRenderOptions
+			searchString = ViewBag.SearchString,
+			sortBy = ViewBag.SortBy,
+			filterByGender = ViewBag.FilterByGender
+		}), 
+		new PagedListRenderOptions
 		{
 			UlElementClasses = new[] { "pagination", "justify-content-center" },
 			LiElementClasses = new[] { "page-item" },

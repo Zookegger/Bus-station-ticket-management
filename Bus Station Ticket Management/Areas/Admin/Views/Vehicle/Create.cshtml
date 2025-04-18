@@ -11,35 +11,37 @@
     <hr />
 
     <div class="row">
-        <div class="col-md-9 col-lg-12  mx-auto">
+        <div class="col-md-9 col-lg-12 mx-auto">
             <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                <!-- Vehicle Type (Dropdown in form-floating wrapper) -->
                 <div class="form-group mb-3">
-                    <label asp-for="VehicleTypeId" class="form-label">Vehicle Type</label>
-                    <select asp-for="VehicleTypeId" class="form-control route-select" asp-items="ViewBag.VehicleTypeId" required>
-                        <option value="" disabled selected>Select a vehicle type</option>
+                    <label asp-for="VehicleTypeId">Select a vehicle type</label>
+                    <select asp-for="VehicleTypeId" class="form-select form-control-sm route-select" asp-items="ViewBag.VehicleTypeId" required>
+                        <option value="" disabled selected>Vehicle Type</option>
                     </select>
-                    <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
+                    <span asp-validation-for="VehicleTypeId" class="text-danger small d-block mb-2 ms-1"></span>
                 </div>
-
-
-                <div class="form-group mb-3">
-                    <label asp-for="Name" class="form-label">Vehicle Name</label>
+                <!-- Vehicle Name -->
+                <div class="form-floating mb-3">
                     <input asp-for="Name" class="form-control" placeholder="Enter vehicle name..." />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="Name">Vehicle Name</label>
+                    <span asp-validation-for="Name" class="text-danger small d-block mb-2 ms-1"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="LicensePlate" class="form-label">License Plate</label>
+                <!-- License Plate -->
+                <div class="form-floating mb-3">
                     <input asp-for="LicensePlate" class="form-control" placeholder="e.g., 5353-EJKS" />
-                    <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                    <label asp-for="LicensePlate">License Plate</label>
+                    <span asp-validation-for="LicensePlate" class="text-danger small d-block mb-2 ms-1"></span>
                 </div>
 
+                <!-- Hidden Status -->
                 <input type="hidden" asp-for="Status" value="Stand-By" />
 
-                
-                <div class="form-group d-flex justify-content-between mt-3">
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
                     <a role="button" class="btn btn-outline-secondary" asp-action="Index">
                         <i class="fa fa-arrow-left"></i> Back to List
                     </a>

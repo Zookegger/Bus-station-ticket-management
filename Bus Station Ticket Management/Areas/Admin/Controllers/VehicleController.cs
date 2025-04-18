@@ -25,7 +25,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [Route("Admin/Vehicle/Index")]
         public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterByStatus, string? filterByType)
         {
-            int pageSize = 15;
+            int pageSize = 20;
             int pageNumber = page ?? 1;
             var now = DateTime.Now;
 

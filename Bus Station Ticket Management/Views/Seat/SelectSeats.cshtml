@@ -60,10 +60,10 @@
 </div>
 
 <form asp-action="BookSeats" method="post" id="seatForm" class="row pb-5">
-    <div class="col-md-7">
+    <div class="col-lg-7">
         <h1>Select your seats</h1>
         <!-- Seat Map Section -->
-        <fieldset class="mb-3">
+        <fieldset class="container h-100 mb-3">
             <legend class="form-label">Seat Information</legend>
             <input type="hidden" asp-for="TripId" />
             <input type="hidden" asp-for="VehicleId" />
@@ -76,45 +76,51 @@
                        min="1" max="@Model.Seats.Count(s => s.IsAvailable)" required />
             </div>
 
-            <div class="seat-map">
-                <div class="seat-grid d-flex justify-content-center">
-                    @for (int floor = 1; floor <= Model.TotalFloors; floor++)
-                    {
-                        <div class="floor my-3">
-                            <h5>Flooring @floor</h5>
-                            @for (int row = 1; row <= Model.TotalRows; row++)
-                            {
-                                <div class="seat-row">
-                                    @for (int col = 1; col <= Model.TotalColumns; col++)
+            <div class="seat-map gap-3 justify-content-center">
+                <div class="d-flex justify-content-center w-100">
+                    
+                    <div class="seat-grid">
+                        @for (int floor = 1; floor <= Model.TotalFloors; floor++)
+                        {
+                            
+                            <div class="box d-flex flex-column-reverse flex-sm-column-reverse flex-md-row">
+                                <div class="floor w-100 my-3">
+                                    <h5>Flooring @floor</h5>
+                                    @for (int row = 1; row <= Model.TotalRows; row++)
                                     {
-                                        var seat = Model.Seats.FirstOrDefault(s => s.Row == row && s.Column == col && s.Floor == floor);
-                                        if (seat != null)
-                                        {
-                                            <div class="seat @(seat.IsAvailable ? "available" : "booked")" data-seat-id="@seat.Id">
-                                                @seat.Number
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="seat empty"></div>
-                                        }
+                                        <div class="seat-row">
+                                            @for (int col = 1; col <= Model.TotalColumns; col++)
+                                            {
+                                                var seat = Model.Seats.FirstOrDefault(s => s.Row == row && s.Column == col && s.Floor == floor);
+                                                if (seat != null)
+                                                {
+                                                    <div class="seat @(seat.IsAvailable ? "available" : "booked")" data-seat-id="@seat.Id">
+                                                        @seat.Number
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="seat empty"></div>
+                                                }
+                                            }
+                                        </div>
                                     }
                                 </div>
-                            }
-                        </div>
-                    }
-                </div>
-                <div class="seat-legend-box">
-                    <span class="seat-legend booked">Booked</span>
-                    <span class="seat-legend available">Available</span>
-                    <span class="seat-legend selected">Selected</span>
+                                <div class="seat-legend-box">
+                                    <span class="seat-legend booked">Booked</span>
+                                    <span class="seat-legend available">Available</span>
+                                    <span class="seat-legend selected">Selected</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </fieldset>
     </div>
 
     <!-- Trip Information Section -->
-    <div class="col-md-5">
+    <div class="col-lg-5">
         <div class="card">
             <div class="card-body trip-information" id="TripInfo">
                 <h5 class="card-title">Trip Information</h5>
@@ -165,10 +171,20 @@
                 <div id="couponFeedback" class="mt-2"></div>
                 <div class="total-price"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
                 <input type="hidden" id="totalPrice" name="totalPrice" value="0" />
-
             </div>
-            <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
+
+            <div class="card-header"><span class="card-title">Payment</span></div>
+            <div class="card-body">
+                <select name="payment-method" id="payment-method" class="form-select">
+                    <option value="Cash" data-icon="fa-solid fa-money-bill">On Cash</option>
+                    @* <option value="VnPay" data-icon="fa-brands fa-cc-visa">VNPay</option> *@
+                    <option value="Visa" data-icon="fa-brands fa-cc-momo">Momo</option>
+                    <option value="Visa" data-icon="fa-brands fa-cc-visa">Visa</option>
+                    <option value="Mastercard" data-icon="fa-brands fa-cc-mastercard">Mastercard</option>
+                </select>
+            </div>
         </div>
+        <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
     </div>
 </form>
 
@@ -324,26 +340,51 @@
                     }
                 });
             });
+
+            $('#payment-method').select2({
+                templateResult: formatOption,
+                templateSelection: formatOption,
+                minimumResultsForSearch: -1 // disables the search box
+            });
+
+            function formatOption(state) {
+                if (!state.id) return state.text;
+                var icon = $(state.element).data('icon');
+                return $(`<span><i class="${icon} me-2"></i>${state.text}</span>`);
+            }
         });
     </script>
     <style>
         .seat-map {
             display: flex;
             margin-bottom: 20px;
+            height: fit-content;
+            width: 100%;
         }
         .seat-grid {
-            flex-basis: 600px;
+            @* display: grid;
+            grid-template-rows: repeat(auto-fit, 1fr);
+            grid-template-columns: repeat(2, 1fr); *@
+            flex-basis: 880px;
+            width: 100%;
         }
         .seat-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(@Model.TotalColumns, 1fr);
             gap: 10px;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            @* max-width: calc(@Model.TotalColumns * 100px); *@
         }
         .seat {
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
+            max-width: 100px;
+            max-height: 100px;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 1px solid #ccc;
             border-radius: 5px;
             cursor: pointer;
@@ -375,9 +416,10 @@
         .seat-legend-box {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: end;
             justify-content: center;
             gap: 20px;
+            max-width: 200px;
             flex: 1;
         }
         .seat-legend {
@@ -414,6 +456,13 @@
         }
         .modal-backdrop.show {
             backdrop-filter: blur(15px);
+        }
+        .floor {
+            justify-content: center;
+            align-self: center;
+            max-width: 600px;
+            flex: 1;
+            min-width: 250px;
         }
     </style>
 }

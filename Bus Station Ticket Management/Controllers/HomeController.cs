@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Bus_Station_Ticket_Management.ViewModels;
 
 namespace Bus_Station_Ticket_Management.Controllers;
 
@@ -22,19 +23,52 @@ public class HomeController : Controller
     {
         _context = context;
     }
+
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var trips = await _context.Trips
             .Include(t => t.Route)
-                .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
+                .ThenInclude(r => r.StartLocation) 
             .Include(t => t.Route)
-                .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
+                .ThenInclude(r => r.DestinationLocation) 
             .Where(t => t.Status == "Stand By" && t.DepartureTime > DateTime.Now)
-            .Take(8)
+            .Take(9)
             .ToListAsync();
 
-        return View(trips);
+        var viewModel = new TripListViewModel {
+            TripsList = trips,
+            IsSearchResult = false
+        };
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime) {
+        departure = departure?.Trim() ?? "";
+        destination = destination?.Trim() ?? "";
+        
+        var trips = await _context.Trips
+            .Include(t => t.Route)
+                .ThenInclude(r => r.StartLocation)
+            .Include(t => t.Route)
+                .ThenInclude(r => r.DestinationLocation)
+            .Where(t =>
+                t.Route.StartLocation.Name.Contains(departure) &&
+                t.Route.DestinationLocation.Name.Contains(destination) &&
+                t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
+            ).OrderBy(t => t.DepartureTime).ToListAsync();
+
+        var viewModel = new TripListViewModel
+        {
+            TripsList = trips,
+            IsSearchResult = true,
+            Departure = departure,
+            Destination = destination,
+            DepartureTime = departureTime
+        };
+
+        return View("Index", viewModel);
     }
 
     public IActionResult Privacy()
@@ -66,24 +100,6 @@ public class HomeController : Controller
             });
 
         return Json(claims);
-    }
-
-    public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime) {
-        departure = departure?.Trim() ?? "";
-        destination = destination?.Trim() ?? "";
-        
-        var trips = await _context.Trips
-            .Include(t => t.Route)
-                .ThenInclude(r => r.StartLocation)
-            .Include(t => t.Route)
-                .ThenInclude(r => r.DestinationLocation)
-            .Where(t => 
-                t.Route.StartLocation.Name.Contains(departure) &&
-                t.Route.DestinationLocation.Name.Contains(destination) &&
-                t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
-            ).OrderBy(t => t.DepartureTime).ToListAsync();
-
-        return View(trips);
     }
 
     [AllowAnonymous]

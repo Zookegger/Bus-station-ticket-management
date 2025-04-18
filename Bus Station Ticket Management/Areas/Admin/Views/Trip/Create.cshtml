@@ -13,14 +13,14 @@
     <div class="col-md-8 col-lg-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
             <!-- Departure Time -->
             <div class="form-group">
                 <label asp-for="DepartureTime" class="control-label"></label>
                 <input asp-for="DepartureTime" class="form-control" />
                 <span asp-validation-for="DepartureTime" class="text-danger"></span>
             </div>
-            
+
             <!-- Arrival Time -->
             <div class="form-group mt-3">
                 <label asp-for="ArrivalTime" class="control-label"></label>
@@ -41,14 +41,14 @@
             <!-- Route Selection -->
             <div class="form-group mt-3">
                 <label asp-for="RouteId" class="control-label"></label>
-                <select asp-for="RouteId" class="form-control route-select" asp-items="ViewBag.RouteId"></select>
+                <select asp-for="RouteId" class="form-control route-select w-100" asp-items="ViewBag.RouteId"></select>
                 <span asp-validation-for="RouteId" class="text-danger"></span>
             </div>
 
             <!-- Vehicle Selection -->
             <div class="form-group mt-3">
                 <label asp-for="VehicleId" class="control-label"></label>
-                <select asp-for="VehicleId" class="form-control route-select" asp-items="ViewBag.VehicleId"></select>
+                <select asp-for="VehicleId" class="form-control route-select w-100" id="Vehicle" asp-items="ViewBag.VehicleId"></select>
                 <span asp-validation-for="VehicleId" class="text-danger"></span>
             </div>
 
@@ -59,9 +59,73 @@
             </div>
         </form>
     </div>
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">Vehicle Information</div>
+            <div class="card-body">
+                <p><strong>Name:</strong> <span id="vehicle-name">N/A</span></p>
+                <p><strong>License Plate:</strong> <span id="vehicle-license-plate">N/A</span></p>
+                <p><strong>Type:</strong> <span id="vehicle-type">N/A</span></p>
+                <p><strong>Total Seats:</strong> <span id="vehicle-total-seats">N/A</span></p>
+                <p><strong>Rows:</strong> <span id="vehicle-total-rows">N/A</span></p>
+                <p><strong>Columns:</strong> <span id="vehicle-total-columns">N/A</span></p>
+                <p><strong>Floors:</strong> <span id="vehicle-total-floors">N/A</span></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
     <script src="~/js/site.js"></script>
+    <script>
+        $(document).ready(function () {
+            const $vehicleSelect = $('#Vehicle');
+            const vehicleInfoFields = {
+                name: document.getElementById('vehicle-name'),
+                licensePlate: document.getElementById('vehicle-license-plate'),
+                vehicleType: document.getElementById('vehicle-type'),
+                totalSeats: document.getElementById('vehicle-total-seats'),
+                totalRows: document.getElementById('vehicle-total-rows'),
+                totalColumns: document.getElementById('vehicle-total-columns'),
+                totalFloors: document.getElementById('vehicle-total-floors'),
+            };
+
+            // Handle change event via jQuery (Select2 emits it properly here)
+            $vehicleSelect.on('change', function () {
+                const vehicleId = $(this).val();
+                loadVehicleInfo(vehicleId);
+            });
+
+            // Trigger on load if value exists
+            if ($vehicleSelect.val()) {
+                loadVehicleInfo($vehicleSelect.val());
+            }
+
+            async function loadVehicleInfo(vehicleId) {
+                if (!vehicleId) {
+                    Object.values(vehicleInfoFields).forEach(el => el.textContent = 'N/A');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Admin/Trip/GetVehicleInfo?vehicleId=${vehicleId}`);
+                    if (!response.ok) throw new Error("Fetch failed");
+
+                    const vehicle = await response.json();
+
+                    vehicleInfoFields.name.textContent = vehicle.name || 'N/A';
+                    vehicleInfoFields.licensePlate.textContent = vehicle.licensePlate || 'N/A';
+                    vehicleInfoFields.vehicleType.textContent = vehicle.vehicleType || 'N/A';
+                    vehicleInfoFields.totalSeats.textContent = vehicle.totalSeats || 'N/A';
+                    vehicleInfoFields.totalRows.textContent = vehicle.totalRows || 'N/A';
+                    vehicleInfoFields.totalColumns.textContent = vehicle.totalColumns || 'N/A';
+                    vehicleInfoFields.totalFloors.textContent = vehicle.totalFloors || 'N/A';
+                } catch (err) {
+                    console.error(err);
+                    alert("Could not fetch vehicle info.");
+                }
+            }
+        });
+    </script>
 }

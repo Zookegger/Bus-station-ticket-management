@@ -24,7 +24,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Trip
         public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterBy)
         {
-            int pageSize = 15;
+            int pageSize = 30;
             int pageNumber = page ?? 1;
             var now = DateTime.Now;
 
@@ -54,9 +54,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 tripsQuery = tripsQuery.Where(t =>
-                    t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-                    t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-                    t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                    t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString) ||
+                    t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString) ||
+                    t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString)
                 );
             }
 
@@ -186,6 +186,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Trip already exists!");
             }
+            bool isOverlapping = await _context.Trips.AnyAsync(t => 
+                t.Vehicle != null && trip.Vehicle != null &&
+                t.Vehicle.Id == trip.Vehicle.Id &&
+                t.DepartureTime < trip.ArrivalTime &&
+                t.ArrivalTime > trip.DepartureTime
+            );
+
+            if (isOverlapping) {
+                ModelState.AddModelError(string.Empty, "Trip is overlapping another trip!");
+            }
 
             var routes = await _context.Routes
                 .Include(r => r.StartLocation)
@@ -207,33 +217,39 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             var route = await _context.Routes.FirstOrDefaultAsync(r => r.Id == trip.RouteId);
 
-            if (vehicle == null || route == null)
-                return NotFound();
+            if (vehicle == null)
+                return NotFound("Error: Cannot find vehicle!");
+            
+            if (route == null)
+                return NotFound("Error: Cannot find route!");
 
+            trip.Status = "Stand By";
             var vehicleType = vehicle.VehicleType;
-            trip.Status = "StandBy";
-            trip.TotalPrice = trip.IsTwoWay
-                ? vehicleType.Price + (route.Price * 2)
-                : vehicleType.Price + route.Price;
+            if (vehicleType == null) {
+                return NotFound("Error: Cannot find vehicle type for the equivalent vehicle!");
+            }
+            trip.TotalPrice = trip.IsTwoWay ? vehicleType.Price + (route.Price * 2) : vehicleType.Price + route.Price;
 
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
 
             // Generate seats after saving trip
             var seats = new List<Seat>();
-            for (int r = 1; r <= vehicleType.TotalRow; r++)
-            {
-                for (int c = 1; c <= vehicleType.TotalColumn; c++)
+            for (int floor = 1; floor <= vehicleType.TotalFlooring; floor++) {
+                for (int r = 1; r <= vehicleType.TotalRow; r++)
                 {
-                    seats.Add(new Seat
+                    for (int c = 1; c <= vehicleType.TotalColumn; c++)
                     {
-                        Row = r,
-                        Column = c,
-                        Floor = vehicleType.TotalFlooring,
-                        Number = $"R{r}C{c}",
-                        IsAvailable = true,
-                        TripId = trip.Id
-                    });
+                        seats.Add(new Seat
+                        {
+                            Row = r,
+                            Column = c,
+                            Floor = floor,
+                            Number = $"R{r}C{c}",
+                            IsAvailable = true,
+                            TripId = trip.Id
+                        });
+                    }
                 }
             }
 
@@ -241,6 +257,29 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Create", "TripDriverAssignment", new { tripId = trip.Id });
+        }
+
+        // GET
+        [HttpGet]
+        public async Task<IActionResult> GetVehicleInfo(int vehicleId){
+            var vehicle = await _context.Vehicles
+            .Include(x => x.VehicleType)
+            .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new {
+                Name = vehicle.Name,
+                LicensePlate = vehicle.LicensePlate,
+                VehicleType = vehicle.VehicleType?.Name,
+                TotalSeats = vehicle.VehicleType?.TotalSeats,
+                TotalFloors = vehicle.VehicleType?.TotalFlooring,
+                TotalColumns = vehicle.VehicleType?.TotalColumn,
+                TotalRows = vehicle.VehicleType?.TotalRow,
+            });
         }
 
         // GET: Trip/Edit/5

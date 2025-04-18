@@ -1,4 +1,5 @@
 ﻿using Bus_Station_Ticket_Management.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,6 +65,7 @@ namespace Bus_Station_Ticket_Management.DataAccess
                 .Property(c => c.DiscountAmount)
                 .HasColumnType("decimal(18, 2)");
         }
+        
 
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }

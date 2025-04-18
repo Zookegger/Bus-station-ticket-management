@@ -1,6 +1,4 @@
 @model IEnumerable<Bus_Station_Ticket_Management.Models.Trip>
-@using System.Globalization;
-
 @{
     ViewData["Title"] = "Trips Available";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -22,12 +20,12 @@
                                 : "No Route")
                         </h5>
                         <p class="card-text">
-                            <strong>Khởi hành:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")<br/>
-                            <strong>Giờ đến:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")<br />
-                            <strong>Giá:</strong> @trip.TotalPrice.ToString("C", new CultureInfo("vi-VN"))
+                            <strong>Departure:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")<br/>
+                            <strong>Arrival:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")<br />
+                            <strong>Price:</strong> @trip.TotalPrice.ToString("C", new CultureInfo("vi-VN"))
                         </p>
                         <a asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId" 
-                           asp-route-tripId="@trip.Id" class="btn btn-primary">Chọn ghế</a>
+                           asp-route-tripId="@trip.Id" class="btn btn-primary">Select Seat</a>
                     </div>
                 </div>
             </div>
@@ -36,5 +34,5 @@
 }
 else
 {
-    <p>Không có chuyến xe nào phù hợp với tìm kiếm của bạn.</p>
+    <p>No Trip Found.</p>
 }

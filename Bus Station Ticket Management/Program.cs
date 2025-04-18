@@ -162,7 +162,7 @@ using (var scope = app.Services.CreateScope())
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UseHttpsRedirection();
@@ -172,6 +172,16 @@ app.UseSession();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
+
+// Middleware to handle ngrok requests
+app.Use(async (context, next) =>
+{
+    if (context.Request.Host.Value.Contains("ngrok.io"))
+    {
+        context.Request.Headers["Host"] = "localhost";
+    }
+    await next();
+});
 
 app.Use(async (context, next) =>
 {

@@ -33,7 +33,7 @@
 <div class="container pb-3">
     <h1 class="text-success fw-bold mb-4">Vehicle Type List</h1>
 
-    <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
+    <a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Add New Type</a>
 
     <div class="input-group mb-3">
         <input type="text" class="form-control" name="searchString" value="@ViewBag.searchString"
@@ -68,11 +68,9 @@
                             <div class="btn-group" role="group">
                                 <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
                                     <i class="fa fa-edit"></i>
-                                    <span>Edit</span>
                                 </a>
                                 <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
                                     <i class="fa fa-trash"></i>
-                                    <span>Delete</span>
                                 </a>
                             </div>
                         </td>

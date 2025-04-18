@@ -1,5 +1,5 @@
 :root {
-	--global-font-size: 16px;
+	--global-font-size: 18px;
 }
 
 html {
@@ -48,6 +48,7 @@ body {
 
 .main-container {
 	display: flex;
+	flex-direction: column;
 	flex: 1;
 	overflow-x: auto;
 }
@@ -188,12 +189,6 @@ table tbody td {
 @media (max-width: 1090px) {
 	.navbar-toggler {
 		display: block;
-	}
-}
-
-@media (min-width: 1024px) {
-	.table * {
-		font-size: 16px;
 	}
 }
 

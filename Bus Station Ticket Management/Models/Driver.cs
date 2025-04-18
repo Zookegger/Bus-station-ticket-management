@@ -5,34 +5,34 @@ namespace Bus_Station_Ticket_Management.Models
 {
     public class Driver
     {
-        [DisplayName("Mã Tài Xế")]
+        [DisplayName("Driver ID")]
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Tên Tài Xế")]
+        [DisplayName("Full Name")]
         [Required]
         public string FullName { get; set; }
 
-        [DisplayName("Địa chỉ")]
+        [DisplayName("Address")]
         public string? Address { get; set; }
 
-        [DisplayName("Mã GPLX")]
+        [DisplayName("License ID")]
         [Required]
         public string LicenseId { get; set; }
 
-        [DisplayName("Giới tính")]
+        [DisplayName("Gender")]
         [Required]
         public string Gender { get; set; }
 
-        [DisplayName("Ngày sinh")]
+        [DisplayName("Date Of Birth")]
         [Required]
         public DateOnly? DateOfBirth { get; set; }
 
-        [DisplayName("Địa chỉ Email")]
+        [DisplayName("Email")]
         [Required]
         public string Email { get; set; }
 
-        [DisplayName("Số điện thoại")]
+        [DisplayName("Phone Number")]
         [StringLength(maximumLength: 10, MinimumLength = 9)]
         [Required]
         public string PhoneNumber { get; set; }

@@ -1,25 +1,49 @@
-﻿@{
+﻿@model Bus_Station_Ticket_Management.ViewModels.TripListViewModel;
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home";
     var now = DateTime.Now;
 }
-@model List<Bus_Station_Ticket_Management.Models.Trip>
 
 <div class="container pb-4">
-    <div class="text-center">
-        <h1 class="display-3 fw-bold text-primary">Book Your Bus Ticket Online</h1>
-        <p class="lead text-muted">Fast, easy, and secure travel reservations</p>
+
+    @if (!Model.IsSearchResult)
+    {
+        <div class="text-center">
+            <h1 class="display-3 fw-bold text-primary">Book Your Bus Ticket Online</h1>
+            <p class="lead text-muted">Fast, easy, and secure travel reservations</p>
+        </div>
+    }
+
+    <!-- Hidden Popover Content Template -->
+    <div id="departurePopoverContent" class="d-none px-0 py-0">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control mb-2" id="location-search" placeholder="e.g. Hanoi, Saigon">
+            <label for="location-search" class="form-label">Search Location</label>
+        </div>
+        
+        <ul class="list-group" id="location-suggestions" style="max-height: 150px; overflow-y: auto;"></ul>
+        <button class="btn btn-primary btn-sm w-100 mt-3">Select</button>
     </div>
 
+    <!-- Search Form -->
     <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-5">
-        <div class="col-8 col-md-4 mb-2 mb-md-0">
-            <input type="text" name="departure" class="form-control form-control-lg" placeholder="From" required />
+        <div class="col-8 col-md-4 mb-2 mb-md-0 position-relative">
+            <div class="input-group input-group-lg">
+                <input type="text" name="departure" class="form-control" placeholder="From" required />
+                <button type="button" class="btn btn-outline-secondary" id="popoverDepartureBtn"
+                    data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
+                    data-bs-custom-class="custom-popover">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                </button>
+            </div>
         </div>
         <div class="col-8 col-md-4 mb-2 mb-md-0">
             <input type="text" name="destination" class="form-control form-control-lg" placeholder="To" required />
         </div>
         <div class="col-8 col-md-4 mb-2 mb-md-0">
-            <input type="date" name="departureTime" class="form-control form-control-lg" required />
+            <input type="date" name="departureTime" class="form-control form-control-lg" placeholder="dd/MM/yyyy"
+                required />
         </div>
         <div class="col-8 col-md-12 mb-2 mb-md-0">
             <button type="submit" class="btn btn-lg btn-primary w-100">
@@ -30,57 +54,199 @@
 
     <hr class="mb-5">
 
-    <h2 class="mb-4">🚍 Popular Trips</h2>
-    @if (Model != null && Model.Any(t => t.Status == "Stand By" && t.DepartureTime > now))
-    {
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var trip in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm trip-card border-0">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold text-primary">
-                                @(trip.Route != null ? (trip.Route.StartLocation?.Name + " → " +
-                                                        trip.Route.DestinationLocation?.Name) : "No Route Info")
-                        </h5>
-                        <p class="card-text text-secondary mb-1">
-                            <i class="fas fa-clock me-1"></i>
-                            <strong>Departure:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")
-                        </p>
-                        <p class="card-text text-secondary mb-1">
-                            <i class="fas fa-flag-checkered me-1"></i>
-                            <strong>Arrival:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
-                        </p>
-                        <p class="card-text text-success fw-bold mb-3">
-                            <i class="fas fa-money-bill-wave me-1"></i>
-                            Price: @trip.TotalPrice.ToString("N0") VND
-                        </p>
-                        <a asp-area="" asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId"
-                            asp-route-tripId="@trip.Id" class="btn btn-success w-100">
-                            <i class="fas fa-chair me-1"></i> Select Seat
-                        </a>
-                    </div>
-                </div>
-            </div>
-                }
-        </div>
-    }
-
-    else
-    {
-        <p class="text-muted">No trips available at the moment.</p>
-    }
+    <partial name="_DisplayTrips" model="Model" />
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const trigger = document.getElementById('popoverDepartureBtn');
+            const template = document.getElementById('departurePopoverContent');
+
+            let popover = new bootstrap.Popover(trigger, {
+                html: true,
+                trigger: 'manual',
+                placement: 'bottom',
+                container: 'main',
+                sanitize: false,
+                title: `
+                            <strong style="flex: 1; font-size: 1.5em">Choose departure point</strong>
+                            <button class="btn btn-outline-secondary btn-sm" id="close-popover-btn" style="display: none"><i class="fa-solid fa-x"></i></button>
+                        `,
+                content: function () {
+                    return template.innerHTML;
+                },
+                popperConfig: function (defaultBsPopperConfig) {
+                    // Lock placement to bottom
+                    defaultBsPopperConfig.modifiers = defaultBsPopperConfig.modifiers || [];
+                    defaultBsPopperConfig.modifiers.push({
+                        name: 'flip',
+                        options: {
+                            fallbackPlacements: []
+                        }
+                    });
+
+                    defaultBsPopperConfig.modifiers.push({
+                        name: 'preventOverflow',
+                        options: {
+                            boundary: 'window' // Allow it to overflow container
+                        }
+                    });
+
+                    return defaultBsPopperConfig;
+                }
+            });
+
+            let popoverVisible = false;
+
+            trigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                if (popoverVisible) {
+                    popover.hide();
+                } else {
+                    popover.show();
+                }
+
+                popoverVisible = !popoverVisible;
+            });
+
+            document.addEventListener('click', function (e) {
+                const popoverEl = document.querySelector('.popover');
+                if (popoverVisible && popoverEl && !trigger.contains(e.target) && !popoverEl.contains(e.target)) {
+                    popover.hide();
+                    popoverVisible = false;
+                }
+            });
+
+            trigger.addEventListener('shown.bs.popover', () => {
+                const popoverEl = document.querySelector('.popover');
+                const closeBtn = popoverEl?.querySelector("#close-popover-btn");
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        popover.hide();
+                        popoverVisible = false;
+                    });
+                }
+
+                const input = popoverEl?.querySelector('#location-search');
+                const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
+                let activeIndex = -1;     
+
+                if (!input || !suggestionsBox) return;
+
+                input.focus();
+                fetchLocationData('');
+
+                input.oninput = async function () {
+                    const term = input.value.trim();
+                    fetchLocationData(term);
+                };
+
+                input.onkeydown = function (e) {
+                    const items = suggestionsBox.querySelectorAll('li');
+                    if (!items.length) return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        if (activeIndex < items.length - 1) activeIndex++;
+                        updateActive(items);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        if (activeIndex > 0) activeIndex--;
+                        updateActive(items);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (activeIndex >= 0) items[activeIndex].click();
+                    }
+                };
+
+                function updateActive(items) {
+                    items.forEach((item, i) => {
+                        item.classList.toggle('active', i === activeIndex);
+                    });
+                }
+            });
+
+            async function fetchLocationData(term) {
+                try {
+                    const res = await fetch(`/Location/Search?term=${encodeURIComponent(term)}`);
+                    if (!res.ok) throw new Error('Failed to fetch locations');
+
+                    const data = await res.json();
+                    let locations = data.locationList;
+
+                    const popoverEl = document.querySelector('.popover');
+                    const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
+                    if (!suggestionsBox) return;
+
+                    suggestionsBox.innerHTML = '';
+                    activeIndex = -1;
+
+                    if (locations.length === 0) {
+                        suggestionsBox.innerHTML = '<li class="list-group-item text-muted">No results found</li>';
+                        return;
+                    }
+
+                    locations.forEach((loc, index) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <div><strong>${loc.name}</strong></div>
+                            <small class="text-muted">${loc.address}</small>
+                        `;
+                        li.className = 'list-group-item list-group-item-action';
+                        li.style = "cursor: pointer;"
+                        li.setAttribute('data-index', index);
+
+                        li.onclick = () => {
+                            const departureInput = document.querySelector('input[name="departure"]');
+                            if (departureInput) {
+                                departureInput.value = loc.name;
+                                popover.hide();
+                                popoverVisible = false;
+                            }
+                        };
+
+                        suggestionsBox.appendChild(li);
+                    });
+
+                } catch (error) {
+                    console.error(error);
+                    const popoverEl = document.querySelector('.popover');
+                    const suggestionsBox = popoverEl?.querySelector('#location-suggestions');
+                    if (suggestionsBox)
+                        suggestionsBox.innerHTML = '<li class="list-group-item text-danger">Error fetching locations</li>';
+                }
+            }
+        });
+    </script>
     <style>
-        .trip-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        #location-suggestions {
+            flex: 1;
         }
 
-        .trip-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        #location-suggestions li.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .popover {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .popover-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .popover-body {
+            width: 100%;
+            max-height: 100%;
         }
     </style>
+    <link rel="stylesheet" href="~/css/Home.css">
 }

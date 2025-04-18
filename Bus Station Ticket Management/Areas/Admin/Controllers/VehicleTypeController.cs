@@ -89,7 +89,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring")] VehicleType vehicleType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,TotalSeats,TotalRow,TotalColumn,TotalFlooring")] VehicleType vehicleType)
         {
             if (id != vehicleType.Id) {
                 return NotFound();

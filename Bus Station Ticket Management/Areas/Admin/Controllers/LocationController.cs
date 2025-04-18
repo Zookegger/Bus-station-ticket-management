@@ -22,7 +22,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Location
         public async Task<IActionResult> Index(string? searchString, string? sortBy, int? page)
         {
-            int pageSize = 10;
+            int pageSize = 20;
             int pageNumber = page ?? 1;
 
             ViewBag.SortBy = sortBy;

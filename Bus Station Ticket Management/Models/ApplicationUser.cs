@@ -8,16 +8,16 @@ namespace Bus_Station_Ticket_Management.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        [DisplayName("Họ tên")]
+        [DisplayName("Full Name")]
         public string FullName { get; set; }
 
-        [DisplayName("Địa chỉ")]
+        [DisplayName("Address")]
         public string? Address { get; set; }
 
-        [DisplayName("Giới tính")]
+        [DisplayName("Gender")]
         public string Gender { get; set; }
 
-        [DisplayName("Ngày sinh")]
+        [DisplayName("Date Of Birth")]
         public DateOnly? DateOfBirth { get; set; }
     }
 }
