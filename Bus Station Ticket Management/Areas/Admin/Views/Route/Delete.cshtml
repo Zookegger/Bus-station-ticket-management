@@ -1,40 +1,40 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Routes
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Route";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Routes</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartLocation.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DestinationId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DestinationLocation.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
+<div class="card">
+    <div class="card-header bg-success-subtle"><h2>@ViewData["Title"]</h2></div>
+    <div class="card-body">
+        <h4 class="card-title">Are you sure you want to delete this?</h4>
+
+        <dl class="row mt-3">
+            <dt class="card-text col-sm-5 col-md-4 fs-5">
+                @Html.DisplayNameFor(model => model.StartId)
+            </dt>
+            <dd class="card-text col-sm-7 col-md-8 fs-5">
+                @Html.DisplayFor(model => model.StartLocation.Name)
+            </dd>
+            <dt class="card-text col-sm-5 col-md-4 fs-5">
+                @Html.DisplayNameFor(model => model.DestinationId)
+            </dt>
+            <dd class="card-text col-sm-7 col-md-8 fs-5">
+                @Html.DisplayFor(model => model.DestinationLocation.Name)
+            </dd>
+            <dt class="card-text col-sm-5 col-md-4 fs-5">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="card-text col-sm-7 col-md-8 fs-5">
+                @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", Model.Price)
+            </dd>
+        </dl>
+    </div>
+    <form asp-action="Delete" class="card-footer form-group d-flex justify-content-between">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" />    
-        <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+        <a role="button" class="btn btn-outline-secondary btn-lg" asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger btn-lg" />
     </form>
 </div>

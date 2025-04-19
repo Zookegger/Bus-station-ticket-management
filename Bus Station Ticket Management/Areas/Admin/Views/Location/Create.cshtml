@@ -31,7 +31,24 @@
     </div>
 </div>
 
+<div data-aos="fade-up">
+    <h2>Scroll to see me fade in!</h2>
+</div>
+
+<button id="tooltipButton" class="btn btn-primary">
+    Hover me!
+</button>
+
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            tippy('#tooltipButton', {
+                content: 'This is a tooltip!',
+            });
+        });
+    </script>
 }

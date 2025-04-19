@@ -57,10 +57,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 usersQuery = usersQuery.Where(u =>
-                    u.FullName.Contains(searchString) ||
-                    u.UserName.Contains(searchString) ||
-                    u.Email.Contains(searchString) ||
-                    u.PhoneNumber.Contains(searchString)
+                    (u.FullName != null && u.FullName.Contains(searchString)) ||
+                    (u.UserName != null && u.UserName.Contains(searchString)) ||
+                    (u.Email != null && u.Email.Contains(searchString)) ||
+                    (u.PhoneNumber != null && u.PhoneNumber.Contains(searchString))
                 );
             }
 
@@ -195,18 +195,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-        string id,
-        [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser,
-        string SelectedRole,
-        string? NewPassword)
+            string id,
+            [Bind("FullName,Address,Gender,DateOfBirth,Id,UserName,Email,PhoneNumber,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser,
+            string selectedRole,
+            string? newPassword)
         {
             if (id != applicationUser.Id)
             {
                 return NotFound();
             }
 
-            if (!string.IsNullOrEmpty(applicationUser?.PhoneNumber) && applicationUser?.PhoneNumber?.Length > 11 || applicationUser?.PhoneNumber?.Length < 8) {
-                ModelState.AddModelError("PhoneNumber", "Invalid Phone number!");
+            if (!string.IsNullOrEmpty(applicationUser?.PhoneNumber) &&
+            (applicationUser.PhoneNumber.Length < 8 || applicationUser.PhoneNumber.Length > 11))
+            {
+                ModelState.AddModelError("PhoneNumber", "Invalid phone number!");
                 return View(applicationUser);
             }
 
@@ -216,80 +218,95 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            if (!roles.Any())
             {
-                try
-                {
-                    // Update user properties
-                    if (applicationUser != null) {
-                        user.UserName = applicationUser?.UserName;
-                        user.NormalizedUserName = applicationUser?.UserName?.ToUpper();
-                        user.Email = applicationUser?.Email;
-                        user.NormalizedEmail = applicationUser?.Email?.ToUpper();
-                        user.FullName = applicationUser?.FullName ?? "Unknown";
-                        user.Address = applicationUser?.Address;
-                        user.Gender = applicationUser?.Gender ?? "Other";
-                        user.DateOfBirth = applicationUser?.DateOfBirth;
-                        user.PhoneNumber = applicationUser?.PhoneNumber;
-                        user.LockoutEnabled = applicationUser?.LockoutEnabled ?? false;
-                        user.LockoutEnd = applicationUser?.LockoutEnd;
-                        user.AccessFailedCount = applicationUser?.AccessFailedCount ?? 0;
-                    }
-
-                    // Update the user
-                    var updateResult = await _userManager.UpdateAsync(user);
-                    if (!updateResult.Succeeded)
-                    {
-                        foreach (var error in updateResult.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                        return View(applicationUser);
-                    }
-
-                    // Change password if new password is provided
-                    if (!string.IsNullOrWhiteSpace(NewPassword))
-                    {
-                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                        var passwordResult = await _userManager.ResetPasswordAsync(user, token, NewPassword);
-
-                        if (!passwordResult.Succeeded)
-                        {
-                            foreach (var error in passwordResult.Errors)
-                            {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
-                            return View(applicationUser);
-                        }
-                    }
-
-                    // Update role
-                    var currentRoles = await _userManager.GetRolesAsync(user);
-                    if (!string.IsNullOrEmpty(SelectedRole) && !currentRoles.Contains(SelectedRole))
-                    {
-                        await _userManager.RemoveFromRolesAsync(user, currentRoles);
-                        await _userManager.AddToRoleAsync(user, SelectedRole);
-                    }
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (applicationUser == null || !ApplicationUserExists(applicationUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                ModelState.AddModelError("", "Error: No roles available.");
+                return View(applicationUser);
             }
 
-            // Load roles back in case of error
-            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
-            ViewBag.CurrentRole = user != null ? (await _userManager.GetRolesAsync(user)).FirstOrDefault() : null;
+            if (applicationUser == null) {
+                return View(applicationUser);
+            }
 
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Roles = roles;
+                ViewBag.CurrentRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                return View(applicationUser);
+            }
+
+            try
+            {
+                // Update user properties 
+                user.UserName = applicationUser.UserName ?? applicationUser.Email;
+                user.Email = applicationUser.Email;
+                user.FullName = applicationUser.FullName ?? "Unknown";
+                user.Address = applicationUser.Address;
+                user.Gender = applicationUser.Gender ?? "Other";
+                user.DateOfBirth = applicationUser.DateOfBirth;
+                user.PhoneNumber = applicationUser.PhoneNumber;
+                user.LockoutEnabled = applicationUser.LockoutEnabled;
+                user.LockoutEnd = applicationUser.LockoutEnd;
+                user.AccessFailedCount = applicationUser.AccessFailedCount;
+
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    AddErrorsToModelState(updateResult.Errors);
+                    return ReloadViewWithRoles(applicationUser, roles, user);
+                }
+
+                // Change password if provided
+                if (!string.IsNullOrWhiteSpace(newPassword))
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var passwordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+                    if (!passwordResult.Succeeded)
+                    {
+                        AddErrorsToModelState(passwordResult.Errors);
+                        return ReloadViewWithRoles(applicationUser, roles, user);
+                    }
+                }
+
+                // Update role if changed
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                if (!string.IsNullOrEmpty(selectedRole) && !currentRoles.Contains(selectedRole))
+                {
+                    await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                    await _userManager.AddToRoleAsync(user, selectedRole);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ApplicationUserExists(applicationUser.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return ReloadViewWithRoles(applicationUser, roles, user);
+            }
+        }
+
+        private void AddErrorsToModelState(IEnumerable<IdentityError> errors)
+        {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private IActionResult ReloadViewWithRoles(ApplicationUser applicationUser, List<string> roles, ApplicationUser user)
+        {
+            ViewBag.Roles = roles;
+            ViewBag.CurrentRole = (user != null ? _userManager.GetRolesAsync(user).Result.FirstOrDefault() : null);
             return View(applicationUser);
         }
 

@@ -5,41 +5,43 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
-
-<h4>Routes</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="card">
+    <div class="card-header bg-success-subtle">
+        <h4>Edit Routes</h4>
+    </div>
+    <div class="card-body">
+        <div class="card-title"></div>
+        <form asp-action="Edit" class="" id="editRoute">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="StartId" class="control-label"></label>
-                <select asp-for="StartId" class="form-control" asp-items="ViewBag.StartLocation"></select>
-                <span asp-validation-for="StartId" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md form-group mb-3">
+                    <label asp-for="StartId" class="control-label"></label>
+                    <select asp-for="StartId" class="form-control" asp-items="ViewBag.StartLocation"></select>
+                    <span asp-validation-for="StartId" class="text-danger"></span>
+                </div>
+                <div class="col-md form-group mb-3">
+                    <label asp-for="DestinationId" class="control-label"></label>
+                    <select asp-for="DestinationId" class="form-control" asp-items="ViewBag.DestinationLocation"></select>
+                    <span asp-validation-for="DestinationId" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DestinationId" class="control-label"></label>
-                <select asp-for="DestinationId" class="form-control" asp-items="ViewBag.DestinationLocation"></select>
-                <span asp-validation-for="DestinationId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
         </form>
     </div>
+        <div class="card-footer form-group d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            <input type="submit" form="editRoute" value="Save" class="btn btn-primary" />
+        </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

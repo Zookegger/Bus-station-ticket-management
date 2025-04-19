@@ -42,6 +42,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             locations = sortBy switch {
                 "name_asc" => locations.OrderBy(l => l.Name),
                 "name_desc" => locations.OrderByDescending(l => l.Name),
+                "address_asc" => locations.OrderBy(l => l.Address),
+                "address_desc" => locations.OrderByDescending(l => l.Address),
                 _ => locations.OrderBy(l => l.Name),
             };
 
@@ -80,6 +82,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address")] Location location)
         {
+            if (LocationExists(location)) {
+                ModelState.AddModelError("", "Location already exist! Please check the Name or the Address again");
+                return View(location);
+            }
+
             if (ModelState.IsValid) {
                 _context.Add(location);
                 await _context.SaveChangesAsync();
@@ -111,6 +118,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             if (id != location.Id) {
                 return NotFound();
+            }
+
+            if (LocationExists(id, location)) {
+                ModelState.AddModelError("", "Location already exist! Please check the Name or the Address again");
+                return View(location);
             }
 
             if (ModelState.IsValid) {
@@ -164,6 +176,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private bool LocationExists(int id)
         {
             return _context.Locations.Any(e => e.Id == id);
+        }
+
+        private bool LocationExists(Location location)
+        {
+            return _context.Locations.Any(e => 
+                e.Id == location.Id ||
+                e.Name == location.Name ||
+                e.Address == location.Address
+            );
+        }
+        
+        private bool LocationExists(int id, Location location)
+        {
+            return _context.Locations.Any(e => 
+                e.Id != id && 
+                (e.Name == location.Name || e.Address == location.Address)
+            );
         }
     }
 }

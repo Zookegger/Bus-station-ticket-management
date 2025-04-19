@@ -15,7 +15,7 @@ namespace Bus_Station_Ticket_Management.Models
         [ForeignKey(nameof(TripId))]
         public Trip? Trip { get; set; }
 
-        public int? DriverId { get; set; }
+        public string? DriverId { get; set; }
         [ForeignKey(nameof(DriverId))]
         public Driver? Driver { get; set; }
 

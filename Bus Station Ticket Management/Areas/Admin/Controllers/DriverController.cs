@@ -33,9 +33,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 driversQuery = driversQuery.Where(d =>
-                    d.FullName.Contains(searchString) ||
-                    d.Email.Contains(searchString) ||
-                    d.LicenseId.Contains(searchString)
+                    (d.FullName != null && d.FullName.Contains(searchString)) ||
+                    (d.Email != null && d.Email.Contains(searchString)) ||
+                    (d.LicenseId != null && d.LicenseId.Contains(searchString))
                 );
             }
 
@@ -66,14 +66,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Driver/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null) {
                 return NotFound();
             }
 
-            var driver = await _context.Drivers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var driver = await _context.Drivers.FirstOrDefaultAsync(m => m.Id == id);
             if (driver == null) {
                 return NotFound();
             }
@@ -103,7 +102,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Driver/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             if (id == null) {
                 return NotFound();
@@ -121,7 +120,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,LicenseId,Gender,DateOfBirth,Email,PhoneNumber")] Driver driver)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Address,LicenseId,Gender,DateOfBirth,Email,PhoneNumber")] Driver driver)
         {
             if (id != driver.Id) {
                 return NotFound();
@@ -146,7 +145,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Driver/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null) {
                 return NotFound();
@@ -175,7 +174,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DriverExists(int id)
+        private bool DriverExists(string id)
         {
             return _context.Drivers.Any(e => e.Id == id);
         }

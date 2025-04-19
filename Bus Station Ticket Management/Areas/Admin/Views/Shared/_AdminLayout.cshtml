@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bus Station Ticket Management - Admin</title>
 
+    <!-- Import stylesheet -->
     <!-- Site & Shared Styles -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/css/Shared/_Layout.cshtml.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/Custom Font Size.css" asp-append-version="true" />
 
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -17,7 +18,25 @@
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"rel="stylesheet" />
+
+    <!-- Animate on Scroll -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+
+    <!-- Hover.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+
+    <!-- DataTables.js -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 </head>
 
 <body>
@@ -91,7 +110,7 @@
         <!-- Footer -->
         <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
             <div class="container py-4">
-                <div class="row align-items-center gy-3 text-center text-md-start">
+                <div class="row align-items-center gy-3 text-center text-md-start mx-auto">
                     <!-- Left side -->
                     <div class="col-md-6">
                         <div class="small">
@@ -102,18 +121,26 @@
                         </div>
                     </div>
 
-
                     <!-- Right side -->
-                    <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4">
-                        <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                            <i class="fab fa-facebook d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Facebook</span>
+                    <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4 pt-2">
+
+                        <a href="#"
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 120px;">
+                            <i class="fab fa-facebook fa-lg"></i>
+                            <span class="d-none d-sm-inline">Facebook</span>
                         </a>
-                        <a href="#" class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                            <i class="fab fa-linkedin d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">LinkedIn</span>
+                        <a href="#"
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 120px;">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                            <span class="d-none d-sm-inline">LinkedIn</span>
                         </a>
                         <a href="mailto:support@example.com"
-                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2">
-                            <i class="fas fa-envelope d-inline-flex justify-content-end fa-lg"></i><span class="d-none d-sm-inline">Email</span>
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 120px;">
+                            <i class="fas fa-envelope fa-lg"></i>
+                            <span class="d-none d-sm-inline">Email</span>
                         </a>
                     </div>
                 </div>
@@ -121,12 +148,37 @@
         </footer>
     </div>
 
-
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Animate on Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <!-- Lottie -->
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <!-- Tippy.js -->
+    <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
+    <script src="@("https://unpkg.com/tippy.js@6")"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- VanillaTilt -->
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

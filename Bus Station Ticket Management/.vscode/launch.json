@@ -14,7 +14,8 @@
       "console": "integratedTerminal",
       "stopAtEntry": false,
       "hotReloadEnabled": true,
-      "internalConsoleOptions": "openOnSessionStart"
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false // Only debug in a file
     },
     {
       "name": "Attach to .NET Core",

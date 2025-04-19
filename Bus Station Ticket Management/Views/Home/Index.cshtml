@@ -3,71 +3,84 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home";
     var now = DateTime.Now;
+
+    var destination = ViewBag.Destination;
+    var departure = ViewBag.Departure;
+    var time = ViewBag.DepartureTime != null ? (ViewBag.DepartureTime).ToString("yyyy-MM-dd") : null;
 }
+<div data-aos="fade-up">
+    <div class="background-img">
+        <div class="container pt-5">
+            @if (!Model.IsSearchResult)
+            {
+                <div class="text-center">
+                    <h1 class="display-3 fw-bold text-primary" style="text-shadow: 0 2px 5px rgb(78, 78, 78);">Book Your Bus
+                        Ticket Online</h1>
+                    <p class="lead text-muted fw-bold" style="text-shadow: 0 10px 10px rgba(119, 118, 118, 0.4);">Fast,
+                        easy, and secure travel reservations</p>
+                </div>
+            }
 
-<div class="background-img">
-    <div class="container py-5">
-        @if (!Model.IsSearchResult)
-        {
+            <!-- Hidden Popover Content Template -->
+            <div id="locationPopoverContent" class="d-none px-0 py-0">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control mb-2" id="location-search" placeholder="e.g. Hanoi, Saigon">
+                    <label for="location-search" class="form-label">Search Location</label>
+                </div>
 
-            <div class="text-center">
-                <h1 class="display-3 fw-bold text-primary" style="text-shadow: 0 2px 5px rgb(78, 78, 78);">Book Your Bus Ticket Online</h1>
-                <p class="lead text-muted fw-bold" style="text-shadow: 0 10px 10px rgba(119, 118, 118, 0.4);">Fast, easy, and secure travel reservations</p>
+                <ul class="list-group" id="location-suggestions" style="max-height: 150px; overflow-y: auto;"></ul>
+                <button class="btn btn-primary btn-sm w-100 mt-3">Select</button>
             </div>
-        }
 
-        <!-- Hidden Popover Content Template -->
-        <div id="locationPopoverContent" class="d-none px-0 py-0">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control mb-2" id="location-search" placeholder="e.g. Hanoi, Saigon">
-                <label for="location-search" class="form-label">Search Location</label>
-            </div>
-
-            <ul class="list-group" id="location-suggestions" style="max-height: 150px; overflow-y: auto;"></ul>
-            <button class="btn btn-primary btn-sm w-100 mt-3">Select</button>
+            <!-- Search Form -->
+            <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-md-5">
+                <div class="col-8 col-md-4 mb-md-2 mb-0 position-relative">
+                    <div class="input-group input-group-lg">
+                        <input type="text" id="input_departure" name="departure" class="form-control" placeholder="From"
+                            required />
+                        <button type="button" class="btn btn-secondary" id="popoverDepartureBtn"
+                            data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
+                            data-bs-content="" data-bs-custom-class="custom-popover">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-8 col-md-4 mb-2 mb-md-0">
+                    <div class="input-group input-group-lg">
+                        <input type="text" id="input_destination" name="destination" class="form-control"
+                            placeholder="To" required />
+                        <button type="button" class="btn btn-secondary" id="popoverDestinationBtn"
+                            data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
+                            data-bs-content="" data-bs-custom-class="custom-popover">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-8 col-md-4 mb-2 mb-md-0">
+                    <input type="date" id="input_time" name="departureTime" class="form-control form-control-lg"
+                        placeholder="dd/MM/yyyy" required />
+                </div>
+                <div class="col-8 col-md-12 mb-2 mb-md-0">
+                    <button type="submit" class="btn btn-lg btn-primary w-100">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+            @if (!Model.IsSearchResult)
+            {
+                <div class="pb-5"></div>
+            }
         </div>
-
-        <!-- Search Form -->
-        <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-md-5">
-            <div class="col-8 col-md-4 mb-md-2 mb-0 position-relative">
-                <div class="input-group input-group-lg">
-                    <input type="text" name="departure" class="form-control" placeholder="From" required />
-                    <button type="button" class="btn btn-secondary" id="popoverDepartureBtn" data-bs-toggle="popover"
-                        data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
-                        data-bs-custom-class="custom-popover">
-                        <i class="fas fa-map-marker-alt mr-2"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-8 col-md-4 mb-2 mb-md-0">
-                <div class="input-group input-group-lg">
-                    <input type="text" name="destination" class="form-control" placeholder="To" required />
-                    <button type="button" class="btn btn-secondary" id="popoverDestinationBtn" data-bs-toggle="popover"
-                        data-popper-placement="bottom" data-bs-html="true" data-bs-content=""
-                        data-bs-custom-class="custom-popover">
-                        <i class="fas fa-map-marker-alt mr-2"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-8 col-md-4 mb-2 mb-md-0">
-                <input type="date" name="departureTime" class="form-control form-control-lg" placeholder="dd/MM/yyyy"
-                    required />
-            </div>
-            <div class="col-8 col-md-12 mb-2 mb-md-0">
-                <button type="submit" class="btn btn-lg btn-primary w-100">
-                    <i class="fas fa-search"></i> Search
-                </button>
-            </div>
-        </form>
     </div>
+    <hr class="mb-5">
+
+    <partial name="_DisplayTrips" model="Model" />
 </div>
-<hr class="mb-5">
-
-<partial name="_DisplayTrips" model="Model" />
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>AOS.init({duration: 1200,});</script>
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const triggerDepart = document.getElementById('popoverDepartureBtn');
             const triggerDest = document.getElementById('popoverDestinationBtn');
@@ -80,9 +93,9 @@
                 container: 'main',
                 sanitize: false,
                 title: `
-                <strong style="flex: 1; font-size: 1.5em">Choose departure point</strong>
-                <button class="btn btn-outline-secondary btn-sm" id="close-depart-btn"><i class="fa-solid fa-x"></i></button>
-            `,
+                    <strong style="flex: 1; font-size: 1.5em">Choose departure point</strong>
+                    <button class="btn btn-outline-secondary btn-sm" id="close-depart-btn"><i class="fa-solid fa-x"></i></button>
+                `,
                 content: () => template.innerHTML
             });
 
@@ -93,9 +106,9 @@
                 container: 'main',
                 sanitize: false,
                 title: `
-                <strong style="flex: 1; font-size: 1.5em">Choose destination point</strong>
-                <button class="btn btn-outline-secondary btn-sm" id="close-dest-btn"><i class="fa-solid fa-x"></i></button>
-            `,
+                    <strong style="flex: 1; font-size: 1.5em">Choose destination point</strong>
+                    <button class="btn btn-outline-secondary btn-sm" id="close-dest-btn"><i class="fa-solid fa-x"></i></button>
+                `,
                 content: () => template.innerHTML
             });
 
@@ -225,9 +238,9 @@
                         li.className = 'list-group-item list-group-item-action';
                         li.style.cursor = 'pointer';
                         li.innerHTML = `
-                        <div><strong class="fs-5">${loc.name}</strong></div>
-                        <small class="text-muted fs-6">${loc.address}</small>
-                    `;
+                            <div><strong class="fs-5">${loc.name}</strong></div>
+                            <small class="text-muted fs-6">${loc.address}</small>
+                        `;
 
                         li.onclick = () => {
                             const inputField = document.querySelector(`input[name="${type}"]`);
@@ -245,6 +258,48 @@
                 }
             }
         });
+    </script>
+
+    <script>
+        @* 
+            ViewBag.Departure = departure;
+            ViewBag.Destination = destination;
+            ViewBag.DepartureTime = departureTime; 
+        *@
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const input_departure = document.getElementById('input_departure');
+                const input_destination = document.getElementById('input_destination');
+                const input_time = document.getElementById('input_time');
+
+                try {
+
+                    if (input_departure) {
+                        if ('@departure' != null)
+                            input_departure.value = `@departure`;
+                        console.log(input_departure);
+                    }
+                    else console.warn("Element with ID 'departure' not found.");
+
+                    if (input_destination) {
+                        if ('@destination' != null)
+                            input_destination.value = `@destination`;
+                        console.log(input_destination);
+                    }
+                    else console.warn("Element with ID 'destination' not found.");
+
+                    if (input_time) {
+                        if ('@time' != null)
+                            input_time.value = `@time`;
+                        console.log(input_time);
+                        console.log(`@time`);
+                    }
+
+                    else console.warn("Element with ID 'input_time' not found.");
+                } catch (error) {
+                    console.error(error);
+                }
+            });
     </script>
 
     <style>

@@ -4,45 +4,45 @@
     ViewData["Title"] = "Revenue Statistics";
 }
 
-<h2 class="text-success fw-bold mb-4">Revenue Statistics</h2>
 
-<div class="row align-items-end mb-4 justify-content-between gap-4">
-    <!-- Filter Form -->
-    <form method="get" class="row g-3 col-md-9 col-lg-8">
-        <div class="col-md-4">
-            <label for="fromDate" class="form-label">From date</label>
-            <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
-        </div>
-        <div class="col-md-4">
-            <label for="toDate" class="form-label">To date</label>
-            <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
-        </div>
-        <div class="col-md-4 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fa-solid fa-filter"></i> Filter
-            </button>
-        </div>
-    </form>
-
+<div class="row mb-3">
     <!-- Statistics Summary -->
-    <div class="d-flex gap-3 justify-content-end col-lg-12 col-xl-3">
-        <div class="card text-bg-info shadow-sm flex-fill" style="min-width: 200px;">
-            <div class="card-body text-center p-3">
-                <i class="fa-solid fa-ticket fa-xl mb-2"></i>
-                <h6 class="card-title mb-1">Total Tickets Sold</h6>
-                <span class="fs-5 fw-bold">@ViewBag.TotalTickets</span>
+    <h2 class="text-success fw-bold mb-0">Revenue Statistics</h2>
+    <div class="col-md-6 d-flex gap-3 justify-content-end">
+        <div class="col-xs-6 col-sm-6 col-md-7 card text-bg-info shadow-sm flex-fill">
+            <div class="card-body text-center p-3 d-md-flex flex-column align-center justify-content-center gap-2">
+                <i class="fa-solid fa-ticket fa-xl mb-2 fs-md-2 fs-lg-1"></i>
+                <h6 class="card-title my-1 fs-md-5 fs-lg-4">Total Tickets Sold</h6>
+                <span class="fs-5 fw-bold fs-md-4">@ViewBag.TotalTickets</span>
             </div>
         </div>
 
-        <div class="card bg-warning bg-gradient shadow-sm flex-fill text-dark" style="min-width: 200px;">
-            <div class="card-body text-center p-3">
-                <i class="fa-solid fa-coins fa-xl mb-2"></i>
-                <h6 class="card-title mb-1">Total Revenue</h6>
-                <span class="fs-5 fw-bold">@ViewBag.TotalRevenue.ToString("N0") VND</span>
+        <div class="col-xs-6 col-sm-6 col-md-5 card bg-warning bg-gradient shadow-sm flex-fill text-dark">
+            <div class="card-body text-center p-3 d-md-flex flex-column align-center justify-content-center gap-2">
+                <i class="fa-solid fa-coins fa-xl mb-2 fs-md-2 fs-lg-1"></i>
+                <h6 class="card-title my-1 fs-md-5 fs-lg-4">Total Revenue</h6>
+                <span class="fs-5 fw-bold fs-md-4">@ViewBag.TotalRevenue.ToString("N0") VND</span>
             </div>
         </div>
     </div>
+
+        <!-- Filter Form -->
+    <form method="get" class="col-md-6">
+        <div class="col">
+            <label for="fromDate" class="form-label">From date</label>
+            <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+        </div>
+        <div class="col">
+            <label for="toDate" class="form-label">To date</label>
+            <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="fa-solid fa-filter"></i> Filter
+        </button>
+    </form>
 </div>
+
+<br/>
 
 <!-- Tickets Table -->
 <div class="table-responsive mb-3 shadow rounded" style="max-height: 650px; overflow-y: auto;">

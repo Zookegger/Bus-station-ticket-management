@@ -4,16 +4,18 @@
 
 html {
 	font-size: var(--global-font-size);
-	height: 100vh;
 }
 
 body {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 60px;
-	height: 100%;
 	font-family: 'Segoe UI', sans-serif;
-	/* width: 100%;  */
+}
+
+html, body {
+	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 @media (min-width: 768px) {
@@ -50,7 +52,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	overflow-x: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 header {

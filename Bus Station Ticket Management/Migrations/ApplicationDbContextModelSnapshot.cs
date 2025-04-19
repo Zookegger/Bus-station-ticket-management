@@ -40,6 +40,11 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -99,6 +104,10 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Coupon", b =>
@@ -130,47 +139,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", (string)null);
-                });
-
-            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Driver", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LicenseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Location", b =>
@@ -191,16 +160,13 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -220,7 +186,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Rating", b =>
@@ -253,7 +219,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Routes", b =>
@@ -279,7 +245,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("StartId");
 
-                    b.ToTable("Routes", (string)null);
+                    b.ToTable("Routes");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Seat", b =>
@@ -313,7 +279,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Ticket", b =>
@@ -367,7 +333,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Trip", b =>
@@ -405,7 +371,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Trips", (string)null);
+                    b.ToTable("Trips");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.TripDriverAssignment", b =>
@@ -419,8 +385,8 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.Property<DateTime>("DateAssigned")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DriverId")
-                        .HasColumnType("int");
+                    b.Property<string>("DriverId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TripId")
                         .HasColumnType("int");
@@ -431,7 +397,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("TripDriverAssignments", (string)null);
+                    b.ToTable("TripDriverAssignments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Vehicle", b =>
@@ -466,7 +432,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleTypeId");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.VehicleType", b =>
@@ -498,7 +464,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VehicleTypes", (string)null);
+                    b.ToTable("VehicleTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -632,6 +598,17 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Driver", b =>
+                {
+                    b.HasBaseType("Bus_Station_Ticket_Management.Models.ApplicationUser");
+
+                    b.Property<string>("LicenseId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("Driver");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
@@ -823,12 +800,12 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Driver", b =>
+            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Trip", b =>
                 {
                     b.Navigation("TripDriverAssignments");
                 });
 
-            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Trip", b =>
+            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Driver", b =>
                 {
                     b.Navigation("TripDriverAssignments");
                 });

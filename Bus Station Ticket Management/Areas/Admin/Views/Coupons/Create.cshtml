@@ -5,56 +5,62 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Coupon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CouponString" class="control-label"></label>
-                <input asp-for="CouponString" class="form-control" />
+<div class="card">
+    <div class="card-header bg-success-subtle">
+        <h4 class="">Create Coupon</h4>
+    </div>
+    <form asp-action="Create" class="card-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col form-group">
+                <label asp-for="CouponString" style="left: unset;" for="CouponString" class="control-label"></label>
+                <input asp-for="CouponString" type="text" class="form-control" placeholder=" " id="CouponString" />
                 <span asp-validation-for="CouponString" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            
+            <div class="col form-group">
                 <label asp-for="DiscountType" class="control-label"></label>
-                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()" asp-items="ViewBag.DiscountType"></select>
+                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()"
+                    asp-items="ViewBag.DiscountType"></select>
                 <span asp-validation-for="DiscountType" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DiscountAmount" class="control-label"></label>
-                <input asp-for="DiscountAmount" type="number" min="0" id='discountValue' class="form-control" oninput="checkInput()"/>
-                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="DiscountAmount" class="control-label"></label>
+            <input asp-for="DiscountAmount" type="number" min="0" id='discountValue' class="form-control"
+                oninput="checkInput()" />
+            <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+        </div>
+        <div class="row mt-3">
+            <div class="col form-group">
                 <label asp-for="StartPeriod" class="control-label"></label>
                 <input asp-for="StartPeriod" class="form-control" />
                 <span asp-validation-for="StartPeriod" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="col form-group">
                 <label asp-for="EndPeriod" class="control-label"></label>
                 <input asp-for="EndPeriod" class="form-control" />
                 <span asp-validation-for="EndPeriod" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input asp-for="IsActive" type="hidden" class="form-control" />
-                <span asp-validation-for="IsActive" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="form-group">
+            <input asp-for="IsActive" type="hidden" class="form-control" />
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+    
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         function updateDiscountType() {
             const type = document.getElementById('discountType').value;
@@ -80,7 +86,7 @@
                 if (value.value > 100) {
                     value.value = 100;
                 }
-            } 
+            }
         }
 
         updateDiscountType();

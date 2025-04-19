@@ -47,17 +47,20 @@ public class HomeController : Controller
     public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime) {
         departure = departure?.Trim() ?? "";
         destination = destination?.Trim() ?? "";
-        
+
+        #pragma warning disable CS8602 // Dereference of a possibly null reference.
         var trips = await _context.Trips
             .Include(t => t.Route)
                 .ThenInclude(r => r.StartLocation)
             .Include(t => t.Route)
                 .ThenInclude(r => r.DestinationLocation)
             .Where(t =>
-                t.Route.StartLocation.Name.Contains(departure) &&
-                t.Route.DestinationLocation.Name.Contains(destination) &&
+                t.Route != null && 
+                t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(departure) &&
+                t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(destination) &&
                 t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
             ).OrderBy(t => t.DepartureTime).ToListAsync();
+        #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         var viewModel = new TripListViewModel
         {
@@ -67,6 +70,10 @@ public class HomeController : Controller
             Destination = destination,
             DepartureTime = departureTime
         };
+
+        ViewBag.Departure = departure;
+        ViewBag.Destination = destination;
+        ViewBag.DepartureTime = departureTime;
 
         return View("Index", viewModel);
     }

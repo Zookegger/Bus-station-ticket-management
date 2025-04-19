@@ -76,7 +76,7 @@
                             @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
                         </td>
                         <td>
-                            $@Html.DisplayFor(modelItem => item.Price)
+                            @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", item.Price)
                         </td>
                         <td>
                             <div class="btn-group" role="group">

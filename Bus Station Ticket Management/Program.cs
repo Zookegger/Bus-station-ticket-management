@@ -151,6 +151,8 @@ using (var scope = app.Services.CreateScope())
             PhoneNumber = "0902124234",
             Gender = "Male",
             DateOfBirth = new DateOnly(1982, 11, 11),
+            EmailConfirmed = true,
+            Address = "123 ABC Street",
         };
 
         await userManager.CreateAsync(adminUser, "Admin@123");

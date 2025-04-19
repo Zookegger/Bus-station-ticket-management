@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bus Station Ticket Management</title>
 
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/css/Shared/_Layout.cshtml.css" asp-append-version="true" /> *@
+    <!-- Import stylesheet -->
+    <!-- Site & Shared Styles -->
+    <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/Custom Font Size.css" asp-append-version="true" />
 
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,12 +18,25 @@
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
-        
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"rel="stylesheet" />
+
+    <!-- Animate on Scroll -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+
+    <!-- Hover.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+
     <!-- DataTables.js -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-
 </head>
 
 <body>
@@ -29,18 +44,20 @@
     <header class="shadow-sm">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fa-solid fa-bus me-2"></i>Bus Station Ticket Management
-                </a>
-
-                @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
-                {
-                    <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
-                        asp-area="Admin" asp-controller="Admin" asp-action="Index" title="Admin Dashboard">
-                        <i class="fas fa-tools"></i>
-                        <span>Admin Dashboard</span>
+                <div class="navbar-brand-group d-flex">
+                    <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fa-solid fa-bus me-2"></i>Bus Station Ticket Management
                     </a>
-                }
+
+                    @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                    {
+                        <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex justify-content-start align-items-center gap-2 shadow-sm"
+                            asp-area="Admin" asp-controller="Admin" asp-action="Index" title="Admin Dashboard">
+                            <i class="fas fa-tools"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                    }
+                </div>
 
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -105,16 +122,38 @@
             </div>
         </footer>
     </div>
-
+    
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Animate on Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <!-- Lottie -->
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <!-- Tippy.js -->
+    <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
+    <script src="@("https://unpkg.com/tippy.js@6")"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- VanillaTilt -->
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
