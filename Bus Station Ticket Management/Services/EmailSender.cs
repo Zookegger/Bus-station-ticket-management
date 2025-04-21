@@ -3,41 +3,46 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 
-public class EmailSender : IEmailSender
+namespace Bus_Station_Ticket_Management.Services
 {
-    private readonly IConfiguration _configuration;
-
-    public EmailSender(IConfiguration configuration)
+    public class EmailSender : IEmailSender
     {
-        _configuration = configuration;
-    }
+        private readonly IConfiguration _configuration;
 
-    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-    {
-        var mimeMessage = new MimeMessage();
-        mimeMessage.From.Add(new MailboxAddress(
-            _configuration["EmailSender:Name"],
-            _configuration["EmailSender:Email"]
-        ));
+        public EmailSender(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-        mimeMessage.To.Add(new MailboxAddress("", email));
-        mimeMessage.Subject = subject;
-        mimeMessage.Body = new TextPart("html") {
-            Text = htmlMessage
-        };
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress(
+                _configuration["EmailSender:Name"],
+                _configuration["EmailSender:Email"]
+            ));
 
-        using (var client = new SmtpClient()) {
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            mimeMessage.To.Add(new MailboxAddress("", email));
+            mimeMessage.Subject = subject;
+            mimeMessage.Body = new TextPart("html")
+            {
+                Text = htmlMessage
+            };
 
-            var host = _configuration["EmailSender:SmtpHost"];
-            var port = int.Parse(_configuration["EmailSender:SmtpPort"]);
-            await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(
-                _configuration["EmailSender:Username"],
-                _configuration["EmailSender:Password"]
-            );
-            await client.SendAsync(mimeMessage);
-            await client.DisconnectAsync(true);
+            using (var client = new SmtpClient())
+            {
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                var host = _configuration["EmailSender:SmtpHost"];
+                var port = int.Parse(_configuration["EmailSender:SmtpPort"]);
+                await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(
+                    _configuration["EmailSender:Username"],
+                    _configuration["EmailSender:Password"]
+                );
+                await client.SendAsync(mimeMessage);
+                await client.DisconnectAsync(true);
+            }
         }
     }
 }

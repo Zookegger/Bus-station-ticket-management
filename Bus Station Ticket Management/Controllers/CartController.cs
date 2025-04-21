@@ -1,6 +1,6 @@
 ﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
-using Bus_Station_Ticket_Management.Service;
+using Bus_Station_Ticket_Management.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -107,9 +107,6 @@ namespace Bus_Station_Ticket_Management.Controllers
                 var expectedHash = Helper.HashHmac512(queryString, hashSecret);
                 _logger.LogInformation($"HashSecret: {hashSecret}");
                 _logger.LogInformation($"ExpectedHash: {expectedHash}, ReceivedHash: {obj.SecureHash}");
-
-                
-
                 _logger.LogInformation("Lưu vào database...");
                 context.VnPayments.Add(obj);
 

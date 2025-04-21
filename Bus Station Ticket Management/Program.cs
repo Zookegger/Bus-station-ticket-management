@@ -1,5 +1,3 @@
-using Bus_Station_Ticket_Management.DataAccess;
-using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
@@ -14,7 +12,10 @@ using Google.Apis.Auth.AspNetCore3;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.DataProtection;
-using Bus_Station_Ticket_Management.Service;
+using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 

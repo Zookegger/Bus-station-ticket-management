@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-
-namespace Bus_Station_Ticket_Management.Service
+namespace Bus_Station_Ticket_Management.Services
 {
     public static class Helper
     {
