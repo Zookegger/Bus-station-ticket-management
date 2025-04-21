@@ -1,5 +1,3 @@
-using Bus_Station_Ticket_Management.DataAccess;
-using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
@@ -14,8 +12,15 @@ using Google.Apis.Auth.AspNetCore3;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.DataProtection;
+using Bus_Station_Ticket_Management.DataAccess;
+using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<VnPaymentServicecs>();
+builder.Services.Configure<VnPaymentSetting>(builder.Configuration.GetSection("Payment:VnPayment"));
 
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\"))
@@ -55,31 +60,31 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
     options.SlidingExpiration = true;
-})
-.AddGoogle(options =>
-{
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    options.CallbackPath = "/signin-google";
-
-    // // Request extra scopes for additional profile details.
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-
-    // // Request access to birthday, phone number, address, and gender information.
-    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
-
-    // options.SaveTokens = true;
-})
-.AddFacebook(options =>
-{
-    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-    options.CallbackPath = "/signin-facebook";
 });
+//.AddGoogle(options =>
+//{
+//    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+//    options.CallbackPath = "/signin-google";
+
+//    // // Request extra scopes for additional profile details.
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+//    // // Request access to birthday, phone number, address, and gender information.
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+//    // options.SaveTokens = true;
+//})
+//.AddFacebook(options =>
+//{
+//    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+//    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+//    options.CallbackPath = "/signin-facebook";
+//});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()

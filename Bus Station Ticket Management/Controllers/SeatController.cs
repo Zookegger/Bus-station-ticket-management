@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
-
     [Route("[controller]/[action]")]
     public class SeatController : Controller
     {
@@ -35,7 +34,6 @@ namespace Bus_Station_Ticket_Management.Controllers
         {
             TempData.Keep();
 
-            // Kiểm tra Trip và Bus có tồn tại không
             var trip = await _context.Trips
                 .Include(t => t.Vehicle)
                     .ThenInclude(v => v.VehicleType)
@@ -45,12 +43,13 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .ThenInclude(r => r.DestinationLocation)
                 .FirstOrDefaultAsync(t => t.Id == TripId && t.VehicleId == VehicleId);
 
-            if (trip == null) {
+            if (trip == null)
+            {
                 return NotFound("Trip not found or doesn't match with vehicle.");
             }
 
-            // Lấy danh sách ghế
-            if (_context.Seats == null) {
+            if (_context.Seats == null)
+            {
                 return NotFound("Seats data is not available.");
             }
 
@@ -61,11 +60,13 @@ namespace Bus_Station_Ticket_Management.Controllers
                 .ThenBy(s => s.Column)
                 .ToListAsync();
 
-            if (!seats.Any()) {
+            if (!seats.Any())
+            {
                 return NotFound("Seat hasn't been generated.");
             }
 
-            SelectSeatsViewModel viewModel = new SelectSeatsViewModel {
+            SelectSeatsViewModel viewModel = new SelectSeatsViewModel
+            {
                 TripId = trip.Id,
                 VehicleId = trip.VehicleId,
                 RouteName = trip.Route != null ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" : "N/A",
@@ -82,16 +83,20 @@ namespace Bus_Station_Ticket_Management.Controllers
                 TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
             };
 
-            if (User.Identity.IsAuthenticated == true) {
-                try {
+            if (User.Identity.IsAuthenticated)
+            {
+                try
+                {
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId)) {
+                    if (!string.IsNullOrEmpty(userId))
+                    {
                         var user = await _userManager.FindByIdAsync(userId);
                         if (user != null)
                             viewModel.User = user;
                     }
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
@@ -100,15 +105,20 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId)
+        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod)
         {
+            if (paymentMethod == null) {
+                TempData["Error"] = "Invalid payment method.";
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
+            }
+
             if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0)
             {
                 TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!string.IsNullOrEmpty(userId) && User.Identity != null && User.Identity.IsAuthenticated)
             {
                 userId = _userManager.GetUserId(User);
@@ -152,6 +162,19 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    var order = new Payment
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        TotalAmount = totalPrice,
+                        CreatedAt = DateTime.Now,
+                        PaymentMethod = paymentMethod,
+                        PaymentStatus = 0
+                    };
+
+                    TempData["PaymentId"] = order.Id;
+
+                    _context.Payments.Add(order);
+
                     foreach (var seat in seats)
                     {
                         seat.IsAvailable = false;
@@ -169,17 +192,30 @@ namespace Bus_Station_Ticket_Management.Controllers
                             GuestName = guestName,
                             GuestEmail = guestEmail,
                             GuestPhone = guestPhone,
-                            TotalPrice = totalPrice
+                            TotalPrice = totalPrice / numberOfTickets, // Giá mỗi vé
+                            PaymentId = order.Id
                         };
 
                         _context.Tickets.Add(ticket);
                         ticketIds.Add(ticket.Id);
                     }
-
+                    
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
 
+                if (paymentMethod != "Cash")
+                {
+                    // Lưu thông tin vào TempData
+                    TempData["TicketIds"] = string.Join(",", ticketIds);
+                    TempData["TotalPrice"] = totalPrice;
+
+                    TempData["Success"] = "Successfully booked seats! Proceeding to payment...";
+
+
+                    // Chuyển hướng đến Checkout
+                    return RedirectToAction("Checkout", "Cart");
+                }
                 TempData["Success"] = "Successfully booked seat!";
                 string ticketIdsList = string.Join(",", ticketIds);
 

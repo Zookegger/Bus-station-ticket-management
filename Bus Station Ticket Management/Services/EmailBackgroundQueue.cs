@@ -1,20 +1,23 @@
 using System.Threading.Channels;
 
-public class EmailBackgroundQueue : IEmailBackgroundQueue
+namespace Bus_Station_Ticket_Management.Services
 {
-    private readonly Channel<EmailMessage> _queue;
-
-    public EmailBackgroundQueue()
+    public class EmailBackgroundQueue : IEmailBackgroundQueue
     {
-        // Unbounded queue, you can also specify limits
-        _queue = Channel.CreateUnbounded<EmailMessage>();
-    }
+        private readonly Channel<EmailMessage> _queue;
 
-    public void QueueEmail(EmailMessage message)
-    {
-        if (message == null) throw new ArgumentNullException(nameof(message));
-        _queue.Writer.TryWrite(message);
-    }
+        public EmailBackgroundQueue()
+        {
+            // Unbounded queue, you can also specify limits
+            _queue = Channel.CreateUnbounded<EmailMessage>();
+        }
 
-    public ChannelReader<EmailMessage> Reader => _queue.Reader;
+        public void QueueEmail(EmailMessage message)
+        {
+            if (message == null) throw new ArgumentNullException(nameof(message));
+            _queue.Writer.TryWrite(message);
+        }
+
+        public ChannelReader<EmailMessage> Reader => _queue.Reader;
+    }
 }

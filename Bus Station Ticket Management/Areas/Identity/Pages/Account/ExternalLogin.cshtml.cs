@@ -3,6 +3,8 @@
 #nullable disable
 using System.Net.Http.Headers;
 using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.Utilities;
+
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -35,8 +37,8 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender
-            // GooglePeopleApiHelper peopleApiHelper
+            IEmailSender emailSender,
+            GooglePeopleApiHelper peopleApiHelper
             )
         {
             _signInManager = signInManager;
@@ -45,7 +47,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
-            // _peopleApiHelper = peopleApiHelper;
+            _peopleApiHelper = peopleApiHelper;
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿@model Bus_Station_Ticket_Management.ViewModels.SelectSeatsViewModel
 
 @{
+    ViewData["Title"] = "Select Seat";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -34,6 +35,7 @@
 
             if (countdown <= 0) {
                 clearInterval(timer);
+
                 window.location.href = '@Url.Action("MyTickets", "Tickets")';
             }
         }, 1000); // Update every second
@@ -175,12 +177,11 @@
 
             <div class="card-header"><span class="card-title">Payment</span></div>
             <div class="card-body">
-                <select name="payment-method" id="payment-method" class="form-select">
+                <select name="paymentMethod" id="payment-method" for="paymentMethod" class="form-select">
+                    <option value="" selected disabled>Select a payment method</option>
                     <option value="Cash" data-icon="fa-solid fa-money-bill">On Cash</option>
-                    @* <option value="VnPay" data-icon="fa-brands fa-cc-visa">VNPay</option> *@
+                    <option value="VnPay" data-icon="fa-brands fa-cc-visa">VNPay</option> 
                     <option value="Visa" data-icon="fa-brands fa-cc-momo">Momo</option>
-                    <option value="Visa" data-icon="fa-brands fa-cc-visa">Visa</option>
-                    <option value="Mastercard" data-icon="fa-brands fa-cc-mastercard">Mastercard</option>
                 </select>
             </div>
         </div>

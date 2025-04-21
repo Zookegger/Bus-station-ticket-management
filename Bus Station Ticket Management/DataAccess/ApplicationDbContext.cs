@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using test.Models;
 
 namespace Bus_Station_Ticket_Management.DataAccess
 {
@@ -79,6 +80,6 @@ namespace Bus_Station_Ticket_Management.DataAccess
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<TripDriverAssignment> TripDriverAssignments { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
-
+        public DbSet<VnPayment> VnPayments { get; set; }
     }
 }
