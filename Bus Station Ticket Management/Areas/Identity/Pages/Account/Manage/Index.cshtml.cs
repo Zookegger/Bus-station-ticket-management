@@ -1,13 +1,11 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using Bus_Station_Ticket_Management.Models;
+﻿using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+
+#nullable enable
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
 {
@@ -22,6 +20,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         {
             _userManager = userManager;
             _signInManager = signInManager;
+
+            // Initialize non-nullable properties with default values
+            Username = string.Empty;
+            StatusMessage = string.Empty;
+            Input = new InputModel();
         }
 
         /// <summary>
@@ -56,18 +59,19 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Phone]
             [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            public string? PhoneNumber { get; set; }
+
             [Required]
-            [DisplayName("Tên người dùng")]
-            public string FullName { get; set; }
+            [DisplayName("Full Name")]
+            public string? FullName { get; set; }
 
-            [DisplayName("Địa chỉ")]
-            public string? Address { get; set; }
+            [DisplayName("Address")]
+            public string? Address { get; set; } = null!;
 
-            [DisplayName("Giới tính")]
-            public string Gender { get; set; }
+            [DisplayName("Gender")]
+            public string? Gender { get; set; }
 
-            [DisplayName("Ngày sinh")]
+            [DisplayName("Date Of Birth")]
             public DateOnly? DateOfBirth { get; set; }
         }
 
@@ -76,7 +80,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            Username = userName ?? user.FullName;
 
             Input = new InputModel {
                 PhoneNumber = phoneNumber,
@@ -119,9 +123,9 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            user.FullName = Input.FullName;
-            user.Address = Input.Address;
-            user.Gender = Input.Gender;
+            user.FullName = Input.FullName ?? string.Empty;
+            user.Address = Input.Address ?? string.Empty;
+            user.Gender = Input.Gender ?? string.Empty;
             user.DateOfBirth = Input.DateOfBirth;
 
             await _userManager.UpdateAsync(user);

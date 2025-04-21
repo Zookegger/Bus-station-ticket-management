@@ -60,31 +60,31 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
     options.SlidingExpiration = true;
+})
+.AddGoogle(options =>
+{
+   options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+   options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+   options.CallbackPath = "/signin-google";
+
+   // // Request extra scopes for additional profile details.
+   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+   // // Request access to birthday, phone number, address, and gender information.
+   // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+   // options.SaveTokens = true;
+})
+.AddFacebook(options =>
+{
+   options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+   options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+   options.CallbackPath = "/signin-facebook";
 });
-//.AddGoogle(options =>
-//{
-//    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//    options.CallbackPath = "/signin-google";
-
-//    // // Request extra scopes for additional profile details.
-//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-
-//    // // Request access to birthday, phone number, address, and gender information.
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
-
-//    // options.SaveTokens = true;
-//})
-//.AddFacebook(options =>
-//{
-//    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-//    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-//    options.CallbackPath = "/signin-facebook";
-//});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()

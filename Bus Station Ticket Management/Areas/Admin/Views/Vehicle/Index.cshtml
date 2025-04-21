@@ -63,11 +63,14 @@
                 onchange="this.form.submit()">
                 <option value="All" selected="@(ViewBag.FilterByType == "All" ? "selected" : null)">All Vehicle Types
                 </option>
-                @foreach (var type in ViewBag.VehicleTypes as IEnumerable<SelectListItem>)
+                @if (ViewBag.VehicleTypes != null)
                 {
-                    <option value="@type.Value" selected="@(ViewBag.FilterByType == type.Value ? "selected" : null)">
-                        @type.Text
-                    </option>
+                    foreach (var type in ViewBag.VehicleTypes as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@type.Value" selected="@(ViewBag.FilterByType == type.Value ? "selected" : null)">
+                            @type.Text
+                        </option>
+                    }
                 }
             </select>
         </div>
@@ -108,13 +111,10 @@
                 }
             </tbody>
         </table>
-    </div>
-
-    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-        @if (Model.Any())
+        @if (Model != null && Model.Any())
         {
             @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber,
-            searchString = ViewBag.SearchString, sortBy = ViewBag.SortBy,
+                searchString = ViewBag.SearchString, sortBy = ViewBag.SortBy,
                 filterByStatus = ViewBag.FilterByStatus, filterByType = ViewBag.FilterByType }),
                 new PagedListRenderOptions
                 {
@@ -124,8 +124,9 @@
                     ActiveLiElementClass = "active",
                     LinkToPreviousPageFormat = "&laquo;",
                     LinkToNextPageFormat = "&raquo;"
-                })
                 }
+            )
+        }
     </nav>
 </div>
 @section Scripts {

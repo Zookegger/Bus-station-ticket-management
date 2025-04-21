@@ -27,7 +27,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
-        private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
         private readonly GooglePeopleApiHelper _peopleApiHelper;

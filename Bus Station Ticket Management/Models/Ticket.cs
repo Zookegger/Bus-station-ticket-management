@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using test.Models;
 
 namespace Bus_Station_Ticket_Management.Models
 {
     public class Ticket
     {
         [Key]
-        public String Id { get; set; }
+        public string? Id { get; set; }
 
         public string? UserId { get; set; }
         [ForeignKey(nameof(UserId))]

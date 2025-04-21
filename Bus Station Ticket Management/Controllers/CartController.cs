@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text;
 using System.Web;
-using test.Models;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {

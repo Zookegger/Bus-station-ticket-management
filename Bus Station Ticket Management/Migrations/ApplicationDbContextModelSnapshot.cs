@@ -612,7 +612,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("test.Models.VnPayment", b =>
+            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.VnPayment", b =>
                 {
                     b.Property<string>("TransactionNo")
                         .HasColumnType("nvarchar(450)");
@@ -677,10 +677,11 @@ namespace Bus_Station_Ticket_Management.Migrations
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
                 {
-                    b.HasOne("test.Models.VnPayment", "VnPayment")
+                    b.HasOne("Bus_Station_Ticket_Management.Models.VnPayment", "VnPayment")
                         .WithMany()
-                        .HasForeignKey("VnPaymentTransactionNo");
-
+                        .HasForeignKey("VnPaymentTransactionNo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                     b.Navigation("VnPayment");
                 });
 
@@ -758,7 +759,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.HasOne("test.Models.VnPayment", "VnPayment")
+                    b.HasOne("Bus_Station_Ticket_Management.Models.VnPayment", "VnPayment")
                         .WithMany()
                         .HasForeignKey("VnPaymentTransactionNo");
 
