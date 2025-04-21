@@ -105,8 +105,13 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId)
+        public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod)
         {
+            if (paymentMethod == null) {
+                TempData["Error"] = "Invalid payment method.";
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
+            }
+
             if (string.IsNullOrEmpty(selectedSeatIds) || numberOfTickets <= 0)
             {
                 TempData["Error"] = "Please input a valid seat amount and select at least 1 seat.";
@@ -154,17 +159,20 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }
 
                 List<string> ticketIds = new List<string>();
-                var order = new Payment
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    userId = userId,
-                    TotalAmount = totalPrice,
-                    CreatedAt = DateTime.Now,
-                    PaymentStatus = 0
-                };
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    var order = new Payment
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        TotalAmount = totalPrice,
+                        CreatedAt = DateTime.Now,
+                        PaymentMethod = paymentMethod,
+                        PaymentStatus = 0
+                    };
+
+                    TempData["PaymentId"] = order.Id;
+
                     _context.Payments.Add(order);
 
                     foreach (var seat in seats)
@@ -191,20 +199,29 @@ namespace Bus_Station_Ticket_Management.Controllers
                         _context.Tickets.Add(ticket);
                         ticketIds.Add(ticket.Id);
                     }
-
+                    
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
 
-                // Lưu thông tin vào TempData
-                TempData["PaymentId"] = order.Id;
-                TempData["TicketIds"] = string.Join(",", ticketIds);
-                TempData["TotalPrice"] = totalPrice;
+                if (paymentMethod != "Cash")
+                {
+                    // Lưu thông tin vào TempData
+                    TempData["TicketIds"] = string.Join(",", ticketIds);
+                    TempData["TotalPrice"] = totalPrice;
 
-                TempData["Success"] = "Successfully booked seats! Proceeding to payment...";
+                    TempData["Success"] = "Successfully booked seats! Proceeding to payment...";
 
-                // Chuyển hướng đến Checkout
-                return RedirectToAction("Checkout", "Cart");
+
+                    // Chuyển hướng đến Checkout
+                    return RedirectToAction("Checkout", "Cart");
+                }
+                TempData["Success"] = "Successfully booked seat!";
+                string ticketIdsList = string.Join(",", ticketIds);
+
+                // Redirect to the SelectSeats view with TempData
+                TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
             catch (DbUpdateException ex)
             {

@@ -45,7 +45,12 @@ namespace Bus_Station_Ticket_Management.Controllers
                     return BadRequest("Payment not found.");
                 }
 
-                _logger.LogInformation($"Processing payment: Id={payment.Id}, TotalAmount={payment.TotalAmount}, UserId={payment.userId}");
+                var userId = context.Tickets
+                    .Where(t => t.PaymentId == paymentId)
+                    .Select(t => t.UserId)
+                    .FirstOrDefault();
+
+                _logger.LogInformation($"Processing payment: Id={payment.Id}, TotalAmount={payment.TotalAmount}, UserId={userId}");
 
                 var url = vnPayment.ToUrl(payment);
                 _logger.LogInformation($"Redirecting to VnPay: {url}");
