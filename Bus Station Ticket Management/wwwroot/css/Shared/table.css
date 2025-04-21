@@ -1,0 +1,41 @@
+.dt-search {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.dt-search > input {
+    flex: 1;
+}
+
+.dt-buttons {
+    justify-content: flex-end;
+}
+
+.dt-info {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.table-responsive {
+    position: relative;
+}
+
+/* Ensure dropdown appears on top */
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 1051 !important; /* Ensures the dropdown is above other elements */
+}
+
+/* Add additional styling for better visibility if needed */
+.dropdown-toggle {
+    z-index: 1060 !important; /* Ensure the button is also above other elements */
+}
+
+
+@media (max-width: 768px) {
+	.table th {
+		font-size: 14px !important;
+	}
+}

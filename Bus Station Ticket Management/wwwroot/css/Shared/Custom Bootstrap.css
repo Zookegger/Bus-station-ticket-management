@@ -1,4 +1,4 @@
-/* Responsive overrides */
+/* Font size */
 @media (max-width: 576px) {
     .fs-xs-1 { font-size: 2.5rem !important; }
     .fs-xs-2 { font-size: 2rem !important; }
@@ -51,4 +51,16 @@
     .fs-xxl-4 { font-size: 1.5rem !important; }
     .fs-xxl-5 { font-size: 1.25rem !important; }
     .fs-xxl-6 { font-size: 1rem !important; }
+}
+
+/* Margin */
+@media (max-width: 576px) {
+    .my-xs-1 {
+        margin-top: .5rem !important;
+        margin-bottom: .5rem !important;
+    }
+    .my-xs-2 {
+        margin-top: .5rem !important;
+        margin-bottom: .5rem !important;
+    }
 }

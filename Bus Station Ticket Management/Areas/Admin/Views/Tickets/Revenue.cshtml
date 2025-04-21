@@ -26,13 +26,13 @@
         </div>
     </div>
 
-        <!-- Filter Form -->
+    <!-- Filter Form -->
     <form method="get" class="col-md-6">
-        <div class="col">
+        <div class="col my-xs-2 my-sm-2">
             <label for="fromDate" class="form-label">From date</label>
             <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
         </div>
-        <div class="col">
+        <div class="col my-xs-2 my-sm-2">
             <label for="toDate" class="form-label">To date</label>
             <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
         </div>
@@ -42,38 +42,52 @@
     </form>
 </div>
 
-<br/>
-
-<!-- Tickets Table -->
-<div class="table-responsive mb-3 shadow rounded" style="max-height: 650px; overflow-y: auto;">
-    <table id="RevenueTable" class="table table-hover table-striped align-middle mb-0">
-        <thead style="position: sticky; top: 0">
-            <tr>
-                <th>Ticket ID</th>
-                <th>Trip</th>
-                <th>Vehicle</th>
-                <th>Seat Number</th>
-                <th>Ticket Price</th>
-                <th>Booking Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ticket in Model)
-            {
+<br />
+@if (Model.Any())
+{
+    <!-- Tickets Table -->
+    <div class="table-responsive mb-3 shadow rounded" style="max-height: 650px; overflow-y: auto;">
+        <table id="RevenueTable" class="table table-hover table-striped align-middle mb-0">
+            <thead style="position: sticky; top: 0">
                 <tr>
-                    <td>@ticket.Id</td>
-                    <td>
-                        @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
-                    </td>
-                    <td>@ticket.Trip?.Vehicle?.Name</td>
-                    <td>@ticket.Seat?.Number</td>
-                    <td>@ticket.TotalPrice.ToString("N0") VND</td>
-                    <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
+                    <th>Ticket ID</th>
+                    <th>Trip</th>
+                    <th>Vehicle</th>
+                    <th>Seat Number</th>
+                    <th>Ticket Price</th>
+                    <th>Booking Date</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td>@ticket.Id</td>
+                        <td>
+                            @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
+                        </td>
+                        <td>@ticket.Trip?.Vehicle?.Name</td>
+                        <td>@ticket.Seat?.Number</td>
+                        <td>@ticket.TotalPrice.ToString("N0") VND</td>
+                        <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning text-center" role="alert">
+        <h4 class="alert-heading">No Tickets Found</h4>
+        <p>There are no tickets available for the selected date range. Please adjust your filter criteria and try again.</p>
+        <hr>
+        <a asp-route-data="" class="btn btn-primary" onclick="window.location.reload();">
+            Reset Filters
+        </a>
+    </div>
+}
+
 
 <!-- Add some optional JS for interactivity (e.g., Bootstrap tooltips) -->
 @section Scripts {

@@ -50,7 +50,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             
             var locationList = await locations.ToListAsync();
 
-            return View(locationList.ToPagedList(pageNumber, pageSize));
+            return View(locationList);
+            // return View(locationList.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Location/Details/5

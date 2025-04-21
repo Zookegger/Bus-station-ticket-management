@@ -1,14 +1,9 @@
-﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Driver>
-@using X.PagedList.Mvc.Core
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Driver>
 
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
-<head>
-    <link rel="stylesheet" href="~/css/Index.css">
-</head>
 
 <h1 class="text-success fw-bold mb-4">Drivers List</h1>
 
@@ -89,48 +84,154 @@
 					<td style="max-width: 328px; word-wrap: break-word; white-space: normal;">
 						@Html.DisplayFor(modelItem => item.Email)
 					</td>
-
 					<td>
 						@Html.DisplayFor(modelItem => item.PhoneNumber)
 					</td>
-					<td>
-                        <div class="btn-group" role="group">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-				</tr>
-			}
-		</tbody>
-	</table>
+					<td class="px-1 py-1 text-center" onclick="event.stopPropagation()"> @* Problem: Stuck inside .table-responsive's layer -> Solution: Make it escape the .table-responsive *@
+						<div class="dropdown" data-bs-theme="dark">
+							<button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+								data-bs-toggle="dropdown" data-tippy-content="More Actions">
+								<i class="fa fa-ellipsis-v"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end shadow">
+								<li>
+									<a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+										asp-route-id="@item.Id">
+										<i class="fa fa-edit text-primary"></i> Edit
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+										asp-route-id="@item.Id">
+										<i class="fa fa-trash text-danger"></i> Delete
+									</a>
+								</li>
+							</ul>
+						</div>
+					</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
-<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
-	@if (Model.Any())
-	{
-		@Html.PagedListPager(Model, pageNumber => Url.Action("Index", new
-		{
-			page = pageNumber,
-			searchString = ViewBag.SearchString,
-			sortBy = ViewBag.SortBy,
-			filterByGender = ViewBag.FilterByGender
-		}), 
-		new PagedListRenderOptions
-		{
-			UlElementClasses = new[] { "pagination", "justify-content-center" },
-			LiElementClasses = new[] { "page-item" },
-			PageClasses = new[] { "page-link" },
-			ActiveLiElementClass = "active",
-			LinkToPreviousPageFormat = "&laquo;",
-			LinkToNextPageFormat = "&raquo;"
-		})
-		}
-</nav>
-
 @section Scripts {
-	<script src="~/js/table.js"></script>
+    <link rel="stylesheet" href="~/css/Index.css">
+    <script src="~/js/table.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#DriversTable').DataTable({
+                // Current settings
+                ordering: true, // Enables column ordering
+                paging: true, // Enables pagination
+                searching: true, // Enables search functionality
+                info: true, // Displays table information
+                filter: true, // Enables filtering (alias for searching)
+                responsive: false, // Makes the table responsive
+                columnDefs: [
+                    {
+                        targets: -1,  // Targets the last column (Actions column)
+                        orderable: false  // Disables ordering on this column
+                    }
+                ],
+
+                // Additional DataTable options
+                autoWidth: true, // Automatically calculates column widths
+                deferRender: true, // Improves performance for large datasets
+                lengthChange: true, // Allows user to change the number of rows displayed
+                lengthMenu: [10, 25, 50, 100], // Options for the number of rows per page
+                pageLength: 10, // Default number of rows per page
+                processing: true, // Displays a processing indicator
+                scrollX: false, // Enables horizontal scrolling
+                scrollY: '600px', // Enables vertical scrolling with a fixed height
+                scrollCollapse: true,
+                stateSave: false, // Saves the table state (pagination, search, etc.)
+                language: { // Customizes language strings
+                    search: "Search for Location:", // Custom search box placeholder
+                    lengthMenu: "Show _MENU_ entries", // Custom length menu text
+                    info: "_START_ to _END_ of _TOTAL_ entries", // Custom info text
+                },
+                dom: "<'row my-3 px-3' \
+                                    <'col-12 col-sm-12 col-md-4 d-flex align-items-center justify-content-start px-0'l> \
+                                    <'col-12 col-sm-10 col-md-7 d-flex align-items-center justify-content-sm-start justify-content-start px-0 pe-md-2'f> \
+                                    <'col-12 col-sm-2 col-md-1 d-flex align-items-center justify-content-end px-0 ps-md-2'B> \
+                                >" +
+                    "<'px-3'rt>" +
+                    "<'row px-3 py-3'" +
+                    "<'col-md-6'i>" +
+                    "<'col-md-6'p>" +
+                    ">"
+                ,  // B = buttons, f = filter, r = processing, t = table, i = info, p = pagination
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: '<i class="fa fa-ellipsis-h"></i>',
+                        className: 'btn btn-outline-secondary',
+                        attr: {
+                            'data-tippy-content': 'More actions'
+                        },
+                        buttons: [
+                            {
+                                extend: 'copy',
+                                text: 'Copy',
+                                attr: { 'data-tippy-content': 'Copy table data' }
+                            },
+                            {
+                                extend: 'csv',
+                                text: 'CSV',
+                                attr: { 'data-tippy-content': 'Export to CSV' }
+                            },
+                            {
+                                extend: 'excel',
+                                text: 'Excel',
+                                attr: { 'data-tippy-content': 'Export to Excel' }
+                            },
+                            {
+                                extend: 'pdf',
+                                text: 'PDF',
+                                attr: { 'data-tippy-content': 'Export to PDF' }
+                            },
+                            {
+                                extend: 'print',
+                                text: 'Print',
+                                attr: { 'data-tippy-content': 'Print table data' }
+                            }
+                        ],
+                    }
+                ],
+                ajax: null, // Loads data via AJAX
+                columns: null, // Defines column data sources
+                order: [[0, 'asc']], // Default column ordering
+                rowCallback: null, // Callback for row creation
+                initComplete: function () {
+                    // Find the collection button and fix its classes
+                    $('.buttons-collection')
+                        .removeClass('btn-secondary') // remove default solid styling
+                        .addClass('btn-outline-secondary'); // ensure outline is applied
+
+                    tippy('[data-tippy-content]', {
+                        placement: 'top',
+                        theme: 'light'
+                    });
+
+                    // Re-initialize Tippy every time the collection dropdown is shown
+                    $(document).on('click', '.buttons-collection', function () {
+                        // Timeout allows the dropdown to render its DOM
+                        setTimeout(function () {
+                            tippy('[data-tippy-content]', {
+                                placement: 'top',
+                                theme: 'light',
+                                delay: [100, 0]
+                            });
+                        }, 10);
+                    });
+                }
+            });
+
+            tippy('[data-tippy-content]', {
+                placement: 'top',
+                theme: 'light'
+            });
+        });
+    </script>
 }

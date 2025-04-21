@@ -1,6 +1,7 @@
 ﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList.Extensions;
@@ -15,10 +16,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     public class DriverController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public DriverController(ApplicationDbContext context)
+        public DriverController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: Driver
@@ -94,10 +99,30 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> Create([Bind("Id,FullName,Address,LicenseId,Gender,DateOfBirth,Email,PhoneNumber")] Driver driver)
         {
             if (ModelState.IsValid) {
-                _context.Add(driver);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var user = new ApplicationUser {
+                    UserName = driver.FullName,
+                    Email = driver.Email,
+                    FullName = driver.FullName,
+                    DateOfBirth = driver.DateOfBirth,
+                    Gender = driver.Gender,
+                    PhoneNumber = driver.PhoneNumber,
+                };
+
+                var result = await _userManager.CreateAsync(user, password: "defaultpassword123");
+                if (result.Succeeded) {
+                    driver.Id = user.Id;
+                    _context.Add(driver);
+                    await _userManager.AddToRoleAsync(driver, "Driver");
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
+
             return View(driver);
         }
 

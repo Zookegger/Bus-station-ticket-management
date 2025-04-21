@@ -27,7 +27,7 @@
                         <tr>
                             <td>@login.ProviderDisplayName</td>
                             <td class="text-end">
-                                @if (Model.ShowRemoveButton)
+                                @if (!Model.ShowRemoveButton)
                                 {
                                     <form asp-page-handler="RemoveLogin" method="post" class="d-inline">
                                         <input type="hidden" name="LoginProvider" value="@login.LoginProvider" />

@@ -16,9 +16,9 @@
 
     <div class="row mx-auto">
         <div class="col-md-4 col-lg-3 mb-4">
-            <div class="card mx-auto">
+            <div class="card mx-auto" data-aos="fade-right">
                 <div class="card-header bg-success bg-gradient">
-                    <h6 class="mb-0 text-uppercase text-light">Navigation</h6>
+                    <h3 class="mb-0 text-uppercase fw-bold fs-5 text-light">Navigation</h3>
                 </div>
 
                 <div class="card-body p-0">
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-lg-9">
+        <div class="col-md-8 col-lg-9"data-aos="fade-left">
             <div class="card-body">
                 @RenderBody()
             </div>
@@ -37,4 +37,7 @@
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
+    <script>
+        AOS.init({ duration: 800 });
+    </script>
 }

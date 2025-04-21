@@ -10,7 +10,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 60px;
-	font-family: 'Segoe UI', sans-serif;
+	font-family: 'Segoe UI', sans-serif, 'Franklin Gothic Medium', 'Arial Narrow', Arial;
 }
 
 html, body {
@@ -99,15 +99,6 @@ footer ul {
 	margin: 0 !important;
 }
 
-table thead th {
-	background-color: #20874e !important;
-	color: white !important;
-}
-
-table tbody td {
-	height: 100%;
-}
-
 .clickable-row {
 	cursor: pointer;
 }
@@ -174,12 +165,6 @@ table tbody td {
 	.navbar-collapse {
 		width: 100%;
 		justify-content: flex-start;
-	}
-	
-	
-
-	.table th {
-		font-size: 14px !important;
 	}
 }
 
