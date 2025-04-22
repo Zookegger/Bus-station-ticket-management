@@ -244,11 +244,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             if (id != ticket.Id)
             {
-                return NotFound();
+                return NotFound("Id do not match");
+            }
+
+            var fetchTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticket.Id);
+            if (fetchTicket == null) {
+                return NotFound("Cannot Find Ticket");
             }
 
             if (ModelState.IsValid)
             {
+                if (fetchTicket.IsPaid == false && fetchTicket.IsPaid != ticket.IsPaid && fetchTicket.IsReserved) {
+                    ticket.IsPaid = true;
+                }
+
                 try
                 {
                     _context.Update(ticket);
@@ -267,6 +276,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id", ticket.SeatId);
             ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", ticket.TripId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticket.UserId);

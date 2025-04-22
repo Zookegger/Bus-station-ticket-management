@@ -31,6 +31,8 @@ namespace Bus_Station_Ticket_Management.Models
 
         public bool IsPaid { get; set; }
 
+        public bool IsReserved { get; set; }
+
         public bool IsCanceled { get; set; }
 
         public DateTime? CancelationTime { get; set; }

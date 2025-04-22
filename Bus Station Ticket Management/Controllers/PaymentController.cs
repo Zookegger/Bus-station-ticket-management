@@ -11,14 +11,14 @@ using System.Web;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
-    public class CartController : Controller
+    public class PaymentController : Controller
     {
         private readonly ApplicationDbContext context;
         private readonly VnPaymentService vnPayment;
         private readonly VnPaymentSetting vnPaysetting;
-        private readonly ILogger<CartController> _logger;
+        private readonly ILogger<PaymentController> _logger;
 
-        public CartController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<CartController> logger)
+        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger)
         {
             this.vnPayment = vnPayment;
             this.context = context;
