@@ -15,14 +15,16 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly ApplicationDbContext context;
         private readonly VnPaymentServicecs vnPayment;
         private readonly VnPaymentSetting vnPaysetting;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<CartController> _logger;
 
-        public CartController(VnPaymentServicecs vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<CartController> logger)
+        public CartController(VnPaymentServicecs vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<CartController> logger, IConfiguration configuration)
         {
             this.vnPayment = vnPayment;
             this.context = context;
             this.vnPaysetting = vnPaymentSettings.Value;
             this._logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Checkout()
@@ -66,102 +68,127 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult VnPaymentResponse([FromQuery] VnPayment obj)
+        public IActionResult VnPaymentResponse([FromQuery] VnPayment paymentResponse)
         {
-            _logger.LogInformation("Đã vào VnPaymentResponse");
+            _logger.LogInformation("Entered VnPaymentResponse");
+
+            if (paymentResponse == null)
+                return LogAndBadRequest("Invalid VnPay response data", "VnPayment object is null");
+
+            if (!ModelState.IsValid)
+                return LogAndModelStateErrors();
+
+            var queryParams = HttpContext.Request.Query;
+            LogQueryParams(queryParams);
+
+            string queryString = BuildQueryString(queryParams);
+            _logger.LogInformation($"Query string for hash: {queryString}");
+
+            string hashSecret = _configuration["Payment:HashSecret"];
+            string expectedHash = Helper.HashHmac512(queryString, hashSecret);
+            string receivedHash = paymentResponse.SecureHash;
+
+            _logger.LogInformation($"ExpectedHash: {expectedHash}");
+            _logger.LogInformation($"ReceivedHash: {receivedHash}");
+
+            if (!string.Equals(expectedHash, receivedHash, StringComparison.OrdinalIgnoreCase))
+                return LogAndBadRequest("Hash validation failed", "Hash does not match");
+
+            if (!IsPaymentSuccess(paymentResponse))
+            {
+                _logger.LogWarning($"Payment failed. Response code: {paymentResponse.ResponseCode}");
+                return BadRequest(new { Message = "Payment failed or was canceled." });
+            }
+
             try
             {
-                if (obj == null)
+                string paymentId = TempData["PaymentId"]?.ToString();
+                if (string.IsNullOrEmpty(paymentId))
+                    return LogAndWarn("PaymentId not found in TempData");
+
+                var payment = context.Payments.FirstOrDefault(p => p.Id == paymentId);
+                if (payment == null)
+                    return LogAndWarn($"No payment found with ID {paymentId}");
+
+                payment.PaymentStatus = 1; // Mark payment as successful
+                context.VnPayments.Add(paymentResponse);
+
+                var tickets = context.Tickets.Where(t => t.PaymentId == paymentId).ToList();
+                if (tickets.Any())
                 {
-                    _logger.LogError("VnPayment object is null");
-                    return BadRequest(new { Message = "Dữ liệu VnPay trả về không hợp lệ" });
-                }
-
-                var queryStringRaw = HttpContext.Request.QueryString.ToString();
-                _logger.LogInformation($"Raw QueryString: {queryStringRaw}");
-
-                // Log tất cả tham số query
-                var queryParamsLog = HttpContext.Request.Query
-                    .Select(q => $"{q.Key}={q.Value}")
-                    .ToList();
-                _logger.LogInformation($"Query Parameters: {string.Join(", ", queryParamsLog)}");
-
-                if (!ModelState.IsValid)
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    _logger.LogWarning($"ModelState Errors: {string.Join(", ", errors)}");
-                    return BadRequest(new { Message = "Dữ liệu không hợp lệ", Errors = errors });
-                }
-
-                // Tạo query string cho hash
-                var queryParams = HttpContext.Request.Query
-                    .Where(q => q.Key != "vnp_SecureHash" && q.Key != "vnp_SecureHashType")
-                    .OrderBy(q => q.Key)
-                    .Select(q => $"{q.Key}={HttpUtility.UrlEncode(q.Value, Encoding.UTF8)}")
-                    .ToList();
-                var queryString = string.Join("&", queryParams);
-                _logger.LogInformation($"QueryString for hash: {queryString}");
-
-                var hashSecret = vnPaysetting.HashSecret;
-                var expectedHash = Helper.HashHmac512(queryString, hashSecret);
-                _logger.LogInformation($"HashSecret: {hashSecret}");
-                _logger.LogInformation($"ExpectedHash: {expectedHash}, ReceivedHash: {obj.SecureHash}");
-                _logger.LogInformation("Lưu vào database...");
-                context.VnPayments.Add(obj);
-
-                var paymentId = TempData["PaymentId"]?.ToString();
-                if (!string.IsNullOrEmpty(paymentId))
-                {
-                    var payment = context.Payments.FirstOrDefault(p => p.Id == paymentId);
-                    if (payment != null)
+                    foreach (var ticket in tickets)
                     {
-                        // Cập nhật trạng thái thanh toán của đơn hàng
-                        payment.PaymentStatus = 1; // 1 là trạng thái đã thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
-
-                        var tickets = context.Tickets.Where(t => t.PaymentId == paymentId).ToList();
-                        if (tickets.Any())
-                        {
-                            // Cập nhật trạng thái của các vé
-                            foreach (var ticket in tickets)
-                            {
-                                ticket.IsPaid = true; // 1 là đã thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
-                            }
-                            _logger.LogInformation($"Đã cập nhật {tickets.Count} vé thành trạng thái đã thanh toán.");
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"Không tìm thấy vé cho Payment ID {paymentId}");
-                        }
+                        ticket.IsPaid = true;
                     }
-                    else
-                    {
-                        _logger.LogWarning($"Không tìm thấy đơn hàng với ID {paymentId}");
-                    }
+                    _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
                 }
                 else
                 {
-                    _logger.LogWarning("Không có PaymentId trong TempData");
+                    _logger.LogWarning($"No tickets found for Payment ID {paymentId}");
                 }
 
-                int ret = context.SaveChanges();
-                _logger.LogInformation($"SaveChanges result: {ret}");
-
-                if (ret > 0)
+                int result = context.SaveChanges();
+                if (result > 0)
                 {
-                    _logger.LogInformation("Giao dịch thành công");
+                    _logger.LogInformation("Transaction saved successfully");
                     return RedirectToAction("MyTickets", "Tickets");
                 }
-                else
-                {
-                    _logger.LogError("Lưu giao dịch thất bại");
-                    return StatusCode(500, new { Message = "Lưu giao dịch thất bại" });
-                }
+
+                return LogAndServerError("Failed to save transaction");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Lỗi VnPaymentResponse: {ex.Message}\nStackTrace: {ex.StackTrace}");
-                return StatusCode(500, new { Message = "Đã xảy ra lỗi server", Error = ex.Message });
+                _logger.LogError(ex, "Exception during VnPaymentResponse processing");
+                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
             }
+        }
+
+        private void LogQueryParams(IQueryCollection queryParams)
+        {
+            var rawQuery = HttpContext.Request.QueryString.ToString();
+            _logger.LogInformation($"Raw QueryString: {rawQuery}");
+
+            var paramList = queryParams.Select(q => $"{q.Key}={q.Value}");
+            _logger.LogInformation("Query Parameters: " + string.Join(", ", paramList));
+        }
+
+        private string BuildQueryString(IQueryCollection queryParams)
+        {
+            return string.Join("&",
+                queryParams
+                    .Where(q => q.Key != "vnp_SecureHash" && q.Key != "vnp_SecureHashType")
+                    .OrderBy(q => q.Key)
+                    .Select(q => $"{q.Key}={HttpUtility.UrlEncode(q.Value, Encoding.UTF8)}"));
+        }
+
+        private IActionResult LogAndBadRequest(string userMessage, string logMessage)
+        {
+            _logger.LogError(logMessage);
+            return BadRequest(new { Message = userMessage });
+        }
+
+        private IActionResult LogAndModelStateErrors()
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            _logger.LogWarning("ModelState errors: " + string.Join(", ", errors));
+            return BadRequest(new { Message = "Invalid input", Errors = errors });
+        }
+
+        private IActionResult LogAndWarn(string message)
+        {
+            _logger.LogWarning(message);
+            return BadRequest(new { Message = message });
+        }
+
+        private IActionResult LogAndServerError(string message)
+        {
+            _logger.LogError(message);
+            return StatusCode(500, new { Message = message });
+        }
+
+        private bool IsPaymentSuccess(VnPayment payment)
+        {
+            return payment.ResponseCode == "00"; // Adjust this based on VNPAY's actual success code
         }
     }
 }
