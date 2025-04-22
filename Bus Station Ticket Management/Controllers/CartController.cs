@@ -3,6 +3,7 @@ using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text;
@@ -13,18 +14,16 @@ namespace Bus_Station_Ticket_Management.Controllers
     public class CartController : Controller
     {
         private readonly ApplicationDbContext context;
-        private readonly VnPaymentServicecs vnPayment;
+        private readonly VnPaymentService vnPayment;
         private readonly VnPaymentSetting vnPaysetting;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<CartController> _logger;
 
-        public CartController(VnPaymentServicecs vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<CartController> logger, IConfiguration configuration)
+        public CartController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<CartController> logger)
         {
             this.vnPayment = vnPayment;
             this.context = context;
             this.vnPaysetting = vnPaymentSettings.Value;
             this._logger = logger;
-            _configuration = configuration;
         }
 
         public IActionResult Checkout()
@@ -68,7 +67,7 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult VnPaymentResponse([FromQuery] VnPayment paymentResponse)
+        public async Task<IActionResult> VnPaymentResponse([FromQuery] VnPayment paymentResponse)
         {
             _logger.LogInformation("Entered VnPaymentResponse");
 
@@ -84,7 +83,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             string queryString = BuildQueryString(queryParams);
             _logger.LogInformation($"Query string for hash: {queryString}");
 
-            string hashSecret = _configuration["Payment:HashSecret"];
+            string hashSecret = vnPaysetting.HashSecret;
             string expectedHash = Helper.HashHmac512(queryString, hashSecret);
             string receivedHash = paymentResponse.SecureHash;
 
@@ -94,42 +93,58 @@ namespace Bus_Station_Ticket_Management.Controllers
             if (!string.Equals(expectedHash, receivedHash, StringComparison.OrdinalIgnoreCase))
                 return LogAndBadRequest("Hash validation failed", "Hash does not match");
 
-            if (!IsPaymentSuccess(paymentResponse))
-            {
-                _logger.LogWarning($"Payment failed. Response code: {paymentResponse.ResponseCode}");
-                return BadRequest(new { Message = "Payment failed or was canceled." });
-            }
+            var paymentId = TempData.Peek("PaymentId");
+            if (paymentId == null)
+                return LogAndBadRequest("Invalid payment Id", "Payment Id is null");
 
             try
             {
-                string paymentId = TempData["PaymentId"]?.ToString();
-                if (string.IsNullOrEmpty(paymentId))
-                    return LogAndWarn("PaymentId not found in TempData");
+                await using var transaction = await context.Database.BeginTransactionAsync();
 
-                var payment = context.Payments.FirstOrDefault(p => p.Id == paymentId);
+                var payment = await context.Payments.FirstOrDefaultAsync(p => p.Id == paymentId.ToString());
+                
                 if (payment == null)
                     return LogAndWarn($"No payment found with ID {paymentId}");
 
-                payment.PaymentStatus = 1; // Mark payment as successful
-                context.VnPayments.Add(paymentResponse);
-
-                var tickets = context.Tickets.Where(t => t.PaymentId == paymentId).ToList();
-                if (tickets.Any())
+                var tickets = context.Tickets.Where(t => t.PaymentId == paymentId.ToString()).ToList();
+                
+                if (!IsPaymentSuccess(paymentResponse))
                 {
-                    foreach (var ticket in tickets)
+                    _logger.LogWarning($"Payment failed. Response code: {paymentResponse.ResponseCode}");
+
+                    if (tickets.Any())
                     {
-                        ticket.IsPaid = true;
+                        var seatIds = tickets.Select(t => t.SeatId).ToList();
+                        var seatsToFree = await context.Seats.Where(s => seatIds.Contains(s.Id)).ToListAsync();
+
+                        foreach (var seat in seatsToFree)
+                        {
+                            seat.IsAvailable = true;
+                        }
+                        context.Tickets.RemoveRange(tickets);
+                        _logger.LogWarning($"Removed {tickets.Count} ticket(s) due to failed payment.");
                     }
-                    _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
-                }
-                else
-                {
-                    _logger.LogWarning($"No tickets found for Payment ID {paymentId}");
+                    else
+                    {
+                        _logger.LogWarning($"No tickets found for Payment ID {paymentId}");
+                    }  
+                    return BadRequest(new { Message = "Payment failed or was canceled." });
                 }
 
-                int result = context.SaveChanges();
+                // ✅ Payment success: finalize
+                payment.PaymentStatus = 1; // Mark payment as successful
+
+                foreach (var ticket in tickets)
+                {
+                    ticket.IsPaid = true;
+                }
+                
+                context.VnPayments.Add(paymentResponse);
+                _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
+                int result = await context.SaveChangesAsync();
                 if (result > 0)
                 {
+                    await transaction.CommitAsync();
                     _logger.LogInformation("Transaction saved successfully");
                     return RedirectToAction("MyTickets", "Tickets");
                 }

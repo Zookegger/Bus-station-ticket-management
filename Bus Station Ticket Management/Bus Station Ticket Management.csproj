@@ -47,8 +47,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\css\Vehicle\" />
-    <Folder Include="wwwroot\css\VehicleType\" />
   </ItemGroup>
 
 </Project>

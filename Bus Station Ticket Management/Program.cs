@@ -19,7 +19,7 @@ using Bus_Station_Ticket_Management.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<VnPaymentServicecs>();
+builder.Services.AddScoped<VnPaymentService>();
 builder.Services.Configure<VnPaymentSetting>(builder.Configuration.GetSection("Payment:VnPayment"));
 
 builder.Services.AddDataProtection()

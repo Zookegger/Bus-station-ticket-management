@@ -104,6 +104,8 @@ namespace Bus_Station_Ticket_Management.Controllers
             return View(viewModel);
         }
 
+
+        // Need to implement failsafe when vnpayment fail 
         [HttpPost]
         public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod)
         {
@@ -162,7 +164,7 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    var order = new Payment
+                    var payment = new Payment
                     {
                         Id = Guid.NewGuid().ToString(),
                         TotalAmount = totalPrice,
@@ -171,9 +173,9 @@ namespace Bus_Station_Ticket_Management.Controllers
                         PaymentStatus = 0
                     };
 
-                    TempData["PaymentId"] = order.Id;
+                    TempData["PaymentId"] = payment.Id;
 
-                    _context.Payments.Add(order);
+                    _context.Payments.Add(payment);
 
                     foreach (var seat in seats)
                     {
@@ -193,35 +195,32 @@ namespace Bus_Station_Ticket_Management.Controllers
                             GuestEmail = guestEmail,
                             GuestPhone = guestPhone,
                             TotalPrice = totalPrice / numberOfTickets, // Giá mỗi vé
-                            PaymentId = order.Id
+                            PaymentId = payment.Id
                         };
 
-                        _context.Tickets.Add(ticket);
+                        await _context.Tickets.AddAsync(ticket);
                         ticketIds.Add(ticket.Id);
                     }
                     
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-                }
 
-                if (paymentMethod != "Cash")
-                {
-                    // Lưu thông tin vào TempData
                     TempData["TicketIds"] = string.Join(",", ticketIds);
                     TempData["TotalPrice"] = totalPrice;
+                    
+                    if (paymentMethod != "Cash")
+                    {
+                        TempData["Success"] = "Successfully booked seats! Proceeding to payment...";
+                        TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+                        return RedirectToAction("Checkout", "Cart");
+                    }
+                    
+                    TempData["Success"] = "Successfully booked seat!";
+                    TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
 
-                    TempData["Success"] = "Successfully booked seats! Proceeding to payment...";
-
-
-                    // Chuyển hướng đến Checkout
-                    return RedirectToAction("Checkout", "Cart");
+                    // Redirect to the SelectSeats view with TempData
+                    return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
                 }
-                TempData["Success"] = "Successfully booked seat!";
-                string ticketIdsList = string.Join(",", ticketIds);
-
-                // Redirect to the SelectSeats view with TempData
-                TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
-                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
             catch (DbUpdateException ex)
             {

@@ -4,12 +4,15 @@ using Bus_Station_Ticket_Management.Models;
 
 namespace Bus_Station_Ticket_Management.Services
 {
-    public class VnPaymentServicecs
+    public class VnPaymentService
     {
-        VnPaymentSetting setting;
-        public VnPaymentServicecs(IOptions<VnPaymentSetting> options)
+        private readonly VnPaymentSetting setting;
+        private readonly IConfiguration configuration;
+
+        public VnPaymentService(IOptions<VnPaymentSetting> options, IConfiguration configuration)
         {
             setting = options.Value;
+            this.configuration = configuration;
         }
 
         public string ToUrl(Payment obj)
@@ -26,12 +29,13 @@ namespace Bus_Station_Ticket_Management.Services
                 {"vnp_OrderType", setting.OrderType},
                 {"vnp_ReturnUrl", setting.ReturnUrl},
                 {"vnp_TmnCode", setting.TmnCode},
-                {"vnp_TxnRef", obj.Id.ToString()},
+                {"vnp_TxnRef", obj.Id?.ToString() ?? throw new InvalidOperationException("Payment ID cannot be null.")},
                 {"vnp_Version", setting.Version},
             };
             string text = string.Join("&", dict.Select(p => $"{p.Key}={WebUtility.UrlEncode(p.Value)}"));
 
-            string secureHash = Helper.HashHmac512(text, setting.HashSecret);
+            string hashSecret = configuration["Payment:HashSecret"] ?? throw new InvalidOperationException("HashSecret is not configured.");
+            string secureHash = Helper.HashHmac512(text, hashSecret);
 
             return $"{setting.BaseUrl}?{text}&vnp_SecureHash={secureHash}";
 
