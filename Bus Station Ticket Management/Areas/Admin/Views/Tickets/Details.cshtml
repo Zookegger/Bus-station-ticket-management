@@ -4,31 +4,33 @@
     ViewData["Title"] = "Ticket Details";
 }
 
-<h1 class="text-primary fw-bold mb-4">Ticket Details</h1>
 
 <div class="card shadow-sm">
+    <div class="card-header bg-success-subtle bg-gradient">
+        <h1 class="text-primary fw-bold">Ticket Details</h1>
+    </div>
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3 fw-semibold text-muted">Customer</dt>
-            <dd class="col-sm-9">@Model.User?.FullName (@Model.User?.Email)</dd>
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Customer</dt>
+            <dd class="col-sm-8 fs-4">@Model.User?.FullName (@Model.User?.Email)</dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Trip</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Trip</dt>
+            <dd class="col-sm-8 fs-4">
                 <span>@Model.Trip?.Route?.StartLocation?.Name ➞ @Model.Trip?.Route?.DestinationLocation?.Name</span>
                 <small class="text-muted">(Trip ID: @Model.Trip?.Id)</small>
             </dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Seat</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Seat</dt>
+            <dd class="col-sm-8 fs-4">
                 <span>#@Model.Seat?.Number</span>
                 <small class="text-muted">(ID: @Model.Seat?.Id)</small>
             </dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Booking Date</dt>
-            <dd class="col-sm-9">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+            <dt class="col-sm-4 fw-semibold fs-5 text-muted">Booking Date</dt>
+            <dd class="col-sm-8 fs-4">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Paid</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Paid</dt>
+            <dd class="col-sm-8 fs-4">
                 @if (Model.IsPaid)
                 {
                     <span class="badge bg-success">Yes</span>
@@ -39,8 +41,8 @@
                 }
             </dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Canceled</dt>
-            <dd class="col-sm-9">
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Canceled</dt>
+            <dd class="col-sm-8 fs-4">
                 @if (Model.IsCanceled)
                 {
                     <span class="badge bg-warning text-dark">Yes</span>
@@ -51,15 +53,26 @@
                 }
             </dd>
 
-            <dt class="col-sm-3 fw-semibold text-muted">Cancellation Time</dt>
-            <dd class="col-sm-9">
-                @(Model.CancelationTime.HasValue 
-                    ? Model.CancelationTime.Value.ToString("dd/MM/yyyy HH:mm:ss") 
-                    : "—")
+            <dt class="col-sm-4 fs-4 fw-semibold text-muted">Cancellation Time</dt>
+            <dd class="col-sm-8 fs-4">
+                @(Model.CancelationTime.HasValue ? Model.CancelationTime.Value.ToString("dd/MM/yyyy HH:mm:ss") : "—")
             </dd>
         </dl>
     </div>
 </div>
+
+<div class="card">
+    <div class="card-header"></div>
+    <div class="card-body">
+        <dt class="card-title col-sm-4 fs-4 fw-semibold text-muted">Payment Information</dt>
+        <dd class="col-sm-8 fs-4">
+            @(Model.Payment?.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "—")
+        </dd>
+
+    </div>
+    <div class="card-footer"></div>
+</div>
+
 
 <div class="mt-4 pb-4 d-flex justify-content-between">
     <a asp-action="Index" role="button" class="btn btn-outline-secondary">

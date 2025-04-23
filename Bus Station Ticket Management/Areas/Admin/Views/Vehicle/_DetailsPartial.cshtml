@@ -1,0 +1,42 @@
+﻿@model Bus_Station_Ticket_Management.Models.Vehicle
+<div class="row">
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.VehicleType.Name)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.VehicleType.Name)
+    </dd>
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.LicensePlate)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicensePlate)
+    </dd>
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Status)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Status)
+    </dd>
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.AcquiredDate)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.AcquiredDate)
+    </dd>
+    <dt class="col-sm-4 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.LastUpdated)
+    </dt>
+    <dd class="col-sm-8 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LastUpdated)
+    </dd>
+</div>
+<div class="card-footer form-group d-flex justify-content-between mt-4" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+</div>

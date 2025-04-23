@@ -81,6 +81,24 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             return View(routes);
         }
+        public async Task<IActionResult> DetailsPartial(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var routes = await _context.Routes
+                .Include(r => r.DestinationLocation)
+                .Include(r => r.StartLocation)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (routes == null)
+            {
+                return NotFound();
+            }
+
+            return View("_DetailsPartial", routes);
+        }
 
         // GET: Route/Create
         public IActionResult Create()

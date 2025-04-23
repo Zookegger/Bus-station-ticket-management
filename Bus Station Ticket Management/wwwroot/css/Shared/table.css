@@ -28,14 +28,14 @@
     z-index: 1051 !important; /* Ensures the dropdown is above other elements */
 }
 
-/* Add additional styling for better visibility if needed */
-.dropdown-toggle {
-    z-index: 1060 !important; /* Ensure the button is also above other elements */
+div.dt-button-collection {
+    left: auto !important;
+    right: 0 !important;
+    transform: translateX(-10%) translateY(0%);
 }
-
 
 @media (max-width: 768px) {
 	.table th {
-		font-size: 14px !important;
+		font-size: 21px !important;
 	}
 }

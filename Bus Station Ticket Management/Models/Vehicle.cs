@@ -6,28 +6,26 @@ namespace Bus_Station_Ticket_Management.Models
 {
     public class Vehicle
     {
-        [Required]
         [Key]
-        [DisplayName("Mã xe")]
+        [DisplayName("Id")]
         public int Id { get; set; }
 
-        [DisplayName("Tên xe")]
+        [DisplayName("Codename")] [Required]
         public string? Name { get; set; }
 
-        [DisplayName("Ngày nhập vào")]
+        [DisplayName("Acquired Date")]
         public DateTime AcquiredDate { get; set; } = DateTime.Now;
 
-        [DisplayName("Lần cuối cập nhật")]
+        [DisplayName("Last Updated")]
         public DateTime? LastUpdated { get; set; }
 
-        [DisplayName("Biển số xe")]
-        public string LicensePlate { get; set; }
+        [DisplayName("License Plate")] [Required]
+        public string? LicensePlate { get; set; }
 
-        [DisplayName("Trạng thái")]
-        public string Status { get; set; }
+        [DisplayName("Status")] [Required]
+        public string? Status { get; set; }
 
-        [DisplayName("Loại xe")]
-        [Required]
+        [DisplayName("Vehicle Type")] [Required]
         public int? VehicleTypeId { get; set; }
 
         [ForeignKey(nameof(VehicleTypeId))]

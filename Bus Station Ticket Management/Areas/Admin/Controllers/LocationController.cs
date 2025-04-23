@@ -61,13 +61,25 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var location = await _context.Locations
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var location = await _context.Locations.FirstOrDefaultAsync(m => m.Id == id);
             if (location == null) {
                 return NotFound();
             }
 
             return View(location);
+        }
+
+        public async Task<IActionResult> DetailsPartial(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var location = await _context.Locations.FirstOrDefaultAsync(m => m.Id == id);
+            if (location == null) {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial", location);
         }
 
         // GET: Location/Create

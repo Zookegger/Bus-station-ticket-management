@@ -20,7 +20,7 @@ namespace Bus_Station_Ticket_Management.Services
             SortedDictionary<string, string> dict = new SortedDictionary<string, string>{
                 {"vnp_Amount", (obj.TotalAmount * 100).ToString()},
                 {"vnp_Command", setting.Command},
-                {"vnp_CreateDate", obj.CreatedAt.ToString("yyyyMMddHHmmss")},
+                {"vnp_CreateDate", obj.CreatedAt.HasValue ? obj.CreatedAt.Value.ToString("yyyyMMddHHmmss") : DateTime.Now.ToString("yyyyMMddHHmmss")},
                 {"vnp_CurrCode", setting.CurrCode},
                 {"vnp_IpAddr", "127.0.0.1"},
                 //{"vnp_IpAddr", Accessor.HttpContext!.Connection.RemoteIpAddress!.ToString()},

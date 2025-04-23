@@ -23,38 +23,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Vehicle
         [HttpGet]
         [Route("Admin/Vehicle/Index")]
-        public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterByStatus, string? filterByType)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 20;
-            int pageNumber = page ?? 1;
             var now = DateTime.Now;
 
             var vehicles = _context.Vehicles.Include(v => v.VehicleType).AsQueryable();
-
-            // Apply search
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                vehicles = vehicles.Where(v =>
-                    v.Name.Contains(searchString) ||
-                    v.LicensePlate.Contains(searchString) ||
-                    v.VehicleType.Name.Contains(searchString)
-                );
-            }
-
-            // Apply status filter
-            if (!string.IsNullOrEmpty(filterByStatus) && filterByStatus != "All")
-            {
-                vehicles = vehicles.Where(v => v.Status == filterByStatus);
-            }
-
-            // Apply vehicle type filter
-            if (!string.IsNullOrEmpty(filterByType) && filterByType != "All")
-            {
-                if (int.TryParse(filterByType, out int typeId))
-                {
-                    vehicles = vehicles.Where(v => v.VehicleTypeId == typeId);
-                }
-            }
 
             // Update vehicle statuses based on trips
             var vehiclesWithTrips = await _context.Trips.Include(t => t.Vehicle).ToListAsync();
@@ -70,28 +43,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
             }
             await _context.SaveChangesAsync();
-
-            // Sorting
-            switch (sortBy)
-            {
-                case "name_asc": vehicles = vehicles.OrderBy(v => v.Name); break;
-                case "name_desc": vehicles = vehicles.OrderByDescending(v => v.Name); break;
-                case "licenseplate_asc": vehicles = vehicles.OrderBy(v => v.LicensePlate); break;
-                case "licenseplate_desc": vehicles = vehicles.OrderByDescending(v => v.LicensePlate); break;
-                case "type_asc": vehicles = vehicles.OrderBy(v => v.VehicleType.Name); break;
-                case "type_desc": vehicles = vehicles.OrderByDescending(v => v.VehicleType.Name); break;
-                default: vehicles = vehicles.OrderBy(v => v.Name); break;
-            }
-
             // Pass values back to view
-            ViewBag.SortBy = sortBy;
-            ViewBag.SearchString = searchString;
-            ViewBag.FilterByStatus = filterByStatus;
-            ViewBag.FilterByType = filterByType;
             ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
 
-            var vehicleList = await vehicles.ToListAsync();
-            return View(vehicleList.ToPagedList(pageNumber, pageSize));
+            return View(await vehicles.ToListAsync());
         }
 
         // GET: Vehicle/Details/5
@@ -111,6 +66,24 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
 
             return View(vehicle);
+        }
+        
+        public async Task<IActionResult> DetailsPartial(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicles
+                .Include(v => v.VehicleType)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial",vehicle);
         }
 
         // GET: Vehicle/Create

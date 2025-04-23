@@ -112,6 +112,33 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(applicationUser);
         }
 
+        public async Task<IActionResult> DetailsPartial(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var applicationUser = await _context.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
+                
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
+            // Query to get user roles (mapping user Id to role name)
+            var userRoles = await (from user in _context.Users
+                                   join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                   join role in _context.Roles on userRole.RoleId equals role.Id
+                                   select new { user.Id, RoleName = role.Name }).ToListAsync();
+
+            // Create a dictionary mapping user Id to role name
+            ViewBag.UserRoles = userRoles.ToDictionary(x => x.Id, x => x.RoleName);
+
+            return PartialView("_DetailsPartial", applicationUser);
+        }
+
         // GET: ApplicationUser/Create
         public IActionResult Create()
         {

@@ -5,119 +5,90 @@
     ViewData["Title"] = "Route List";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<head>
-    <link rel="stylesheet" href="~/css/Index.css">
-</head>
 
-<div class="container">
+<h1 class="text-success fw-bold mb-4">Route List</h1>
 
-    <h1 class="text-success fw-bold mb-4">Route List</h1>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Create New Route</a>
 
-    <a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Create New Route</a>
-
-    <form asp-action="Index" method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
-                placeholder="Search for routes... (Location 1 -> Location 2)">
-            <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
-                    style="font-size: 18px"></i></button>
-        </div>
-        <div class="input-group mt-3">
-            <select class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
-                <option value="" disabled selected>Sort By ...</option>
-                <optgroup label="Sort by Departure">
-                    <option value="departure_asc" selected="@(ViewBag.SortBy == "departure_asc" ? "selected" : null)">
-                        Departure Ascending ↑
-                    </option>
-                    <option value="departure_desc" selected="@(ViewBag.SortBy == "departure_desc" ? "selected" : null)">
-                        Departure Descending ↓
-                    </option>
-                </optgroup>
-                <optgroup label="Sort by Destination">
-                    <option value="destination_asc"
-                        selected="@(ViewBag.SortBy == "destination_asc" ? "selected" : null)">
-                        Destination Ascending ↑
-                    </option>
-                    <option value="destination_desc"
-                        selected="@(ViewBag.SortBy == "destination_desc" ? "selected" : null)">
-                        Destination Descending ↓
-                    </option>
-                </optgroup>
-                <optgroup label="Sort by Price">
-                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc" ? "selected" : null)">
-                        Price Ascending ↑
-                    </option>
-                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc" ? "selected" : null)">
-                        Price Descending ↓
-                    </option>
-                </optgroup>
-            </select>
-        </div>
-    </form>
-
-    <div class="table-responsive mb-3 shadow rounded">
-        <table id="RouteTable" class="table table-hover table-striped align-middle mb-0">
-            <thead>
-                <tr>
-                    <th>Departure</th>
-                    <th>Destination</th>
-                    <th>Price</th>
-                    <th style="width: 30px">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="table-group=divider">
-                @foreach (var item in Model)
-                {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StartLocation.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
-                        </td>
-                        <td>
-                            @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", item.Price)
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                                    asp-route-id="@item.Id">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a role="button" class="btn btn-danger rounded-end" asp-action="Delete"
-                                    asp-route-id="@item.Id">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
-        @if (Model.Any())
-        {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", 
-            new {
-                page = pageNumber,
-                searchString = ViewBag.SearchString,
-                sortBy = ViewBag.SortBy 
-            }),
-            new PagedListRenderOptions
+<div class="table-responsive mb-3 shadow rounded">
+    <table id="DataTable" 
+        class="table table-hover table-striped align-middle mb-0" 
+        data-details-url="/Admin/Routes/DetailsPartial"
+        data-table-name="Route"
+        data-table-title="Routes">        
+        <thead>
+            <tr>
+                <th>Departure</th>
+                <th>Destination</th>
+                <th>Price</th>
+                <th style="min-width: 20px; max-width: 20px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var item in Model)
             {
-                UlElementClasses = new[] { "pagination", "justify-content-center" },
-                LiElementClasses = new[] { "page-item" },
-                PageClasses = new[] { "page-link" },
-                ActiveLiElementClass = "active",
-                LinkToPreviousPageFormat = "&laquo;",
-                LinkToNextPageFormat = "&raquo;"
-            })
-        }
-    </nav>
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartLocation.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
+                    </td>
+                    <td>
+                        @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", item.Price)
+                    </td>
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 120px; max-width: 120px;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                asp-route-id="@item.Id">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 40%; min-width: 500px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Route Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="detailsOffcanvasBody">
+
+    </div>
 </div>
 
 @section Scripts {
+    <link rel="stylesheet" href="~/css/Index.css">
     <script src="~/js/table.js"></script>
 }

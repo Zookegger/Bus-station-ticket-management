@@ -45,6 +45,21 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(vehicleType);
         }
 
+        public async Task<IActionResult> DetailsPartial(int? id)
+        {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var vehicleType = await _context.VehicleTypes
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vehicleType == null) {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial",vehicleType);
+        }
+
         // GET: VehicleType/Create
         public IActionResult Create()
         {

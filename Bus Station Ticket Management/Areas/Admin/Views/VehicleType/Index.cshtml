@@ -5,90 +5,88 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/Index.css">
-</head>
+<h1 class="text-success fw-bold mb-4">Vehicle Type List</h1>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let searchBox = document.querySelector("input[name='searchString']");
-        if (!searchBox) return;
+<a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add new vehicle types to database"><i class="fa fa-plus-circle"></i> Add New Type</a>
 
-        searchBox.addEventListener("input", function () {
-            let searchText = searchBox.value.toLowerCase();
-            let tableRows = document.querySelectorAll("#VehicleTypeTable tbody tr");
+<div class="table-responsive mb-3 shadow rounded">
+    <table id="DataTable" class="table table-hover table-striped align-middle mb-0"
+        data-details-url="/Admin/VehicleType/DetailsPartial" data-table-name="VehicleType" data-table-title="Vehicle Type">
+        <thead>
+            <tr>
+                <th style="min-width: 200px;">Name</th>
+                <th>Base Fare</th>
+                <th style="max-width: 100px;">Total Seats</th>
+                <th style="max-width: 100px;">Total Flooring</th>
+                <th style="max-width: 100px;">Total Row</th>
+                <th style="max-width: 100px;">Total Column</th>
+                <th style="max-width: 100px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var item in Model)
+            {
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalSeats)</td>
+                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalFlooring)</td>
+                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalRow)</td>
+                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalColumn)</td>
+                    <td class="action-buttons" onclick="event.stopPropagation()">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-            tableRows.forEach(row => {
-                let vehicleName = row.cells[0].innerText.toLowerCase();
-                let licensePlate = row.cells[2].innerText.toLowerCase();
-                let vehicleType = row.cells[4].innerText.toLowerCase();
-
-                // Check if any field includes the search text
-                row.style.display = (vehicleName.includes(searchText) || licensePlate.includes(searchText) || vehicleType.includes(searchText)) ? "" : "none";
-            });
-        });
-    });
-</script>
-
-<div class="container pb-3">
-    <h1 class="text-success fw-bold mb-4">Vehicle Type List</h1>
-
-    <a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Add New Type</a>
-
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" name="searchString" value="@ViewBag.searchString"
-            placeholder="Search Vehicle Types..." />
-    </div>
-
-
-    <div class="table-responsive mb-3 shadow rounded">
-        <table id="VehicleTypeTable" class="table table-hover table-striped align-middle mb-0">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Base Fare</th>
-                    <th>Total Seats</th>
-                    <th>Total Flooring</th>
-                    <th>Total Row</th>
-                    <th>Total Column</th>
-                    <th style="width: 100px;">Actions</th>
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                asp-route-id="@item.Id">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                @foreach (var item in Model)
-                {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TotalFlooring)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TotalRow)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TotalColumn)</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 40%; min-width: 660px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Vehicle Type Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="detailsOffcanvasBody">
+
     </div>
 </div>
 
 @section Scripts {
     <script src="~/js/table.js"></script>
+    <link rel="stylesheet" href="~/css/Index.css">
+    <style>
+        
+    </style>
 }
-
-<style>
-    /* Optional: Add hover effect for clickable rows */
-    .clickable-row:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-</style>

@@ -13,3 +13,20 @@ th {
         font-size: 0.875rem !important;
     }
 } */
+
+.action-buttons .dropdown {
+    justify-content: flex-end;
+}
+
+@media (max-width: 678px) {
+    .offcanvas {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+@media (max-width: 1399px) {
+    .action-buttons {
+        min-width: 120px !important;
+    }
+}

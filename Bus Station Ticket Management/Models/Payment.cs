@@ -9,7 +9,7 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public string? Id { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         [Required]  
         public int TotalAmount { get; set; } // Tổng tiền để thanh toán

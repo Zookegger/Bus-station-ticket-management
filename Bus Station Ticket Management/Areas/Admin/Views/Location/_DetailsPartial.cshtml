@@ -1,0 +1,18 @@
+﻿@model Bus_Station_Ticket_Management.Models.Location
+<div class="row">
+    <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
+        @Html.DisplayNameFor(model => model.Address)
+    </dt>
+    <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
+        @Html.DisplayFor(model => model.Address)
+    </dd>
+</div>
+<div class="card-footer form-group d-flex justify-content-between mt-3" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+</div>

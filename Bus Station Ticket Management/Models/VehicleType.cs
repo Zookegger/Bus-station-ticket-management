@@ -7,25 +7,25 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Required]
         [Key]
-        [DisplayName("Mã loại xe")]
+        [DisplayName("Id")]
         public int Id { get; set; }
 
-        [DisplayName("Tên loại xe")]
+        [DisplayName("Type Name")]
         public string Name { get; set; }
 
-        [DisplayName("Giá loại xe")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
+        [DisplayName("Based Fare")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int Price { get; set; }
 
-        [DisplayName("Tổng số ghế")]
+        [DisplayName("Total Seats")]
         public int TotalSeats { get; set; }
 
-        [DisplayName("Tổng số tầng")]
+        [DisplayName("Total Floorings")]
         public int TotalFlooring { get; set; }
 
-        [DisplayName("Tổng số hàng")]
+        [DisplayName("Total Rows")]
         public int TotalRow { get; set; }
 
-        [DisplayName("Tổng số cột")]
+        [DisplayName("Total Columns")]
         public int TotalColumn { get; set; }
     }
 }
