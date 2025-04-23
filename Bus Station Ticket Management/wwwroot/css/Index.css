@@ -17,8 +17,24 @@ th {
 .action-buttons .dropdown {
     justify-content: flex-end;
 }
+.offcanvas {
+    padding-right: 1rem;
+}
 
-@media (max-width: 678px) {
+.btn-close {
+    padding: 16px !important;
+    border-radius: 0.25rem;
+    transition: background-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
+}
+
+.btn-close:hover {
+    background-color: #c0c0c0;
+    box-shadow: 0 0 0 2px #5d5d5d;
+}
+
+
+
+@media (max-width: 768px) {
     .offcanvas {
         width: 100% !important;
         min-width: 0 !important;

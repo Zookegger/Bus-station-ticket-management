@@ -35,7 +35,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Address)
                     </td>
-                    <td class="action-buttons" onclick="event.stopPropagation()"  style="min-width: 120px; max-width: 120px;">
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
                         <!-- Dropdown Buttons (Hidden by default) -->
                         <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
                             <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
@@ -60,11 +60,10 @@
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
                         <div class="btn-group simple-buttons" role="group" style="display:none;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                                asp-route-id="@item.Id">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>

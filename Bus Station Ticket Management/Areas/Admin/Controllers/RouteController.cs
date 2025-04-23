@@ -24,42 +24,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Route
-        public async Task<IActionResult> Index(string searchString, int? page, string? sortBy)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
-
-            var routes = _context.Routes.Include(r => r.StartLocation).Include(r => r.DestinationLocation).AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchString))
-            {
-                var searchQuery = searchString.Split("->", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-                routes = searchQuery.Length > 1
-                    ? routes.Where(r =>
-                        r.StartLocation != null &&
-                        r.DestinationLocation != null &&
-                        EF.Functions.Collate(r.StartLocation.Name, "Latin1_General_CI_AI").Contains(searchQuery[0]) &&
-                        EF.Functions.Collate(r.DestinationLocation.Name, "Latin1_General_CI_AI").Contains(searchQuery[1]))
-                    : routes.Where(r =>
-                        (r.StartLocation != null && EF.Functions.Collate(r.StartLocation.Name, "Latin1_General_CI_AI").Contains(searchString)) ||
-                        (r.DestinationLocation != null && EF.Functions.Collate(r.DestinationLocation.Name, "Latin1_General_CI_AI").Contains(searchString)));
-            }
-            
-            routes = sortBy switch
-            {
-                "departure_asc" => routes.OrderBy(r => r.StartLocation.Name),
-                "departure_desc" => routes.OrderByDescending(r => r.StartLocation.Name),
-                "destination_asc" => routes.OrderBy(r => r.DestinationLocation.Name),
-                "destination_desc" => routes.OrderByDescending(r => r.DestinationLocation.Name),
-                "price_asc" => routes.OrderBy(r => r.Price),
-                "price_desc" => routes.OrderByDescending(r => r.Price),
-                _ => routes
-            };
-
-            var routeList = await routes.ToPagedListAsync(pageNumber, pageSize);
-
-            return View(routeList);
+            var routes = await _context.Routes.Include(r => r.StartLocation).Include(r => r.DestinationLocation).ToListAsync();
+            return View(routes);
         }
 
         // GET: Route/Details/5
@@ -81,6 +49,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             return View(routes);
         }
+
         public async Task<IActionResult> DetailsPartial(int? id)
         {
             if (id == null)
@@ -97,7 +66,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View("_DetailsPartial", routes);
+            return PartialView("_DetailsPartial", routes);
         }
 
         // GET: Route/Create

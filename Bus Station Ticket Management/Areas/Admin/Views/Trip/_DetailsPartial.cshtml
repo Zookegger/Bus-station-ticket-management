@@ -1,0 +1,71 @@
+﻿@model Bus_Station_Ticket_Management.Models.Trip
+<div class="row">
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        Departure Location        
+        @* @Html.DisplayNameFor(model => model.Route.StartLocation.Name) *@
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Route.StartLocation.Name) (@Html.DisplayFor(model => model.Route.StartLocation.Address)) 
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        Destination Location
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Route.DestinationLocation.Name) (@Html.DisplayFor(model => model.Route.DestinationLocation.Address)) 
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.IsTwoWay)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @(
+            Model.IsTwoWay 
+                ? Html.Raw("&#x2705;") 
+                : Html.Raw("&#10060;")
+        )
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.DepartureTime)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        (@Model.DepartureTime.ToString("dd/MM/yyyy - hh:MM:ss")) → (@Model.ArrivalTime.ToString("dd/MM/yyyy - hh:MM:ss"))
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Status)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Status)
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.TotalPrice)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.TotalPrice)
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Vehicle.VehicleType.Name)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Vehicle.VehicleType.Name)
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Vehicle.Name)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Vehicle.Name)
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Vehicle.LicensePlate)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Vehicle.LicensePlate)
+    </dd>
+    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayNameFor(model => model.Vehicle.Status)
+    </dt>
+    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Vehicle.Status)
+    </dd>
+</div>
+<div class="card-footer form-group d-flex justify-content-between mt-4" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+</div>

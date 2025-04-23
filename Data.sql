@@ -42,3 +42,26 @@ VALUES
     (N'Bảo tàng Mỹ thuật TP.HCM', N'97A Phó Đức Chính, Quận 1, TP. Hồ Chí Minh'),
     (N'Chợ Đông Ba', N'1 Trần Hưng Đạo, TP. Huế'),
     (N'Thác Datanla', N'QL20, Phường 3, TP. Đà Lạt');
+
+INSERT INTO VehicleTypes (Name, Price, TotalSeats, TotalFlooring, TotalRow, TotalColumn) VALUES
+	('Mini Bus', 35000.00, 15, 1, 5, 3),
+	('Standard Bus', 50000.00, 40, 1, 10, 4),
+	('Double Decker', 85000.00, 70, 2, 10, 7),
+	('Sleeper Bus', 75000.00, 36, 1, 9, 4),
+	('Luxury Coach', 95000.00, 45, 1, 9, 5),
+	('Shuttle Van', 30000.00, 12, 1, 4, 3),
+	('Electric Bus', 88000.00, 35, 1, 7, 5);
+	
+Select * from VehicleTypes
+
+Delete from VehicleTypes
+Where Id between 8 And 14
+
+INSERT INTO Vehicles (Name, LicensePlate, VehicleType) VALUES
+	('Mini Express 01', 'ABC-1234', 'Mini Bus'),
+	('City Runner', 'XYZ-5678', 'Standard Bus'),
+	('Sky Deck', 'DD-9087', 'Double Decker'),
+	('Night Comfort', 'SLP-4455', 'Sleeper Bus'),
+	('Royal Cruiser', 'LUX-7788', 'Luxury Coach'),
+	('Airport Shuttle 01', 'SHL-001', 'Shuttle Van'),
+	('Eco Glide', 'ELE-2025', 'Electric Bus');

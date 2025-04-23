@@ -1,5 +1,4 @@
-﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Routes>
-@using X.PagedList.Mvc.Core
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Routes>
 
 @{
     ViewData["Title"] = "Route List";
@@ -8,12 +7,12 @@
 
 <h1 class="text-success fw-bold mb-4">Route List</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Create New Route</a>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add new routes to database"><i class="fa fa-plus-circle"></i> Add New Route</a>
 
 <div class="table-responsive mb-3 shadow rounded">
     <table id="DataTable" 
         class="table table-hover table-striped align-middle mb-0" 
-        data-details-url="/Admin/Routes/DetailsPartial"
+        data-details-url="/Admin/Route/DetailsPartial"
         data-table-name="Route"
         data-table-title="Routes">        
         <thead>
@@ -21,7 +20,7 @@
                 <th>Departure</th>
                 <th>Destination</th>
                 <th>Price</th>
-                <th style="min-width: 20px; max-width: 20px;">Actions</th>
+                <th style="min-width: 58px; max-width: 58px;">Actions</th>
             </tr>
         </thead>
         <tbody class="table-group=divider">
@@ -37,7 +36,7 @@
                     <td>
                         @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", item.Price)
                     </td>
-                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 120px; max-width: 120px;">
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
                         <!-- Dropdown Buttons (Hidden by default) -->
                         <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
                             <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
@@ -62,11 +61,10 @@
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
                         <div class="btn-group simple-buttons" role="group" style="display:none;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                                asp-route-id="@item.Id">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>
@@ -81,7 +79,7 @@
     style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Route Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" --bs-offcanvas-padding-x="3400px" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body" id="detailsOffcanvasBody">
 

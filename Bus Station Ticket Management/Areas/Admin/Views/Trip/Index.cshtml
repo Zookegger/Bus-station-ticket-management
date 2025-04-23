@@ -1,75 +1,24 @@
-﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Trip>;
-@using X.PagedList.Mvc.Core
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Trip>;
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/Index.css">
-</head>
-
 <h1 class="text-success fw-bold mb-4">Trips</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Add New Trip</a>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add new trips to database"><i class="fa fa-plus-circle"></i> Add New Trip</a>
 
-<form asp-action="Index" method="get" class="mb-3" role="group">
-    <div class="form-group input-group" role="group">
-        <input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
-            placeholder="Search for trips..." />
-        <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
-                style="font-size: 18px"></i></button>
-    </div>
-    <div class="form-group input-group mt-3" role="group">
-        <select class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
-            <option value="" disabled selected>Sort By ...</option>
-            <optgroup label="Sort by Route">
-                <option value="route_asc" selected="@(ViewBag.SortBy == "route_asc" ? "selected" : null)">
-                    Route Ascending ↑
-                </option>
-                <option value="route_desc" selected="@(ViewBag.SortBy == "route_desc" ? "selected" : null)">
-                    Route Descending ↓
-                </option>
-            </optgroup>
-            <optgroup label="Sort by Vehicle">
-                <option value="vehicle_asc" selected="@(ViewBag.SortBy == "vehicle_asc" ? "selected" : null)">
-                    Vehicle Ascending ↑
-                </option>
-                <option value="vehicle_desc" selected="@(ViewBag.SortBy == "vehicle_desc" ? "selected" : null)">
-                    Vehicle Descending ↓
-                </option>
-            </optgroup>
-            <optgroup label="Sort by Departure">
-                <option value="departure_asc" selected="@(ViewBag.SortBy == "departure_asc" ? "selected" : null)">
-                    Departure Ascending ↑
-                </option>
-                <option value="departure_desc" selected="@(ViewBag.SortBy == "departure_desc" ? "selected" : null)">
-                    Departure Descending ↓
-                </option>
-            </optgroup>
-            <optgroup label="Sort by Arrival">
-                <option value="arrival_asc" selected="@(ViewBag.SortBy == "arrival_asc" ? "selected" : null)">
-                    Arrival Ascending ↑
-                </option>
-                <option value="arrival_desc" selected="@(ViewBag.SortBy == "arrival_desc" ? "selected" : null)">
-                    Arrival Descending ↓
-                </option>
-            </optgroup>
-        </select>
-        <select class="form-control" name="filterBy" id="filterBy" onchange="this.form.submit()">
-            <option value="" disabled selected>Filter</option>
-            <option value="All" selected="@(ViewBag.FilterBy == "All" ? "selected" : null)">All</option>
-            <option value="Stand By" selected="@(ViewBag.FilterBy == "Stand By" ? "selected" : null)">Stand By</option>
-            <option value="In Progress" selected="@(ViewBag.FilterBy == "In Progress" ? "selected" : null)">In Progress
-            </option>
-            <option value="Completed" selected="@(ViewBag.FilterBy == "Completed" ? "selected" : null)">Completed
-            </option>
-        </select>
-    </div>
-</form>
+<select class="form-control" name="filterByStatus" id="filterByStatus" onchange="this.form.submit()">
+    <option value="" disabled selected>Filter</option>
+    <option value="">All</option>
+    <option value="Stand By">Stand By</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Completed">Completed </option>
+</select>
+
 <div class="table-responsive mb-3 shadow rounded">
-    <table id="TripTable" class="table table-hover table-striped align-middle mb-0">
+    <table id="DataTable" class="table table-hover table-striped align-middle mb-0" data-details-url="/Admin/Trip/DetailsPartial" data-table-name="Trip" data-table-title="Trip">
         <thead>
             <tr>
                 <th style="min-width: 200px">Route</th>
@@ -84,7 +33,7 @@
         <tbody class="table-group=divider">
             @foreach (var item in Model)
             {
-                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                     <td>
                         @Html.DisplayFor(modelItem => item.Route.StartLocation.Name) ➞ @Html.DisplayFor(modelItem => item.Route.DestinationLocation.Name)
                     </td>
@@ -103,12 +52,35 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Status)
                     </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>
@@ -119,28 +91,37 @@
     </table>
 </div>
 
-<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
-    @if (Model.Any())
-    {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", 
-        new { 
-            page = pageNumber,
-            searchString = ViewBag.SearchString,
-            sortBy = ViewBag.SortBy,
-            filterBy = ViewBag.FilterBy 
-        }),
-        new PagedListRenderOptions
-        {
-            UlElementClasses = new[] { "pagination", "justify-content-center" },
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            ActiveLiElementClass = "active",
-            LinkToPreviousPageFormat = "&laquo;",
-            LinkToNextPageFormat = "&raquo;"
-        })
-    }
-</nav>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 40%; min-width: 660px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Trip Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="detailsOffcanvasBody">
+
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/table.js"></script>
+    <link rel="stylesheet" href="~/css/Index.css">
+    <style>
+        
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dataTable = $("#DataTable").DataTable();
+
+            $('#filterByStatus').on('change', function() {
+                const selectedStatus = $(this).val();
+                const statusColumnIndex = 5;
+
+                if (selectedStatus) {
+                    dataTable.column(statusColumnIndex).search('^' + selectedStatus + '$', true, false).draw();
+                } else {
+                    dataTable.column(statusColumnIndex).search('').draw();
+                }
+            });
+        });
+    </script>
 }

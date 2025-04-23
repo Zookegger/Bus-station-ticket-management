@@ -24,90 +24,97 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Trip
         public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterBy)
         {
-            int pageSize = 30;
-            int pageNumber = page ?? 1;
-            var now = DateTime.Now;
+            // int pageSize = 30;
+            // int pageNumber = page ?? 1;
+            // var now = DateTime.Now;
 
-            // Bulk update trip statuses directly in the database
-            await _context.Trips
-                .Where(t => t.DepartureTime > now && t.Status != "Stand By")
-                .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Stand By"));
+            // // Bulk update trip statuses directly in the database
+            // await _context.Trips
+            //     .Where(t => t.DepartureTime > now && t.Status != "Stand By")
+            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Stand By"));
 
-            await _context.Trips
-                .Where(t => t.DepartureTime <= now && t.ArrivalTime > now && t.Status != "In Progress")
-                .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "In Progress"));
+            // await _context.Trips
+            //     .Where(t => t.DepartureTime <= now && t.ArrivalTime > now && t.Status != "In Progress")
+            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "In Progress"));
 
-            await _context.Trips
-                .Where(t => t.ArrivalTime <= now && t.Status != "Completed")
-                .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Completed"));
+            // await _context.Trips
+            //     .Where(t => t.ArrivalTime <= now && t.Status != "Completed")
+            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Completed"));
 
-            // Start with the base query
-            var tripsQuery = _context.Trips
+            // // Start with the base query
+            // var tripsQuery = _context.Trips
+            //     .Include(t => t.Route)
+            //         .ThenInclude(r => r.StartLocation)
+            //     .Include(t => t.Route)
+            //         .ThenInclude(r => r.DestinationLocation)
+            //     .Include(t => t.Vehicle)
+            //     .AsQueryable();
+
+            // // Apply search filter if searchString is provided
+            // if (!string.IsNullOrEmpty(searchString))
+            // {
+            //     tripsQuery = tripsQuery.Where(t =>
+            //         t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString) ||
+            //         t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString) ||
+            //         t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString)
+            //     );
+            // }
+
+            // // Apply sorting based on sortBy parameter
+            // tripsQuery = sortBy switch
+            // {
+            //     "route_asc" => tripsQuery.OrderBy(t => t.Route.StartLocation.Name),
+            //     "route_desc" => tripsQuery.OrderByDescending(t => t.Route.StartLocation.Name),
+            //     "vehicle_asc" => tripsQuery.OrderBy(t => t.Vehicle.Name),
+            //     "vehicle_desc" => tripsQuery.OrderByDescending(t => t.Vehicle.Name),
+            //     "departure_asc" => tripsQuery.OrderBy(t => t.DepartureTime),
+            //     "departure_desc" => tripsQuery.OrderByDescending(t => t.DepartureTime),
+            //     "arrival_asc" => tripsQuery.OrderBy(t => t.ArrivalTime),
+            //     "arrival_desc" => tripsQuery.OrderByDescending(t => t.ArrivalTime),
+            //     _ => tripsQuery.OrderBy(t => t.DepartureTime),
+            // };
+
+            // // Apply filtering based on filterBy parameter
+            // tripsQuery = filterBy switch
+            // {
+            //     "All" => tripsQuery,
+            //     "Stand By" => tripsQuery.Where(t => t.Status == "Stand By"),
+            //     "In Progress" => tripsQuery.Where(t => t.Status == "In Progress"),
+            //     "Completed" => tripsQuery.Where(t => t.Status == "Completed"),
+            //     _ => tripsQuery,
+            // };
+
+            // // Retrieve total count for pagination
+            // int totalCount = await tripsQuery.CountAsync();
+
+            // // Apply pagination
+            // var trips = await tripsQuery
+            //     .Skip((pageNumber - 1) * pageSize)
+            //     .Take(pageSize)
+            //     .ToListAsync();
+
+            // // Set ViewBag properties for use in the view
+            // ViewBag.Routes = await _context.Routes
+            //     .Include(r => r.StartLocation)
+            //     .Include(r => r.DestinationLocation)
+            //     .ToListAsync();
+
+            // ViewBag.SortBy = sortBy;
+            // ViewBag.SearchString = searchString;
+            // ViewBag.FilterBy = filterBy;
+            // ViewBag.PageNumber = pageNumber;
+            // ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            // return View(trips.ToPagedList(pageNumber, pageSize));
+            var trips = await _context.Trips
                 .Include(t => t.Route)
                     .ThenInclude(r => r.StartLocation)
                 .Include(t => t.Route)
                     .ThenInclude(r => r.DestinationLocation)
-                .Include(t => t.Vehicle)
-                .AsQueryable();
+                .Include(t => t.Vehicle).ToListAsync();
 
-            // Apply search filter if searchString is provided
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                tripsQuery = tripsQuery.Where(t =>
-                    t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString) ||
-                    t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString) ||
-                    t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString)
-                );
-            }
-
-            // Apply sorting based on sortBy parameter
-            tripsQuery = sortBy switch
-            {
-                "route_asc" => tripsQuery.OrderBy(t => t.Route.StartLocation.Name),
-                "route_desc" => tripsQuery.OrderByDescending(t => t.Route.StartLocation.Name),
-                "vehicle_asc" => tripsQuery.OrderBy(t => t.Vehicle.Name),
-                "vehicle_desc" => tripsQuery.OrderByDescending(t => t.Vehicle.Name),
-                "departure_asc" => tripsQuery.OrderBy(t => t.DepartureTime),
-                "departure_desc" => tripsQuery.OrderByDescending(t => t.DepartureTime),
-                "arrival_asc" => tripsQuery.OrderBy(t => t.ArrivalTime),
-                "arrival_desc" => tripsQuery.OrderByDescending(t => t.ArrivalTime),
-                _ => tripsQuery.OrderBy(t => t.DepartureTime),
-            };
-
-            // Apply filtering based on filterBy parameter
-            tripsQuery = filterBy switch
-            {
-                "All" => tripsQuery,
-                "Stand By" => tripsQuery.Where(t => t.Status == "Stand By"),
-                "In Progress" => tripsQuery.Where(t => t.Status == "In Progress"),
-                "Completed" => tripsQuery.Where(t => t.Status == "Completed"),
-                _ => tripsQuery,
-            };
-
-            // Retrieve total count for pagination
-            int totalCount = await tripsQuery.CountAsync();
-
-            // Apply pagination
-            var trips = await tripsQuery
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            // Set ViewBag properties for use in the view
-            ViewBag.Routes = await _context.Routes
-                .Include(r => r.StartLocation)
-                .Include(r => r.DestinationLocation)
-                .ToListAsync();
-
-            ViewBag.SortBy = sortBy;
-            ViewBag.SearchString = searchString;
-            ViewBag.FilterBy = filterBy;
-            ViewBag.PageNumber = pageNumber;
-            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            return View(trips.ToPagedList(pageNumber, pageSize));
+            return View(trips);
         }
-
 
         // GET: Trip/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -132,6 +139,31 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
 
             return View(trip);
+        }
+
+        // GET: Trip/Details/5
+        public async Task<IActionResult> DetailsPartial(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var trip = await _context.Trips
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.StartLocation)
+                .Include(t => t.Route)
+                    .ThenInclude(r => r.DestinationLocation)
+                .Include(t => t.Vehicle)
+                    .ThenInclude(v => v.VehicleType)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (trip == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial", trip);
         }
 
         // GET: Trip/Create
