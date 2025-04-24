@@ -65,3 +65,5 @@ INSERT INTO Vehicles (Name, LicensePlate, VehicleType) VALUES
 	('Royal Cruiser', 'LUX-7788', 'Luxury Coach'),
 	('Airport Shuttle 01', 'SHL-001', 'Shuttle Van'),
 	('Eco Glide', 'ELE-2025', 'Electric Bus');
+
+	Select * from Trips

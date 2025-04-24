@@ -126,16 +126,18 @@
         <div class="card">
             <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">Trip Information</h5></div>
             <div class="card-body trip-information" id="TripInfo">
-                <p><strong>Starting Point:</strong> @Model.DepartureLocation</p>
-                <p><strong>Ending Point:</strong> @Model.DestinationLocation</p>
+                <p><strong>Starting Point:</strong> @Model.DepartureLocation <span class="small text-muted">(@Model.DepartureLocationAddress)</span></p>
+                <p><strong>Ending Point:</strong> @Model.DestinationLocation <span class="small text-muted">(@Model.DestinationLocationAddress)</span></p>
                 <p><strong>Departure Time:</strong> @Model.DepartureTime.ToString("HH:mm dd/MM/yyyy")</p>
                 <p><strong>License Plate:</strong> @Model.LicensePlate</p>
-                <p><strong>Total Seats:</strong> <span id="selectedSeatCount">0</span> ghế</p>
-                <h4><strong>Seat Number:</strong> <span id="selectedSeats"></span></h4>
+                <p><strong>Total Seats:</strong> <span id="selectedSeatCount">0</span></p>
+                <h5><strong>Seat Number:</strong> <span id="selectedSeats"></span></h5>
             </div>
+        </div>
 
-            <hr>
+        <br>
 
+        <div class="card">
             <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">User Information</h5></div>
             <div class="card-body user-information" id="CustomerInfo">    
                 @if (@Model.User != null && User.Identity.IsAuthenticated)
@@ -161,9 +163,11 @@
                     </div>
                 }
             </div>
+        </div>
 
-            <hr>
+        <br>
 
+        <div class="card">
             <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">Coupon</h5></div>
             <div class="card-body" asp-action="applyCoupon">
                 <input type="hidden" id="tripId" name="tripId" value="@Model.TripId" />
@@ -173,11 +177,15 @@
                     <button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
                 </div>
                 <div id="couponFeedback" class="mt-2"></div>
-                <div class="total-price"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
+                <div class="total-price mt-3"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
                 <input type="hidden" id="totalPrice" name="totalPrice" value="0" />
             </div>
+        </div>
 
-            <div class="card-header"><span class="card-title">Payment</span></div>
+        <br>
+
+        <div class="card">
+            <div class="card-header bg-secondary-subtle bg-gradient"><span class="card-title">Payment</span></div>
             <div class="card-body">
                 <select name="paymentMethod" id="payment-method" for="paymentMethod" class="form-select">
                     <option value="" selected disabled>Select a payment method</option>
@@ -186,8 +194,11 @@
                     <option value="Visa" data-icon="fa-brands fa-cc-momo">Momo</option>
                 </select>
             </div>
+
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
+            </div>
         </div>
-        <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
     </div>
 </form>
 
