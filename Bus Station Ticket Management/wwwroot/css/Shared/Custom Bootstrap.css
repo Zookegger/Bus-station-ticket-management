@@ -9,12 +9,12 @@
 }
 
 @media (min-width: 576px) {
-    .fs-xs-1 { font-size: calc(1vw + 1.25rem) !important; }
-    .fs-xs-2 { font-size: calc(1vw + 1rem) !important; }
-    .fs-xs-3 { font-size: calc(1vw + 0.875rem) !important; }
-    .fs-xs-4 { font-size: calc(1vw + 0.75rem) !important; }
-    .fs-xs-5 { font-size: calc(1vw + 0.625rem) !important; }
-    .fs-xs-6 { font-size: calc(1vw + 0.5rem) !important; }
+    .fs-sm-1 { font-size: calc(1vw + 1.25rem) !important; }
+    .fs-sm-2 { font-size: calc(1vw + 1rem) !important; }
+    .fs-sm-3 { font-size: calc(1vw + 0.875rem) !important; }
+    .fs-sm-4 { font-size: calc(1vw + 0.75rem) !important; }
+    .fs-sm-5 { font-size: calc(1vw + 0.625rem) !important; }
+    .fs-sm-6 { font-size: calc(1vw + 0.5rem) !important; }
 }
 
 @media (min-width: 768px) {

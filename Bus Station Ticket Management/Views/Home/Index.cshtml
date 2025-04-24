@@ -8,6 +8,7 @@
     var departure = ViewBag.Departure;
     var time = ViewBag.DepartureTime != null ? (ViewBag.DepartureTime).ToString("yyyy-MM-dd") : null;
 }
+
 <div data-aos="fade-up">
     <div class="background-img">
         <div class="container pt-5">
@@ -36,7 +37,7 @@
             <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-md-5">
                 <div class="col-8 col-md-4 mb-md-2 mb-0 position-relative">
                     <div class="input-group input-group-lg">
-                        <input type="text" id="input_departure" name="departure" class="form-control" placeholder="From"
+                        <input type="text" id="input_departure" name="departure" class="form-control fs-5" placeholder="From"
                             required />
                         <button type="button" class="btn btn-secondary" id="popoverDepartureBtn"
                             data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
@@ -47,7 +48,7 @@
                 </div>
                 <div class="col-8 col-md-4 mb-2 mb-md-0">
                     <div class="input-group input-group-lg">
-                        <input type="text" id="input_destination" name="destination" class="form-control"
+                        <input type="text" id="input_destination" name="destination" class="form-control fs-5"
                             placeholder="To" required />
                         <button type="button" class="btn btn-secondary" id="popoverDestinationBtn"
                             data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
@@ -57,7 +58,7 @@
                     </div>
                 </div>
                 <div class="col-8 col-md-4 mb-2 mb-md-0">
-                    <input type="date" id="input_time" name="departureTime" class="form-control form-control-lg"
+                    <input type="date" id="input_time" name="departureTime" class="form-control form-control-lg fs-5"
                         placeholder="dd/MM/yyyy" required />
                 </div>
                 <div class="col-8 col-md-12 mb-2 mb-md-0">
