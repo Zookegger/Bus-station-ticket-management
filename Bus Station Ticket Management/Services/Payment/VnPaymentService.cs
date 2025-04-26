@@ -15,29 +15,28 @@ namespace Bus_Station_Ticket_Management.Services
             this.configuration = configuration;
         }
 
-        public string ToUrl(Payment obj)
+        public string ToUrl(Payment obj, string returnUrl, string ipAddress)
         {
             SortedDictionary<string, string> dict = new SortedDictionary<string, string>{
                 {"vnp_Amount", (obj.TotalAmount * 100).ToString()},
                 {"vnp_Command", setting.Command},
-                {"vnp_CreateDate", obj.CreatedAt.HasValue ? obj.CreatedAt.Value.ToString("yyyyMMddHHmmss") : DateTime.Now.ToString("yyyyMMddHHmmss")},
+                { "vnp_CreateDate", obj.CreatedAt.ToString("yyyyMMddHHmmss") },
                 {"vnp_CurrCode", setting.CurrCode},
-                {"vnp_IpAddr", "127.0.0.1"},
-                //{"vnp_IpAddr", Accessor.HttpContext!.Connection.RemoteIpAddress!.ToString()},
+                {"vnp_IpAddr", ipAddress},
                 {"vnp_Locale", setting.Locale},
                 {"vnp_OrderInfo", $"Payment for {obj.Id} with amount {obj.TotalAmount.ToString()}"},
                 {"vnp_OrderType", setting.OrderType},
-                {"vnp_ReturnUrl", setting.ReturnUrl},
+                {"vnp_ReturnUrl", returnUrl},
                 {"vnp_TmnCode", setting.TmnCode},
                 {"vnp_TxnRef", obj.Id?.ToString() ?? throw new InvalidOperationException("Payment ID cannot be null.")},
                 {"vnp_Version", setting.Version},
             };
-            string text = string.Join("&", dict.Select(p => $"{p.Key}={WebUtility.UrlEncode(p.Value)}"));
+            string queryString = string.Join("&", dict.Select(p => $"{p.Key}={WebUtility.UrlEncode(p.Value)}"));
 
-            string hashSecret = configuration["Payment:HashSecret"] ?? throw new InvalidOperationException("HashSecret is not configured.");
-            string secureHash = Helper.HashHmac512(text, hashSecret);
+            string hashSecret = this.configuration["Payment:HashSecret"] ?? throw new InvalidOperationException("HashSecret is not configured.");
+            string secureHash = Helper.HashHmac512(queryString, hashSecret);
 
-            return $"{setting.BaseUrl}?{text}&vnp_SecureHash={secureHash}";
+            return $"{setting.BaseUrl}?{queryString}&vnp_SecureHash={secureHash}";
 
         }
     }

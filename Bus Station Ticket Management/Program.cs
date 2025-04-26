@@ -21,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<VnPaymentService>();
 builder.Services.Configure<VnPaymentSetting>(builder.Configuration.GetSection("Payment:VnPayment"));
+builder.Services.AddHostedService<ExpiredPaymentCleanupService>();
 
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\"))
@@ -171,6 +172,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHttpsRedirection();
 }
+
+builder.Configuration.AddUserSecrets<Program>();
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

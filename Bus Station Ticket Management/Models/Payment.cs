@@ -7,15 +7,17 @@ namespace Bus_Station_Ticket_Management.Models
     {
         [Key]
         [Required]
-        public string? Id { get; set; }
+        public string? Id { get; set; } = Guid.NewGuid().ToString();
 
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public DateTime ExpiredAt { get; set; } = DateTime.Now.AddMinutes(15);
 
         [Required]  
         public int TotalAmount { get; set; } // Tổng tiền để thanh toán
 
         [Required]  
-        public string? PaymentMethod { get; set; }
+        public string? PaymentMethod { get; set; } = string.Empty;
 
         public byte PaymentStatus { get; set; } = 0; // 0: Chờ thanh toán, 1: Đã thanh toán, 2: Thất bại
 

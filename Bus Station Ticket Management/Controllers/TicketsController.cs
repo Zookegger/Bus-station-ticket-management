@@ -18,8 +18,6 @@ public class TicketsController : Controller
         _userManager = userManager;
     }
 
-    // Action để hiển thị các vé của người dùng đã đăng nhập
-    [Authorize]
     public async Task<IActionResult> MyTickets()
     {
         // Lấy thông tin người dùng hiện tại
@@ -58,6 +56,8 @@ public class TicketsController : Controller
                         .ThenInclude(r => r.DestinationLocation)
                 .Include(t => t.Seat)
                 .Include(t => t.Trip.Vehicle)
+                .Include(t => t.Payment)
+                    .ThenInclude(p => p.VnPayment)
                 .Include(t => t.User)
                 .Where(t => ticketIds.Contains(t.Id))
                 .ToListAsync();

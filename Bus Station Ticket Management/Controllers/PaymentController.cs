@@ -17,13 +17,15 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly VnPaymentService vnPayment;
         private readonly VnPaymentSetting vnPaysetting;
         private readonly ILogger<PaymentController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger)
+        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger, IConfiguration configuration)
         {
             this.vnPayment = vnPayment;
             this.context = context;
             this.vnPaysetting = vnPaymentSettings.Value;
             this._logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Checkout()
@@ -50,9 +52,13 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .Select(t => t.UserId)
                     .FirstOrDefault();
 
+                var ipAddress = Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+
+                var returnUrl = $"{Request.Scheme}://{Request.Host}/Payment/VnPaymentResponse";
+
                 _logger.LogInformation($"Processing payment: Id={payment.Id}, TotalAmount={payment.TotalAmount}, UserId={userId}");
 
-                var url = vnPayment.ToUrl(payment);
+                var url = vnPayment.ToUrl(payment, returnUrl, ipAddress);
                 _logger.LogInformation($"Redirecting to VnPay: {url}");
 
                 TempData["PaymentId"] = paymentId;
@@ -83,7 +89,8 @@ namespace Bus_Station_Ticket_Management.Controllers
             string queryString = BuildQueryString(queryParams);
             _logger.LogInformation($"Query string for hash: {queryString}");
 
-            string hashSecret = vnPaysetting.HashSecret;
+
+            string? hashSecret = _configuration["Payment:HashSecret"];
             string expectedHash = Helper.HashHmac512(queryString, hashSecret);
             string receivedHash = paymentResponse.SecureHash;
 
@@ -134,10 +141,19 @@ namespace Bus_Station_Ticket_Management.Controllers
                 // ✅ Payment success: finalize
                 payment.PaymentStatus = 1; // Mark payment as successful
 
+                int? vehicleId = null, tripId = null;
                 foreach (var ticket in tickets)
                 {
                     ticket.IsPaid = true;
+                    ticket.Payment.PaymentStatus = 1;
+                    if (vehicleId == null || tripId == null) {
+                        tripId = ticket.TripId;
+                        vehicleId = this.context.Trips.Where(t => t.Id == tripId).Select(t => t.VehicleId).FirstOrDefault();
+                    }
+                    ticket.Payment.VnPaymentTransactionNo = paymentResponse.TransactionNo;
                 }
+                _logger.LogInformation($"Vehicle Id: {vehicleId}");
+                _logger.LogInformation($"Trip Id: {tripId}");
                 
                 context.VnPayments.Add(paymentResponse);
                 _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
@@ -146,15 +162,22 @@ namespace Bus_Station_Ticket_Management.Controllers
                 {
                     await transaction.CommitAsync();
                     _logger.LogInformation("Transaction saved successfully");
-                    return RedirectToAction("MyTickets", "Tickets");
+                    return RedirectToAction("SelectSeats", "Seat", new { VehicleId = vehicleId, TripId = tripId });
                 }
 
                 return LogAndServerError("Failed to save transaction");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception during VnPaymentResponse processing");
-                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
+                var tickets = context.Tickets.Where(t => t.PaymentId == paymentId.ToString()).ToList();
+
+                foreach (var ticket in tickets)
+                {
+                    ticket.IsPaid = false;
+                    ticket.Payment.PaymentStatus = 2;
+                }
+                _logger.LogError(ex.ToString(), "Exception during VnPaymentResponse processing");
+                return StatusCode(500, new { Message = "Internal server error", Error = ex.ToString() });
             }
         }
 

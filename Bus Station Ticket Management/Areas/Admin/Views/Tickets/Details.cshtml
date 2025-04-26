@@ -66,7 +66,7 @@
     <div class="card-body">
         <dt class="card-title col-sm-4 fs-4 fw-semibold text-muted">Payment Information</dt>
         <dd class="col-sm-8 fs-4">
-            @(Model.Payment?.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "—")
+            @(Model.Payment?.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss") ?? "—")
         </dd>
 
     </div>

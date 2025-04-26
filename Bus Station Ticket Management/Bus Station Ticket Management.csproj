@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Quản_lý_bán_vé_bến_xe-82e6d63a-22b1-4f33-9aaf-2114cdacc643</UserSecretsId>
     <RootNamespace>Bus_Station_Ticket_Management</RootNamespace>
+    <Configuration>Debug</Configuration>
   </PropertyGroup>
 
   <ItemGroup>

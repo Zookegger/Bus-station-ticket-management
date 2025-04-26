@@ -36,7 +36,7 @@
             if (countdown <= 0) {
                 clearInterval(timer);
 
-                window.location.href = '@Url.Action("MyTickets", "Tickets")';
+                window.location.href = '@Url.Action("Details", "Tickets", new { Id = TempData["TicketIds"] })';
             }
         }, 1000); // Update every second
     }
@@ -236,19 +236,25 @@
             function updatePurchaseButtonState() {
                 @* const paymentMethod = $('#payment-method'); *@
                 const guestName = document.getElementById('guestName');
-                console.log(guestName.value);
                 const guestEmail = document.getElementById('guestEmail');
-                console.log(guestEmail.value);
                 const guestPhone = document.getElementById('guestPhone');
-                console.log(guestPhone.value);
                 const paymentMethod = document.getElementById('payment-method');
                 const numTickets = parseInt($('#numberOfTickets').val());
 
-                if (guestName !== null && guestEmail !== null && guestPhone !== null) {
-                    purchaseBtn.disabled = !((selectedSeats.length === numTickets) && (paymentMethod.value !== "") && (guestName.value !== "") && (guestEmail.value !== "") && (guestPhone.value !== ""));
-                } else {
-                    purchaseBtn.disabled = !((selectedSeats.length === numTickets) && (paymentMethod.value !== ""));
+                const isGuest = guestName && guestEmail && guestPhone;
+
+                const areSeatsValid = selectedSeats.length === numTickets;
+                const isPaymentValid = paymentMethod && paymentMethod.value !== "";
+
+                let isGuestInfoValid = true;
+                if (isGuest) {
+                    isGuestInfoValid =
+                        guestName.value.trim() !== "" &&
+                        guestEmail.value.trim() !== "" &&
+                        guestPhone.value.trim() !== "";
                 }
+                console.log(areSeatsValid && isPaymentValid && isGuestInfoValid);
+                purchaseBtn.disabled = !(areSeatsValid && isPaymentValid && isGuestInfoValid);
             }
 
             function updateTotalPrice() {

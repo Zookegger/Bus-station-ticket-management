@@ -131,7 +131,6 @@ namespace Bus_Station_Ticket_Management.Controllers
                 {
                     var payment = new Payment
                     {
-                        Id = Guid.NewGuid().ToString(),
                         TotalAmount = totalPrice,
                         CreatedAt = DateTime.Now,
                         PaymentMethod = paymentMethod,
@@ -148,10 +147,9 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                         var ticket = new Ticket
                         {
-                            Id = Guid.NewGuid().ToString(),
                             TripId = TripId,
                             SeatId = seat.Id,
-                            UserId = userId ?? string.Empty,
+                            UserId = userId,
                             BookingDate = DateTime.Now,
                             IsCanceled = false,
                             IsPaid = false,
@@ -180,7 +178,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                     TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
 
                     // Redirect to the SelectSeats or Payment checkout view with TempData
-                    return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Cart") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
+                    return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Payment") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
                 }
             }
             catch (DbUpdateException ex)

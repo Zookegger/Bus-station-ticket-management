@@ -24,7 +24,7 @@
 
 
 <div class="card mb-4">
-    <h4 class="card-header">Ticket Info</h4>
+    <h4 class="card-header">@Model.Id</h4>
     <div class="card-body">
         <div class="row">
             @if (Model.User != null)
@@ -44,39 +44,29 @@
                 <dd class="col-sm-8">@Model.GuestPhone</dd>
             }
 
+            <hr class="my-3">
+
+            <h5 class="col-sm-12">Trip Information</h5>
             <dt class="col-sm-4">Trip</dt>
             <dd class="col-sm-8">@Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name</dd>
-            
+
             <dt class="col-sm-4">Departure</dt>
             <dd class="col-sm-8">@Model.Trip?.DepartureTime.ToString("f")</dd>
 
-            <dt class="col-sm-4">Seat Number</dt>
-            <dd class="col-sm-8">@Model.Seat?.Number</dd>
+            <dt class="col-sm-4">Seat</dt>
+            <dd class="col-sm-8">@($"F{Model.Seat?.Floor} - R{@Model.Seat?.Row}C{@Model.Seat?.Column}")</dd>
 
-            <dt class="col-sm-4">Vehicle License Plate</dt>
+            <dt class="col-sm-4">License Plate</dt>
             <dd class="col-sm-8">@Model.Trip?.Vehicle.LicensePlate</dd>
 
-            <dt class="col-sm-4">Floor</dt>
-            <dd class="col-sm-8">@Model.Seat?.Floor</dd>
+            <hr class="my-3">
 
-            <dt class="col-sm-4">Row</dt>
-            <dd class="col-sm-8">@Model.Seat?.Row</dd>
-
-            <dt class="col-sm-4">Column</dt>
-            <dd class="col-sm-8">@Model.Seat?.Column</dd>
-
+            <h5 class="col-sm-12">Booking Information</h5>
             <dt class="col-sm-4">Booking Date</dt>
             <dd class="col-sm-8">@Model.BookingDate.ToString("f")</dd>
 
-            <dt class="col-sm-4">Is Paid?</dt>
-            <dd class="col-sm-8">
-                @(Model.IsPaid ? "Yes" : "No")
-            </dd>
-
             <dt class="col-sm-4">Is Canceled?</dt>
-            <dd class="col-sm-8">
-                @(Model.IsCanceled ? "Yes" : "No")
-            </dd>
+            <dd class="col-sm-8">@((Model.IsCanceled ? "Yes" : "No"))</dd>
 
             @if (Model.IsCanceled)
             {
@@ -84,21 +74,32 @@
                 <dd class="col-sm-8">@Model.CancelationTime?.ToString("f")</dd>
             }
 
-            @* @if (Model.Coupon != null)
-            {
-                <dt class="col-sm-4">Applied Coupon</dt>
-                <dd class="col-sm-8">@Model.Coupon.CouponString</dd>
-            } *@
+            <hr class="my-3">
+
+            <h5 class="col-sm-12">Payment Information</h5>
+            <dt class="col-sm-4">Is Paid?</dt>
+            <dd class="col-sm-8">@((Model.IsPaid ? "Yes" : "No"))</dd>
+
+            @if (Model.IsPaid) {
+                <dt class="col-sm-4">Payment Timestamp</dt>
+                <dd class="col-sm-8">@Model.Payment?.CreatedAt.ToString("f") ?? "N/A"</dd>
+            }
+
+            <dt class="col-sm-4">Payment ID</dt>
+            <dd class="col-sm-8">@Model.Payment.Id</dd>
 
             <dt class="col-sm-4">Ticket Price</dt>
             <dd class="col-sm-8">@Model.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
 
-            <div class="btn-group">
+            <hr class="my-3">
+
+            <div class="btn-group mt-3">
                 <a role="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">Cancel Ticket</a>
             </div>
         </div>
     </div>
 </div>
+
 
 
 @section Scripts {

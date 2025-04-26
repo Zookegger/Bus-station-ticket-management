@@ -16,8 +16,13 @@ else
 {
     <!-- Desktop View: Table -->
     <div class="d-none d-md-block table-responsive shadow rounded">
-        <table class="table table-striped align-middle mb-0">
-            <thead class="table-success">
+        <table id="DataTable" 
+            class="table table-hover table-striped align-middle mb-0" 
+            @* style="max-height: 876px;" *@
+            data-details-url="/Tickets/Details"
+            data-table-name="Tickets"
+            data-table-title="Tickets">
+            <thead class="table-success" style="position: sticky; top: 0">
                 <tr>
                     <th>Ticket ID</th>
                     <th>Trip</th>
@@ -31,7 +36,8 @@ else
             <tbody>
                 @foreach (var ticket in Model)
                 {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", new { id = ticket.Id })">
+                    <tr class="clickable-row" data-id="@ticket.Id" data-href="@Url.Action("Details", new { id = ticket.Id })">
+
                         <td>@ticket.Id</td>
                         <td>
                             @(
@@ -78,5 +84,5 @@ else
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/table.js"></script>
+    <script src="~/js/userTable.js"></script>
 }
