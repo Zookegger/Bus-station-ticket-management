@@ -11,7 +11,8 @@ namespace Bus_Station_Ticket_Management.Services
         private readonly BackgroundJobSettings _settings;
         private readonly ILogger<UpdateTripStatusService> _logger;
 
-        public UpdateTripStatusService (IServiceScopeFactory scopeFactory, IOptions<BackgroundJobSettings> options, ILogger<UpdateTripStatusService> logger) {
+        public UpdateTripStatusService(IServiceScopeFactory scopeFactory, IOptions<BackgroundJobSettings> options, ILogger<UpdateTripStatusService> logger)
+        {
             _scopeFactory = scopeFactory;
             _settings = options.Value;
             _logger = logger;
@@ -19,11 +20,15 @@ namespace Bus_Station_Ticket_Management.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            try {
-                while (!stoppingToken.IsCancellationRequested) {
-                    using (var scope = _scopeFactory.CreateScope()) {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    using (var scope = _scopeFactory.CreateScope())
+                    {
                         var _context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                        if (_context == null) {
+                        if (_context == null)
+                        {
                             _logger.LogError("ApplicationDbContext is not available.");
                             throw new Exception("ApplicationDbContext is not available.");
                         }
@@ -57,11 +62,15 @@ namespace Bus_Station_Ticket_Management.Services
 
                         await _context.SaveChangesAsync(stoppingToken);
                     }
-                    await Task.Delay(TimeSpan.FromMinutes(_settings.TripStatusCheckIntervalSeconds), stoppingToken);
                 }
-            } catch (Exception ex) {
-                _logger.LogError(ex, "An error occurred while updating trip statuses.");
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while updating trip statuses.");
+                }
+                
+                await Task.Delay(TimeSpan.FromMinutes(_settings.TripStatusCheckIntervalSeconds), stoppingToken);
             }
+            _logger.LogInformation("ExpiredPaymentCleanupService stopped.");
         }
     }
 }
