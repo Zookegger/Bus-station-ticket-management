@@ -5,6 +5,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bus Station Ticket Management - Admin</title>
+    <link rel="icon" href="/favicon.ico" sizes="1024x1024" type="image/x-icon">
+
 
     <!-- Import stylesheet -->
     <!-- Site & Shared Styles -->
@@ -19,7 +21,8 @@
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
     <!-- Animate on Scroll -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
@@ -37,12 +40,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
     <!-- DataTables.js -->
-    <link href="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-lyhIvAFlxjH4aljUendRs90/ODPCV1A1wAjmcmP1kjBUQKrs6MC7p5Eaey1Bza/n" crossorigin="anonymous">
+    <link
+        href="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+        rel="stylesheet" integrity="sha384-lyhIvAFlxjH4aljUendRs90/ODPCV1A1wAjmcmP1kjBUQKrs6MC7p5Eaey1Bza/n"
+        crossorigin="anonymous">
 </head>
 
-<body>
-    <!-- Header -->
-    <header class="shadow-sm">
+<!-- Header -->
+@* <header class="shadow-sm" style="position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Admin" asp-action="Index">
@@ -101,103 +106,232 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header> *@
+<body class="d-flex">
+    <!-- Sidebar -->
+    <div class="row" style="position: relative;">
+        <div class="position-fixed d-flex flex-column p-3 bg-success text-white"
+            style="top: 0; left: 0; height: 100vh; width: 250px; z-index: 1030; overflow-y: auto; scrollbar-color: #d6d6d6 #20874e">
 
-    <!-- Main Content -->
-    <div class="main-container bg-light">
-        <main role="main" class="container-fluid container-md py-4">
-            @RenderBody()
-        </main>
-        <!-- Footer -->
-        <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
-            <div class="container py-4">
-                <div class="row align-items-center gy-3 text-center text-md-start mx-auto">
-                    <!-- Left side -->
-                    <div class="col-md-6">
-                        <div class="small">
-                            &copy; 2025 <strong>Bus Station Ticket Management</strong><br />
-                            All rights reserved.
-                            <a asp-area="" asp-controller="Home" asp-action="Privacy"
-                                class="text-white text-decoration-underline ms-1">Privacy Policy</a>
+            <a asp-controller="Admin" asp-action="Index"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <i class="fa-solid fa-bus me-2"></i>
+                <span class="fs-5 fw-semibold">Bus Admin</span>
+            </a>
+            <hr>
+
+            <ul class="d-flex nav nav-pills accordion accordion-flush flex-column mb-auto flex-grow-1 gap-1"
+                id="accordionSidepanel">
+
+                <!-- Home -->
+                <li class="accordion-item bg-success px-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#homeMenu" aria-expanded="false"
+                            aria-controls="homeMenu">
+                            <i class="bi bi-view-stacked me-2"></i>Home
+                        </button>
+                    </h2>
+                    <div id="homeMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
+                        <div class="accordion-body ps-3">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                                        <i class="bi bi-house-door me-2"></i>User Home
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets"
+                                        asp-action="Revenue">
+                                        <i class="bi bi-bar-chart me-2"></i>Revenue
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-white" asp-area="Admin" asp-controller="Admin"
+                                        asp-action="Index">
+                                        <i class="bi bi-columns-gap me-2"></i>Dashboard
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </li>
 
-                    <!-- Right side -->
-                    <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4 pt-2">
-
-                        <a href="#"
-                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                            style="min-width: 110px; max-width: 120px;">
-                            <i class="fab fa-facebook fa-lg"></i>
-                            <span class="d-none d-sm-inline">Facebook</span>
-                        </a>
-                        <a href="#"
-                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                            style="min-width: 110px; max-width: 120px;">
-                            <i class="fab fa-linkedin fa-lg"></i>
-                            <span class="d-none d-sm-inline">LinkedIn</span>
-                        </a>
-                        <a href="mailto:support@example.com"
-                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                            style="min-width: 110px; max-width: 120px;">
-                            <i class="fas fa-envelope fa-lg"></i>
-                            <span class="d-none d-sm-inline">Email</span>
-                        </a>
+                <!-- Vehicle -->
+                <li class="accordion-item bg-success px-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#vehicleMenu" aria-expanded="false"
+                            aria-controls="vehicleMenu">
+                            <i class="bi bi-truck me-2"></i>Vehicle
+                        </button>
+                    </h2>
+                    <div id="vehicleMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
+                        <div class="accordion-body ps-3">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Vehicle"
+                                        asp-action="Index">
+                                        <i class="bi bi-truck-front me-2"></i>Vehicles
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="VehicleType"
+                                        asp-action="Index">
+                                        <i class="bi bi-truck-flatbed me-2"></i>Vehicle Types
+                                    </a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+                </li>
 
+                <!-- Trip -->
+                <li class="accordion-item bg-success px-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#tripMenu" aria-expanded="false"
+                            aria-controls="tripMenu">
+                            <i class="bi bi-calendar-check me-2"></i>Trip
+                        </button>
+                    </h2>
+                    <div id="tripMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
+                        <div class="accordion-body ps-3">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Location"
+                                        asp-action="Index">
+                                        <i class="bi bi-geo-alt me-2"></i>Locations
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Route"
+                                        asp-action="Index">
+                                        <i class="bi bi-signpost-2 me-2"></i>Routes
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Trip"
+                                        asp-action="Index">
+                                        <i class="bi bi-calendar-range me-2"></i>Trips
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Driver"
+                                        asp-action="Index">
+                                        <img width="16" height="20" src="/assets/img/driver.svg" style="filter: invert(100%)" class="me-2" alt="driver"/>Drivers
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin"
+                                        asp-controller="TripDriverAssignment" asp-action="Index">
+                                        <i class="bi bi-person-lines-fill me-2"></i>Assignments
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- User -->
+                <li class="accordion-item bg-success px-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#userMenu" aria-expanded="false"
+                            aria-controls="userMenu">
+                            <i class="bi bi-people me-2"></i>User
+                        </button>
+                    </h2>
+                    <div id="userMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
+                        <div class="accordion-body ps-3">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="ApplicationUser"
+                                        asp-action="Index">
+                                        <i class="bi bi-person-circle me-2"></i>App Users
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Ratings"
+                                        asp-action="Index">
+                                        <i class="bi bi-star-half me-2"></i>Ratings
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets"
+                                        asp-action="Index">
+                                        <i class="bi bi-ticket-perforated me-2"></i>Tickets
+                                    </a></li>
+                                <li><a class="nav-link text-white" asp-area="Admin" asp-controller="Coupons"
+                                        asp-action="Index">
+                                        <i class="bi bi-ticket-detailed me-2"></i>Coupons
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+            <hr>
+            <div class="mt-auto">
+                <partial name="_LoginPartial" />
+            </div>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1 bg-light" style="margin-left: 250px; width: calc(100vw - 250px);">
+            <main role="main" class="container-fluid py-4 px-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
     <!-- Scripts -->
+    <script>
+        window.addEventListener("resize", function () {
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+        });
+    </script>
+
     <!-- JQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Animate on Scroll -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    
+
     <!-- DataTables -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js" integrity="sha384-UhT82qWQzpn5GAgecdZVEWDAwtoe+azh0Xe2Gmkp4ed9PLszyFEhnf/CmpX/4jUh" crossorigin="anonymous"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"
+        integrity="sha384-UhT82qWQzpn5GAgecdZVEWDAwtoe+azh0Xe2Gmkp4ed9PLszyFEhnf/CmpX/4jUh"
+        crossorigin="anonymous"></script>
+
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-    
+
     <!-- Lottie -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
-    
+
     <!-- Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
+
     <!-- Choices.js -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    
+
     <!-- Tippy.js -->
     <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
     <script src="@("https://unpkg.com/tippy.js@6")"></script>
-    
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <!-- VanillaTilt -->
     <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
 
     <!-- Full Calendar -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
-    
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

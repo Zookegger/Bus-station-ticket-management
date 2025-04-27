@@ -53,6 +53,7 @@
                     <th>Ticket ID</th>
                     <th>Trip</th>
                     <th>Vehicle</th>
+                    <th>Customer</th>
                     <th>Seat Number</th>
                     <th>Ticket Price</th>
                     <th>Booking Date</th>
@@ -67,6 +68,7 @@
                             @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
                         </td>
                         <td>@ticket.Trip?.Vehicle?.Name</td>
+                        <td>@(string.IsNullOrEmpty(ticket.User?.FullName) ? ticket.GuestName : ticket.User.FullName)</td>
                         <td>@ticket.Seat?.Number</td>
                         <td>@ticket.TotalPrice.ToString("N0") VND</td>
                         <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
@@ -91,7 +93,11 @@ else
 
 <!-- Add some optional JS for interactivity (e.g., Bootstrap tooltips) -->
 @section Scripts {
+    <script src="~/js/table.js"></script>
+
     <script>
+        
+
         // Enable tooltips if needed
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

@@ -267,7 +267,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Generate seats after saving trip
             var seats = new List<Seat>();
-            for (int floor = 1; floor <= vehicleType.TotalFlooring; floor++) {
+            for (int f = 1; f <= vehicleType.TotalFlooring; f++) {
                 for (int r = 1; r <= vehicleType.TotalRow; r++)
                 {
                     for (int c = 1; c <= vehicleType.TotalColumn; c++)
@@ -276,8 +276,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         {
                             Row = r,
                             Column = c,
-                            Floor = floor,
-                            Number = $"R{r}C{c}",
+                            Floor = f,
+                            Number = $"F{f}R{r}C{c}",
                             IsAvailable = true,
                             TripId = trip.Id
                         });

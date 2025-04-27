@@ -9,19 +9,19 @@ namespace Bus_Station_Ticket_Management.Models
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Số ghế")]
+        [DisplayName("Seat Number")]
         public string Number { get; set; }
 
-        [DisplayName("Hàng")]
+        [DisplayName("Row")]
         public int Row { get; set; }      // Hàng trong sơ đồ 2D
 
-        [DisplayName("Cột")]
+        [DisplayName("Column")]
         public int Column { get; set; }   // Cột trong sơ đồ 2D
 
-        [DisplayName("Tầng")]
+        [DisplayName("Floor")]
         public int Floor { get; set; }    // Tầng (0: tầng dưới, 1: tầng trên, -1: không phân tầng)
 
-        [DisplayName("Trạng thái")]
+        [DisplayName("Seat Status")]
         public bool IsAvailable { get; set; }
 
         public int? TripId { get; set; }
