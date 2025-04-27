@@ -13,7 +13,7 @@ namespace Bus_Station_Ticket_Management.Models
 
         public DateTime ExpiredAt { get; set; } = DateTime.Now.AddMinutes(15);
 
-        [Required]  
+        [Required] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int TotalAmount { get; set; } // Tổng tiền để thanh toán
 
         [Required]  

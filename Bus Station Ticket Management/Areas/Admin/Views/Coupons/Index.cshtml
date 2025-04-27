@@ -1,5 +1,4 @@
-﻿@model X.PagedList.IPagedList<Bus_Station_Ticket_Management.Models.Coupon>
-@using X.PagedList.Mvc.Core
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Coupon>
 
 @{
     ViewData["Title"] = "Coupon List";
@@ -14,39 +13,30 @@
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
 
-<form method="get" asp-action="Index" class="row g-2 mb-3">
+<div class="row g-2 mb-3">
     <div class="col-md-3">
-        <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search by coupon..." />
-    </div>
-    <div class="col-md-3">
-        <select name="isActive" class="form-select" onchange="this.form.submit()">
-            <option value="">All Status</option>
-            <option value="true" selected=@(ViewBag.IsActive?.ToString() == "True" ? "selected" : "")>Active</option>
-            <option value="false" selected=@(ViewBag.IsActive?.ToString() == "False" ? "selected" : "")>Inactive</option>
+        <select id="isActive" name="isActive" class="form-select">
+            <option value="" selected>All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
         </select>
     </div>
-    <div class="col-md-3">
-        <select name="sortBy" class="form-select" onchange="this.form.submit()">
-            <option value="">Sort by</option>
-            <option value="name_desc" selected=@(ViewBag.SortBy == "name_desc" ? "selected" : "")>Name ↓</option>
-            <option value="start_asc" selected=@(ViewBag.SortBy == "start_asc" ? "selected" : "")>Start Period ↑</option>
-            <option value="start_desc" selected=@(ViewBag.SortBy == "start_desc" ? "selected" : "")>Start Period ↓</option>
-        </select>
-    </div>
-    <div class="col-md-3">
-        <button type="submit" class="btn btn-primary w-100">Apply</button>
-    </div>
-</form>
+</div>
+
 
 <div class="table-responsive mb-3 shadow rounded">
-    <table id="ApplicationUserTable" class="table table-hover table-striped align-middle mb-0">
-        <thead>
+    <table id="DataTable" 
+        class="table table-hover table-striped align-middle mb-0" 
+        data-details-url="/Admin/Coupons/DetailsPartial"
+        data-table-name="Coupons"
+        data-table-title="Coupons">
+        <thead style="position: sticky; top: 0">
             <tr>
-                <th>Coupon Code</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Start Period</th>
-                <th>End Period</th>
+                <th style="min-width: 150px;">Coupon Code</th>
+                <th style="min-width: 120px;">Type</th>
+                <th style="min-width: 150px;">Amount</th>
+                <th style="min-width: 200px;">Start Period</th>
+                <th style="min-width: 200px;">End Period</th>
                 <th>Active</th>
                 <th style="width: 30px">
                     Actions
@@ -56,7 +46,7 @@
         <tbody class="table-group=divider">
             @foreach (var item in Model)
             {
-                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                     <td>
                         @Html.DisplayFor(modelItem => item.CouponString)
                     </td>
@@ -64,7 +54,11 @@
                         @Html.DisplayFor(modelItem => item.DiscountType)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DiscountAmount)
+                        @if (item.DiscountType.ToString() == "Percentage"){
+                            @($"{Math.Round(item.DiscountAmount)}%")
+                        } else {
+                            @Html.DisplayFor(modelItem => item.DiscountAmount)
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.StartPeriod)
@@ -73,17 +67,39 @@
                         @Html.DisplayFor(modelItem => item.EndPeriod)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsActive)
+                        @(item.IsActive ? "Active" : "Inactive")
                     </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i> 
-                                <span>Edit</span>
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 120px; max-width: 120px;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                asp-route-id="@item.Id">
+                                <i class="fa fa-edit"></i>
                             </a>
                             <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                <i class="fa fa-trash"></i> 
-                                <span>Delete</span>
+                                <i class="fa fa-trash"></i>
                             </a>
                         </div>
                     </td>
@@ -93,27 +109,35 @@
     </table>
 </div>
 
-<nav aria-label="Page navigation example" style="display: flex; justify-content: center;">
-    @if (Model.Any())
-    {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new { page = pageNumber, 
-            searchString = ViewBag.SearchString,
-			sortBy = ViewBag.SortBy, 
-            filterByStatus = ViewBag.FilterByStatus,
-            filterByType = ViewBag.FilterByType}),
-        new PagedListRenderOptions
-        {
-            UlElementClasses = new[] { "pagination", "justify-content-center" },
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            ActiveLiElementClass = "active",
-            LinkToPreviousPageFormat = "&laquo;",
-            LinkToNextPageFormat = "&raquo;"
-        })
-        }
-</nav>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-4" id="detailsOffcanvasLabel">Coupon Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="detailsOffcanvasBody">
+
+    </div>
+</div>
 
 
 @section Scripts {
+    <link rel="stylesheet" href="~/css/Index.css">
     <script src="~/js/table.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dataTable = $("#DataTable").DataTable();
+
+            $('#isActive').on('change', function() {
+                const selectedStatus = $(this).val();
+                const statusColumnIndex = 5;
+
+                if (selectedStatus) {
+                    dataTable.column(statusColumnIndex).search('^' + selectedStatus + '$', true, false).draw();
+                } else {
+                    dataTable.column(statusColumnIndex).search('').draw();
+                }
+            });
+        });
+    </script>
 }

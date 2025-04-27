@@ -64,6 +64,8 @@ namespace Bus_Station_Ticket_Management.DataAccess
             modelBuilder.Entity<Coupon>()
                 .Property(c => c.DiscountAmount)
                 .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<ScheduleItem>().HasNoKey();
         }
         
 
@@ -80,5 +82,6 @@ namespace Bus_Station_Ticket_Management.DataAccess
         public DbSet<TripDriverAssignment> TripDriverAssignments { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<VnPayment> VnPayments { get; set; }
+        public DbSet<ScheduleItem> Schedules { get; set; }
     }
 }

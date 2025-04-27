@@ -1,15 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Bus Station Ticket Management - Admin</title>
+    <title>@ViewData["Title"] - Bus Station Ticket Management</title>
 
     <!-- Import stylesheet -->
     <!-- Site & Shared Styles -->
     <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Shared/table.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Shared/Custom Bootstrap.css" asp-append-version="true" />
 
     <!-- Bootstrap & Icons -->
@@ -38,6 +37,7 @@
 
     <!-- DataTables.js -->
     <link href="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-lyhIvAFlxjH4aljUendRs90/ODPCV1A1wAjmcmP1kjBUQKrs6MC7p5Eaey1Bza/n" crossorigin="anonymous">
+
 </head>
 
 <body>
@@ -45,69 +45,35 @@
     <header class="shadow-sm">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Admin" asp-action="Index">
-                    <i class="fa-solid fa-bus me-2"></i>Bus Station Admin
-                </a>
+                <div class="navbar-brand-group d-flex">
+                    <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fa-solid fa-bus me-2"></i>Employee Management
+                    </a>
+                </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar"
-                    aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="adminNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Home -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Home</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">Revenue</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">User Home</a></li>
-                            </ul>
-                        </li>
-                        <!-- Vehicle -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Vehicle</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Vehicle" asp-action="Index">Vehicles</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="VehicleType" asp-action="Index">Vehicle Types</a></li>
-                            </ul>
-                        </li>
-                        <!-- Trip -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Trip</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Location" asp-action="Index">Locations</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Route" asp-action="Index">Routes</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Trip" asp-action="Index">Trips</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Driver" asp-action="Index">Drivers</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="TripDriverAssignment" asp-action="Index">Trip Assignments</a></li>
-                            </ul>
-                        </li>
-                        <!-- User -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">User</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">Application Users</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ratings" asp-action="Index">Ratings</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets" asp-action="Index">Tickets</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Coupons" asp-action="Index">Coupons</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
+                <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><partial name="_LoginPartial" /></li>
+                        <li class="nav-item">
+                            <partial name="_LoginPartial" />
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <div class="main-container bg-light">
+    <!-- Main Body -->
+    <div class="d-flex flex-column w-100 h-100 bg-light flex-grow-1">
         <main role="main" class="container-fluid container-md py-4">
             @RenderBody()
         </main>
+
         <!-- Footer -->
         <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
             <div class="container py-4">
@@ -139,7 +105,7 @@
                         </a>
                         <a href="mailto:support@example.com"
                             class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                            style="min-width: 110px; max-width: 120px;">
+                            style="min-width: 110px; max-width: 110px;">
                             <i class="fas fa-envelope fa-lg"></i>
                             <span class="d-none d-sm-inline">Email</span>
                         </a>
@@ -148,7 +114,7 @@
             </div>
         </footer>
     </div>
-
+    
     <!-- Scripts -->
     <!-- JQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -197,7 +163,7 @@
 
     <!-- Full Calendar -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
-    
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

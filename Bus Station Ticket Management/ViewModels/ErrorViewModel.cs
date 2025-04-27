@@ -1,4 +1,4 @@
-﻿namespace Bus_Station_Ticket_Management.Models
+﻿namespace Bus_Station_Ticket_Management.ViewModels
 {
     public class ErrorViewModel
     {

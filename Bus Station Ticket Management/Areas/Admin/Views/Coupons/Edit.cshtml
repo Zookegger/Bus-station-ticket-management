@@ -5,56 +5,97 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
-
-<h4>Coupon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="card">
+    <div class="card-header bg-success-subtle">
+        <h4>Edit Coupon</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="CouponString" class="control-label"></label>
                 <input asp-for="CouponString" class="form-control" />
                 <span asp-validation-for="CouponString" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="col-6 form-group mb-3">
                 <label asp-for="DiscountType" class="control-label"></label>
-                <select asp-for="DiscountType" class="form-control"></select>
+                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()"
+                    asp-items="Html.GetEnumSelectList<DiscountType>()"></select>
                 <span asp-validation-for="DiscountType" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="col-6 form-group mb-3">
                 <label asp-for="DiscountAmount" class="control-label"></label>
-                <input asp-for="DiscountAmount" class="form-control" />
+                <input asp-for="DiscountAmount" id="discountValue" class="form-control" oninput="checkInput()" />
                 <span asp-validation-for="DiscountAmount" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="col-6 form-group mb-3">
                 <label asp-for="StartPeriod" class="control-label"></label>
                 <input asp-for="StartPeriod" class="form-control" />
                 <span asp-validation-for="StartPeriod" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="col-6 form-group mb-3">
                 <label asp-for="EndPeriod" class="control-label"></label>
                 <input asp-for="EndPeriod" class="form-control" />
                 <span asp-validation-for="EndPeriod" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IsActive" class="control-label"></label>
-                <input asp-for="IsActive" class="form-control" />
-                <span asp-validation-for="IsActive" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group mb-1">
+                <div class="form-check">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                    <span asp-validation-for="IsActive" class="text-danger"></span>
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="card-footer d-flex justify-content-between">
+        <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
+        <button type="submit" class="btn btn-primary">Save</button> <!-- Updated: change input to button -->
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Function to update discount value behavior based on the selected discount type
+        function updateDiscountType() {
+            const type = parseInt(document.getElementById('discountType').value); // Ensure it's an integer
+            const value = document.getElementById('discountValue');
+
+            if (type === 0) { // Assuming 0 represents "Percentage" in your enum
+                value.placeholder = "%";
+                value.setAttribute("max", 100);
+            } else {
+                value.placeholder = "VND";
+                value.removeAttribute("max"); // allow full range for fixed amount
+            }
+
+            // Logging for debugging
+            console.log("1");
+            console.log(type);
+            console.log(value);
+        }
+
+        // Function to check the discount input value and limit it to 100 if percentage
+        function checkInput() {
+            const type = parseInt(document.getElementById('discountType').value); // Ensure it's an integer
+            const value = document.getElementById('discountValue');
+
+            if (type === 0 && parseFloat(value.value) > 100) { // If type is percentage (0), limit to 100
+                value.value = 100;
+            }
+
+            // Logging for debugging
+            console.log("2");
+            console.log(type);
+            console.log(value);
+        }
+
+        // Ensure the updateDiscountType function runs when the page loads
+        document.addEventListener("DOMContentLoaded", function () {
+            updateDiscountType(); // Correctly call the function with no return value
+        });
+    </script>
 }

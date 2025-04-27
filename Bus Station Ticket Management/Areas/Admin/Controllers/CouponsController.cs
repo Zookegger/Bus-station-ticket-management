@@ -26,53 +26,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/Coupons
-        [Route("Admin/Coupons/Index")]
-        public async Task<IActionResult> Index(string searchString, string sortBy, bool? isActive, int? page)
+        public async Task<IActionResult> Index()
         {
-            // Start with all coupons
-            var query = _context.Coupons.AsQueryable();
-
-            // Filtering: search by coupon string (or include additional fields)
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(c => c.CouponString.Contains(searchString));
-            }
-
-            // Filter
-            if (isActive.HasValue)
-            {
-                query = query.Where(c => c.IsActive == isActive.Value);
-            }
-
-            // Sorting: using a simple switch (add more cases as needed)
-            query = sortBy switch
-            {
-                "name_asc" => query.OrderBy(c => c.CouponString),
-                "name_desc" => query.OrderByDescending(c => c.CouponString),
-                "discount_asc" => query.OrderBy(c => c.DiscountAmount),
-                "discount_desc" => query.OrderByDescending(c => c.DiscountAmount),
-                "start_asc" => query.OrderBy(c => c.StartPeriod),
-                "start_desc" => query.OrderByDescending(c => c.StartPeriod),
-                "end_asc" => query.OrderBy(c => c.EndPeriod),
-                "end_desc" => query.OrderByDescending(c => c.EndPeriod),
-                _ => query.OrderBy(c => c.Id), // default sort
-            };
-
-            // Paging: assuming you want, say, 10 coupons per page
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
-            int totalRecords = await query.CountAsync();
-            int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-
-            var coupons = await query.ToListAsync();
-
-            // Pass filter/sort values to the view via ViewBag
-            ViewBag.SearchString = searchString;
-            ViewBag.SortBy = sortBy;
-            ViewBag.Page = pageNumber;
-            ViewBag.TotalPages = totalPages;
-
-            return View(coupons.ToPagedList(pageNumber, pageSize, totalPages));
+            var coupons = await _context.Coupons.ToListAsync();
+            return View(coupons);
         }
 
 
@@ -94,6 +51,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(coupon);
         }
 
+        public async Task<IActionResult> DetailsPartial(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var coupon = await _context.Coupons
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial", coupon);
+        }
+
         // GET: Admin/Coupons/Create
         public IActionResult Create()
         {
@@ -111,14 +85,22 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // POST: Admin/Coupons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CouponString,DiscountType,DiscountAmount,StartPeriod,EndPeriod,IsActive")] Coupon coupon)
+        public async Task<IActionResult> Create([Bind("Id,CouponString,DiscountType,DiscountAmount,StartPeriod,EndPeriod")] Coupon coupon)
         {
             if (ModelState.IsValid)
             {
+                coupon.IsActive = true;
                 _context.Add(coupon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            // ViewBag.DiscountType = new SelectList(Enum.GetValues(typeof (DiscountType))
+            //     .Cast<DiscountType>()
+            //     .Select(dt => new {
+            //         Value = dt,
+            //         Text = dt.ToString()
+            //     }),
+            //     "Value", "Text");
             return View(coupon);
         }
 
@@ -135,6 +117,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.DiscountType = new SelectList(
+                Enum.GetValues(typeof (DiscountType))
+                .Cast<DiscountType>()
+                .Select(dt => new {
+                    Value = dt,
+                    Text = dt.ToString()
+                }),
+                "Value", "Text");
             return View(coupon);
         }
 
@@ -168,6 +158,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.DiscountType = new SelectList(
+                Enum.GetValues(typeof (DiscountType))
+                .Cast<DiscountType>()
+                .Select(dt => new {
+                    Value = dt,
+                    Text = dt.ToString()
+                }),
+                "Value", "Text");
             return View(coupon);
         }
 

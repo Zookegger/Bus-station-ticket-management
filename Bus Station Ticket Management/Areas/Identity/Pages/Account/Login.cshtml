@@ -22,6 +22,7 @@
                     </div>
                 }
 
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
                     <div class="form-floating flex-grow-1">
@@ -29,7 +30,6 @@
                             placeholder="name@example.com" />
                         <label asp-for="Input.Email">Email</label>
                     </div>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
 
                 <div class="input-group mb-3">
@@ -44,8 +44,8 @@
                             <i id="eyeIcon" class="fa fa-eye"></i>
                         </button>
                     </div>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
 
                 <div class="form-check mb-3">
                     <input asp-for="Input.RememberMe" class="form-check-input" />

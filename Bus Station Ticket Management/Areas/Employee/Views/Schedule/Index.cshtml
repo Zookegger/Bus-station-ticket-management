@@ -1,0 +1,52 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">FullCalendar Schedule</h2>
+    <div id="calendar"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create a new FullCalendar instance
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '/Employee/Schedule/GetEvents', // Fetch events from the controller
+                editable: true,  // Allow drag-and-drop editing
+                droppable: true, // Allow dropping events to reschedule
+                eventClick: function (info) {
+                    alert('Event: ' + info.event.title + '\nStart: ' + info.event.start.toISOString());
+                },
+                drop: function (info) {
+                    var newEvent = {
+                        title: "New Event",
+                        start: info.dateStr,
+                        end: new Date(info.dateStr).setHours(new Date(info.dateStr).getHours() + 1)
+                    };
+
+                    // Create the event through AJAX or some other method
+                    $.ajax({
+                        url: '/Schedule/CreateEvent',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(newEvent),
+                        success: function () {
+                            calendar.addEvent(newEvent); // Add the new event to the calendar
+                        }
+                    });
+                }
+            });
+
+            // Render the calendar
+            calendar.render();
+        });
+    </script>
+}

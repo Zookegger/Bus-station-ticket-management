@@ -22,6 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<VnPaymentService>();
 builder.Services.Configure<VnPaymentSetting>(builder.Configuration.GetSection("Payment:VnPayment"));
 builder.Services.AddHostedService<ExpiredPaymentCleanupService>();
+builder.Services.AddHostedService<UpdateTripStatusService>();
+builder.Services.AddHostedService<UpdateCouponStatusService>();
 
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\"))

@@ -1,5 +1,8 @@
-﻿@using Bus_Station_Ticket_Management
+﻿@using Microsoft.AspNetCore.Identity;
+@using Bus_Station_Ticket_Management
 @using Bus_Station_Ticket_Management.Models
+@inject SignInManager<ApplicationUser> SignInManager;
+@inject UserManager<ApplicationUser> UserManager;
 @using Bus_Station_Ticket_Management.ViewModels
 @using Bus_Station_Ticket_Management.Areas.Employee.Controllers
 @using System.Security.Claims;

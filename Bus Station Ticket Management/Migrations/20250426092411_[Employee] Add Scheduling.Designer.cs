@@ -4,6 +4,7 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Station_Ticket_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426092411_[Employee] Add Scheduling")]
+    partial class EmployeeAddScheduling
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +142,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Location", b =>
@@ -160,7 +163,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
@@ -191,7 +194,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VnPaymentTransactionNo");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Rating", b =>
@@ -224,7 +227,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Routes", b =>
@@ -250,7 +253,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("StartId");
 
-                    b.ToTable("Routes", (string)null);
+                    b.ToTable("Routes");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.ScheduleItem", b =>
@@ -267,7 +270,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Schedules", (string)null);
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Seat", b =>
@@ -301,7 +304,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Ticket", b =>
@@ -368,7 +371,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VnPaymentTransactionNo");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Trip", b =>
@@ -406,7 +409,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Trips", (string)null);
+                    b.ToTable("Trips");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.TripDriverAssignment", b =>
@@ -432,7 +435,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("TripDriverAssignments", (string)null);
+                    b.ToTable("TripDriverAssignments");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Vehicle", b =>
@@ -468,7 +471,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasIndex("VehicleTypeId");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.VehicleType", b =>
@@ -500,7 +503,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VehicleTypes", (string)null);
+                    b.ToTable("VehicleTypes");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.VnPayment", b =>
@@ -552,7 +555,7 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.HasKey("TransactionNo");
 
-                    b.ToTable("VnPayments", (string)null);
+                    b.ToTable("VnPayments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

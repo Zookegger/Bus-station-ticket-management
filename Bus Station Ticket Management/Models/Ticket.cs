@@ -26,7 +26,7 @@ namespace Bus_Station_Ticket_Management.Models
 
         public DateTime BookingDate { get; set; }
 
-        [Display(Name = "Final Pricing")]
+        [Display(Name = "Final Pricing")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public long TotalPrice { get; set; }
 
         public bool IsPaid { get; set; }

@@ -17,7 +17,7 @@
                 <input asp-for="CouponString" type="text" class="form-control" placeholder=" " id="CouponString" />
                 <span asp-validation-for="CouponString" class="text-danger"></span>
             </div>
-            
+
             <div class="col form-group">
                 <label asp-for="DiscountType" class="control-label"></label>
                 <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()"
@@ -53,7 +53,7 @@
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>
     </form>
-    
+
 </div>
 
 
@@ -66,29 +66,24 @@
             const type = document.getElementById('discountType').value;
             const value = document.getElementById('discountValue');
 
-            if (type == "Percentage") {
+            if (type === "Percentage") {
                 value.placeholder = "%";
                 value.setAttribute("max", 100);
             } else {
                 value.placeholder = "VND";
+                value.removeAttribute("max"); // allow full range for fixed amount
             }
-
-            console.log(type);
-            console.log(value);
-            window.addEventListener("load", updateDiscountSuffix);
         }
 
         function checkInput() {
             const type = document.getElementById('discountType').value;
             const value = document.getElementById('discountValue');
 
-            if (type == "Percentage") {
-                if (value.value > 100) {
-                    value.value = 100;
-                }
+            if (type === "Percentage" && parseFloat(value.value) > 100) {
+                value.value = 100;
             }
         }
 
-        updateDiscountType();
+        document.addEventListener("DOMContentLoaded", updateDiscountType);
     </script>
 }

@@ -1,0 +1,11 @@
+﻿
+@{
+    Layout = "_Layout";
+
+    if (SignInManager.IsSignedIn(User)) {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Employee")) {
+            Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+        }
+    }
+}

@@ -9,6 +9,8 @@ namespace Bus_Station_Ticket_Management.Models
     public enum DiscountType
     {
         Percentage,
+
+        [Display(Name = "Fixed Amount")]
         FixedAmount
     }
 
@@ -23,7 +25,8 @@ namespace Bus_Station_Ticket_Management.Models
         [Required] [DisplayName("Discount Type")]
         public DiscountType DiscountType { get; set; }
 
-        [Required] [DisplayName("Amount")]
+        [Required] [DisplayName("Amount")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
+        [Range(0.01, 1000000.00, ErrorMessage = "Amount must be between 0.01 and 1000000.00")]
         public decimal DiscountAmount { get; set; }
 
         [Required] [DisplayName("Start Period")]

@@ -113,80 +113,84 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(userName: Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                
-                // Get the user by email
+                // Get the user by email first
                 var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                // If user exists but hasn't confirmed email
+                if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    ShowResendConfirmation = true;
+                    ModelState.AddModelError(string.Empty, "You must confirm your email to log in.");
+                    return Page();
+                }
+
+                // Attempt to sign in (only if user is confirmed)
+                var result = await _signInManager.PasswordSignInAsync(
+                    userName: user.UserName,
+                    password: Input.Password,
+                    isPersistent: Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
+                    // Get the user's roles
+                    var roles = await _userManager.GetRolesAsync(user);
+                    bool isAdmin = roles.Contains("Admin");
+
+                    // Optional: sign out default cookie first (if using multiple schemes)
                     await _signInManager.SignOutAsync();
 
-                    // Get the user's roles
-                    var role = await _userManager.GetRolesAsync(user);
-                    bool isAdmin = role.Contains("Admin");
-
-                    var authProperties = new AuthenticationProperties{
+                    var authProperties = new AuthenticationProperties
+                    {
                         IsPersistent = Input.RememberMe,
-                        ExpiresUtc = isAdmin 
-                            ? DateTimeOffset.UtcNow.AddHours(1) // Admin session: 1 hour
+                        ExpiresUtc = isAdmin
+                            ? DateTimeOffset.UtcNow.AddHours(1)
                             : DateTimeOffset.UtcNow.AddYears(1)
                     };
 
                     await _signInManager.SignInAsync(user, authProperties);
 
                     // Redirect based on role
-                    if (role.Contains("Admin"))
+                    if (roles.Contains("Admin"))
                     {
-                        return RedirectToAction("Index", "Admin", new { area = "Admin" }); // Redirect to Admin dashboard
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" });
                     }
-                    else if (role.Contains("Employee"))
+                    else if (roles.Contains("Employee"))
                     {
-                        return RedirectToAction("Index", "EmployeeDashboard"); // Redirect to Employee dashboard
+                        return RedirectToAction("Index", "Home", new { area = "Employee" });
                     }
-                    else if (role.Contains("Customer"))
+                    else if (roles.Contains("Customer"))
                     {
-                        return RedirectToAction("Index", "Home", new { area = "" }); // Redirect to Customer dashboard
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        return LocalRedirect(returnUrl); // Default redirect
+                        return LocalRedirect(returnUrl);
                     }
                 }
+
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new
+                    {
+                        ReturnUrl = returnUrl,
+                        RememberMe = Input.RememberMe
+                    });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                if (result.IsNotAllowed)
-                {
-                    if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
-                    {
-                        ShowResendConfirmation = true;
-                        ModelState.AddModelError(string.Empty, "You must confirm your email to log in.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "You're not allowed to log in at this time.");
-                    }
-                    return Page();
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid Email or Password, Please try again!");
-                    return Page();
-                }
+
+                // Fallback error
+                ModelState.AddModelError(string.Empty, "Invalid Email or Password, Please try again!");
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
+            // Validation failed — redisplay form
             return Page();
         }
     }
