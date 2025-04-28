@@ -115,7 +115,7 @@
             Monthly Revenue Overview
         </div>
         <div class="card-body">
-            <canvas id="revenueChart" style="min-height: 100%; min-width: 100%;"></canvas>
+            <canvas id="revenueChart" class="w-100 h-100"></canvas>
         </div>
     </div>
 </div>
@@ -144,6 +144,13 @@
 
                     new Chart(document.getElementById('revenueChart'), {
                         type: 'line',
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: { title: { display: true, text: 'Month' } },
+                                y: { title: { display: true, text: 'Earnings (VND)' } }
+                            }
+                        },
                         data: {
                             labels: data.revenueLabels,
                             datasets: [{
@@ -154,13 +161,6 @@
                                 tension: 0.1
                             }]
                         },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                x: { title: { display: true, text: 'Month' } },
-                                y: { title: { display: true, text: 'Earnings (VND)' } }
-                            }
-                        }
                     });
 
                     AOS.refresh();
@@ -187,10 +187,6 @@
             };
 
             fetchDashboardStats();
-
-            window.addEventListener('resize', () => {
-                if (window.revenueChart) revenueChart.resize();
-            });
         });
     </script>
 

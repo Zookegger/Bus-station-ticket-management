@@ -30,7 +30,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: ApplicationUser
-        public async Task<IActionResult> Index(string? searchString, string? sortBy, string? roleFilter)
+        public async Task<IActionResult> Index()
         {
             var usersQuery = _context.Users.AsQueryable();
 
@@ -39,50 +39,18 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                                        join role in _context.Roles on userRole.RoleId equals role.Id
                                        select new { user.Id, RoleName = role.Name }).ToListAsync();
 
-            var userRolesDict = userRolesList.ToDictionary(x => x.Id, x => x.RoleName);
+            var userRolesDict = userRolesList
+                .Where(ur => ur.RoleName != "Customer")
+                .ToDictionary(x => x.Id, x => x.RoleName);
+
             ViewBag.UserRoles = userRolesDict;
-
-            // Role filter
-            if (!string.IsNullOrEmpty(roleFilter))
-            {
-                var userIdsInRole = userRolesList
-                    .Where(x => x.RoleName == roleFilter)
-                    .Select(x => x.Id)
-                    .ToHashSet();
-
-                usersQuery = usersQuery.Where(u => userIdsInRole.Contains(u.Id));
-            }
-
-            // Search filter
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                usersQuery = usersQuery.Where(u =>
-                    (u.FullName != null && u.FullName.Contains(searchString)) ||
-                    (u.UserName != null && u.UserName.Contains(searchString)) ||
-                    (u.Email != null && u.Email.Contains(searchString)) ||
-                    (u.PhoneNumber != null && u.PhoneNumber.Contains(searchString))
-                );
-            }
-
-            // Sorting
-            usersQuery = sortBy switch
-            {
-                "name_asc" => usersQuery.OrderBy(u => u.FullName),
-                "name_desc" => usersQuery.OrderByDescending(u => u.FullName),
-                "username_asc" => usersQuery.OrderBy(u => u.UserName),
-                "username_desc" => usersQuery.OrderByDescending(u => u.UserName),
-                "email_asc" => usersQuery.OrderBy(u => u.Email),
-                "email_desc" => usersQuery.OrderByDescending(u => u.Email),
-                _ => usersQuery.OrderBy(u => u.Id)
-            };
 
             // For role filter dropdown
             ViewBag.Roles = await _context.Roles.Select(r => r.Name).Distinct().ToListAsync();
-            ViewBag.SearchString = searchString;
-            ViewBag.SortBy = sortBy;
-            ViewBag.RoleFilter = roleFilter;
 
-            return View(await usersQuery.ToListAsync());
+            var userIdsToInclude = userRolesDict.Keys;
+            // Contains(List<>) =  IN (list) (SQL)
+            return View(await usersQuery.Where(u => userIdsToInclude.Contains(u.Id)).ToListAsync());
         }
 
         // GET: ApplicationUser/Details/5

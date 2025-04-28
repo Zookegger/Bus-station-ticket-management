@@ -11,7 +11,7 @@
                 data-bs-toggle="dropdown">
                 <i class="fa fa-user" style="padding-right: 6px"></i> Account
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <ul id="accountDropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li class="dropdown-header" style=" -webkit-user-select: none; /* Safari */
                                                             -ms-user-select: none; /* IE 10 and IE 11 */
                                                             user-select: none; /* Standard syntax */">
@@ -59,6 +59,8 @@
     }
 </ul>
 
-@section Scripts {
-
-}
+<style>
+    .dropdown-menu.dropdown-menu-end#accountDropdown {
+        transform: translate3d(10.6px, -50px, 0px) !important;
+    }
+</style>

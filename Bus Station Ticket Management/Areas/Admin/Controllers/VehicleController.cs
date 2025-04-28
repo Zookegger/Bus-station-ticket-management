@@ -22,7 +22,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         // GET: Vehicle
         [HttpGet]
-        [Route("Admin/Vehicle/Index")]
         public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;

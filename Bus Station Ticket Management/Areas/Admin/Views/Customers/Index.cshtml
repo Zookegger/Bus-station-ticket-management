@@ -1,0 +1,126 @@
+@model IEnumerable<Bus_Station_Ticket_Management.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "User Table";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Application Users</h1>
+
+<a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add users with special roles to database">
+    <i class="fa fa-plus-circle"></i> Add New Users
+</a>
+
+<div class="mb-3">
+    <label for="roleFilter" class="form-label fw-bold">Filter by Role:</label>
+    <select id="roleFilter" class="form-select w-auto d-inline-block ms-2" data-tippy-content="Use this to filter data in the table by user's role">
+        <option value="">All Roles</option>
+        <option value="Admin">Admin</option>
+        <option value="Employee">Staff</option>
+        <option value="Drivers">Driver</option>
+        <option value="Conductor">Conductor</option>
+        <option value="Customer">Customer</option>
+        <option value="">No Role</option>
+    </select>
+</div>
+
+<div class="table-responsive mb-3 shadow rounded">
+    <table id="DataTable" 
+        class="table table-hover table-striped align-middle mb-0" 
+        data-details-url="/Admin/ApplicationUser/DetailsPartial"
+        data-table-name="ApplicationUser"
+        data-table-title="Application Users">
+        <thead style="position: sticky; top: 0">
+            <tr>
+                <th style="min-width: 240px; max-width: 440px;">UserName</th>
+                <th style="min-width: 240px; max-width: 440px;">Full Name</th>
+                <th>Email</th>
+                <th style="max-width: 120px;">Phone Number</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody class="table-group=divider">
+            @foreach (var item in Model)
+            {
+                var roleName = (ViewBag.UserRoles as Dictionary<string, string>).TryGetValue(item.Id, out var role)
+                ? role
+                : "No Role";
+
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
+                    <td>@item.UserName</td>
+                    <td>@item.FullName</td>
+                    <td>@item.Email</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@roleName</td>
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 120px; max-width: 120px;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                asp-route-id="@item.Id">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-4" id="detailsOffcanvasLabel">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="detailsOffcanvasBody">
+
+    </div>
+</div>
+
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/Index.css">
+    <script src="~/js/table.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dataTable = $("#DataTable").DataTable();
+
+            $('#roleFilter').on('change', function() {
+                const selectedRole = $(this).val();
+                const roleColumnIndex = 4;
+
+                if (selectedRole) {
+                    dataTable.column(roleColumnIndex).search('^' + selectedRole + '$', true, false).draw();
+                } else {
+                    dataTable.column(roleColumnIndex).search('').draw();
+                }
+            });
+        });
+    </script>
+}

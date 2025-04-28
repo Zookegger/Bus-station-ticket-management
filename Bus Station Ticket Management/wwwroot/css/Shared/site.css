@@ -15,6 +15,7 @@ body {
 	flex-direction: column;
 	margin-bottom: 60px;
 	font-family: 'Segoe UI', sans-serif, 'Franklin Gothic Medium', 'Arial Narrow', Arial;
+	overflow-y: hidden;
 }
 
 html, body {
@@ -23,6 +24,11 @@ html, body {
 }
 
 @media (min-width: 768px) {
+	#main-content {
+		margin-left: 250px;
+		width: calc(100vw - 250px);
+	}
+
 	html {
 		font-size: 18px;
 	}
@@ -141,10 +147,11 @@ footer ul {
 }
 
 .accordion-item:hover {
+	box-shadow: 0 0 3px 3px rgba(236, 236, 236, 0.59);
 }
 
 .accordion-item:active {
-	box-shadow: inset 0 3px 5px rgb(223, 222, 222);
+	box-shadow: inset 0 0 5px 5px rgb(223, 222, 222);
 	border: 2px solid rgba(223, 222, 222); /* Border effect on active */
 }
 
@@ -261,4 +268,20 @@ footer ul {
 	-webkit-user-select: none; /* Safari */
 	-ms-user-select: none; /* IE 10 and IE 11 */
 	user-select: none; /* Standard syntax */
+}
+
+.btn-transparent {
+	background: transparent !important; /* Makes button background transparent */
+	border: none; /* Removes border */
+	padding: 3px; /* Removes padding to fit the icon properly */
+}
+
+.btn-transparent:hover {
+	/* box-shadow: 0 0 2px 2px rgba(236, 236, 236, 0.59);
+	border: 2px solid rgba(236, 236, 236, 0.59); */
+}
+
+.btn-transparent .fa-bars {
+	font-size: 24px; /* Adjust the icon size */
+	color: #fff; /* Optional: Adjust the icon color */
 }
