@@ -13,10 +13,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     public class LocationController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<LocationController> _logger;
 
-        public LocationController(ApplicationDbContext context)
+        public LocationController(ApplicationDbContext context, ILogger<LocationController> logger)
         {
             _context = context;
+            _logger = logger;
+        }
+        private class NominatimResult{
+            public string lat { get; set; }
+            public string lon { get; set; }
         }
 
         // GET: Location
@@ -93,7 +99,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Address")] Location location)
+        public async Task<IActionResult> Create([Bind("Id,Name,Address,Longitude,Latitude")] Location location)
         {
             if (LocationExists(location)) {
                 ModelState.AddModelError("", "Location already exist! Please check the Name or the Address again");
@@ -101,6 +107,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
 
             if (ModelState.IsValid) {
+                var (lat, lon) = await GetCoordinatesFromAddress(location.Address);
+                location.Longitude = lon;
+                location.Latitude = lat;
+
                 _context.Add(location);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -127,7 +137,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address")] Location location)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address,Longitude,Latitude")] Location location)
         {
             if (id != location.Id) {
                 return NotFound();
@@ -140,6 +150,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             if (ModelState.IsValid) {
                 try {
+                    var (lat, lon) = await GetCoordinatesFromAddress(location.Address);
+                    location.Longitude = lon;
+                    location.Latitude = lat;
+
                     _context.Update(location);
                     await _context.SaveChangesAsync();
                 }
@@ -206,6 +220,30 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 e.Id != id && 
                 (e.Name == location.Name || e.Address == location.Address)
             );
+        }
+
+        private async Task<(double? lat, double? lon)> GetCoordinatesFromAddress(string address) {
+            using (var httpClient = new HttpClient()) {
+                try {
+                    var url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
+
+                    httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("Mozilla/5.0 (Compatitble; AcmeInc/1.0)"); // Required by Nominatim API
+
+                    var response = await httpClient.GetAsync(url);
+                    if (response.IsSuccessStatusCode) {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var results = System.Text.Json.JsonSerializer.Deserialize<List<NominatimResult>>(json);
+
+                        if (results != null && results.Any()) {
+                            var result = results.First();
+                            return (double.Parse(result.lat), double.Parse(result.lon));
+                        }
+                    }
+                } catch (Exception ex) {
+                    _logger.LogError(ex, "An error has occurred while trying to fetch location data");
+                }
+                return (null, null);
+            }
         }
     }
 }

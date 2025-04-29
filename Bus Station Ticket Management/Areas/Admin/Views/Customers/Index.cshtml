@@ -5,54 +5,31 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Application Users</h1>
-
-<a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add users with special roles to database">
-    <i class="fa fa-plus-circle"></i> Add New Users
-</a>
-
-<div class="mb-3">
-    <label for="roleFilter" class="form-label fw-bold">Filter by Role:</label>
-    <select id="roleFilter" class="form-select w-auto d-inline-block ms-2" data-tippy-content="Use this to filter data in the table by user's role">
-        <option value="">All Roles</option>
-        <option value="Admin">Admin</option>
-        <option value="Employee">Staff</option>
-        <option value="Drivers">Driver</option>
-        <option value="Conductor">Conductor</option>
-        <option value="Customer">Customer</option>
-        <option value="">No Role</option>
-    </select>
-</div>
+<h1>Customers</h1>
 
 <div class="table-responsive mb-3 shadow rounded">
     <table id="DataTable" 
         class="table table-hover table-striped align-middle mb-0" 
-        data-details-url="/Admin/ApplicationUser/DetailsPartial"
-        data-table-name="ApplicationUser"
-        data-table-title="Application Users">
+        data-details-url="/Admin/Customers/DetailsPartial"
+        data-table-name="Customers"
+        data-table-title="Customers">
         <thead style="position: sticky; top: 0">
             <tr>
                 <th style="min-width: 240px; max-width: 440px;">UserName</th>
                 <th style="min-width: 240px; max-width: 440px;">Full Name</th>
                 <th>Email</th>
                 <th style="max-width: 120px;">Phone Number</th>
-                <th>Role</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody class="table-group=divider">
             @foreach (var item in Model)
             {
-                var roleName = (ViewBag.UserRoles as Dictionary<string, string>).TryGetValue(item.Id, out var role)
-                ? role
-                : "No Role";
-
                 <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                     <td>@item.UserName</td>
                     <td>@item.FullName</td>
                     <td>@item.Email</td>
                     <td>@item.PhoneNumber</td>
-                    <td>@roleName</td>
                     <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 120px; max-width: 120px;">
                         <!-- Dropdown Buttons (Hidden by default) -->
                         <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">

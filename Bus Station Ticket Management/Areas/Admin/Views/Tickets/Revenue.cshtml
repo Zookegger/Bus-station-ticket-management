@@ -46,8 +46,12 @@
 @if (Model.Any())
 {
     <!-- Tickets Table -->
-    <div class="table-responsive mb-3 shadow rounded" style="max-height: 650px; overflow-y: auto;">
-        <table id="RevenueTable" class="table table-hover table-striped align-middle mb-0">
+    <div class="table-responsive mb-3 shadow rounded">
+        <table id="DataTable" 
+            class="table table-hover table-striped align-middle mb-0"
+            data-details-url="/Admin/Tickets/DetailsPartial"
+            data-table-name="Revenue"
+            data-table-title="Ticket">
             <thead style="position: sticky; top: 0">
                 <tr>
                     <th>Ticket ID</th>
@@ -96,8 +100,6 @@ else
     <script src="~/js/table.js"></script>
 
     <script>
-        
-
         // Enable tooltips if needed
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

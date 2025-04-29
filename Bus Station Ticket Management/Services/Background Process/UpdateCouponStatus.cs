@@ -21,35 +21,45 @@ namespace Bus_Station_Ticket_Management.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            try
-            {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    using (var scope = _scopeFactory.CreateScope())
-                    {
-                        var _context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                        var now = DateTime.Now;
+            _logger.LogInformation("UpdateCouponStatusService started.");
 
-                        var coupons = await _context.Coupons.ToListAsync(stoppingToken);
-                        foreach (var coupon in coupons)
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    while (!stoppingToken.IsCancellationRequested)
+                    {
+                        using (var scope = _scopeFactory.CreateScope())
                         {
-                            if (now > coupon.StartPeriod && now < coupon.EndPeriod)
+                            var _context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                            var now = DateTime.Now;
+
+                            var coupons = await _context.Coupons.ToListAsync(stoppingToken);
+                            foreach (var coupon in coupons)
                             {
-                                coupon.IsActive = true;
+                                if (now > coupon.StartPeriod && now < coupon.EndPeriod)
+                                {
+                                    coupon.IsActive = true;
+                                }
+                                else if (now > coupon.EndPeriod)
+                                {
+                                    coupon.IsActive = false;
+                                }
                             }
-                            else if (now > coupon.EndPeriod)
-                            {
-                                coupon.IsActive = false;
-                            }
+
+                            await _context.SaveChangesAsync(stoppingToken);
                         }
                     }
-                    await Task.Delay(TimeSpan.FromMinutes(_settings.TripStatusCheckIntervalSeconds), stoppingToken);
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while updating coupon statuses.");
+                }
+                
+                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while updating coupon statuses.");
-            }
+            
+            _logger.LogInformation("UpdateCouponStatusService stopped.");
         }
     }
 }

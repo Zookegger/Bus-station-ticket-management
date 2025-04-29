@@ -67,3 +67,27 @@ INSERT INTO Vehicles (Name, LicensePlate, VehicleType) VALUES
 	('Eco Glide', 'ELE-2025', 'Electric Bus');
 
 	Select * from Trips
+
+	Select * from Payments
+
+Select CreatedAt from Tickets
+Join Payments On Tickets.PaymentId = Payments.Id
+Where Tickets.Id = 'd57efde4-2dd4-4290-b93b-87d4f83eb870'
+
+Select * from VnPayments 
+
+Select Trips.VehicleId from Tickets
+Join Trips On Trips.Id = Tickets.TripId
+
+Order By BookingDate Desc
+
+Select AspNetUsers.Email, AspNetRoles.Name from AspNetUserRoles
+Join AspNetUsers On AspNetUsers.Id = AspNetUserRoles.UserId
+Join AspNetRoles On AspNetRoles.Id = AspNetUserRoles.RoleId
+
+Select * from AspNetRoles
+Select * from locations
+
+Update AspNetUsers
+Set EmailConfirmed = 1
+Where Id = 'c680ba93-fdfb-46bc-a01d-d327110622ec'

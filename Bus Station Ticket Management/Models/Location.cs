@@ -13,5 +13,10 @@ namespace Bus_Station_Ticket_Management.Models
 
         [Required]
         public required string Address { get; set; }
+
+        // For using map API
+        public double? Latitude { get; set; }
+
+        public double? Longitude { get; set; }
     }
 }

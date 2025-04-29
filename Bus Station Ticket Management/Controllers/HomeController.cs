@@ -34,8 +34,9 @@ public class HomeController : Controller
                 .ThenInclude(r => r.DestinationLocation) 
             .Where(t => t.Status == "Stand By" && t.DepartureTime > DateTime.Now)
             .Take(9)
+            .OrderByDescending(t => t.Route.StartLocation.Name)
             .ToListAsync();
-
+        
         var viewModel = new TripListViewModel {
             TripsList = trips,
             IsSearchResult = false
@@ -59,7 +60,9 @@ public class HomeController : Controller
                 t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(departure) &&
                 t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(destination) &&
                 t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
-            ).OrderBy(t => t.DepartureTime).ToListAsync();
+            )
+            .OrderBy(t => t.DepartureTime)
+            .ToListAsync();
         #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         var viewModel = new TripListViewModel

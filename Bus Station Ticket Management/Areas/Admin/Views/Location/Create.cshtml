@@ -15,40 +15,30 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" id="searchName" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
+                <input asp-for="Address" id="searchAddress" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group btn-group gap-1 mb-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
             </div>
+
+            <input type="hidden" id="Latitude" asp-for="Latitude">
+            <input type="hidden" id="Longitude" asp-for="Longitude">
         </form>
     </div>
+    <div class="col-md-4">
+        <div id="map" style="height: 400px;"></div>
+    </div>
 </div>
-
-<div data-aos="fade-up">
-    <h2>Scroll to see me fade in!</h2>
-</div>
-
-<button id="tooltipButton" class="btn btn-primary">
-    Hover me!
-</button>
-
-
 
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            tippy('#tooltipButton', {
-                content: 'This is a tooltip!',
-            });
-        });
-    </script>
+    <script src="~/js/initOSM.js"></script>
 }

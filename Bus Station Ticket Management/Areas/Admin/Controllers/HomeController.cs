@@ -18,30 +18,79 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public HomeController(ApplicationDbContext context)
+
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
         
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            var trips = await _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)  // Nạp StartLocation
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)  // Nạp DestinationLocation
-                .Where(t => t.Status == "Stand By" && t.DepartureTime > DateTime.Now)
-                .Take(8)
-                .ToListAsync();
-
-            return View(trips);
+        public IActionResult Index() {
+            return View();
         }
+        
 
-        public IActionResult GoToUserHome()
+        public async Task<IActionResult> GetDashboardStats()
         {
-            return RedirectToAction("Index", "Home");
+            var vehicleCount = await _context.Vehicles.CountAsync();
+
+            var userRole = await _roleManager.FindByNameAsync("Customer");
+            if (userRole == null)
+            {
+                return NotFound("Error: Cannot get customers role");
+            }
+
+            // Await the GetUsersInRoleAsync method to get the count of users in the "Customer" role
+            if (string.IsNullOrEmpty(userRole.Name))
+            {
+                return NotFound("Error: Role name is null or empty");
+            }
+
+            var userCount = await _userManager.GetUsersInRoleAsync(userRole.Name);
+
+            var tripCount = await _context.Trips.CountAsync();
+
+            // Calculate total earnings
+            var earnings = await _context.Tickets.SumAsync(t => t.TotalPrice);
+
+            var now = DateTime.Now;
+
+            // Initialize dictionary to hold revenue data for each month
+            Dictionary<string, long> revenueData = new Dictionary<string, long>();
+
+            // Loop through each month (1 to 12) and sum the total price for that month
+            for (int month = 1; month <= 12; month++)
+            {
+                string monthName = new DateTime(now.Year, month, 1).ToString("MMMM");
+
+                long monthlyRevenue = await _context.Tickets
+                    .Where(t => t.BookingDate.Month == month && t.BookingDate.Year == now.Year)
+                    .SumAsync(t => t.TotalPrice);
+
+                revenueData.Add(monthName, monthlyRevenue);
+            }
+
+            // Convert to individual Key-Value for easy handling when data is requested
+            var revenueLabels = revenueData.Keys.ToList();
+            var revenueValues = revenueData.Values.ToList();
+
+            // Create an anonymous object to return as JSON
+            var stats = new
+            {
+                UserCount = userCount.Count,  // Ensure you're passing the correct user count
+                VehicleCount = vehicleCount,
+                TripCount = tripCount,
+                RevenueCount = earnings,
+                RevenueLabels = revenueLabels,
+                RevenueValues = revenueValues
+            };
+
+            // Return the stats as JSON
+            return Json(stats);
         }
 
         public IActionResult Privacy()
@@ -74,25 +123,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 });
 
             return Json(claims);
-        }
-
-        public async Task<IActionResult> SearchTrips(string departure, string destination, DateOnly departureTime)
-        {
-            departure = departure?.Trim() ?? "";
-            destination = destination?.Trim() ?? "";
-
-            var trips = await _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .Where(t =>
-                    t.Route.StartLocation.Name.Contains(departure) &&
-                    t.Route.DestinationLocation.Name.Contains(destination) &&
-                    t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
-                ).OrderBy(t => t.DepartureTime).ToListAsync();
-
-            return View(trips);
         }
 
         [AllowAnonymous]

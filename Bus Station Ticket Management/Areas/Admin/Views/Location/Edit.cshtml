@@ -5,32 +5,36 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h1>Edit Location</h1>
-        </div>
+<div class="row">
+    <div class="card col-xl-5">
+        <div class="card-header bg-seccondary-subtle"><h1>Edit Location</h1></div>
 
         <div class="card-body">
-            <form asp-action="Edit">
+            <form asp-action="Edit" id="editLocation">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
+                    <input asp-for="Name" id="searchName" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-2">
                     <label asp-for="Address" class="control-label"></label>
-                    <input asp-for="Address" class="form-control" />
+                    <input asp-for="Address" id="searchAddress" class="form-control" />
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
-                <div class="d-flex justify-content-between mt-3">
-                    <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                </div>
+                
+                <input type="hidden" id="Latitude" asp-for="Latitude">
+                <input type="hidden" id="Longitude" asp-for="Longitude">
             </form>
         </div>
+        <div class="card-footer d-flex justify-content-between mt-3">
+            <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+            <input type="submit" value="Save" class="btn btn-primary" form="editLocation"/>
+        </div>
+    </div>
+    <div class="col-xl-7">
+        <div id="map" style="height: 400px;"></div>
     </div>
 </div>
 
@@ -38,4 +42,13 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="~/js/initOSM.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            let address = document.getElementById('Address').value;
+            console.log(address);
+            searchAddressAndMoveMarker(address);
+        });
+    </script>
 }

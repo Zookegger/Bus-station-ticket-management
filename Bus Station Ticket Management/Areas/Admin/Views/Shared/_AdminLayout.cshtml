@@ -19,6 +19,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
@@ -47,7 +50,7 @@
 </head>
 
 
-<body class="d-flex">
+<body class="d-flex flex-column ">
     <!-- Header -->
     <header class="shadow-sm d-md-none" style="position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
@@ -67,12 +70,9 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Home</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Admin"
-                                        asp-action="Index">Dashboard</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets"
-                                        asp-action="Revenue">Revenue</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">User
-                                        Home</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">Revenue</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">User Home</a></li>
                             </ul>
                         </li>
                         <!-- Vehicle -->
@@ -127,9 +127,9 @@
         </nav>
     </header>
     <!-- Sidebar -->
-    <div class="row" style="position: relative;">
+    <div class="row flex-grow-1" style="position: relative;">
         <div id="sidePanel"
-            class="offcanvas show offcanvas-start d-none d-md-flex flex-column p-3 bg-success text-white" tabindex="-1"
+            class="offcanvas show offcanvas-start d-none d-md-flex flex-column bg-success text-white" tabindex="-1"
             data-bs-scroll="true" data-bs-backdrop="false" aria-controls="offcanvasResponsive"
             style="position: fixed; top: 0; left: 0; height: 100vh; width: 250px; z-index: 1030; overflow-y: auto; scrollbar-color: #d6d6d6 #20874e">
             <div class="offcanvas-header d-flex px-2 justify-content-center align-items-center">
@@ -138,7 +138,7 @@
                     <i class="fa-solid fa-bus me-2"></i>
                     <span class="fs-5 fw-semibold">Bus Admin</span>
                 </a>
-                <button type="button" class="btn-transparent d-flex justify-content-center align-items-center" id="sidebarToggleOff" data-bs-dismiss="offcanvas-md" data-bs-target="#sidePanel" aria-label="Close"><i class="fa-solid fa-bars"></i></button>
+                <button type="button" class="btn-transparent d-flex justify-content-center align-items-center navbar-toggler" id="sidebarToggleOff" data-bs-dismiss="offcanvas-md" data-bs-toggle="offcanvas-md" data-bs-target="#sidePanel" aria-label="Close"><i class="fa-solid fa-bars"></i></button>
             </div>
             <hr>
             <div class="offcanvas-body d-flex flex-column flex-grow-1 p-0" style="overflow-x: hidden;">
@@ -158,20 +158,17 @@
                             <div class="accordion-body ps-3">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Admin"
-                                            asp-action="Index">
+                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Home" asp-action="Index">
                                             <i class="bi bi-columns-gap me-2"></i>Dashboard
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets"
-                                            asp-action="Revenue">
+                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">
                                             <i class="bi bi-bar-chart me-2"></i>Revenue
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="" asp-controller="Home"
-                                            asp-action="Index">
+                                        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">
                                             <i class="bi bi-house-door me-2"></i>User Home
                                         </a>
                                     </li>
@@ -276,17 +273,17 @@
                         </div>
                     </li>
 
-                    <hr>
                 </ul>
             </div>
 
             <div class="mt-auto">
+                <hr class="mb-0 w-100">
                 <partial name="_LoginPartial" />
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="d-flex flex-grow-1 bg-light" id="main-content">
+        <div class="d-flex h-100 flex-grow-1 bg-light" id="main-content">
             <main role="main" class="container-fluid flex-grow-1 py-4 px-4">
                 @RenderBody()
             </main>
@@ -348,6 +345,9 @@
 
     <!-- Full Calendar -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <!-- Scripts -->
     <script>

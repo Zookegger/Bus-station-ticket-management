@@ -55,7 +55,7 @@
                     @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
                     {
                         <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex justify-content-start align-items-center gap-2 shadow-sm"
-                            asp-area="Admin" asp-controller="Admin" asp-action="Index" title="Admin Dashboard">
+                            asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin Dashboard">
                             <i class="fas fa-tools"></i>
                             <span>Admin Dashboard</span>
                         </a>

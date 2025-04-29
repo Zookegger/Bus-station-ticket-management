@@ -8,28 +8,40 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Google.Apis.Auth.AspNetCore3;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.DataProtection;
+using Google.Apis.Auth.AspNetCore3;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Services;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-builder.Services.AddScoped<VnPaymentService>();
-builder.Services.Configure<VnPaymentSetting>(builder.Configuration.GetSection("Payment:VnPayment"));
+// ==================== Service Registration ====================
+
+// Hosted Background Services
 builder.Services.AddHostedService<ExpiredPaymentCleanupService>();
-// builder.Services.AddHostedService<UpdateTripStatusService>();
-// builder.Services.AddHostedService<UpdateCouponStatusService>();
+builder.Services.AddHostedService<UpdateTripStatusService>();
+builder.Services.AddHostedService<UpdateCouponStatusService>();
 
+// Payment Configuration
+builder.Services.AddScoped<VnPaymentService>();
+builder.Services.Configure<VnPaymentSetting>(config.GetSection("Payment:VnPayment"));
+
+// Data Protection
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\"))
     .SetApplicationName("BusStationTicketApp");
 
+// Email
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<IEmailBackgroundQueue, EmailBackgroundQueue>();
+builder.Services.AddHostedService<EmailBackgroundService>();
+
+// Session & Cookie Policy
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -37,22 +49,23 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax; // Ensure cookies are sent with cross-site requests
-    options.Secure = CookieSecurePolicy.Always; // Use secure cookies
+    options.Secure = CookieSecurePolicy.Always;       // Use secure cookies
     options.CheckConsentNeeded = context => false;
 });
 
+// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
-    )
+    options.UseSqlServer(config.GetConnectionString("DefaultConnection"))
 );
 
+// Google People API helper
 builder.Services.AddHttpClient<GooglePeopleApiHelper>();
 builder.Services.AddScoped<GooglePeopleApiHelper>();
 
+// ==================== Authentication ====================
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -66,42 +79,64 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(options =>
 {
-   options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-   options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-   options.CallbackPath = "/signin-google";
+    if (config is not null &&
+        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+    {
+        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
+        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
+    }
 
-   // // Request extra scopes for additional profile details.
-   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+    options.CallbackPath = "/signin-google";
 
-   // // Request access to birthday, phone number, address, and gender information.
-   // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-   // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-   // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-   // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+    // // Request extra scopes for additional profile details.
+    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
 
-   // options.SaveTokens = true;
+    // // Request access to birthday, phone number, address, and gender information.
+    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+    // options.SaveTokens = true;
 })
 .AddFacebook(options =>
 {
-   options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-   options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-   options.CallbackPath = "/signin-facebook";
+    if (config is not null &&
+        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+    {
+        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
+        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
+    }
+
+    options.CallbackPath = "/signin-facebook";
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders()
-    .AddDefaultUI();
+// ==================== Identity ====================
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders()
+.AddDefaultUI();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 {
     opt.TokenLifespan = TimeSpan.FromHours(6); // Set to 6 hours, or whatever you prefer
 });
 
-builder.Services.AddSingleton<IEmailBackgroundQueue, EmailBackgroundQueue>();
-builder.Services.AddHostedService<EmailBackgroundService>();
-
+// ==================== MVC & Razor Pages ====================
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI()
     .AddRazorPagesOptions(options =>
@@ -111,43 +146,25 @@ builder.Services.AddRazorPages()
 
 builder.Services.AddControllersWithViews();
 
+// ==================== Application Setup ====================
 var app = builder.Build();
 
+// Seed roles and admin user
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    // Get the UserManager and RoleManager
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // Create the Admin role if it doesn't exist
-    if (!await roleManager.RoleExistsAsync("Admin"))
+    var roles = new[] { "Admin", "Employee", "Conductor", "Driver", "Customer" };
+    foreach (var role in roles)
     {
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
 
-    if (!await roleManager.RoleExistsAsync("Employee"))
-    {
-        await roleManager.CreateAsync(new IdentityRole("Employee"));
-    }
-
-    if (!await roleManager.RoleExistsAsync("Conductor"))
-    {
-        await roleManager.CreateAsync(new IdentityRole("Conductor"));
-    }
-
-    if (!await roleManager.RoleExistsAsync("Driver"))
-    {
-        await roleManager.CreateAsync(new IdentityRole("Driver"));
-    }
-
-    if (!await roleManager.RoleExistsAsync("Customer"))
-    {
-        await roleManager.CreateAsync(new IdentityRole("Customer"));
-    }
-
-    // Create an admin user if it doesn't exist
     var adminUser = await userManager.FindByEmailAsync("admin@example.com");
     if (adminUser == null)
     {
@@ -168,7 +185,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
+// ==================== Middleware ====================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -176,7 +193,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 builder.Configuration.AddUserSecrets<Program>();
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -196,24 +212,33 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// Redirect short /Admin to actual Admin panel route
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path.Equals("/Admin", StringComparison.OrdinalIgnoreCase))
+    switch (context.Request.Path.Value?.ToLowerInvariant())
     {
-        context.Response.Redirect("/Admin/Admin/Index");
-        return;
+        case "/admin":
+            context.Response.Redirect("/Admin/Admin/Index");
+            return;
+
+        // You can add more path-based cases here in the future
+        // case "/example":
+        //     context.Response.Redirect("/some/other/path");
+        //     return;
+
+        default:
+            await next();
+            break;
     }
-    await next();
 });
 
-// Area route
+// ==================== Routing ====================
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller}/{action}/{id?}",
     defaults: new { controller = "Home", action = "" }
 );
 
-// Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action}/{id?}",

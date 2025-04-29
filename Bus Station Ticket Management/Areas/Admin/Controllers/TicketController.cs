@@ -174,6 +174,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Apply pagination
             var tickets = await ticketsQuery
+                .OrderBy(t => t.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

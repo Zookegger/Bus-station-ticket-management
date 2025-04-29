@@ -85,8 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initializeDataTable(tableName, tableTitle, selector, options) {
-    console.log(tableTitle);
-
 	const defaultOptions = {
 		ordering: true,
 		paging: true,
@@ -94,12 +92,6 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 		info: true,
 		filter: true,
 		responsive: false,
-		columnDefs: [
-			{
-				targets: -1,
-				orderable: false,
-			},
-		],
 		autoWidth: true,
 		deferRender: true,
 		lengthChange: true,
@@ -169,6 +161,16 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 			},
 		],
 	};
+	// console.log(tableName);
+
+	if (tableName !== "Revenue") {
+		defaultOptions.columnDefs = [
+			{
+				targets: -1,
+				orderable: false,
+			},
+		];
+	}
 
 	$(selector).DataTable($.extend(true, {}, defaultOptions, options));
 }
@@ -181,7 +183,7 @@ function initializeRowClickHandler(
 ) {
 	$(tableSelector).on("click", ".clickable-row", function () {
 		const id = $(this).data("id");
-
+		// console.log(detailsUrl);
 		if (!id) {
 			alert("No ID found! Make sure data-id is set properly.");
 			return;
