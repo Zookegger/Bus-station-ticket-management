@@ -88,40 +88,6 @@
     <script src="~/js/table.js"></script>
     <script src="~/js/initOSM.js"></script>
     <script>
-        @* $(document).ready(function () {
-            $('.clickable-row').on('click', function () {
-                var locationId = $(this).data('id');
-
-                $.ajax({
-                    url: '/Admin/Location/DetailsPartial?id=' + locationId,
-                    method: 'GET',
-                    success: function (data) {
-                        $('#detailsOffcanvasBody').html(data);
-
-                        setTimeout(async function() {
-                            // Parse lat/lon from data if you return them
-                            var latitude = $('#detailsOffcanvasBody #Latitude').val();
-                            var longitude = $('#detailsOffcanvasBody #Longitude').val();
-
-                            if (latitude && longitude) {
-                                await initializeMap(latitude, longitude);
-                            } else {
-                                await initializeMap(); // fallback to default center
-                            }
-                        }, 1000);
-
-                        const offcanvasEl = document.getElementById('detailsOffcanvas');
-                        let offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
-
-                        offcanvas.show();
-                    }
-                });
-            });
-            // Prevent multiple backdrops
-            $('#detailsOffcanvas').on('shown.bs.offcanvas', function () {
-                $('.offcanvas-backdrop').not(':last').remove();
-            });
-        }); *@
         $(document).ready(function () {
             // Initialize Offcanvas
             const offcanvasEl = document.getElementById('detailsOffcanvas');

@@ -81,7 +81,7 @@
                         </div>
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
-                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                        <div class="btn-group simple-buttons" role="group" style="display:none; min-width: 90px;">
                             <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
                                 <i class="fa fa-edit"></i>
                             </a>
@@ -95,13 +95,13 @@
         </tbody>
     </table>
 </div>
-<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
-    style="width: 40%; min-width: 630px;">
-    <div class="offcanvas-header">
+<div class="offcanvas offcanvas-end p-0" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 35%; min-width: 530px;">
+    <div class="offcanvas-header bg-secondary-subtle">
         <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Vehicle Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body" id="detailsOffcanvasBody">
+    <div class="offcanvas-body row h-100" id="detailsOffcanvasBody">
 
     </div>
 </div>

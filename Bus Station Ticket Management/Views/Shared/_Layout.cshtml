@@ -1,3 +1,7 @@
+@{
+    ViewData["AOS"] = "fade-down";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,8 +54,6 @@
                         <i class="fa-solid fa-bus me-2"></i>Bus Station Ticket Management
                     </a>
 
-                   
-
                     @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
                     {
                         <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex justify-content-start align-items-center gap-2 shadow-sm"
@@ -62,7 +64,6 @@
                     }
                 </div>
 
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -71,7 +72,7 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <partial name="_LoginPartial" />
+                            <partial name="_LoginPartial"/>
                         </li>
                     </ul>
                 </div>
@@ -176,6 +177,7 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

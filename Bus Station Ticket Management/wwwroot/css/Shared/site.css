@@ -284,11 +284,6 @@ footer ul {
 	padding: 3px; /* Removes padding to fit the icon properly */
 }
 
-.btn-transparent:hover {
-	/* box-shadow: 0 0 2px 2px rgba(236, 236, 236, 0.59);
-	border: 2px solid rgba(236, 236, 236, 0.59); */
-}
-
 .btn-transparent .fa-bars {
 	font-size: 24px; /* Adjust the icon size */
 	color: #fff; /* Optional: Adjust the icon color */

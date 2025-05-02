@@ -61,6 +61,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(r => r.DestinationLocation)
                 .Include(r => r.StartLocation)
                 .FirstOrDefaultAsync(m => m.Id == id);
+                
             if (routes == null)
             {
                 return NotFound();
