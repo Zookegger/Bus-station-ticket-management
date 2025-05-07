@@ -72,20 +72,26 @@
                     <span asp-validation-for="Input.Address" class="text-danger"></span>
                 </div>
 
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.Gender" class="form-select" aria-required="true">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <label asp-for="Input.Gender">Gender</label>
-                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
-                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.Gender" class="form-select" aria-required="true">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label asp-for="Input.Gender">Gender</label>
+                            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                        </div>
+                    </div>
 
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" required />
-                    <label asp-for="Input.DateOfBirth">Date Of Birth</label>
-                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" required />
+                            <label asp-for="Input.DateOfBirth">Date Of Birth</label>
+                            <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
                 <button type="submit" id="submit" disabled class="w-100 btn btn-lg btn-primary">Register</button>

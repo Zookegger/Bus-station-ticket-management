@@ -92,11 +92,12 @@
             // Initialize Offcanvas
             const offcanvasEl = document.getElementById('detailsOffcanvas');
             const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+            
 
             // Handle row clicks
             $('.clickable-row').on('click', function () {
                 var locationId = $(this).data('id');
-                
+
                 $.ajax({
                     url: '/Admin/Location/DetailsPartial?id=' + locationId,
                     method: 'GET',
@@ -108,10 +109,10 @@
                             var latitude = $('#locationDetailsData').data('latitude');
                             var longitude = $('#locationDetailsData').data('longitude');
                             var name = $('#locationDetailsData').data('name');
-                            if (latitude && longitude) {
-                                await initializeMap(latitude, longitude);
-                            } else {
-                                await initializeMap(latitude, longitude, name);
+                            if (latitude && longitude && name) {
+                                console.log(latitude, longitude, name);
+                                @* let result = await reverseGeoCode(latitude, longitude); *@
+                                initializeMap(latitude, longitude, name, false, 16);
                             }
                         }, 500);
                     }

@@ -16,42 +16,86 @@ const fetchHeaders = {
 const osrmUrl = `https://router.project-osrm.org/route/v1/driving/`;
 
 // Initialize the map
-function initializeMap(lat = 10.762622, lon = 106.660172, name) { // Default: Ho Chi Minh City center
-    if (map) {
-        map.remove();
-        map = null;
-        marker = null;
+function initializeMap(lat = 10.762622, lon = 106.660172, name, draggableMarker = true, zoom = 13) { // Default: Ho Chi Minh City center
+    // if (map) {
+    //     map.remove();
+    //     map = null;
+    //     marker = null;
+    // }
+    try {
+        map = L.map('map').setView([lat, lon], zoom);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        const key = `reverse:${lat},${lon}`;
+        const cached = loadWithExpiry(key);
+        if (cached) {
+            marker = L.marker([cached.lat, cached.lon], { draggable: draggableMarker }).addTo(map);
+            return cached;
+        }
+        
+        marker = L.marker([lat, lon], { draggable: draggableMarker }).addTo(map);
+        
+        // console.log(lat);
+        // console.log(lon);
+        // console.log(name);
+
+        if (lat === 0 && lon === 0) {
+            searchLocation(name)
+        } else {
+            // Set initial Lat/Lon values
+            if (marker) {
+                const position = marker.getLatLng();
+                
+                let input_Lat = document.getElementById('Latitude');
+                let input_Lon = document.getElementById('Longitude');
+                if (input_Lat) input_Lat.value = position.lat;
+                if (input_Lon) input_Lon.value = position.lng;
+            }
+        }
+        if (marker) {
+            // Update hidden fields when marker is dragged
+            marker.on('dragend', function () {
+                const position = marker.getLatLng();
+                console.log(position);
+                handleDebounce(this, async () => reverseGeoCode(position.lat, position.lng), 500);
+            });
+        }
+    } catch (error) {
+        console.error(error);
     }
-    
-    map = L.map('map').setView([lat, lon], 13);
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-    
-    marker = L.marker([lat, lon], { draggable: true }).addTo(map);
-    
-    // console.log(lat);
-    // console.log(lon);
-    // console.log(name);
+}
 
-    if (lat === 0 && lon === 0) {
-        searchLocation(name)
-    } else {
-        // Set initial Lat/Lon values
-        const position = marker.getLatLng();
-
-        let input_Lat = document.getElementById('Latitude');
-        let input_Lon = document.getElementById('Longitude');
-        if (input_Lat) input_Lat.value = position.lat;
-        if (input_Lon) input_Lon.value = position.lng;
+function saveWithExpiry(key, data, ttlMinutes = 14400) {
+    const now = new Date();
+    const item = {
+        value: data,
+        expiry: now.getTime() + ttlMinutes * 60 * 1000
     }
+    localStorage.setItem(key, JSON.stringify(item));
+}
 
-    // Update hidden fields when marker is dragged
-    marker.on('dragend', function () {
-        const position = marker.getLatLng();
-        handleDebounce(this, async () => reverseGeoCode(position.lat, position.lng), 500);
-    });
+function loadWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+
+    try {
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+
+        if (now.getTime() > item.expiry) {
+            localStorage.removeItem(key);
+            return null;
+        }
+
+        return item.value;
+    } catch (e) {
+        console.error('Invalid cached data format:', e);
+        localStorage.removeItem(key);
+        return null;
+    }
 }
 
 function cleanDisplayName(name, displayName) {
@@ -98,6 +142,8 @@ function updateFormAndMarkerFromSearch(data) {
     if (typeof marker !== "undefined" && marker) marker.setLatLng([lat, lon]);
     if (typeof map !== "undefined" && map) map.setView([lat, lon], 17);
 
+    console.log(3);
+
     return { lat, lon };
 }
 
@@ -114,24 +160,24 @@ async function fetchFromAPI(url) {
 }
 
 async function reverseGeoCode(lat, lon) {
-    if (!lat || !lon) {
-        console.error(lat);
-        console.error(lon);
-        console.error('Latitude or longitude is null.');
-        return null;
+    const key = `reverse:${lat},${lon}`;
+    const cached = loadWithExpiry(key);
+    if (cached) {
+        console.log(cached);
+        updateFormAndMarkerFromSearch(cached);
+        return cached;
     }
-    if (isNaN(lat) || isNaN(lon)) {
-        console.error('Invalid latitude or longitude.');
+
+    if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+        console.error('Invalid latitude or longitude:', lat, lon);
         return null;
     }
 
     try {
         const vnUrl = `${baseUrl}${urlReverse}lat=${lat}&lon=${lon}${dataJsonFormat}${dataLanguage}`;
         const enUrl = `${baseUrl}${urlReverse}lat=${lat}&lon=${lon}${dataJsonFormat}&accept-language=en`;
-        console.log(`Requesting reverse geocode for lat: ${lat}, lon: ${lon}`);
         
         const vnResponse = await fetchFromAPI(vnUrl);
-
         let result = vnResponse;
 
         if (!vnResponse || !vnResponse.display_name) {
@@ -139,8 +185,12 @@ async function reverseGeoCode(lat, lon) {
             result = await fetchFromAPI(enUrl);
         } 
 
+        console.log(1);
+
         if (result) {
             updateFormAndMarkerFromSearch(vnResponse);
+            saveWithExpiry(key, result); // Cache data
+
             return result;
         } else {
             console.error("No data returned from reverese geocode.")
@@ -152,6 +202,7 @@ async function reverseGeoCode(lat, lon) {
     }
 }
 
+
 async function searchLocation(location) {
     if (!location) return;
 
@@ -161,20 +212,55 @@ async function searchLocation(location) {
 
         const vnResponse = await fetchFromAPI(vnUrl);
 
-        let result = vnResponse;
+        let result = vnResponse[0];
 
-        if (!vnResponse || !vnResponse.display_name) {
+        if (!result || !result.display_name) {
             console.warn("Vietnamese not available, falling back to English");
             result = await fetchFromAPI(enUrl);
         } 
 
         if (result) {
-            updateFormAndMarkerFromSearch(vnResponse);
+            updateFormAndMarkerFromSearch(result);
         } else {
             console.error("No data returned from reverese geocode.")
         }
     } catch (error) {
         console.error('Error searching location:', error);
+    }
+}
+
+async function searchLocationWithResult(location) {
+    if (!location) {console.error('No input data'); return;}
+
+    try {
+        const vnUrl = `${baseUrl}${urlSearchQuery}${encodeURIComponent(location)}${dataJsonFormat}${dataLimit}&accept-language=vi}`;
+        const enUrl = `${baseUrl}${urlSearchQuery}${encodeURIComponent(location)}${dataJsonFormat}${dataLimit}&accept-language=en`;
+
+        const vnResponse = await fetchFromAPI(vnUrl);
+
+        let result = vnResponse;
+
+        console.log(result);
+        console.log(result.display_name);
+        
+        if (result == null || result[0].display_name == null) {
+            console.warn("Vietnamese not available, falling back to English");
+            result = await fetchFromAPI(enUrl);
+        } 
+        console.log(result);
+
+        if (result) {
+            return {
+                name: result[0].display_name,
+                lat: parseFloat(result[0].lat),
+                lng: parseFloat(result[0].lon),
+            };
+        } else {
+            console.error("No data returned from reverese geocode.")
+        }
+    } catch (error) {
+        console.error('Error searching location:', error);
+        return null;
     }
 }
 
@@ -197,43 +283,30 @@ async function getTravelTime(startLat, startLon, endLat, endLon) {
     }    
 }
 
-async function addRouteAndTime(startLat, startLon, endLat, endLon) {
-    const routeUrl = `${osrmUrl}${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson&steps=true`;
-
+async function addRouteAndTime(startLat, startLon, endLat, endLon, moveMarker = false) {
     try {
+        const key = `route:${startLat},${startLon}->${endLat},${endLon},`;
+        const cached = loadWithExpiry(key);
+        if (cached) {
+            console.log(cached);
+            drawRoute(cached, moveMarker);
+            return cached;
+        }
+        
+        const routeUrl = `${osrmUrl}${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson&steps=true`;
+
         const response = await fetch(routeUrl);
         const data = await response.json();
 
         if (data.routes && data.routes[0]) {
             const route = data.routes[0];
-            const routeCoords = route.geometry.coordinates.map(coord => [coord[1], coord[0]]); // Convert [lon, lat] to [lat, lon]
-            console.log('Number of route coordinates:', route.geometry.coordinates.length);
-
-            L.polyline(routeCoords, { color: 'blue', weight: 4 }).addTo(map);
-            
             const startLocation = await reverseGeoCode(startLat, startLon);
             const endLocation = await reverseGeoCode(endLat, endLon);
 
-            
-            L.marker([startLat, startLon]).addTo(map).bindPopup(`Start: ${startLocation.display_name}`);
-            L.marker([endLat, endLon]).addTo(map).bindPopup(`End: ${endLocation.display_name}`);
-            
-            const duration = route.duration;
-            const hours = Math.floor(duration / 3600);
-            const minutes = Math.floor((duration % 3600) / 60);
-            const travelTime = `${hours} hours ${minutes} minutes`;
-            
-            const popupContent = `<b>Estimated travel time:</b><br>${travelTime}`;
-            L.popup()
-            .setLatLng([(startLat + endLat) / 2, (startLon + endLon) / 2])
-            .setContent(popupContent)
-            .openOn(map);
-            
-            const routeBounds = L.latLngBounds(routeCoords);
-            map.fitBounds(routeBounds, { padding: [10, 10] }); 
-            console.log(startLocation);
-            console.log(endLocation);
-            return { startLocation, endLocation };
+            const result = { route, startLocation, endLocation };
+            saveWithExpiry(key, result); // cache it
+            drawRoute(result, moveMarker);
+            return result;
         }
     } catch (error) {
         console.error('Error fetching route:', error);
@@ -241,6 +314,44 @@ async function addRouteAndTime(startLat, startLon, endLat, endLon) {
     }
 }
 
+function drawRoute(data, moveMarker = false) {
+    const routeCoords = data.route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+    L.polyline(routeCoords, { color: 'blue', weight: 4 }).addTo(map);
+
+    const { startLocation, endLocation } = data;
+    if (!startLocation || isNaN(startLocation.lat) || isNaN(startLocation.lon) ||
+        !endLocation || isNaN(endLocation.lat) || isNaN(endLocation.lon)) {
+        throw new Error("Invalid start or end location", startLocation, endLocation);
+    }
+    
+
+    L.marker([startLocation.lat, startLocation.lon], { draggable: moveMarker })
+        .addTo(map).bindPopup(`Start: ${startLocation.display_name}`);
+    L.marker([endLocation.lat, endLocation.lon], { draggable: moveMarker })
+        .addTo(map).bindPopup(`End: ${endLocation.display_name}`);
+
+    const duration = data.route.duration;
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const travelTime = `${hours} hours ${minutes} minutes`;
+
+    let distance = data.route.distance;
+    let popupContent = `<b>Estimated travel time:</b><br>${travelTime}<br><b>Total Distance</b><br>`;
+    popupContent += (distance > 1000) 
+        ? `${(distance / 1000).toFixed(1)} km` 
+        : `${Math.round(distance)} m`;
+
+    L.popup()
+        .setLatLng([
+            (parseFloat(startLocation.lat + endLocation.lat) / 2), 
+            (parseFloat(startLocation.lon + endLocation.lon) / 2)
+        ])
+        .setContent(popupContent)
+        .openOn(map);
+
+    const routeBounds = L.latLngBounds(routeCoords);
+    map.fitBounds(routeBounds, { padding: [10, 10] });
+}
 
 document.addEventListener('DOMContentLoaded', async function () {    
     try {

@@ -4,106 +4,229 @@
     ViewData["Title"] = "Revenue Statistics";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/Revenue.css">
+}
 
-<div class="row mb-3">
-    <!-- Statistics Summary -->
-    <h2 class="text-success fw-bold mb-0">Revenue Statistics</h2>
-    <div class="col-md-6 d-flex gap-3 justify-content-end">
-        <div class="col-xs-6 col-sm-6 col-md-7 card text-bg-info shadow-sm flex-fill">
-            <div class="card-body text-center p-3 d-md-flex flex-column align-center justify-content-center gap-2">
-                <i class="fa-solid fa-ticket fa-xl mb-2 fs-md-2 fs-lg-1"></i>
-                <h6 class="card-title my-1 fs-md-5 fs-lg-4">Total Tickets Sold</h6>
-                <span class="fs-5 fw-bold fs-md-4">@ViewBag.TotalTickets</span>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down" data-aos-anchor-placement="top-bottom">
+        <h2 class="text-success fw-bold mb-0">Revenue Statistics</h2>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6" data-aos="fade-right" data-aos-anchor-placement="top-bottom">
+            <div class="card text-bg-primary shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Total Revenue</h6>
+                            <h3 class="mb-0">@ViewBag.TotalRevenue.ToString("N0") VND</h3>
+                        </div>
+                        <i class="fa-solid fa-coins fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="col-xs-6 col-sm-6 col-md-5 card bg-warning bg-gradient shadow-sm flex-fill text-dark">
-            <div class="card-body text-center p-3 d-md-flex flex-column align-center justify-content-center gap-2">
-                <i class="fa-solid fa-coins fa-xl mb-2 fs-md-2 fs-lg-1"></i>
-                <h6 class="card-title my-1 fs-md-5 fs-lg-4">Total Revenue</h6>
-                <span class="fs-5 fw-bold fs-md-4">@ViewBag.TotalRevenue.ToString("N0") VND</span>
+        <div class="col-md-6" data-aos="fade-left" data-aos-anchor-placement="top-bottom">
+            <div class="card text-bg-dark shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Average Ticket Price</h6>
+                            <h3 class="mb-0">
+                                @((ViewBag.TotalRevenue / (ViewBag.TotalTickets > 0 ? ViewBag.TotalTickets :
+                                                                1)).ToString("N0")) VND
+                            </h3>
+                        </div>
+                        <i class="fa-solid fa-chart-line fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+            <div class="card text-bg-warning shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Tickets Sold</h6>
+                            <h3 class="mb-0">@ViewBag.TotalTickets</h3>
+                        </div>
+                        <i class="fa-solid fa-ticket fa-2x opacity-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Form -->
-    <form method="get" class="col-md-6">
-        <div class="col my-xs-2 my-sm-2">
-            <label for="fromDate" class="form-label">From date</label>
-            <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+
+    <!-- Revenue Chart -->
+    <div class="row mb-4" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <canvas id="revenueChart" class="w-100 h-100"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="col my-xs-2 my-sm-2">
-            <label for="toDate" class="form-label">To date</label>
-            <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+    </div>
+
+
+    <!-- Filter Section -->
+    <div class="row mb-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-once="true">
+        <div class="col-md-8 w-100">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" class="row g-3" id="filterForm">
+                        <div class="col-md-4">
+                            <label for="fromDate" class="form-label">From Date</label>
+                            <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate"
+                                class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="toDate" class="form-label">To Date</label>
+                            <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa-solid fa-filter"></i> Apply Filter
+                            </button>
+                            <button type="submit" id="clearFilter" class="btn btn-danger w-100">
+                                <i class="fa-solid fa-ban"></i> Clear Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100">
-            <i class="fa-solid fa-filter"></i> Filter
-        </button>
-    </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <!-- Tickets Table -->
+        <div class="table-responsive mb-3 shadow rounded" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-once="true">
+            <table id="DataTable" @* style="max-height: 876px;" *@
+                        data-details-url="/Admin/Tickets/DetailsPartial"
+                data-table-name="Revenue" data-table-title="Ticket">
+                <thead style="position: sticky; top: 0">
+                    <tr>
+                        <th style="min-width: 190px">Ticket ID</th>
+                        <th style="min-width: 200px">Trip</th>
+                        <th style="min-width: 120px">Vehicle</th>
+                        <th style="min-width: 100px">Customer</th>
+                        <th style="min-width: 100px">Seat</th>
+                        <th style="min-width: 150px">Price</th>
+                        <th style="min-width: 180px">Booking Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in Model)
+                    {
+                        <tr>
+                            <td>@ticket.Id</td>
+                            <td class="text-wrap">
+                                @ticket.Trip?.Route?.StartLocation?.Name ➞ @ticket.Trip?.Route?.DestinationLocation?.Name
+                            </td>
+                            <td>@ticket.Trip?.Vehicle?.Name</td>
+                            <td>@(string.IsNullOrEmpty(ticket.User?.FullName) ? ticket.GuestName : ticket.User.FullName)</td>
+                            <td>@ticket.Seat?.Number</td>
+                            <td>@ticket.TotalPrice.ToString("N0") VND</td>
+                            <td>@ticket.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @if (ticket.IsCanceled)
+                                {
+                                    <span class="badge bg-danger">Canceled</span>
+                                }
+                                else if (ticket.IsPaid)
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            <h4 class="alert-heading">No Tickets Found</h4>
+            <p>There are no tickets available for the selected date range. Please adjust your filter criteria and try again.
+            </p>
+            <hr>
+            <a asp-route-data="" class="btn btn-primary" onclick="window.location.reload();">
+                Reset Filters
+            </a>
+        </div>
+    }
 </div>
 
-<br />
-@if (Model.Any())
-{
-    <!-- Tickets Table -->
-    <div class="table-responsive mb-3 shadow rounded">
-        <table id="DataTable" 
-            class="table table-hover table-striped align-middle mb-0"
-            data-details-url="/Admin/Tickets/DetailsPartial"
-            data-table-name="Revenue"
-            data-table-title="Ticket">
-            <thead style="position: sticky; top: 0">
-                <tr>
-                    <th>Ticket ID</th>
-                    <th>Trip</th>
-                    <th>Vehicle</th>
-                    <th>Customer</th>
-                    <th>Seat Number</th>
-                    <th>Ticket Price</th>
-                    <th>Booking Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var ticket in Model)
-                {
-                    <tr>
-                        <td>@ticket.Id</td>
-                        <td>
-                            @ticket.Trip?.Route?.StartLocation?.Name - @ticket.Trip?.Route?.DestinationLocation?.Name
-                        </td>
-                        <td>@ticket.Trip?.Vehicle?.Name</td>
-                        <td>@(string.IsNullOrEmpty(ticket.User?.FullName) ? ticket.GuestName : ticket.User.FullName)</td>
-                        <td>@ticket.Seat?.Number</td>
-                        <td>@ticket.TotalPrice.ToString("N0") VND</td>
-                        <td>@ticket.BookingDate.ToString("dd/MM/yyyy")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning text-center" role="alert">
-        <h4 class="alert-heading">No Tickets Found</h4>
-        <p>There are no tickets available for the selected date range. Please adjust your filter criteria and try again.</p>
-        <hr>
-        <a asp-route-data="" class="btn btn-primary" onclick="window.location.reload();">
-            Reset Filters
-        </a>
-    </div>
-}
-
-
-<!-- Add some optional JS for interactivity (e.g., Bootstrap tooltips) -->
 @section Scripts {
     <script src="~/js/table.js"></script>
 
+
     <script>
-        // Enable tooltips if needed
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 1200 });
+        });
+
+
+        document.getElementById('clearFilter').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            document.getElementById('filterForm').submit();
+        });
+        // Revenue Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueData = @Html.Raw(Json.Serialize(Model.GroupBy(t => t.BookingDate.Date)
+                                                .Select(g => new { Date = g.Key.ToString("dd/MM/yyyy"), Revenue = g.Sum(t => t.TotalPrice) })));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: revenueData.map(d => d.date),
+                datasets: [{
+                    label: 'Daily Revenue',
+                    data: revenueData.map(d => d.revenue),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Daily Revenue Trend'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return value.toLocaleString() + ' VND';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Export to Excel
+        function exportToExcel() {
+            const table = document.getElementById('revenueTable');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Revenue Report" });
+            XLSX.writeFile(wb, 'Revenue_Report.xlsx');
+        }
     </script>
 }

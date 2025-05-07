@@ -1,0 +1,11 @@
+@media print {
+    .btn, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+    }
+    .table {
+        width: 100% !important;
+    }
+}

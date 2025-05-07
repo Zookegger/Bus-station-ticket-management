@@ -36,8 +36,6 @@
     <dd class="col-sm-8 fs-5">
         @(Model.LastUpdated != null ? Model.LastUpdated : "N/A")
     </dd>
+    <a role="button" class="btn btn-primary btn-lg mt-3" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
 </div>
-<div class="row-0">
-    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-<div
 

@@ -22,59 +22,64 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         }
 
         // GET: Admin/TripDriverAssignment
-        public async Task<IActionResult> Index(string? searchString, string? sortBy, int? page)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 15;
-            int pageNumber = page ?? 1;
+            try {
+                var assignments = await _context.TripDriverAssignments
+                    .Include(t => t.Driver)
+                    .Include(t => t.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .ToListAsync();
 
-            var query = _context.TripDriverAssignments
-                .Include(t => t.Driver)
-                .Include(t => t.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.DestinationLocation)
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(a =>
-                    a.Driver.FullName.Contains(searchString) ||
-                    a.Trip.Route.StartLocation.Name.Contains(searchString) ||
-                    a.Trip.Route.DestinationLocation.Name.Contains(searchString));
+                return View(assignments);
+            } catch (Exception ex) {
+                ViewBag.ErrorMessage = ex.Message;
+                return View();
             }
-
-            query = sortBy switch
-            {
-                "date_asc" => query.OrderBy(a => a.DateAssigned),
-                "date_desc" => query.OrderByDescending(a => a.DateAssigned),
-                "trip_asc" => query.OrderBy(a => a.Trip.Route.StartLocation.Name),
-                "trip_desc" => query.OrderByDescending(a => a.Trip.Route.StartLocation.Name),
-                "driver_asc" => query.OrderBy(a => a.Driver.FullName),
-                "driver_desc" => query.OrderByDescending(a => a.Driver.FullName),
-                _ => query.OrderBy(a => a.Id)
-            };
-
-            ViewBag.SortBy = sortBy;
-            ViewBag.SearchString = searchString;
-
-            var assigments = await query.ToListAsync();
-
-            return View(assigments.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/TripDriverAssignment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            try {
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var tripDriverAssignment = await _context.TripDriverAssignments
-                .Include(t => t.Driver)
-                .Include(t => t.Trip)
+                var tripDriverAssignment = await _context.TripDriverAssignments
+                    .Include(t => t.Driver)
+                    .Include(t => t.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .Include(t => t.Trip)
+                        .ThenInclude(t => t.Vehicle)
+                            .ThenInclude(v => v.VehicleType)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (tripDriverAssignment == null)
+                {
+                    return NotFound();
+                }
+
+                return View(tripDriverAssignment);
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> DetailsPartial(int? id) {
+            try {
+                var tripDriverAssignment = await _context.TripDriverAssignments
+                    .Include(t => t.Driver)
+                    .Include(t => t.Trip)
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.StartLocation)
                 .Include(t => t.Trip)
@@ -83,54 +88,61 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 .Include(t => t.Trip)
                     .ThenInclude(t => t.Vehicle)
                         .ThenInclude(v => v.VehicleType)
-                        .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(tda => tda.Id == id);
 
-            if (tripDriverAssignment == null)
-            {
-                return NotFound();
+                if (tripDriverAssignment == null) {
+                    return NotFound();
+                }
+
+                return PartialView("_DetailsPartial", tripDriverAssignment);
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }
-
-            return View(tripDriverAssignment);
         }
 
         // GET: Admin/TripDriverAssignment/Create or Create?tripId=5
         public async Task<IActionResult> Create(int? tripId)
         {
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
+            try {
+                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
 
-            if (tripId != null)
-            {
-                var selectedTrip = await _context.Trips
+                if (tripId != null)
+                {
+                    var selectedTrip = await _context.Trips
+                        .Include(t => t.Route).ThenInclude(r => r.StartLocation)
+                        .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
+                        .Include(t => t.Vehicle)
+                        .FirstOrDefaultAsync(t => t.Id == tripId);
+
+                    if (selectedTrip == null)
+                        return NotFound($"Cannot find trip with id: {tripId}");
+
+                    ViewData["TripId"] = tripId;
+                    ViewData["TripDisplayName"] = $"{selectedTrip.Route?.StartLocation?.Name} → {selectedTrip.Route?.DestinationLocation?.Name}";
+                    ViewData["TripVehicle"] = $"{selectedTrip.Vehicle?.Name} : {selectedTrip.Vehicle?.LicensePlate}";
+                    ViewData["TripTime"] = $"{selectedTrip.DepartureTime:g} → {selectedTrip.DepartureTime:g}";
+                    return View("CreateWithPreselectedTrip", new TripDriverAssignment { TripId = tripId.Value });
+                }
+
+                // No preselected trip — show dropdown
+                var trips = await _context.Trips
                     .Include(t => t.Route).ThenInclude(r => r.StartLocation)
                     .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
                     .Include(t => t.Vehicle)
-                    .FirstOrDefaultAsync(t => t.Id == tripId);
+                    .Select(t => new
+                    {
+                        t.Id,
+                        Name = 
+                            t.Route.StartLocation.Name + " → " + t.Route.DestinationLocation.Name + 
+                            " | " + (t.Vehicle != null ? t.Vehicle.Name : "No Vehicle") + 
+                            " | " + t.DepartureTime.ToString("g")
+                    }).ToListAsync();
 
-                if (selectedTrip == null)
-                    return NotFound($"Cannot find trip with id: {tripId}");
-
-                ViewData["TripId"] = tripId;
-                ViewData["TripDisplayName"] = $"{selectedTrip.Route?.StartLocation?.Name} → {selectedTrip.Route?.DestinationLocation?.Name}";
-                ViewData["TripVehicle"] = $"{selectedTrip.Vehicle?.Name} : {selectedTrip.Vehicle?.LicensePlate}";
-                ViewData["TripTime"] = $"{selectedTrip.DepartureTime:g} → {selectedTrip.DepartureTime:g}";
-                return View("CreateWithPreselectedTrip", new TripDriverAssignment { TripId = tripId.Value });
+                ViewData["TripSelectList"] = new SelectList(trips, "Id", "Name");
+                return View();   
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }
-
-            // No preselected trip — show dropdown
-            var trips = await _context.Trips
-                .Include(t => t.Route).ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
-                .Include(t => t.Vehicle)
-                .ToListAsync();
-
-            var tripSelectList = trips.Select(t => new
-            {
-                t.Id,
-                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
-            }).ToList();
-
-            ViewData["TripSelectList"] = new SelectList(tripSelectList, "Id", "Name");
-            return View();
         }
 
         // POST: Admin/TripDriverAssignment/Create
@@ -138,69 +150,77 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TripId,DriverId,DateAssigned")] TripDriverAssignment tripDriverAssignment)
+        public async Task<IActionResult> Create([Bind("Id,TripId,DriverId")] TripDriverAssignment tripDriverAssignment)
         {
-            var trips = await _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .Include(t => t.Vehicle)
-                .ToListAsync();
+            try {
+                var trips = await _context.Trips
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                    .Include(t => t.Vehicle)
+                    .ToListAsync();
 
-            tripDriverAssignment.DateAssigned = DateTime.Now;
+                tripDriverAssignment.DateAssigned = DateTime.Now;
+                tripDriverAssignment.LastUpdated = DateTime.Now;
+                if (ModelState.IsValid)
+                {
+                    _context.Add(tripDriverAssignment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(tripDriverAssignment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var tripSelectList = trips.Select(t => new
+                {
+                    t.Id,
+                    Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+                }).ToList();
+
+                ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
+                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+
+                return View(tripDriverAssignment);   
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }
-
-            var tripSelectList = trips.Select(t => new
-            {
-                t.Id,
-                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
-            }).ToList();
-
-            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
-
-            return View(tripDriverAssignment);
         }
 
         // GET: Admin/TripDriverAssignment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
+            try {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var tripDriverAssignment = await _context.TripDriverAssignments.FindAsync(id);
+                if (tripDriverAssignment == null)
+                {
+                    return NotFound();
+                }
+
+                var trips = await _context.Trips
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                    .Include(t => t.Vehicle)
+                    .ToListAsync();
+
+                var tripSelectList = trips.Select(t => new
+                {
+                    t.Id,
+                    Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+                }).ToList();
+
+                ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name", tripDriverAssignment.TripId);
+                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+
+                return View(tripDriverAssignment);
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }
-
-            var tripDriverAssignment = await _context.TripDriverAssignments.FindAsync(id);
-            if (tripDriverAssignment == null)
-            {
-                return NotFound();
-            }
-
-            var trips = await _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .Include(t => t.Vehicle)
-                .ToListAsync();
-
-            var tripSelectList = trips.Select(t => new
-            {
-                t.Id,
-                Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
-            }).ToList();
-
-            ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name", tripDriverAssignment.TripId);
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
-
-            return View(tripDriverAssignment);
         }
 
         // POST: Admin/TripDriverAssignment/Edit/5
@@ -208,56 +228,69 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TripId,DriverId,DateAssigned")] TripDriverAssignment tripDriverAssignment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TripId,DriverId")] TripDriverAssignment tripDriverAssignment)
         {
-            if (id != tripDriverAssignment.Id)
+            try
             {
-                return NotFound();
-            }
+                if (id != tripDriverAssignment.Id)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                tripDriverAssignment.LastUpdated = DateTime.Now;
+
+                if (ModelState.IsValid)
                 {
                     _context.Update(tripDriverAssignment);
                     await _context.SaveChangesAsync();
+                    
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TripDriverAssignmentExists(tripDriverAssignment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+                ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Name", tripDriverAssignment.TripId);
+                
+                return View(tripDriverAssignment);
             }
-            ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Name", tripDriverAssignment.TripId);
-            return View(tripDriverAssignment);
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!TripDriverAssignmentExists(tripDriverAssignment.Id))
+                {
+                    return NotFound(ex.Message);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // GET: Admin/TripDriverAssignment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            try {
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var tripDriverAssignment = await _context.TripDriverAssignments
-                .Include(t => t.Driver)
-                .Include(t => t.Trip)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tripDriverAssignment == null)
-            {
-                return NotFound();
-            }
+                var tripDriverAssignment = await _context.TripDriverAssignments
+                    .Include(t => t.Driver)
+                    .Include(t => t.Trip)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (tripDriverAssignment == null)
+                {
+                    return NotFound();
+                }
 
-            return View(tripDriverAssignment);
+                return View(tripDriverAssignment);
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
+            }
         }
 
         // POST: Admin/TripDriverAssignment/Delete/5
@@ -265,19 +298,59 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tripDriverAssignment = await _context.TripDriverAssignments.FindAsync(id);
-            if (tripDriverAssignment != null)
-            {
-                _context.TripDriverAssignments.Remove(tripDriverAssignment);
-            }
+            try {
+                var tripDriverAssignment = await _context.TripDriverAssignments.FindAsync(id);
+                if (tripDriverAssignment != null)
+                {
+                    _context.TripDriverAssignments.Remove(tripDriverAssignment);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
+            }
         }
 
         private bool TripDriverAssignmentExists(int id)
         {
             return _context.TripDriverAssignments.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> CheckTrips() {
+            try {
+                // Get all trips that are not assigned and are in "Stand By" status
+                var unassignedTrips = await _context.Trips
+                    .Where(t => t.Status == "Stand By" && 
+                           !_context.TripDriverAssignments.Any(a => a.TripId == t.Id))
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                    .Include(t => t.Vehicle)
+                    .ToListAsync();
+
+                if (!unassignedTrips.Any()) {
+                    return Json(new {
+                        success = false,
+                        message = "No available trips to assign. All trips are either assigned or not in 'Stand By' status."
+                    });
+                }
+
+                // Return success with trip count
+                return Json(new {
+                    success = true,
+                    message = $"Found {unassignedTrips.Count} available trip(s) to assign.",
+                    tripCount = unassignedTrips.Count
+                });
+            }
+            catch (Exception ex) {
+                // Log the exception here if you have logging configured
+                return Json(new {
+                    success = false,
+                    message = "An error occurred while checking available trips." + ex.Message
+                });
+            }
         }
     }
 }

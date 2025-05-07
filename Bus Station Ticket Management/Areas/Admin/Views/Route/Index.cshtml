@@ -86,51 +86,56 @@
     </div>
 </div>
 
-@section Scripts {
+@section Styles{
     <link rel="stylesheet" href="~/css/Index.css">
+}
+
+@section Scripts {
     <script src="~/js/table.js"></script>
     <script src="~/js/initOSM.js"></script>
     <script>
+        // Handle row clicks
+        $('.clickable-row').on('click', function () {
+            var routeId = $(this).data('id');
+            
+            console.log(routeId);
+            $.ajax({
+                url: '/Admin/Route/DetailsPartial?id=' + routeId,
+                method: 'GET',
+                success: function (data) {
+                    $('#detailsOffcanvasBody').html(data);
+                    
+                    console.log(1);
+                    // Initialize map after showing
+                    setTimeout(async function() {
+                        var startLatitude = parseFloat($('#routeDetailsData').data('start-latitude'));
+                        var startLongitude = parseFloat($('#routeDetailsData').data('start-longitude'));
+                        var endLatitude = parseFloat($('#routeDetailsData').data('end-latitude'));
+                        var endLongitude = parseFloat($('#routeDetailsData').data('end-longitude'));
+                        var startName = $('#routeDetailsData').data('start-name');
+                        var endName = $('#routeDetailsData').data('end-name');
+
+                        await initializeMap(startLatitude, startLongitude, startName, false);
+                        const { startLocation, endLocation } = await addRouteAndTime(startLatitude, startLongitude, endLatitude, endLongitude);
+                        
+                        if (startLocation && endLocation) {
+                            $('#startAddress').text(startLocation.display_name);
+                            console.log($('#startAddress').text);
+                            $('#endAddress').text(endLocation.display_name);
+                            console.log($('#endAddress').text);
+                        } else {
+                            console.warn(startLocation);
+                            console.warn(endLocation);
+                        }
+                    }, 100);
+                }
+            });
+        });
+
         $(document).ready(function () {
             // Initialize Offcanvas
             const offcanvasEl = document.getElementById('detailsOffcanvas');
-            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
-
-            // Handle row clicks
-            $('.clickable-row').on('click', function () {
-                var routeId = $(this).data('id');
-                
-                $.ajax({
-                    url: '/Admin/Route/DetailsPartial?id=' + routeId,
-                    method: 'GET',
-                    success: function (data) {
-                        $('#detailsOffcanvasBody').html(data);
-                        
-                        // Initialize map after showing
-                        setTimeout(async function() {
-                            var startLatitude = parseFloat($('#routeDetailsData').data('start-latitude'));
-                            var startLongitude = parseFloat($('#routeDetailsData').data('start-longitude'));
-                            var endLatitude = parseFloat($('#routeDetailsData').data('end-latitude'));
-                            var endLongitude = parseFloat($('#routeDetailsData').data('end-longitude'));
-                            var startName = $('#routeDetailsData').data('start-name');
-                            var endName = $('#routeDetailsData').data('end-name');
-
-                            await initializeMap(startLatitude, startLongitude, startName);
-                            const { startLocation, endLocation } = await addRouteAndTime(startLatitude, startLongitude, endLatitude, endLongitude);
-                            
-                            if (startLocation && endLocation) {
-                                $('#startAddress').text(startLocation.display_name);
-                                console.log($('#startAddress').text);
-                                $('#endAddress').text(endLocation.display_name);
-                                console.log($('#endAddress').text);
-                            } else {
-                                console.warn(startLocation);
-                                console.warn(endLocation);
-                            }
-                        }, 1500);
-                    }
-                });
-            });
+            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);    
         });
     </script>
 }

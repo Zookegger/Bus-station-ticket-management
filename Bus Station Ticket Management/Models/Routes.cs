@@ -25,9 +25,10 @@ namespace Bus_Station_Ticket_Management.Models
         [Required]
         public int Price { get; set; }
 
-        //public int distance_km;
-        //public int estimated_duration;
-        //public DateTime CreatedAt { get; set; }
-        //public DateTime LastUpdatedAt { get; set; }
+        [DisplayName("Distance")]
+        public double Distance { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime LastUpdatedAt { get; set; }
     }
 }

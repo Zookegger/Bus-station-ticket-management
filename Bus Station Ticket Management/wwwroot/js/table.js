@@ -44,6 +44,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		"#detailsOffcanvasBody"
 	);
 
+	// Initial call to adjust visibility
+    adjustButtonVisibility();
+
+    // Adjust visibility on window resize (optional)
+    window.addEventListener("resize", function () {
+        adjustButtonVisibility();
+    });
+    
+	tippy("[data-tippy-content]", {
+		placement: "top",
+		theme: "light",
+	});
+
 	// Function to check if the table height is too small and toggle button visibility
     function adjustButtonVisibility() {
         const table = document.querySelector("#DataTable");
@@ -69,140 +82,129 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }, 100); // Wait briefly to ensure rows are fully rendered
     }
-
-    // Initial call to adjust visibility
-    adjustButtonVisibility();
-
-    // Adjust visibility on window resize (optional)
-    window.addEventListener("resize", function () {
-        adjustButtonVisibility();
-    });
     
-	tippy("[data-tippy-content]", {
-		placement: "top",
-		theme: "light",
-	});
-});
+	function initializeDataTable(tableName, tableTitle, selector, options) {
+		const defaultOptions = {
+			ordering: true,
+			colReorder: true,
+			paging: true,
+			searching: true,
+			info: true,
+			filter: true,
+			responsive: false,
+			autoWidth: true,
+			deferRender: true,
+			lengthChange: true,
+			lengthMenu: [
+				[10, 25, 50, 100, -1],
+				[10, 25, 50, 100, 'All']
+			],
+			pageLength: -1,
+			processing: true,
+			scrollX: false,
+			scrollY: "600px",
+			scrollCollapse: true,
+			stateSave: false,
+			language: {
+				search: 'Search:',
+				lengthMenu: "Show _MENU_ entries",
+				info: "_START_ to _END_ of _TOTAL_ entries",
+			},
+			dom:
+				"<'#tableLayoutHeader.row my-3 px-3 w-100' \
+					<'#showEntries.col-5 col-sm-12 col-md-5 d-flex align-items-center justify-content-start px-0' l> \
+					<'#searchBar.col-5 col-sm-10 col-md-5 d-flex align-items-center justify-content-sm-start justify-content-end px-0 pe-md-2' f> \
+					<'#moreButtons.col-2 col-sm-2 col-md-2 d-flex align-items-center justify-content-end px-0 ps-md-2' B> \
+				>" +
+				
+				"<'#tableLayoutMain.px-3' rt>" +
 
-function initializeDataTable(tableName, tableTitle, selector, options) {
-	const defaultOptions = {
-		ordering: true,
-		paging: true,
-		searching: true,
-		info: true,
-		filter: true,
-		responsive: false,
-		autoWidth: true,
-		deferRender: true,
-		lengthChange: true,
-		lengthMenu: [10, 25, 50, 100],
-		pageLength: 10,
-		processing: true,
-		scrollX: false,
-		scrollY: "600px",
-		scrollCollapse: true,
-		stateSave: false,
-		language: {
-			search: `Search for ${tableTitle}:`,
-			lengthMenu: "Show _MENU_ entries",
-			info: "_START_ to _END_ of _TOTAL_ entries",
-		},
-		dom:
-			"<'row my-3 px-3' \
-                <'col-12 col-sm-12 col-md-4 d-flex align-items-center justify-content-start px-0'l> \
-                <'col-12 col-sm-10 col-md-7 d-flex align-items-center justify-content-sm-start justify-content-start px-0 pe-md-2'f> \
-                <'col-12 col-sm-2 col-md-1 d-flex align-items-center justify-content-end px-0 ps-md-2'B> \
-            >" +
-			"<'px-3'rt>" +
-			"<'row px-3 py-3'" +
-			"<'col-md-6'i>" +
-			"<'col-md-6'p>" +
-			">",
-		buttons: [
-			{
-				extend: "collection",
-				text: '<i class="fa fa-ellipsis-h"></i>',
-				className: "btn btn-outline-secondary",
-				attr: {
-					"data-tippy-content": "More actions",
+				"<'#tableLayoutFooter.row px-3 py-3' \
+					<'col-md-6' i> \
+					<'col-md-6' p> \
+				>",
+			buttons: [
+				{
+					extend: "collection",
+					text: '<i class="fa fa-ellipsis-h"></i>',
+					className: "btn btn-outline-secondary",
+					attr: {
+						"data-tippy-content": "More actions",
+					},
+					buttons: [
+						{
+							extend: "copy",
+							text: '<i class="fa-solid fa-copy me-1"></i> Copy',
+							attr: { "data-tippy-content": "Copy table data" },
+							exportOptions: { columns: ':not(:last-child)' },
+						},
+						{
+							extend: "csv",
+							text: '<i class="fa-solid fa-file-csv me-1"></i> CSV',
+							attr: { "data-tippy-content": "Export to CSV" },
+							exportOptions: { columns: ':not(:last-child)' },
+						},
+						{
+							extend: "excel",
+							text: '<i class="fa-solid fa-file-excel me-1"></i> Excel',
+							attr: { "data-tippy-content": "Export to Excel" },
+							exportOptions: { columns: ':not(:last-child)' },
+						},
+						{
+							extend: "pdf",
+							text: '<i class="fa-solid fa-file-pdf me-1"></i> PDF',
+							attr: { "data-tippy-content": "Export to PDF" },
+							exportOptions: { columns: ':not(:last-child)' },
+						},
+						{
+							extend: "print",
+							text: '<i class="fa-solid fa-print me-1"></i> Print',
+							attr: { "data-tippy-content": "Print table data" },
+							exportOptions: { columns: ':not(:last-child)' },
+						},
+					],
 				},
-				buttons: [
-					{
-						extend: "copy",
-						text: "Copy",
-						attr: { "data-tippy-content": "Copy table data" },
-                        exportOptions: { columns: ':not(:last-child)' },
-					},
-					{
-						extend: "csv",
-						text: "CSV",
-						attr: { "data-tippy-content": "Export to CSV" },
-                        exportOptions: { columns: ':not(:last-child)' },
-					},
-					{
-						extend: "excel",
-						text: "Excel",
-						attr: { "data-tippy-content": "Export to Excel" },
-                        exportOptions: { columns: ':not(:last-child)' },
-					},
-					{
-						extend: "pdf",
-						text: "PDF",
-						attr: { "data-tippy-content": "Export to PDF" },
-                        exportOptions: { columns: ':not(:last-child)' },
-					},
-					{
-						extend: "print",
-						text: "Print",
-						attr: { "data-tippy-content": "Print table data" },
-                        exportOptions: { columns: ':not(:last-child)' },
-					},
-				],
-			},
-		],
-	};
-	// console.log(tableName);
+			],
+		};
+		// console.log(tableName);
 
-	if (tableName !== "Revenue") {
-		defaultOptions.columnDefs = [
-			{
-				targets: -1,
-				orderable: false,
-			},
-		];
-	}
-
-	$(selector).DataTable($.extend(true, {}, defaultOptions, options));
-}
-
-function initializeRowClickHandler(
-	tableSelector,
-	detailsUrl,
-	offcanvasSelector,
-	offcanvasBodySelector
-) {
-	$(tableSelector).on("click", ".clickable-row", function () {
-		const id = $(this).data("id");
-		// console.log(detailsUrl);
-		if (!id) {
-			alert("No ID found! Make sure data-id is set properly.");
-			return;
+		if (tableName !== "Revenue") {
+			defaultOptions.columnDefs = [
+				{
+					targets: -1,
+					orderable: false,
+				},
+			];
 		}
 
-		$(offcanvasBodySelector).html(
-			'<div class="text-center p-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
-		);
+		$(selector).DataTable($.extend(true, {}, defaultOptions, options));
+	}
 
-		$.get(`${detailsUrl}?id=${id}`, function (data) {
-			$(offcanvasBodySelector).html(data);
-			const offcanvas = new bootstrap.Offcanvas(
-				document.querySelector(offcanvasSelector)
-			);
-			offcanvas.show();
-		}).fail(function () {
+	function initializeRowClickHandler(tableSelector, detailsUrl, offcanvasSelector, offcanvasBodySelector) {
+		$(tableSelector).on("click", ".clickable-row", function () {
+			const id = $(this).data("id");
+			// console.log(detailsUrl);
+			if (!id) {
+				alert("No ID found! Make sure data-id is set properly.");
+				return;
+			}
+
 			$(offcanvasBodySelector).html(
-				`<div class="alert alert-danger">Failed to load ${tableTitle} details.</div>`
+				'<div class="text-center p-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
 			);
+
+			const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.querySelector(offcanvasSelector), {
+				toggle: true,
+			});
+			offcanvas.show();
+			
+			$.get(`${detailsUrl}?id=${id}`, function (data) {
+				$(offcanvasBodySelector).html(data);
+			}).fail(function () {
+				$(offcanvasBodySelector).html(
+					`<div class="alert alert-danger">Failed to load ${tableTitle} details.</div>`
+				);
+			});
 		});
-	});
-}
+	}
+});

@@ -150,10 +150,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             if (ModelState.IsValid) {
                 try {
-                    var (lat, lon) = await GetCoordinatesFromAddress(location.Address);
-                    location.Longitude = lon;
-                    location.Latitude = lat;
-
                     _context.Update(location);
                     await _context.SaveChangesAsync();
                 }

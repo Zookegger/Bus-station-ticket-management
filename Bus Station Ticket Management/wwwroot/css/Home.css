@@ -2,7 +2,8 @@
     .popover {
         display: flex;
         flex-direction: column;
-        width: 100vw;
+        width: 100vw !important;
+        height: 100vh !important;
         min-height: 100vh !important;
         max-height: 100vh !important;
         transform: none !important;
@@ -29,6 +30,16 @@
     }
 }
 
+.popover {
+    width: 40vw;
+}
+
+.popover-body {
+    max-height: 50vh;
+}
+#location-suggestions {
+    max-height: 30vh;
+}
 
 .custom-popover {
     --bs-popover-max-width: 100vw;
@@ -38,6 +49,7 @@
     --bs-popover-body-padding-x: 1rem;
     --bs-popover-body-padding-y: .5rem;
 }
+
 @media (max-width: 768px) {
     .background-img, .background-img::before {
         left: 50%;

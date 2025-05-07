@@ -1,15 +1,27 @@
 .dt-search {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     flex: 1;
 }
 
 .dt-search > input {
     flex: 1;
+    max-width: 300px;
 }
 
-.dt-buttons {
-    justify-content: flex-end;
+#searchBar {
+    flex: 1;
+}
+
+#moreButtons {
+    /* margin: 0 !important; */
+    max-width: 59.55px !important;
+    max-height: 42.25px;
+}
+
+#moreButtons > .dt-buttons {
+    max-width: 59.55px !important;
 }
 
 .dt-info {
@@ -38,4 +50,8 @@ div.dt-button-collection {
 	.table th {
 		font-size: 21px !important;
 	}
+
+    .dt-search {
+        justify-content: flex-start !important;
+    }
 }

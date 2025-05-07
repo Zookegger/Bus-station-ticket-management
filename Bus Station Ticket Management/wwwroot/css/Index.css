@@ -17,9 +17,10 @@ th {
 .action-buttons .dropdown {
     justify-content: flex-end;
 }
-.offcanvas {
+
+/* .offcanvas {
     padding-right: 1rem;
-}
+} */
 
 .btn-close {
     padding: 16px !important;

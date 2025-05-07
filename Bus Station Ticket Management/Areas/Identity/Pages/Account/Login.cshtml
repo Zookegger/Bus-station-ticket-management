@@ -7,7 +7,7 @@
 <div class="pb-3">
     <div class="card shadow mx-auto" style="max-width: 500px;">
         <div class="card-header bg-success-subtle bg-gradient">
-            <h1 class="mb-0 fw-bolder text-center text-dark">@ViewData["Title"]</h1>
+            <h1 class="mb-0 fw-bolder text-center text-dark fs-2">@ViewData["Title"]</h1>
         </div>
 
         <div class="card-body p-4">
@@ -56,16 +56,16 @@
                     <a asp-page="./ForgotPassword" class="prevent-select">Forgot your password?</a>
                 </div>
 
-                <div class="d-grid gap-2">
+                <div class="row gap-2 w-100 mx-auto">
                     <button id="login-submit" type="submit"
-                        class="btn btn-lg btn-primary d-flex align-items-center gap-4">
-                        <i class="fas fa-sign-in"></i>
-                        <span class="fw-bold flex-fill">Log in</span>
+                        class="col btn btn-lg btn-primary d-flex align-items-center gap-4">
+                        <i class="fas fa-sign-in d-flex justify-content-center align-items-center"></i>
+                        <span class="flex-grow-1 py-auto fw-bold flex-fill fs-5">Log in</span>
                     </button>
-                    <a class="btn btn-lg btn-secondary d-flex align-items-center gap-4" role="button"
+                    <a class="col btn btn-lg btn-secondary d-flex align-items-center gap-4" role="button"
                         asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
                         <i class="fas fa-user-plus"></i>
-                        <span class="fw-bold flex-fill">Register</span>
+                        <span class="flex-grow-1 fw-bold flex-fill fs-5">Register</span>
                     </a>
                 </div>
             </form>

@@ -4,39 +4,6 @@
     ViewData["Title"] = "Create Route";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-@* 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Are you sure you want to delete this?</h4>
-
-        <dl class="row mt-3">
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.StartId)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @Html.DisplayFor(model => model.StartLocation.Name)
-            </dd>
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.DestinationId)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @Html.DisplayFor(model => model.DestinationLocation.Name)
-            </dd>
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.Price)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", Model.Price)
-            </dd>
-        </dl>
-    </div>
-    <form asp-action="Delete" class="card-footer form-group d-flex justify-content-between">
-        <input type="hidden" asp-for="Id" />
-        <a role="button" class="btn btn-outline-secondary btn-lg" asp-action="Index">Back to List</a>
-        <input type="submit" value="Delete" class="btn btn-danger btn-lg" />
-    </form>
-</div> *@
-
 
 <div class="card">
     <div class="card-header bg-success-subtle"><h2>@ViewData["Title"]</h2></div>
@@ -59,11 +26,26 @@
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" placeholder="..VND"/>
+                <!-- Input for smaller screens -->
+                <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall" class="form-control d-md-none d-block" placeholder="..VND"/>
+                <!-- Input for larger screens -->
+                <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block" placeholder="..VND"/>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="Distance">
+
+            <div id="map" style="height: 400px;"></div>
+
         </form>
     </div>
+    @* <div id="routeDetailsData"
+        data-start-name="@Model?.StartLocation.Name"
+        data-start-latitude="@Model?.StartLocation.Latitude"
+        data-start-longitude="@Model?.StartLocation.Longitude"
+        data-end-name="@Model?.DestinationLocation.Name"
+        data-end-latitude="@Model?.DestinationLocation.Latitude"
+        data-end-longitude="@Model?.DestinationLocation.Longitude">
+    </div> *@
     <div class="card-footer form-group d-flex justify-content-between">
         <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
         <input type="submit" form="createRoute" value="Save" class="btn btn-lg btn-primary" />
@@ -71,7 +53,87 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/initOSM.js"></script>
+
+    <script>
+        $(document).ready(GetRouteMapData);
+
+        async function GetRouteMapData() {
+            let startName = $('#StartId option:selected').text();
+            let destinationName = $('#DestinationId option:selected').text();
+
+
+            if (startName && destinationName) {
+                let startData = await searchLocationWithResult(startName);
+                let destinationData = await searchLocationWithResult(destinationName);
+                console.log(startData);
+                console.log(`${startData.lat} + ${startData.lng}`);
+                console.log(`${destinationData.lat} + ${destinationData.lng}`);
+
+                if (startData && destinationData) {
+                    await initializeMap(startData.lat, startData.lng, startData.name, false);
+                    
+                    setTimeout(async () => {
+                        await addRouteAndTime(
+                            startData.lat,
+                            startData.lng,
+                            destinationData.lat,
+                            destinationData.lng,
+                            true
+                        );
+                    }, 500);
+                }
+            }
+        }
+
+        $('.route-select').on('change', GetRouteMapData);
+                
+        // Price input for smaller screens
+        const priceInputSmall = document.getElementById('priceInputSmall');
+        // Price input for larger screens
+        const priceInputLarge = document.getElementById('priceInputLarge');
+
+        // Function to handle input formatting
+        function formatPriceInput(inputElement) {
+            inputElement.addEventListener('input', function (e) {
+                let position = this.selectionStart;
+                let oldLength = this.value.length;
+
+                // Remove all non-digit characters (e.g., dots)
+                let rawValue = this.value.replace(/\D/g, '');
+
+                // Format with dot separators
+                let formatted = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                this.value = formatted;
+
+                // Adjust cursor position
+                let newLength = this.value.length;
+                position += newLength - oldLength;
+                this.setSelectionRange(position, position);
+            });
+        }
+
+        function fillNumber(inputElement) {
+            inputElement.addEventListener('input', function (e) {
+                if (inputElement === priceInputSmall)
+                    priceInputLarge.value = priceInputSmall.value;
+                else if (inputElement === priceInputLarge)
+                    priceInputSmall.value = priceInputLarge.value; 
+            });
+        }
+        
+        // Call the function for both inputs
+        formatPriceInput(priceInputSmall);
+        formatPriceInput(priceInputLarge);
+        fillNumber(priceInputSmall);
+        fillNumber(priceInputLarge);
+
+        // Clean up before submission
+        document.getElementById('createRoute').addEventListener('submit', function () {
+            // Clean the value before submission for both inputs
+            priceInputSmall.value = priceInputSmall.value.replace(/\./g, '');
+            priceInputLarge.value = priceInputLarge.value.replace(/\./g, '');
+        });
+    </script>
 }

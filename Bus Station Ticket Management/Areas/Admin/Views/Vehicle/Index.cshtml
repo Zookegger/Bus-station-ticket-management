@@ -40,7 +40,7 @@
 <div class="table-responsive mb-3 shadow rounded">
     <table id="DataTable" class="table table-hover table-striped align-middle mb-0"
         data-details-url="/Admin/Vehicle/DetailsPartial" data-table-name="Vehicle" data-table-title="Vehicle">
-        <thead>
+        <thead style="position: sticky; top: 0">
             <tr>
                 <th>Name</th>
                 <th>License Plate</th>
@@ -95,6 +95,7 @@
         </tbody>
     </table>
 </div>
+
 <div class="offcanvas offcanvas-end p-0" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
     style="width: 35%; min-width: 530px;">
     <div class="offcanvas-header bg-secondary-subtle">
@@ -106,10 +107,12 @@
     </div>
 </div>
 
+@section Styles{
+    <link rel="stylesheet" href="~/css/Index.css">
+}
 
 @section Scripts {
     <script src="~/js/table.js"></script>
-    <link rel="stylesheet" href="~/css/Index.css">
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const dataTable = $("#DataTable").DataTable();

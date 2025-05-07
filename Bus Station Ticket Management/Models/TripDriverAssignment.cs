@@ -21,5 +21,8 @@ namespace Bus_Station_Ticket_Management.Models
 
         [Required] [ValidateNever] [DisplayName("Date Assigned")]
         public DateTime DateAssigned { get; set; }
+        
+        [ValidateNever] [DisplayName("Last Updated")]
+        public DateTime LastUpdated { get; set; }
     }
 }

@@ -24,8 +24,8 @@
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 
-                <input type="hidden" id="Latitude" asp-for="Latitude">
-                <input type="hidden" id="Longitude" asp-for="Longitude">
+                <input type="hidden" asp-for="Latitude">
+                <input type="hidden" asp-for="Longitude">
             </form>
         </div>
         <div class="card-footer d-flex justify-content-between mt-3">
@@ -47,8 +47,22 @@
     <script>
         $(document).ready(function() {
             let address = document.getElementById('searchName').value;
-            console.log(address);
             searchLocation(address);
+            
+            console.warn($('#Latitude').val());
+            console.warn($('#Longitude').val());
+
+            $(`#searchName`).on('change', function() {
+                console.log(address);
+                console.warn($('#Latitude').val());
+                console.warn($('#Longitude').val());
+            });
+
+            document.getElementById('searchName').addEventListener("change", (e) => {
+                console.log(address);
+                console.warn($('#Latitude').val());
+                console.warn($('#Longitude').val());
+            });
         });
     </script>
 }

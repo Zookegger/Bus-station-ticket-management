@@ -11,70 +11,22 @@
 
 <h1 class="text-success fw-bold mb-4">Tickets</h1>
 
-<form asp-action="Index" method="get" class="mb-3" role="group">
-    <div class="form-group input-group" role="group">
-        <input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
-            placeholder="Search for tickets..." />
-        <button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
-                style="font-size: 18px"></i></button>
-    </div>
-    <div class="form-group input-group mt-3 gap-2" role="group">
-        <select class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
-            <option value="" disabled selected=@(ViewBag.SortBy == null ? "selected" : null)>Sort By ...</option>
-
-            <optgroup label="Sort by Customer">
-                <option value="customer_asc" selected=@(ViewBag.SortBy == "customer_asc" ? "selected" : null)>Customer Ascending
-                    ↑</option>
-                <option value="customer_desc" selected=@(ViewBag.SortBy == "customer_desc" ? "selected" : null)>Customer
-                    Descending ↓</option>
-            </optgroup>
-
-            <optgroup label="Sort by Start Location">
-                <option value="trip_StartLocation_asc" selected=@(ViewBag.SortBy == "trip_StartLocation_asc" ? "selected" :
-                    null)> Start Location Ascending ↑</option>
-                <option value="trip_StartLocation_desc" selected=@(ViewBag.SortBy == "trip_StartLocation_desc" ? "selected" : null)>Start Location Descending ↓</option>
-            </optgroup>
-
-            <optgroup label="Sort by Destination">
-                <option value="trip_DestinationLocation_asc" selected=@(ViewBag.SortBy == "trip_DestinationLocation_asc" ? "selected" : null)> Destination Ascending ↑</option>
-                <option value="trip_DestinationLocation_desc" selected=@(ViewBag.SortBy == "trip_DestinationLocation_desc" ? "selected" : null)> Destination Descending ↓</option>
-            </optgroup>
-
-            <optgroup label="Sort by Booking Date">
-                <option value="bookingDate_asc" selected=@(ViewBag.SortBy == "bookingDate_asc" ? "selected" : null)>Booking Date Ascending ↑</option>
-                <option value="bookingDate_desc" selected=@(ViewBag.SortBy == "bookingDate_desc" ? "selected" : null)>Booking Date Descending ↓</option>
-            </optgroup>
-
-            <optgroup label="Sort by Cancelation Time">
-                <option value="cancelationTime_asc" selected=@(ViewBag.SortBy == "cancelationTime_asc" ? "selected" : null)> Cancelation Time Ascending ↑</option>
-                <option value="cancelationTime_desc" selected=@(ViewBag.SortBy == "cancelationTime_desc" ? "selected" : null)> Cancelation Time Descending ↓</option>
-            </optgroup>
-        </select>
-
-        <div class="d-flex gap-2 align-items-center">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="IsPaid" name="IsPaid" value="true"
-                    @(ViewBag.IsPaid != null && (bool)ViewBag.IsPaid ? "checked" : "") onchange="this.form.submit()" />
-                <label class="form-check-label" for="IsPaid">
-                    Is Paid
-                </label>
-            </div>
-            <input type="hidden" name="IsPaid" value="false" />
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="IsCanceled" name="IsCanceled" value="true"
-                    @(ViewBag.IsCanceled != null && (bool)ViewBag.IsCanceled ? "checked" : "") onchange="this.form.submit()" />
-                <label class="form-check-label" for="IsCanceled">
-                    Is Canceled
-                </label>
-            </div>
-            <input type="hidden" name="IsCanceled" value="false" />
+<div class="form-group input-group mt-3 gap-2" role="group">
+    <div class="d-flex gap-2 align-items-center">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="IsPaid" name="IsPaid" value="true"/>
+            <label class="form-check-label" for="IsPaid">Is Paid</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="IsCanceled" name="IsCanceled" value="true"/>
+            <label class="form-check-label" for="IsCanceled">Is Canceled</label>
         </div>
     </div>
-</form>
+</div>
 
 <div class="table-responsive mb-3 shadow rounded">
-    <table class="table table-hover table-striped align-middle mb-0">
+    <table id="DataTable" class="table table-hover table-striped align-middle mb-0"
+        data-details-url="/Admin/Tickets/DetailsPartial" data-table-name="Tickets" data-table-title="Ticket">
         <thead style="position: sticky; top: 0">
             <tr>
                 <th>Customer</th>
@@ -90,7 +42,7 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                     <td>
                         @Html.DisplayFor(modelItem => item.User.FullName)
                     </td>
@@ -104,24 +56,45 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.BookingDate)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsPaid)
+                    <td data-search="@item.IsPaid" data-value="@item.IsPaid">
+                        @((item.IsPaid) ? "✔" : "❌")
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsCanceled)
+                    <td data-search="@item.IsCanceled" data-value="@item.IsCanceled">
+                        @((item.IsCanceled) ? "✔" : "❌")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CancelationTime)
                     </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i> 
-                                <span>Edit</span>
+                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none; min-width: 90px;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
+                                <i class="fa fa-edit"></i>
                             </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
-                                <i class="fa fa-trash"></i> 
-                                <span>Delete</span>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
+                                <i class="fa fa-trash"></i>
                             </a>
                         </div>
                     </td>
@@ -131,28 +104,75 @@
     </table>
 </div>
 
-<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-    @if (Model.Any())
-    {
-        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new {
-            page = pageNumber,
-            searchString = ViewBag.SearchString,
-            sortBy = ViewBag.SortBy,
-            IsPaid = ViewBag.IsPaid,
-            IsCanceled = ViewBag.IsCanceled
-        }),
-        new PagedListRenderOptions
-        {
-            UlElementClasses = new[] { "pagination", "justify-content-center" },
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            ActiveLiElementClass = "active",
-            LinkToPreviousPageFormat = "&laquo;",
-            LinkToNextPageFormat = "&raquo;"
-        })
-    }
-</nav>
+<div class="offcanvas offcanvas-end p-0" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 35%; min-width: 530px;">
+    <div class="offcanvas-header bg-secondary-subtle">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Vehicle Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body row h-100" id="detailsOffcanvasBody">
+
+    </div>
+</div>
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/Index.css">
+}
 
 @section Scripts {
     <script src="~/js/table.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dataTable = $("#DataTable").DataTable();
+            $('#filterByType').on('change', function() {
+                const selectedType = $(this).val();
+                const typeColumnIndex = 3;
+                
+                console.log(selectedType);
+
+                if (selectedType) {
+                    dataTable.column(typeColumnIndex).search('^' + selectedType + '$', true, false).draw();
+                } else {
+                    dataTable.column(typeColumnIndex).search('').draw();
+                }
+            });
+
+            function ticketStatusCheck() {
+
+                $('#IsCanceled').on('change', function (e) {
+                    const IsCanceled = $('#IsCanceled').is(':checked');
+                    console.log(IsCanceled);
+                    if (IsCanceled) {
+                        dataTable.column(5).search('^True$', true, false).draw();
+                    } else {
+                        dataTable.column(5).search('').draw();
+                    }
+                });
+
+                $('#IsPaid').on('change', function (e) {
+                    const isPaid = $('#IsPaid').is(':checked');
+                    console.log(isPaid);
+                    if (isPaid) {
+                        dataTable.column(4).search('^True$', true, false).draw();
+                    } else {
+                        dataTable.column(4).search('').draw();
+                    }
+                });
+            }
+
+            $('#filterByStatus').on('valuechange', function() {
+                const selectedStatus = $(this).val();
+                const statusColumnIndex = 2;
+                
+                console.log(selectedStatus);
+
+                if (selectedStatus) {
+                    dataTable.column(statusColumnIndex).search('^' + selectedStatus + '$', true, false).draw();
+                } else {
+                    dataTable.column(statusColumnIndex).search('').draw();
+                }
+            });
+            ticketStatusCheck();
+        });
+    </script>
 }

@@ -19,8 +19,6 @@
         <option value="Employee">Staff</option>
         <option value="Drivers">Driver</option>
         <option value="Conductor">Conductor</option>
-        <option value="Customer">Customer</option>
-        <option value="">No Role</option>
     </select>
 </div>
 
@@ -33,7 +31,7 @@
         <thead style="position: sticky; top: 0">
             <tr>
                 <th style="min-width: 240px; max-width: 440px;">UserName</th>
-                <th style="min-width: 240px; max-width: 440px;">Full Name</th>
+                <th style="min-width: 200px; max-width: 440px;">Full Name</th>
                 <th>Email</th>
                 <th style="max-width: 120px;">Phone Number</th>
                 <th>Role</th>
@@ -103,9 +101,11 @@
     </div>
 </div>
 
+@section Styles{
+    <link rel="stylesheet" href="~/css/Index.css">
+}
 
 @section Scripts {
-    <link rel="stylesheet" href="~/css/Index.css">
     <script src="~/js/table.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

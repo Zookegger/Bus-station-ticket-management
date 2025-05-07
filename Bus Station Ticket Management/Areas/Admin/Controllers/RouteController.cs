@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Newtonsoft.Json;
 using X.PagedList.EF;
 using X.PagedList.Extensions;
 
@@ -83,7 +84,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartId,DestinationId,Price")] Routes routes)
+        public async Task<IActionResult> Create([Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
         {
             if (routes.StartId == routes.DestinationId)
             {
@@ -103,6 +104,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
             ViewData["StartLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
             ViewData["DestinationLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+
             return View(routes);
         }
 

@@ -7,7 +7,6 @@
     <title>@ViewData["Title"] - Bus Station Ticket Management - Admin</title>
     <link rel="icon" href="/favicon.ico" sizes="1024x1024" type="image/x-icon">
 
-
     <!-- Import stylesheet -->
     <!-- Site & Shared Styles -->
     <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
@@ -43,16 +42,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
     <!-- DataTables.js -->
-    <link
-        href="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
-        rel="stylesheet" integrity="sha384-lyhIvAFlxjH4aljUendRs90/ODPCV1A1wAjmcmP1kjBUQKrs6MC7p5Eaey1Bza/n"
-        crossorigin="anonymous">
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-AWSLQaLuKmq5XKJHGvvjQzw2Jnn03K1sgvkxCi+eYpHkXSvC+1RRfYXZHQ4teTF5" crossorigin="anonymous">
+    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.css"/> *@ <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 
 <body class="d-flex flex-column ">
     <!-- Header -->
-    <header class="shadow-sm d-md-none" style="position: sticky; top: 0;">
+    <header class="shadow-sm d-md-none" style="z-index: 9999;" style="position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Admin" asp-action="Index">
@@ -266,7 +265,7 @@
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#userMenu" aria-expanded="false"
                                 aria-controls="userMenu">
-                                <i class="bi bi-people me-2"></i>User
+                                <i class="fa-solid fa-users me-2"></i>User
                             </button>
                         </h2>
                         <div id="userMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
@@ -274,7 +273,12 @@
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
                                         <a class="nav-link text-white" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">
-                                            <i class="bi bi-person-circle me-2"></i>App Users
+                                            <i class="bi bi-people me-2"></i>App Users
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Customers" asp-action="Index">
+                                            <i class="bi bi-person-circle me-2"></i>Customers
                                         </a>
                                     </li>
                                     <li>
@@ -308,7 +312,7 @@
 
         <!-- Main Content -->
         <div class="d-flex h-100 flex-grow-1 bg-light" id="main-content">
-            <main role="main" class="container-fluid flex-grow-1 py-4 px-4">
+            <main role="main" class="container-fluid flex-grow-1 py-4 px-4" style="z-index: 0 !important;">
                 @RenderBody()
             </main>
         </div>
@@ -331,17 +335,11 @@
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
     <!-- DataTables -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
-        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
-        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
-        crossorigin="anonymous"></script>
-    <script
-        src="https://cdn.datatables.net/v/bs5/moment-2.29.4/jszip-3.10.1/dt-2.2.2/af-2.7.0/b-3.2.2/b-colvis-3.2.2/b-html5-3.2.2/b-print-3.2.2/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"
-        integrity="sha384-UhT82qWQzpn5GAgecdZVEWDAwtoe+azh0Xe2Gmkp4ed9PLszyFEhnf/CmpX/4jUh"
-        crossorigin="anonymous"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js" integrity="sha384-kBh7viGzGlI/hChKb1qG4d8DPeVAmZQjRUfKRgY87RKjZQJtrcVSlLNX0GEXsYCm" crossorigin="anonymous"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.js"></script> *@ <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
+    
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 
