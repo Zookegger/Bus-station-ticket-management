@@ -1,4 +1,5 @@
-﻿using Bus_Station_Ticket_Management.DataAccess;
+﻿using System.Data;
+using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,26 +87,42 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
         {
-            if (routes.StartId == routes.DestinationId)
-            {
-                ModelState.AddModelError(string.Empty, "Start location and destination can't be the same");
-            }
+            try {
+                if (routes.StartId == routes.DestinationId)
+                {
+                    ModelState.AddModelError(string.Empty, "Start location and destination can't be the same");
+                }
 
-            if (RouteExists(routes.StartId, routes.DestinationId))
-            {
-                ModelState.AddModelError("StartId", "Route already exists");
-            }
+                if (RouteExists(routes.StartId, routes.DestinationId))
+                {
+                    ModelState.AddModelError("StartId", "Route already exists");
+                }
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(routes);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["StartLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
-            ViewData["DestinationLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(routes);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }   
+                ViewData["StartLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewData["DestinationLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
 
-            return View(routes);
+                return View(routes);
+            } 
+            catch(DBConcurrencyException ex) {
+                ModelState.AddModelError($"Error: {ex.Message}", ex.ToString());
+            
+                ViewData["StartLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewData["DestinationLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+                return View(routes);
+            } 
+            catch (Exception ex) {
+                ModelState.AddModelError($"Error: {ex.Message}", ex.ToString());
+
+                ViewData["StartLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewData["DestinationLocation"] = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+                return View(routes);
+            }
         }
 
         // GET: Route/Edit/5
@@ -133,55 +150,67 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
         {
-            if (id != routes.Id)
+            
+            try
             {
-                return NotFound();
-            }
-
-            if (routes.StartId == routes.DestinationId)
-            {
-                ModelState.AddModelError("ModelOnly", "Start location and destination can't be the same");
-            }
-
-            var base_route = await _context.Routes.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
-
-            if (base_route == null)
-            {
-                return NotFound();
-            }
-
-            if (base_route.StartId != routes.StartId || base_route.DestinationId != routes.DestinationId)
-            {
-                if (RouteExists(routes.StartId, routes.DestinationId))
+                if (id != routes.Id)
                 {
-                    ModelState.AddModelError("StartId", "Route already exists");
+                    return NotFound();
                 }
-            }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (routes.StartId == routes.DestinationId)
                 {
+                    ModelState.AddModelError("ModelOnly", "Start location and destination can't be the same");
+                }
+
+                var base_route = await _context.Routes.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+
+                if (base_route == null)
+                {
+                    return NotFound();
+                }
+
+                if (base_route.StartId != routes.StartId || base_route.DestinationId != routes.DestinationId)
+                {
+                    if (RouteExists(routes.StartId, routes.DestinationId))
+                    {
+                        ModelState.AddModelError("StartId", "Route already exists");
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // routes.StartLocation = _context.Locations.FirstOrDefault(r => r.Id == routes.StartId);
+                    // routes.DestinationLocation = _context.Locations.FirstOrDefault(r => r.Id == routes.DestinationId);
+
                     _context.Update(routes);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RouteExists(routes.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.StartLocation = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
-            ViewBag.DestinationLocation = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
 
-            return View(routes);
+                ViewBag.StartLocation = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewBag.DestinationLocation = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+
+                return View(routes);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                ViewBag.StartLocation = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewBag.DestinationLocation = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+                if (!RouteExists(routes.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            } catch (Exception ex) {
+                ViewBag.StartLocation = new SelectList(_context.Locations, "Id", "Name", routes.StartId);
+                ViewBag.DestinationLocation = new SelectList(_context.Locations, "Id", "Name", routes.DestinationId);
+                ViewBag.ErrorMessage = ex.Message;
+                return View(routes);
+            }
         }
 
         // GET: Route/Delete/5

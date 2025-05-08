@@ -72,21 +72,25 @@
                     await initializeMap(startData.lat, startData.lng, startData.name, false);
                     
                     setTimeout(async () => {
-                        let routeData = await addRouteAndTime(
-                            startData.lat,
-                            startData.lng,
-                            destinationData.lat,
-                            destinationData.lng,
-                            true
-                        );
+                        try {
+                            let routeData = await addRouteAndTime(
+                                startData.lat,
+                                startData.lng,
+                                destinationData.lat,
+                                destinationData.lng,
+                                true
+                            );
 
-                        if (routeData?.route?.distance) {
-                            const distanceInKm = (routeData.route.distance / 1000).toFixed(2); // convert from meters to kilometers
-                            console.log("Distance (km):", distanceInKm);
-                            document.querySelector('input[name="Distance"]').value = distanceInKm;
+                            if (routeData && routeData.route && routeData.route.distance) {
+                                document.querySelector('input[name="Distance"]').value = routeData.route.distance;
+                            } else {
+                                document.querySelector('input[name="Distance"]').value = '';
+                                console.warn('Route data is missing or incomplete.');
+                            }
+                        } catch (error) {
+                            document.querySelector('input[name="Distance"]').value = '';
+                            console.error('Error calculating route:', error);
                         }
-
-                        document.querySelector('input[name="Distance"]').value = routeData.route.distance;
                     }, 500);
                 }
             }

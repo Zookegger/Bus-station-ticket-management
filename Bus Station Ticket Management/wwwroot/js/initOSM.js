@@ -1,6 +1,9 @@
 let map;
 let marker;
 let debounceTimer;
+let currentRoute = null;
+let startMarker = null;
+let endMarker = null;
 let amount = 1;
 let language = 'vi';
 const baseUrl = `https://nominatim.openstreetmap.org/`;
@@ -68,13 +71,41 @@ function initializeMap(lat = 10.762622, lon = 106.660172, name, draggableMarker 
     }
 }
 
-function saveWithExpiry(key, data, ttlMinutes = 14400) {
+function cleanExpiredCache() {
+    const now = new Date().getTime();
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const item = localStorage.getItem(key);
+
+        try {
+            const data = JSON.parse(item);
+            if (data && data.expiry && now > data.expiry) {
+                console.log(`Data clear ${key}`);
+                localStorage.removeItem(key);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+}
+
+function saveWithExpiry(key, data, ttlMinutes = 2) {
     const now = new Date();
     const item = {
         value: data,
         expiry: now.getTime() + ttlMinutes * 60 * 1000
     }
-    localStorage.setItem(key, JSON.stringify(item));
+    try {
+        localStorage.setItem(key, JSON.stringify(item));
+    } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+            // Optionally: localStorage.clear(); // or remove oldest items
+            console.warn('LocalStorage quota exceeded, cannot cache:', key);
+        } else {
+            throw e;
+        }
+    }
 }
 
 function loadWithExpiry(key) {
@@ -315,19 +346,32 @@ async function addRouteAndTime(startLat, startLon, endLat, endLon, moveMarker = 
 }
 
 function drawRoute(data, moveMarker = false) {
+    if (currentRoute) {
+        map.removeLayer(currentRoute);
+        currentRoute = null;
+    }
+    if (startMarker) {
+        map.removeLayer(startMarker);
+        startMarker = null;
+    }
+    if (endMarker) {
+        map.removeLayer(endMarker);
+        endMarker = null;
+    }
+    
     const routeCoords = data.route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
-    L.polyline(routeCoords, { color: 'blue', weight: 4 }).addTo(map);
+    currentRoute = L.polyline(routeCoords, { color: 'blue', weight: 4 }).addTo(map);
 
     const { startLocation, endLocation } = data;
+    
     if (!startLocation || isNaN(startLocation.lat) || isNaN(startLocation.lon) ||
         !endLocation || isNaN(endLocation.lat) || isNaN(endLocation.lon)) {
         throw new Error("Invalid start or end location", startLocation, endLocation);
     }
-    
 
-    L.marker([startLocation.lat, startLocation.lon], { draggable: moveMarker })
+    startMarker = L.marker([startLocation.lat, startLocation.lon], { draggable: moveMarker })
         .addTo(map).bindPopup(`Start: ${startLocation.display_name}`);
-    L.marker([endLocation.lat, endLocation.lon], { draggable: moveMarker })
+    endMarker = L.marker([endLocation.lat, endLocation.lon], { draggable: moveMarker })
         .addTo(map).bindPopup(`End: ${endLocation.display_name}`);
 
     const duration = data.route.duration;

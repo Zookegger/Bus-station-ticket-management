@@ -136,6 +136,8 @@
             // Initialize Offcanvas
             const offcanvasEl = document.getElementById('detailsOffcanvas');
             const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);    
+        
+            setInterval(cleanExpiredCache, 35 * 1000); // every 35 seconds
         });
     </script>
 }
