@@ -2,6 +2,7 @@
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
@@ -63,6 +64,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Create
         public IActionResult Create()
         {
+            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleTypes, "Id", "Name");
             return View();
         }
 
@@ -71,17 +73,42 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring,TotalRow,TotalColumn")] VehicleType vehicleType)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,TotalSeats,TotalFlooring,TotalRow,TotalColumn,SeatsPerFloor")] VehicleType vehicleType)
         {
-            if (VehicleTypeExists(vehicleType.Name)) {
+            // Kiểm tra xem VehicleType đã tồn tại chưa
+            if (VehicleTypeExists(vehicleType.Name))
+            {
                 ModelState.AddModelError("Name", "This Vehicle Type already exists!");
             }
 
-            if (ModelState.IsValid) {
+            // Kiểm tra dữ liệu hợp lệ
+            if (ModelState.IsValid)
+            {
+                // Tính tổng số ghế từ SeatsPerFloor (nếu cần)
+                if (vehicleType.SeatsPerFloor != null)
+                {
+                    vehicleType.TotalSeats = vehicleType.SeatsPerFloor.Sum();
+                }
+
+                if(vehicleType.TotalFlooring > 0)
+                {
+                    if (vehicleType.TotalFlooring == 1)
+                    {
+                        vehicleType.TotalRow = (int)Math.Ceiling((double)vehicleType.TotalSeats / vehicleType.TotalColumn);
+                    }
+                    else
+                    {
+                        // Xe nhiều tầng: TotalRow = SeatsPerFloor[0] / TotalColumn
+                        vehicleType.TotalRow = (int)Math.Ceiling((double)vehicleType.SeatsPerFloor[0] / vehicleType.TotalColumn);
+                    }
+                }
+
                 _context.Add(vehicleType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleTypes, "Id", "Name", vehicleType.Id);
             return View(vehicleType);
         }
 

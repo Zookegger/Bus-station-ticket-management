@@ -267,20 +267,39 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Generate seats after saving trip
             var seats = new List<Seat>();
-            for (int f = 1; f <= vehicleType.TotalFlooring; f++) {
-                for (int r = 1; r <= vehicleType.TotalRow; r++)
+            
+
+            for (int f = 1; f <= vehicleType.TotalFlooring; f++)
+            {
+                // Lấy số ghế của tầng hiện tại
+                int seatsForFloor = vehicleType.SeatsPerFloor[f - 1];
+
+                // Tính số hàng và cột cần thiết dựa trên số ghế
+                // Giả sử sử dụng TotalColumn cố định, tính TotalRow
+                int columns = vehicleType.TotalColumn;
+                int rows = (int)Math.Ceiling((double)seatsForFloor / columns);
+
+                string prefix = f == 1 ? "A" : "B";
+
+                int seatNumber = 1;
+
+                for (int r = 1; r <= rows; r++)
                 {
-                    for (int c = 1; c <= vehicleType.TotalColumn; c++)
+                    for (int c = 1; c <= columns; c++)
                     {
-                        seats.Add(new Seat
+                        // Chỉ tạo ghế nếu chưa vượt quá số ghế của tầng
+                        if ((r - 1) * columns + c <= seatsForFloor)
                         {
-                            Row = r,
-                            Column = c,
-                            Floor = f,
-                            Number = $"F{f}R{r}C{c}",
-                            IsAvailable = true,
-                            TripId = trip.Id
-                        });
+                            seats.Add(new Seat
+                            {
+                                Row = r,
+                                Column = c,
+                                Floor = f,
+                                Number = $"{prefix}{seatNumber++}",
+                                IsAvailable = true,
+                                TripId = trip.Id
+                            });
+                        }
                     }
                 }
             }

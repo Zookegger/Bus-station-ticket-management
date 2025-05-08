@@ -13,7 +13,8 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Type Name")]
         public string Name { get; set; }
 
-        [DisplayName("Based Fare")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
+        [DisplayName("Based Fare")]
+        [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int Price { get; set; }
 
         [DisplayName("Total Seats")]
@@ -21,6 +22,8 @@ namespace Bus_Station_Ticket_Management.Models
 
         [DisplayName("Total Floorings")]
         public int TotalFlooring { get; set; }
+        [DisplayName("Seats Per Floor")]
+        public List<int> SeatsPerFloor { get; set; } = new List<int>();
 
         [DisplayName("Total Rows")]
         public int TotalRow { get; set; }

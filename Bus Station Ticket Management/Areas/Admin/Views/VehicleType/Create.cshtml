@@ -6,8 +6,8 @@
 }
 
 <div class="container">
-    <h1 class="text-success fw-bold mb-4">Create Vehicle</h1>
-    <h4 class="mb-3">Vehicle Details</h4>
+    <h1 class="text-success fw-bold mb-4">Create Vehicle Type</h1>
+    <h4 class="mb-3">Vehicle Type Details</h4>
     <hr />
 
     <div class="row">
@@ -19,38 +19,29 @@
 
                 <div class="form-group mb-3">
                     <label asp-for="Name" class="form-label">Name</label>
-                    <input asp-for="Name" class="form-control"
-                        placeholder="Enter vehicle type name (e.g., Electric Bus)" />
+                    <input asp-for="Name" class="form-control" placeholder="Enter vehicle type name (e.g., Double Decker Bus)" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label asp-for="Price" class="form-label">Price</label>
-                    <input asp-for="Price" class="form-control" placeholder="Enter base fare (e.g., 100000)" />
+                    <input asp-for="Price" class="form-control" type="number" min="0" placeholder="Enter base fare (e.g., 100000)" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label asp-for="TotalSeats" class="form-label">Total Seats</label>
-                    <input asp-for="TotalSeats" class="form-control" placeholder="Enter total seats (e.g., 42)" />
-                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
                     <label asp-for="TotalFlooring" class="form-label">Total Flooring</label>
-                    <input asp-for="TotalFlooring" class="form-control" placeholder="Enter total flooring (e.g., 3)" />
+                    <input asp-for="TotalFlooring" class="form-control" type="number" min="1" max="2" id="totalFlooring" placeholder="Enter total flooring (e.g., 1 or 2)" />
                     <span asp-validation-for="TotalFlooring" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="TotalRow" class="form-label">Total Rows</label>
-                    <input asp-for="TotalRow" class="form-control" placeholder="Enter number of rows (e.g., 7)" />
-                    <span asp-validation-for="TotalRow" class="text-danger"></span>
+                <div id="seatsPerFloorInputs" class="mb-3">
+                    <!-- Input động cho SeatsPerFloor sẽ được thêm bởi JavaScript -->
                 </div>
 
                 <div class="form-group mb-3">
                     <label asp-for="TotalColumn" class="form-label">Total Columns</label>
-                    <input asp-for="TotalColumn" class="form-control" placeholder="Enter number of columns (e.g., 6)" />
+                    <input asp-for="TotalColumn" class="form-control" type="number" min="1" placeholder="Enter number of columns (e.g., 6)" />
                     <span asp-validation-for="TotalColumn" class="text-danger"></span>
                 </div>
 
@@ -71,4 +62,46 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function () {
+            const totalFlooringInput = $('#totalFlooring');
+            const seatsPerFloorInputs = $('#seatsPerFloorInputs');
+
+            function updateSeatsPerFloorInputs() {
+                const totalFlooring = parseInt(totalFlooringInput.val()) || 0; // Lấy giá trị TotalFlooring, mặc định là 0
+                seatsPerFloorInputs.empty(); // Xóa các input hiện tại
+
+                // Chỉ tạo input nếu totalFlooring là số hợp lệ (1 hoặc 2)
+                if (totalFlooring >= 1 && totalFlooring <= 2) {
+                    for (let i = 1; i <= totalFlooring; i++) {
+                        seatsPerFloorInputs.append(`
+                            <div class="form-group mb-3">
+                                <label for="seatsFloor${i}" class="form-label">Seats for Floor ${i}</label>
+                                <input type="number" name="SeatsPerFloor[${i-1}]" id="seatsFloor${i}"
+                                       class="form-control seats-floor" min="1" required
+                                       placeholder="Enter seats for floor ${i} (e.g., 20)" />
+                                <span class="text-danger" id="errorFloor${i}"></span>
+                            </div>
+                        `);
+                    }
+                }
+
+                // Gán lại sự kiện change cho các input seats-floor
+                $('.seats-floor').on('change', function () {
+                    const seatsFloor1 = parseInt($('#seatsFloor1').val()) || 0;
+                    const seatsFloor2 = parseInt($('#seatsFloor2').val()) || 0;
+
+                    if (totalFlooring >= 2 && seatsFloor2 > seatsFloor1) {
+                        $('#errorFloor2').text('Seats for Floor 2 cannot exceed Floor 1.');
+                        $('#seatsFloor2').val(seatsFloor1);
+                    } else {
+                        $('#errorFloor2').text('');
+                    }
+                });
+            }
+
+            // Không gọi updateSeatsPerFloorInputs khi tải trang
+            totalFlooringInput.on('change', updateSeatsPerFloorInputs);
+        });
+    </script>
 }

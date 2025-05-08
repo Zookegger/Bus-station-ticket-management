@@ -76,51 +76,51 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
     options.SlidingExpiration = true;
-})
-.AddGoogle(options =>
-{
-    if (config is not null &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-    {
-        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
-        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-    }
-    else
-    {
-        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
-    }
-
-    options.CallbackPath = "/signin-google";
-
-    // // Request extra scopes for additional profile details.
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-
-    // // Request access to birthday, phone number, address, and gender information.
-    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
-
-    // options.SaveTokens = true;
-})
-.AddFacebook(options =>
-{
-    if (config is not null &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-    {
-        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
-        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-    }
-    else
-    {
-        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
-    }
-
-    options.CallbackPath = "/signin-facebook";
 });
+//.AddGoogle(options =>
+//{
+//    if (config is not null &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+//    {
+//        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
+//        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+//    }
+//    else
+//    {
+//        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
+//    }
+
+//    options.CallbackPath = "/signin-google";
+
+//    // // Request extra scopes for additional profile details.
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+//    // // Request access to birthday, phone number, address, and gender information.
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+//    // options.SaveTokens = true;
+//})
+//.AddFacebook(options =>
+//{
+//    if (config is not null &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+//    {
+//        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
+//        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+//    }
+//    else
+//    {
+//        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
+//    }
+
+//    options.CallbackPath = "/signin-facebook";
+//});
 
 // ==================== Identity ====================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
