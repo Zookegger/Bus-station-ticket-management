@@ -6,42 +6,145 @@
 }
 
 <div class="card">
-    <div class="card-header bg-success-subtle">
-        <h4>Edit Routes</h4>
-    </div>
+    <div class="card-header bg-success-subtle"><h2>@ViewData["Title"]</h2></div>
+
     <div class="card-body">
         <div class="card-title"></div>
-        <form asp-action="Edit" class="" id="editRoute">
+        <form asp-action="Edit" id="editRoute" class="">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="row">
+                <input type="hidden" asp-for="Id" />
+
                 <div class="col-md form-group mb-3">
                     <label asp-for="StartId" class="control-label"></label>
-                    <select asp-for="StartId" class="form-control" asp-items="ViewBag.StartLocation"></select>
+                    <select asp-for="StartId" class="form-control route-select" asp-items="ViewBag.StartLocation"></select>
                     <span asp-validation-for="StartId" class="text-danger"></span>
                 </div>
                 <div class="col-md form-group mb-3">
                     <label asp-for="DestinationId" class="control-label"></label>
-                    <select asp-for="DestinationId" class="form-control" asp-items="ViewBag.DestinationLocation"></select>
+                    <select asp-for="DestinationId" class="form-control route-select" asp-items="ViewBag.DestinationLocation"></select>
                     <span asp-validation-for="DestinationId" class="text-danger"></span>
                 </div>
             </div>
+                
             <div class="form-group mb-3">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <!-- Input for smaller screens -->
+                <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall" class="form-control d-md-none d-block" placeholder="..VND"/>
+                <!-- Input for larger screens -->
+                <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block" placeholder="..VND"/>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="Distance">
+            <span asp-validation-for="Distance" class="text-danger"></span>
+
+            <div id="map" style="height: 400px;"></div>
+
         </form>
     </div>
-        <div class="card-footer form-group d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
-            <input type="submit" form="editRoute" value="Save" class="btn btn-primary" />
-        </div>
+    @* <div id="routeDetailsData"
+        data-start-name="@Model?.StartLocation.Name"
+        data-start-latitude="@Model?.StartLocation.Latitude"
+        data-start-longitude="@Model?.StartLocation.Longitude"
+        data-end-name="@Model?.DestinationLocation.Name"
+        data-end-latitude="@Model?.DestinationLocation.Latitude"
+        data-end-longitude="@Model?.DestinationLocation.Longitude">
+    </div> *@
+    <div class="card-footer form-group d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
+        <input type="submit" form="editRoute" value="Save" class="btn btn-lg btn-primary" />
+    </div>
 </div>
 
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/initOSM.js"></script>
+
+    <script>
+        $(document).ready(GetRouteMapData);
+
+        async function GetRouteMapData() {
+            let startName = $('#StartId option:selected').text();
+            let destinationName = $('#DestinationId option:selected').text();
+
+            if (startName && destinationName) {
+                let startData = await searchLocationWithResult(startName);
+                let destinationData = await searchLocationWithResult(destinationName);
+
+                if (startData && destinationData) {
+                    await initializeMap(startData.lat, startData.lng, startData.name, false);
+                    
+                    setTimeout(async () => {
+                        let routeData = await addRouteAndTime(
+                            startData.lat,
+                            startData.lng,
+                            destinationData.lat,
+                            destinationData.lng,
+                            true
+                        );
+
+                        if (routeData?.route?.distance) {
+                            const distanceInKm = (routeData.route.distance / 1000).toFixed(2); // convert from meters to kilometers
+                            console.log("Distance (km):", distanceInKm);
+                            document.querySelector('input[name="Distance"]').value = distanceInKm;
+                        }
+
+                        document.querySelector('input[name="Distance"]').value = routeData.route.distance;
+                    }, 500);
+                }
+            }
+        }
+
+        $('.route-select').on('change', GetRouteMapData);
+                
+        // Price input for smaller screens
+        const priceInputSmall = document.getElementById('priceInputSmall');
+        // Price input for larger screens
+        const priceInputLarge = document.getElementById('priceInputLarge');
+
+        // Function to handle input formatting
+        function formatPriceInput(inputElement) {
+            inputElement.addEventListener('input', function (e) {
+                let position = this.selectionStart;
+                let oldLength = this.value.length;
+
+                // Remove all non-digit characters (e.g., dots)
+                let rawValue = this.value.replace(/\D/g, '');
+
+                // Format with dot separators
+                let formatted = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                this.value = formatted;
+
+                // Adjust cursor position
+                let newLength = this.value.length;
+                position += newLength - oldLength;
+                this.setSelectionRange(position, position);
+            });
+        }
+
+        function fillNumber(inputElement) {
+            inputElement.addEventListener('input', function (e) {
+                if (inputElement === priceInputSmall)
+                    priceInputLarge.value = priceInputSmall.value;
+                else if (inputElement === priceInputLarge)
+                    priceInputSmall.value = priceInputLarge.value; 
+            });
+        }
+        
+        // Call the function for both inputs
+        formatPriceInput(priceInputSmall);
+        formatPriceInput(priceInputLarge);
+        fillNumber(priceInputSmall);
+        fillNumber(priceInputLarge);
+
+        // Clean up before submission
+        document.getElementById('editRoute').addEventListener('submit', function () {
+            const distance = document.querySelector('input[name="Distance"]').value;
+            console.log("Submitting with distance:", distance);
+
+            // Clean the value before submission for both inputs
+            priceInputSmall.value = priceInputSmall.value.replace(/\./g, '');
+            priceInputLarge.value = priceInputLarge.value.replace(/\./g, '');
+        });
+    </script>
 }

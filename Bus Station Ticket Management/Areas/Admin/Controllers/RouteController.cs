@@ -131,7 +131,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartId,DestinationId,Price")] Routes routes)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
         {
             if (id != routes.Id)
             {

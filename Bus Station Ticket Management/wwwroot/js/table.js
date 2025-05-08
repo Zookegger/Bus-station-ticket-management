@@ -102,7 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			pageLength: -1,
 			processing: true,
 			scrollX: false,
-			scrollY: "600px",
+			// scrollY: "600px",
+			scrollY: false,
 			scrollCollapse: true,
 			stateSave: false,
 			language: {

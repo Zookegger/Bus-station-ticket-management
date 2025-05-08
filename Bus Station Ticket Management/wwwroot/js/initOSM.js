@@ -343,8 +343,8 @@ function drawRoute(data, moveMarker = false) {
 
     L.popup()
         .setLatLng([
-            (parseFloat(startLocation.lat + endLocation.lat) / 2), 
-            (parseFloat(startLocation.lon + endLocation.lon) / 2)
+            (parseFloat(startLocation.lat) + parseFloat(endLocation.lat)) / 2, 
+            (parseFloat(startLocation.lon) + parseFloat(endLocation.lon)) / 2
         ])
         .setContent(popupContent)
         .openOn(map);
