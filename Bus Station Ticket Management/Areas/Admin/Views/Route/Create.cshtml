@@ -33,6 +33,7 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Distance">
+            <span asp-validation-for="Distance" class="text-danger"></span>
 
             <div id="map" style="height: 400px;"></div>
 
@@ -63,25 +64,29 @@
             let startName = $('#StartId option:selected').text();
             let destinationName = $('#DestinationId option:selected').text();
 
-
             if (startName && destinationName) {
                 let startData = await searchLocationWithResult(startName);
                 let destinationData = await searchLocationWithResult(destinationName);
-                console.log(startData);
-                console.log(`${startData.lat} + ${startData.lng}`);
-                console.log(`${destinationData.lat} + ${destinationData.lng}`);
 
                 if (startData && destinationData) {
                     await initializeMap(startData.lat, startData.lng, startData.name, false);
                     
                     setTimeout(async () => {
-                        await addRouteAndTime(
+                        let routeData = await addRouteAndTime(
                             startData.lat,
                             startData.lng,
                             destinationData.lat,
                             destinationData.lng,
                             true
                         );
+
+                        if (routeData?.route?.distance) {
+                            const distanceInKm = (routeData.route.distance / 1000).toFixed(2); // convert from meters to kilometers
+                            console.log("Distance (km):", distanceInKm);
+                            document.querySelector('input[name="Distance"]').value = distanceInKm;
+                        }
+
+                        document.querySelector('input[name="Distance"]').value = routeData.route.distance;
                     }, 500);
                 }
             }
@@ -131,6 +136,9 @@
 
         // Clean up before submission
         document.getElementById('createRoute').addEventListener('submit', function () {
+            const distance = document.querySelector('input[name="Distance"]').value;
+            console.log("Submitting with distance:", distance);
+
             // Clean the value before submission for both inputs
             priceInputSmall.value = priceInputSmall.value.replace(/\./g, '');
             priceInputLarge.value = priceInputLarge.value.replace(/\./g, '');
