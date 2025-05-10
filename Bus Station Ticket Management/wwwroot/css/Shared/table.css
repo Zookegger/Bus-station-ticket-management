@@ -35,7 +35,7 @@
 }
 
 /* Ensure dropdown appears on top */
-.dropdown-menu {
+table .dropdown-menu {
     position: absolute !important;
     z-index: 1051 !important; /* Ensures the dropdown is above other elements */
 }
@@ -54,4 +54,17 @@ div.dt-button-collection {
     .dt-search {
         justify-content: flex-start !important;
     }
+}
+
+
+.table-bordered-no-header {
+    border-collapse: collapse;
+}
+
+.table-bordered-no-header thead th {
+    border-top: none !important;
+}
+
+.table-bordered-no-header td {
+    border: 1px solid #dee2e6 !important;
 }

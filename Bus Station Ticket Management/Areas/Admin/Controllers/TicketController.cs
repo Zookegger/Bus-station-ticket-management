@@ -208,6 +208,44 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             return View(ticket);
         }
+        
+        [AllowAnonymous]
+        public async Task<IActionResult> DetailsPartial(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _context.Tickets
+                .AsNoTracking()
+                .Include(t => t.Trip)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route!)
+                        .ThenInclude(route => route.StartLocation!)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route!)
+                        .ThenInclude(route => route.DestinationLocation!)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.TripDriverAssignments!)
+                        .ThenInclude(tda => tda.Driver!)
+                .Include(t => t.Seat)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Vehicle)
+                        .ThenInclude(vehicle => vehicle.VehicleType)    
+                .Include(t => t.User)
+                .Include(t => t.Coupon)
+                .Include(t => t.Payment)
+                    .ThenInclude(p => p.VnPayment)
+                .FirstOrDefaultAsync(t => t.Id == id);
+                
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial", ticket);
+        }
 
         // GET: Admin/Tickets/Edit/5
         public async Task<IActionResult> Edit(string id)

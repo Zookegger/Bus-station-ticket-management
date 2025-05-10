@@ -36,37 +36,47 @@ namespace Bus_Station_Ticket_Management.Services
 
                         var trips = await _context.Trips.ToListAsync(stoppingToken);
 
-                        if (trips != null && trips.Any()) {
+                        if (trips != null && trips.Any())
+                        {
                             foreach (var trip in trips)
                             {
-                                string newTripStatus = trip.Status ?? string.Empty; // Default to current status
-                                string newVehicleStatus = string.Empty;
-                                if (trip.Vehicle != null)
-                                    newVehicleStatus = trip.Vehicle.Status ?? string.Empty;
+                                string currentTripStatus = trip.Status ?? string.Empty;
+                                string currentVehicleStatus = trip.Vehicle?.Status ?? string.Empty;
 
-                                if (now >= trip.ArrivalTime && trip.Status != "Completed")
+                                string newTripStatus = currentTripStatus;
+                                string newVehicleStatus = currentVehicleStatus;
+
+                                if (now >= trip.ArrivalTime)
                                 {
                                     newTripStatus = "Completed";
                                     newVehicleStatus = "Stand By";
                                 }
-                                else if (now >= trip.DepartureTime && now < trip.ArrivalTime && trip.Status != "In Progress")
+                                else if (now >= trip.DepartureTime && now < trip.ArrivalTime)
                                 {
                                     newTripStatus = "In Progress";
                                     newVehicleStatus = "Busy";
                                 }
-                                else if (trip.Status != "Stand By")
+                                else
                                 {
                                     newTripStatus = "Stand By";
+                                    newVehicleStatus = "Stand By";
                                 }
 
-                                // Update the status only if it has changed
-                                if (trip.Status != newTripStatus)
+                                // Only update if something actually changed
+                                bool tripStatusChanged = newTripStatus != currentTripStatus;
+                                bool vehicleStatusChanged = trip.Vehicle != null && newVehicleStatus != currentVehicleStatus;
+
+                                if (tripStatusChanged || vehicleStatusChanged)
                                 {
-                                    if (trip.Vehicle != null)
-                                        trip.Vehicle.Status = newVehicleStatus;
                                     trip.Status = newTripStatus;
+
+                                    if (trip.Vehicle != null)
+                                    {
+                                        trip.Vehicle.Status = newVehicleStatus;
+                                    }
                                 }
                             }
+
 
                             await _context.SaveChangesAsync(stoppingToken);
                         }
@@ -76,7 +86,7 @@ namespace Bus_Station_Ticket_Management.Services
                 {
                     _logger.LogError(ex, "An error occurred while updating trip statuses.");
                 }
-                
+
                 // await Task.Delay(TimeSpan.FromSeconds(_settings.TripStatusCheckIntervalSeconds), stoppingToken);
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }

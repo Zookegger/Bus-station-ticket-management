@@ -1,37 +1,50 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Location
 <div id="locationDetailsContent">
-    <div class="row">
-        <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
-            @Html.DisplayNameFor(model => model.Latitude)
-        </dt>
-        <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
-            @Html.DisplayFor(model => model.Latitude)
-        </dd>
-        <dt class="col-sm-12 col-md-2 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6" style="min-width: 200px">
-            @Html.DisplayNameFor(model => model.Longitude)
-        </dt>
-        <dd class="col-sm-12 col-md-10 fs-xs-2 fs-sm-2 fs-md-3 fs-lg-6">
-            @Html.DisplayFor(model => model.Longitude)
-        </dd>
+    <div class="card-body flex-1 h-100">
+        <div class="card-title mb-3">
+            <h4>@Html.DisplayFor(model => model.Name)</h4>
+        </div>
 
-        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Address</h6>
+                        <p class="card-text fs-xs-3 fs-sm-4 fs-md-4 fs-lg-6">
+                            @Html.DisplayFor(model => model.Address)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row my-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Latitude</h6>
+                        <p class="card-text fs-xs-3 fs-sm-4 fs-md-4 fs-lg-6">
+                            @Html.DisplayFor(model => model.Latitude)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Longitude</h6>
+                        <p class="card-text fs-xs-3 fs-sm-4 fs-md-4 fs-lg-6">
+                            @Html.DisplayFor(model => model.Longitude)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="locationDetailsData"
-        data-name="@Model?.Name"
-        data-latitude="@Model?.Latitude"
+
+    <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+    <div id="locationDetailsData" data-name="@Model?.Name" data-latitude="@Model?.Latitude"
         data-longitude="@Model?.Longitude">
     </div>
     <div class="card-footer form-group d-flex justify-content-between mt-3" role="group" aria-label="Button group">

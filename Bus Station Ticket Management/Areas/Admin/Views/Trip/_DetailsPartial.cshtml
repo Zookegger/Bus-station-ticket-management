@@ -1,71 +1,137 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Trip
-<div class="row">
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        Departure Location        
-        @* @Html.DisplayNameFor(model => model.Route.StartLocation.Name) *@
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Route.StartLocation.Name) (@Html.DisplayFor(model => model.Route.StartLocation.Address)) 
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        Destination Location
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Route.DestinationLocation.Name) (@Html.DisplayFor(model => model.Route.DestinationLocation.Address)) 
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.IsTwoWay)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @(
-            Model.IsTwoWay 
-                ? Html.Raw("&#x2705;") 
-                : Html.Raw("&#10060;")
-        )
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.DepartureTime)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        (@Model.DepartureTime.ToString("dd/MM/yyyy - hh:MM:ss")) → (@Model.ArrivalTime.ToString("dd/MM/yyyy - hh:MM:ss"))
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.Status)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Status)
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.TotalPrice)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.TotalPrice)
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.Vehicle.VehicleType.Name)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Vehicle.VehicleType.Name)
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.Vehicle.Name)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Vehicle.Name)
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.Vehicle.LicensePlate)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Vehicle.LicensePlate)
-    </dd>
-    <dt class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayNameFor(model => model.Vehicle.Status)
-    </dt>
-    <dd class="col-sm-12 fs-xs-4 fs-sm-4 fs-md-5">
-        @Html.DisplayFor(model => model.Vehicle.Status)
-    </dd>
+
+<div id="tripDetailsContent">
+    <div class="card-body flex-1">
+        <!-- Trip Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="mb-1">Trip #@Model.Id</h4>
+                <span class="badge @(Model.Status == "Completed" ? "bg-success" : 
+                                    Model.Status == "In Progress" ? "bg-primary" : 
+                                    Model.Status == "Scheduled" ? "bg-info" : "bg-warning")">
+                    @Model.Status
+                </span>
+            </div>
+            <div class="text-end">
+                <h5 class="text-primary mb-1">@Model.TotalPrice.ToString("N0") VND</h5>
+                <small class="text-muted">Total Price</small>
+            </div>
+        </div>
+
+        <!-- Route Information -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="fas fa-route me-2"></i>Route Information
+                        </h6>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-danger fa-lg"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Departure</h6>
+                                <p class="mb-0">@Model.Route.StartLocation.Name</p>
+                                <small class="text-muted">@Model.Route.StartLocation.Address</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-success fa-lg"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Destination</h6>
+                                <p class="mb-0">@Model.Route.DestinationLocation.Name</p>
+                                <small class="text-muted">@Model.Route.DestinationLocation.Address</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Information -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-3 text-muted">
+                            <i class="fas fa-bus me-2"></i>Vehicle Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">Vehicle Type</small>
+                                <p class="mb-0">@Model.Vehicle.VehicleType.Name</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">Vehicle Name</small>
+                                <p class="mb-0">@Model.Vehicle.Name</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">License Plate</small>
+                                <p class="mb-0">@Model.Vehicle.LicensePlate</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">Vehicle Status</small>
+                                <span class="badge @(Model.Vehicle.Status == "Active" ? "bg-success" : "bg-warning")">
+                                    @Model.Vehicle.Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Details -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>Trip Details
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-clock text-primary fa-lg"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <small class="text-muted d-block">Schedule</small>
+                                <p class="mb-0">
+                                    @Model.DepartureTime.ToString("dd/MM/yyyy HH:mm") 
+                                    <i class="fas fa-arrow-right mx-2 text-muted"></i>
+                                    @Model.ArrivalTime.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exchange-alt text-info fa-lg"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <small class="text-muted d-block">Trip Type</small>
+                                <p class="mb-0">
+                                    @(Model.IsTwoWay ? "Round Trip" : "One Way")
+                                    @if (Model.IsTwoWay)
+                                    {
+                                        <i class="fas fa-check-circle text-success ms-2"></i>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="card-footer form-group d-flex justify-content-between mt-4" role="group" aria-label="Button group">
-    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+
+<div class="card-footer form-group d-flex justify-content-between mt-3" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+        <i class="fas fa-edit"></i> Edit Trip
+    </a>
+    <a role="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
 </div>

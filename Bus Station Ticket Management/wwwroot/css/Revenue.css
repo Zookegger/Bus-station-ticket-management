@@ -9,3 +9,12 @@
         width: 100% !important;
     }
 }
+
+.dt-column-header {
+    min-width: 200px !important;
+    min-height: 56px !important;
+}
+
+.dt-column-header:last-child {
+    min-width: 90px !important;
+}

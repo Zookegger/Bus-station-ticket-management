@@ -1,0 +1,188 @@
+@model Bus_Station_Ticket_Management.Models.Ticket
+
+<div id="ticketDetailsContent">
+    <div class="card-body flex-1">
+        <div class="card-title mb-3">
+            <h4>
+                <i class="bi bi-ticket-detailed fa-lg me-1"></i>
+                Ticket #@Model.Id
+            </h4>
+            <span class=" fs-6 badge @(Model.IsPaid ? "bg-success" : "bg-warning")">
+                @(Model.IsPaid ? "Paid" : "Unpaid")
+            </span>
+            @if (Model.IsCanceled)
+            {
+                <span class=" fs-6 badge bg-danger">Canceled</span>
+            }
+        </div>
+
+        <!-- Booking Information -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-calendar-alt fa-lg me-1"></i>
+                            Booking Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="card-text">
+                                    <strong>Booking Date:</strong> @Model.BookingDate.ToString("MM/dd/yyyy HH:mm")<br />
+                                    @if (Model.IsCanceled)
+                                    {
+                                        <strong>Cancelation Time:</strong> @Model.CancelationTime?.ToString("MM/dd/yyyy HH:mm")
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="card-text">
+                                    <strong>Total Price:</strong> $@Model.TotalPrice.ToString("N2")<br />
+                                    <strong>Seat Number:</strong> @Model.Seat?.Number<br />
+                                    <strong>Trip Status:</strong> @Model.Trip?.Status
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Passenger Information -->
+        <div class="row mb-4">
+            <div class="col-12 w-100">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-user fa-lg me-1"></i>
+                            Passenger Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 w-100">
+                                <p class="card-text">
+                                    @if (Model.User != null)
+                                    {
+                                        <strong>Name:</strong> @(Model.User.FullName ?? "N/A")<br />
+                                        <strong>Email:</strong> @(Model.User.Email ?? "N/A")<br />
+                                        <strong>Phone:</strong> @(Model.User.PhoneNumber ?? "N/A")
+                                    }
+                                    else
+                                    {
+                                        <strong>Guest Name:</strong> @(Model.GuestName ?? "N/A")<br />
+                                        <strong>Guest Email:</strong> @(Model.GuestEmail ?? "N/A")<br />
+                                        <strong>Guest Phone:</strong> @(Model.GuestPhone ?? "N/A")
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Information -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-map-marker-alt text-danger fa-lg me-1"></i>
+                            Starting Point
+                        </h6>
+                        <p class="card-text">
+                            <strong>Location:</strong> @Model.Trip?.Route?.StartLocation?.Name<br />
+                            <small class="card-subtitle badge bg-secondary">
+                                @Model.Trip?.Route?.StartLocation?.Latitude, @Model.Trip?.Route?.StartLocation?.Longitude
+                            </small>
+                        </p>
+                        <div id="startAddress" class="text-muted"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-map-marker-alt text-success fa-lg me-1"></i>
+                            Ending Point
+                        </h6>
+                        <p class="card-text">
+                            <strong>Location:</strong> @Model.Trip?.Route?.DestinationLocation?.Name<br />
+                            <small class="card-subtitle badge bg-secondary">
+                                @Model.Trip?.Route?.DestinationLocation?.Latitude, @Model.Trip?.Route?.DestinationLocation?.Longitude
+                            </small>
+                        </p>
+                        <div id="endAddress" class="text-muted"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle and Driver Information -->
+        <div class="row mb-4">
+            <div class="col-12 col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-bus fa-lg me-1"></i>
+                            Vehicle Information
+                        </h6>
+                        <div class="row">
+                            <div class="col">
+                                <p class="card-text">
+                                    <strong>Vehicle Type:</strong> @Model.Trip?.Vehicle?.VehicleType?.Name<br />
+                                    <strong>Vehicle:</strong> @Model.Trip?.Vehicle?.Name<br />
+                                    <strong>License Plate:</strong> @Model.Trip?.Vehicle?.LicensePlate
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted"><img width="18" height="21" src="~/assets/img/driver.svg" class="me-2" alt="driver">Driver Information</h6>
+                        <div class="row">
+                            <div class="col">
+                                <p class="card-text">
+                                    <strong>Date Assigned:</strong> @Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.DateAssigned.ToString("MM/dd/yyyy HH:mm")<br />
+                                    <strong>Driver:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.FullName ?? "N/A")<br />
+                                    <strong>Phone:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.PhoneNumber ?? "N/A")<br />
+                                    <strong>Email:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.Email ?? "N/A")
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-lg">
+            <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
+            <div class="card-body px-0 py-0">
+                <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="card-footer form-group d-flex justify-content-between mt-4" role="group" aria-label="Button group">
+        @if (!Model.IsCanceled) {
+            <a role="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+                <i class="fas fa-edit"></i> Edit Ticket
+            </a>
+        }
+        <a role="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div id="ticketDetailsData" style="display: none; height: 0; width: 0;"
+    data-start-name="@Model?.Trip.Route.StartLocation.Name"
+    data-start-latitude="@Model?.Trip.Route.StartLocation.Latitude"
+    data-start-longitude="@Model?.Trip.Route.StartLocation.Longitude"
+    data-end-name="@Model?.Trip.Route.DestinationLocation.Name"
+    data-end-latitude="@Model?.Trip.Route.DestinationLocation.Latitude"
+    data-end-longitude="@Model?.Trip.Route.DestinationLocation.Longitude">
+</div>

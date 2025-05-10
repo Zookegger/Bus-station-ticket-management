@@ -45,10 +45,17 @@ builder.Services.AddHostedService<EmailBackgroundService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+
+    // Custom logic to set IdleTimeout based on user role
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Default timeout
+    options.Cookie.Name = ".BusStation.Session";
+
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax; // Ensure cookies are sent with cross-site requests
@@ -205,7 +212,7 @@ app.UseAuthorization();
 // Middleware to handle ngrok requests
 app.Use(async (context, next) =>
 {
-    if (context.Request.Host.Value.Contains("ngrok.io"))
+    if (context.Request.Host.Value != null && context.Request.Host.Value.Contains("ngrok.io"))
     {
         context.Request.Headers["Host"] = "localhost";
     }
@@ -249,3 +256,4 @@ app.MapStaticAssets();
 app.MapRazorPages();
 app.MapControllers();
 app.Run();
+

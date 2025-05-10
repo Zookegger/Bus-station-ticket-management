@@ -23,7 +23,8 @@
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
     <!-- Animate on Scroll -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
@@ -41,8 +42,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
     <!-- DataTables.js -->
-    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-AWSLQaLuKmq5XKJHGvvjQzw2Jnn03K1sgvkxCi+eYpHkXSvC+1RRfYXZHQ4teTF5" crossorigin="anonymous">
-    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.css"/> *@ <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
+    <link
+        href="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+        rel="stylesheet" integrity="sha384-AWSLQaLuKmq5XKJHGvvjQzw2Jnn03K1sgvkxCi+eYpHkXSvC+1RRfYXZHQ4teTF5"
+        crossorigin="anonymous">
+    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.css"/> *@    <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -50,10 +54,10 @@
 
 <body class="d-flex flex-column ">
     <!-- Header -->
-    <header class="shadow-sm d-md-none" style="z-index: 9999;" style="position: sticky; top: 0;">
+    <header class="shadow-sm d-md-none" style="position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Home" asp-action="Index">
                     <i class="fa-solid fa-bus me-2"></i>Bus Station Admin
                 </a>
 
@@ -62,62 +66,170 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+
                 <div class="collapse navbar-collapse" id="adminNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <div class="accordion w-100" id="navbarAccordion">
                         <!-- Home -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Home</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">Revenue</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">User Home</a></li>
-                            </ul>
-                        </li>
+                        <div class="accordion-item bg-success border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#homeAccordion" aria-expanded="false"
+                                    aria-controls="homeAccordion">
+                                    <i class="bi bi-house-door me-2"></i>Home
+                                </button>
+                            </h2>
+                            <div id="homeAccordion" class="accordion-collapse collapse"
+                                data-bs-parent="#navbarAccordion">
+                                <div class="accordion-body bg-light p-0">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Home"
+                                                asp-action="Index">
+                                                <i class="bi bi-columns-gap me-2"></i>Dashboard
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Tickets"
+                                                asp-action="Revenue">
+                                                <i class="bi bi-bar-chart me-2"></i>Revenue
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="" asp-controller="Home"
+                                                asp-action="Index">
+                                                <i class="bi bi-house-door me-2"></i>User Home
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Vehicle -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Vehicle</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Vehicle"
-                                        asp-action="Index">Vehicles</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="VehicleType"
-                                        asp-action="Index">Vehicle Types</a></li>
-                            </ul>
-                        </li>
+                        <div class="accordion-item bg-success border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#vehicleAccordion" aria-expanded="false"
+                                    aria-controls="vehicleAccordion">
+                                    <i class="bi bi-truck me-2"></i>Vehicle
+                                </button>
+                            </h2>
+                            <div id="vehicleAccordion" class="accordion-collapse collapse"
+                                data-bs-parent="#navbarAccordion">
+                                <div class="accordion-body bg-light p-0">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Vehicle"
+                                                asp-action="Index">
+                                                <i class="bi bi-truck-front me-2"></i>Vehicles
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin"
+                                                asp-controller="VehicleType" asp-action="Index">
+                                                <i class="bi bi-truck-flatbed me-2"></i>Vehicle Types
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Trip -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Trip</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Location"
-                                        asp-action="Index">Locations</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Route"
-                                        asp-action="Index">Routes</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Trip"
-                                        asp-action="Index">Trips</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Driver"
-                                        asp-action="Index">Drivers</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="TripDriverAssignment"
-                                        asp-action="Index">Trip Assignments</a></li>
-                            </ul>
-                        </li>
+                        <div class="accordion-item bg-success border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#tripAccordion" aria-expanded="false"
+                                    aria-controls="tripAccordion">
+                                    <i class="bi bi-calendar-check me-2"></i>Trip
+                                </button>
+                            </h2>
+                            <div id="tripAccordion" class="accordion-collapse collapse"
+                                data-bs-parent="#navbarAccordion">
+                                <div class="accordion-body bg-light p-0">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin"
+                                                asp-controller="Location" asp-action="Index">
+                                                <i class="bi bi-geo-alt me-2"></i>Locations
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Route"
+                                                asp-action="Index">
+                                                <i class="bi bi-signpost-2 me-2"></i>Routes
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Trip"
+                                                asp-action="Index">
+                                                <i class="bi bi-calendar-range me-2"></i>Trips
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Driver"
+                                                asp-action="Index">
+                                                <img width="16" height="20" src="/assets/img/driver.svg" class="me-2"
+                                                    alt="driver" />Drivers
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin"
+                                                asp-controller="TripDriverAssignment" asp-action="Index">
+                                                <i class="bi bi-person-lines-fill me-2"></i>Trip Assignments
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- User -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">User</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUser"
-                                        asp-action="Index">Application Users</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ratings"
-                                        asp-action="Index">Ratings</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Tickets"
-                                        asp-action="Index">Tickets</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Coupons"
-                                        asp-action="Index">Coupons</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                        <div class="accordion-item bg-success border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#userAccordion" aria-expanded="false"
+                                    aria-controls="userAccordion">
+                                    <i class="fa-solid fa-users me-2"></i>User
+                                </button>
+                            </h2>
+                            <div id="userAccordion" class="accordion-collapse collapse"
+                                data-bs-parent="#navbarAccordion">
+                                <div class="accordion-body bg-light p-0">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin"
+                                                asp-controller="ApplicationUser" asp-action="Index">
+                                                <i class="bi bi-people me-2"></i>Application Users
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Ratings"
+                                                asp-action="Index">
+                                                <i class="bi bi-star-half me-2"></i>Ratings
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Tickets"
+                                                asp-action="Index">
+                                                <i class="bi bi-ticket-perforated me-2"></i>Tickets
+                                            </a>
+                                        </li>
+                                        <li class="nav-item ps-5">
+                                            <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Coupons"
+                                                asp-action="Index">
+                                                <i class="bi bi-ticket-detailed me-2"></i>Coupons
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <partial name="_LoginPartial" />
+                            <partial name="_LoginPartial"/>
                         </li>
                     </ul>
                 </div>
@@ -126,17 +238,19 @@
     </header>
     <!-- Sidebar -->
     <div class="row flex-grow-1" style="position: relative;">
-        <div id="sidePanel"
-            class="offcanvas show offcanvas-start d-none d-md-flex flex-column bg-success text-white" tabindex="-1"
-            data-bs-scroll="true" data-bs-backdrop="false" aria-controls="offcanvasResponsive"
+        <div id="sidePanel" class="offcanvas show offcanvas-start d-none d-md-flex flex-column bg-success text-white"
+            tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" aria-controls="offcanvasResponsive"
             style="position: fixed; top: 0; left: 0; height: 100vh; width: 250px; z-index: 1030; overflow-y: auto; scrollbar-color: #d6d6d6 #20874e">
             <div class="offcanvas-header d-flex px-2 justify-content-center align-items-center">
-                <a asp-controller="Admin" asp-action="Index"
+                <a asp-controller="Home" asp-action="Index"
                     class="offcanvas-title d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <i class="fa-solid fa-bus me-2"></i>
                     <span class="fs-5 fw-semibold">Bus Admin</span>
                 </a>
-                <button type="button" class="btn-transparent d-flex justify-content-center align-items-center navbar-toggler" id="sidebarToggleOff" data-bs-dismiss="offcanvas-md" data-bs-toggle="offcanvas-md" data-bs-target="#sidePanel" aria-label="Close"><i class="fa-solid fa-bars"></i></button>
+                <button type="button"
+                    class="btn-transparent d-flex justify-content-center align-items-center navbar-toggler"
+                    id="sidebarToggleOff" data-bs-dismiss="offcanvas-md" data-bs-toggle="offcanvas-md"
+                    data-bs-target="#sidePanel" aria-label="Close"><i class="fa-solid fa-bars"></i></button>
             </div>
             <hr>
             <div class="offcanvas-body d-flex flex-column flex-grow-1 p-0" style="overflow-x: hidden;">
@@ -157,19 +271,22 @@
                             <div class="accordion-body ps-3">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Home"
+                                            asp-action="Index">
                                             <i class="bi bi-columns-gap me-2"></i>
                                             Dashboard
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets" asp-action="Revenue">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Tickets"
+                                            asp-action="Revenue">
                                             <i class="bi bi-bar-chart me-2"></i>
                                             Revenue
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="" asp-controller="Home"
+                                            asp-action="Index">
                                             <i class="bi bi-house-door me-2"></i>
                                             User Home
                                         </a>
@@ -193,15 +310,15 @@
                             <div class="accordion-body ps-3">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Vehicle"
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Vehicle"
                                             asp-action="Index">
                                             <i class="bi bi-truck-front me-2"></i>
                                             Vehicles
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="VehicleType"
-                                            asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin"
+                                            asp-controller="VehicleType" asp-action="Index">
                                             <i class="bi bi-truck-flatbed me-2"></i>
                                             Vehicle Types
                                         </a>
@@ -215,7 +332,8 @@
                     <li class="accordion-item bg-success px-2">
                         <h2 class="accordion-header">
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#tripMenu" aria-expanded="false" aria-controls="tripMenu">
+                                data-bs-toggle="collapse" data-bs-target="#tripMenu" aria-expanded="false"
+                                aria-controls="tripMenu">
                                 <i class="bi bi-calendar-check me-2"></i>
                                 Trip
                             </button>
@@ -224,31 +342,37 @@
                             <div class="accordion-body ps-3">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Location" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Location"
+                                            asp-action="Index">
                                             <i class="bi bi-geo-alt me-2"></i>
                                             Locations
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Route" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Route"
+                                            asp-action="Index">
                                             <i class="bi bi-signpost-2 me-2"></i>
                                             Routes
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Trip" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Trip"
+                                            asp-action="Index">
                                             <i class="bi bi-calendar-range me-2"></i>
                                             Trips
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Driver" asp-action="Index">
-                                            <img width="16" height="20" src="/assets/img/driver.svg" style="filter: invert(100%)" class="me-2" alt="driver" />
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Driver"
+                                            asp-action="Index">
+                                            <img width="16" height="20" src="/assets/img/driver.svg"
+                                                style="filter: invert(100%)" class="me-2" alt="driver" />
                                             Drivers
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="TripDriverAssignment" asp-action="Index">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin"
+                                            asp-controller="TripDriverAssignment" asp-action="Index">
                                             <i class="bi bi-person-lines-fill me-2"></i>
                                             Assignments
                                         </a>
@@ -271,27 +395,32 @@
                             <div class="accordion-body ps-3">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">
-                                            <i class="bi bi-people me-2"></i>App Users
+                                        <a class="nav-link text-white ps-2" asp-area="Admin"
+                                            asp-controller="ApplicationUser" asp-action="Index">
+                                            <i class="bi bi-people me-2"></i>Application Users
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Customers" asp-action="Index">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Customers"
+                                            asp-action="Index">
                                             <i class="bi bi-person-circle me-2"></i>Customers
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Ratings" asp-action="Index">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Ratings"
+                                            asp-action="Index">
                                             <i class="bi bi-star-half me-2"></i>Ratings
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Tickets" asp-action="Index">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Tickets"
+                                            asp-action="Index">
                                             <i class="bi bi-ticket-perforated me-2"></i>Tickets
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="nav-link text-white" asp-area="Admin" asp-controller="Coupons" asp-action="Index">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Coupons"
+                                            asp-action="Index">
                                             <i class="bi bi-ticket-detailed me-2"></i>Coupons
                                         </a>
                                     </li>
@@ -303,7 +432,7 @@
                 </ul>
             </div>
 
-            <div class="mt-auto">
+            <div class="mt-auto" id="sidePanelLoginPartial">
                 <hr class="mb-0 w-100">
                 <partial name="_LoginPartial" />
             </div>
@@ -331,14 +460,21 @@
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
     <!-- DataTables -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js" integrity="sha384-kBh7viGzGlI/hChKb1qG4d8DPeVAmZQjRUfKRgY87RKjZQJtrcVSlLNX0GEXsYCm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"
+        integrity="sha384-kBh7viGzGlI/hChKb1qG4d8DPeVAmZQjRUfKRgY87RKjZQJtrcVSlLNX0GEXsYCm"
+        crossorigin="anonymous"></script>
     @* <script src="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.js"></script> *@ <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
 
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 
@@ -453,7 +589,7 @@
             window.addEventListener('resize', toggleSidebarBasedOnScreenSize);
         });
     </script>
-    
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
