@@ -17,7 +17,7 @@ namespace Bus_Station_Ticket_Management.Models
         public DateTime AcquiredDate { get; set; } = DateTime.Now;
 
         [DisplayName("Last Updated")]
-        public DateTime? LastUpdated { get; set; }
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
 
         [DisplayName("License Plate")] [Required]
         public string? LicensePlate { get; set; }

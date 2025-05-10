@@ -37,6 +37,12 @@ namespace Bus_Station_Ticket_Management.Models
         [ForeignKey(nameof(VehicleId))]
         public Vehicle? Vehicle { get; set; }
 
+        [DisplayName("Created At")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [DisplayName("Last Updated")]
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
+
         public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
     }
     

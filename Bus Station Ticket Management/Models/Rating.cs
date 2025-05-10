@@ -29,8 +29,10 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Rating")]
         public byte TripRating { get; set; }
 
-        [DisplayName("Ngày tạo ra")]
-        public DateTime CreatedAt { get; set; }
-        
+        [DisplayName("Created At")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [DisplayName("Last Updated")]
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
     }
 }

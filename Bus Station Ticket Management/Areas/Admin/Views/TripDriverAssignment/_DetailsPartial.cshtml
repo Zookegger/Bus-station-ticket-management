@@ -1,6 +1,6 @@
 ﻿@model Bus_Station_Ticket_Management.Models.TripDriverAssignment
 
-<div id="routeDetailsContent">
+<div id="routeDetailsContent" class="card flex-1 h-100">
     <div class="card-body flex-1 h-100">
         <div class="row mb-4">
             <div class="col-md-6">
@@ -17,6 +17,9 @@
                             </small>
                         </p>
                         <div id="startAddress" class="text-muted"></div>
+                        <p class="card-text">
+                            <strong>Departure Time:</strong> @Model.Trip.DepartureTime.ToString("MM/dd/yyyy HH:mm:ss")
+                        </p>
                     </div>
                 </div>
             </div>
@@ -34,6 +37,9 @@
                             </small>
                         </p>
                         <div id="endAddress" class="text-muted"></div>
+                        <p class="card-text">
+                            <strong>Arrival Time:</strong> @Model.Trip.ArrivalTime.ToString("MM/dd/yyyy HH:mm:ss")
+                        </p>
                     </div>
                 </div>
             </div>
@@ -54,7 +60,8 @@
                             </div>
                             <div class="col-md-6">
                                 <p class="card-text">
-                                    <strong>Date Assigned:</strong> @Model.DateAssigned.ToString("MM/dd/yyyy HH:mm")<br />
+                                    <strong>Date Assigned:</strong> @Model.DateAssigned.ToString("MM/dd/yyyy")<br />
+                                    <strong>Time Assigned:</strong> @Model.DateAssigned.ToString("HH:mm:ss")<br />
                                     <strong>Status:</strong> @Model.Trip.Status
                                 </p>
                             </div>
@@ -65,15 +72,18 @@
         </div>
 
         <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;" class="rounded"></div>
-        
-        <div class="d-flex justify-content-between">
-            <a role="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
-                <i class="fas fa-edit"></i> Edit Assignment
-            </a>
-            <a role="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
-        </div>
+
+        @if (Model.LastUpdated != null && Model.LastUpdated != DateTime.Parse("01/01/0001 00:00:00")) {
+            <p class="text-muted">Last Updated: @Model.LastUpdated.ToString("MM/dd/yyyy HH:mm:ss")</p>
+        }
+    </div>
+    <div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
+        <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+            <i class="fas fa-edit"></i> Edit Assignment
+        </a>
+        <a role="button" class="btn btn-lg btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
     </div>
 </div>
 

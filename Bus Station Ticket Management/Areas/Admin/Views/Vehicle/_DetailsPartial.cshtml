@@ -1,41 +1,70 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Vehicle
-<div class="row-12">
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.Name)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @Html.DisplayFor(model => model.Name)
-    </dd>
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.VehicleType.Name)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @Html.DisplayFor(model => model.VehicleType.Name)
-    </dd>
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.LicensePlate)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @Html.DisplayFor(model => model.LicensePlate)
-    </dd>
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.Status)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @Html.DisplayFor(model => model.Status)
-    </dd>
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.AcquiredDate)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @Html.DisplayFor(model => model.AcquiredDate)
-    </dd>
-    <dt class="col-sm-4 fs-5">
-        @Html.DisplayNameFor(model => model.LastUpdated)
-    </dt>
-    <dd class="col-sm-8 fs-5">
-        @(Model.LastUpdated != null ? Model.LastUpdated : "N/A")
-    </dd>
-    <a role="button" class="btn btn-primary btn-lg mt-3" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+
+<div class="card-body flex-1">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="fa-solid fa-bus me-2"></i>Vehicle Information
+                    </h6>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="fs-5">
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.VehicleType.Name)
+                    </dt>
+                    <dd class="fs-5">
+                        @Html.DisplayFor(model => model.VehicleType.Name)
+                    </dd>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.LicensePlate)
+                    </dt>
+                    <dd class="fs-5">
+                        @Html.DisplayFor(model => model.LicensePlate)
+                    </dd>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="fa-solid fa-calendar-check me-2"></i>Status Information
+                    </h6>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.Status)
+                    </dt>
+                    <dd class="fs-5">
+                        @Html.DisplayFor(model => model.Status)
+                    </dd>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.AcquiredDate)
+                    </dt>
+                    <dd class="fs-5">
+                        @Html.DisplayFor(model => model.AcquiredDate)
+                    </dd>
+                    <dt class="fs-5">
+                        @Html.DisplayNameFor(model => model.LastUpdated)
+                    </dt>
+                    <dd class="fs-5">
+                        @(Model.LastUpdated != null ? Model.LastUpdated : "N/A")
+                    </dd>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+        <i class="fas fa-edit"></i> Edit Vehicle
+    </a>
+    <a role="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>

@@ -79,7 +79,12 @@
         <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Location Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body" id="detailsOffcanvasBody">
+    <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
+        <div class="text-center p-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -89,35 +94,8 @@
     <script src="~/js/initOSM.js"></script>
     <script>
         $(document).ready(function () {
-            // Initialize Offcanvas
-            const offcanvasEl = document.getElementById('detailsOffcanvas');
-            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
-            
-
             // Handle row clicks
-            $('.clickable-row').on('click', function () {
-                var locationId = $(this).data('id');
-
-                $.ajax({
-                    url: '/Admin/Location/DetailsPartial?id=' + locationId,
-                    method: 'GET',
-                    success: function (data) {
-                        $('#detailsOffcanvasBody').html(data);
-                        
-                        // Initialize map after showing
-                        setTimeout(async function() {
-                            var latitude = $('#locationDetailsData').data('latitude');
-                            var longitude = $('#locationDetailsData').data('longitude');
-                            var name = $('#locationDetailsData').data('name');
-                            if (latitude && longitude && name) {
-                                console.log(latitude, longitude, name);
-                                @* let result = await reverseGeoCode(latitude, longitude); *@
-                                initializeMap(latitude, longitude, name, false, 16);
-                            }
-                        }, 500);
-                    }
-                });
-            });
+            fetchDetails('Location', true, false);
         });
     </script>
 }

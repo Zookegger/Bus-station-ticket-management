@@ -49,7 +49,11 @@
 	</div>
 </form>
 <div class="table-responsive mb-3 shadow rounded">
-	<table id="DriversTable" class="table table-hover table-striped align-middle mb-0">
+    <table id="DataTable" 
+        class="table table-hover table-striped align-middle mb-0" 
+        data-details-url="/Admin/Driver/DetailsPartial"
+        data-table-name="Driver"
+        data-table-title="Drivers">
 		<thead class="align-middle">
 			<tr>
 				<th style="min-width: 200px;">FullName</th>
@@ -65,16 +69,16 @@
 		<tbody class="table-group=divider">
 			@foreach (var item in Model)
 			{
-				<tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
+                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
 					<td>
 						@Html.DisplayFor(modelItem => item.FullName)
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.Address)
 					</td>
-					<td>
+					@* <td>
 						@Html.DisplayFor(modelItem => item.LicenseId)
-					</td>
+					</td> *@
 					<td>
 						@Html.DisplayFor(modelItem => item.Gender)
 					</td>
@@ -115,6 +119,21 @@
     </table>
 </div>
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+    style="width: 40%; min-width: 550px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Route Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" --bs-offcanvas-padding-x="3400px" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
+        <div class="text-center p-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Styles{
     <link rel="stylesheet" href="~/css/Index.css">
 }
@@ -122,119 +141,8 @@
 @section Scripts {
     <script src="~/js/table.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#DriversTable').DataTable({
-                // Current settings
-                ordering: true, // Enables column ordering
-                paging: true, // Enables pagination
-                searching: true, // Enables search functionality
-                info: true, // Displays table information
-                filter: true, // Enables filtering (alias for searching)
-                responsive: false, // Makes the table responsive
-                columnDefs: [
-                    {
-                        targets: -1,  // Targets the last column (Actions column)
-                        orderable: false  // Disables ordering on this column
-                    }
-                ],
-
-                // Additional DataTable options
-                autoWidth: true, // Automatically calculates column widths
-                deferRender: true, // Improves performance for large datasets
-                lengthChange: true, // Allows user to change the number of rows displayed
-                lengthMenu: [10, 25, 50, 100], // Options for the number of rows per page
-                pageLength: 10, // Default number of rows per page
-                processing: true, // Displays a processing indicator
-                scrollX: false, // Enables horizontal scrolling
-                scrollY: '600px', // Enables vertical scrolling with a fixed height
-                scrollCollapse: true,
-                stateSave: false, // Saves the table state (pagination, search, etc.)
-                language: { // Customizes language strings
-                    search: "Search for Location:", // Custom search box placeholder
-                    lengthMenu: "Show _MENU_ entries", // Custom length menu text
-                    info: "_START_ to _END_ of _TOTAL_ entries", // Custom info text
-                },
-                dom: "<'row my-3 px-3' \
-                                    <'col-12 col-sm-12 col-md-4 d-flex align-items-center justify-content-start px-0'l> \
-                                    <'col-12 col-sm-10 col-md-7 d-flex align-items-center justify-content-sm-start justify-content-start px-0 pe-md-2'f> \
-                                    <'col-12 col-sm-2 col-md-1 d-flex align-items-center justify-content-end px-0 ps-md-2'B> \
-                                >" +
-                    "<'px-3'rt>" +
-                    "<'row px-3 py-3'" +
-                    "<'col-md-6'i>" +
-                    "<'col-md-6'p>" +
-                    ">"
-                ,  // B = buttons, f = filter, r = processing, t = table, i = info, p = pagination
-                buttons: [
-                    {
-                        extend: 'collection',
-                        text: '<i class="fa fa-ellipsis-h"></i>',
-                        className: 'btn btn-outline-secondary',
-                        attr: {
-                            'data-tippy-content': 'More actions'
-                        },
-                        buttons: [
-                            {
-                                extend: 'copy',
-                                text: 'Copy',
-                                attr: { 'data-tippy-content': 'Copy table data' }
-                            },
-                            {
-                                extend: 'csv',
-                                text: 'CSV',
-                                attr: { 'data-tippy-content': 'Export to CSV' }
-                            },
-                            {
-                                extend: 'excel',
-                                text: 'Excel',
-                                attr: { 'data-tippy-content': 'Export to Excel' }
-                            },
-                            {
-                                extend: 'pdf',
-                                text: 'PDF',
-                                attr: { 'data-tippy-content': 'Export to PDF' }
-                            },
-                            {
-                                extend: 'print',
-                                text: 'Print',
-                                attr: { 'data-tippy-content': 'Print table data' }
-                            }
-                        ],
-                    }
-                ],
-                ajax: null, // Loads data via AJAX
-                columns: null, // Defines column data sources
-                order: [[0, 'asc']], // Default column ordering
-                rowCallback: null, // Callback for row creation
-                initComplete: function () {
-                    // Find the collection button and fix its classes
-                    $('.buttons-collection')
-                        .removeClass('btn-secondary') // remove default solid styling
-                        .addClass('btn-outline-secondary'); // ensure outline is applied
-
-                    tippy('[data-tippy-content]', {
-                        placement: 'top',
-                        theme: 'light'
-                    });
-
-                    // Re-initialize Tippy every time the collection dropdown is shown
-                    $(document).on('click', '.buttons-collection', function () {
-                        // Timeout allows the dropdown to render its DOM
-                        setTimeout(function () {
-                            tippy('[data-tippy-content]', {
-                                placement: 'top',
-                                theme: 'light',
-                                delay: [100, 0]
-                            });
-                        }, 10);
-                    });
-                }
-            });
-
-            tippy('[data-tippy-content]', {
-                placement: 'top',
-                theme: 'light'
-            });
+        $(document).ready(function () {
+            fetchDetails('Driver');
         });
     </script>
 }

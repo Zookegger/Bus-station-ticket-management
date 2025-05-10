@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -56,5 +57,10 @@ namespace Bus_Station_Ticket_Management.Models
         [ForeignKey(nameof(VnPaymentTransactionNo))]
         public VnPayment? VnPayment { get; set; }
 
+        [DisplayName("Created At")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [DisplayName("Last Updated")]
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
     }
 }

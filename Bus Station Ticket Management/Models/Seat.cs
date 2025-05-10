@@ -25,7 +25,14 @@ namespace Bus_Station_Ticket_Management.Models
         public bool IsAvailable { get; set; }
 
         public int? TripId { get; set; }
+        
         [ForeignKey("TripId")]
         public Trip? Trip { get; set; }
+    
+        [DisplayName("Created At")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [DisplayName("Last Updated")]
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
     }
 }

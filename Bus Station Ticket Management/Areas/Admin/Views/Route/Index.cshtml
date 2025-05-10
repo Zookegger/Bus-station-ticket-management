@@ -76,13 +76,17 @@
 </div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
-    style="width: 40%; min-width: 500px;">
+    style="width: 40%; min-width: 550px;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Route Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" --bs-offcanvas-padding-x="3400px" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body" id="detailsOffcanvasBody">
-
+    <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
+        <div class="text-center p-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -95,48 +99,13 @@
     <script src="~/js/initOSM.js"></script>
     <script>
         // Handle row clicks
-        $('.clickable-row').on('click', function () {
-            var routeId = $(this).data('id');
-            
-            console.log(routeId);
-            $.ajax({
-                url: '/Admin/Route/DetailsPartial?id=' + routeId,
-                method: 'GET',
-                success: function (data) {
-                    $('#detailsOffcanvasBody').html(data);
-                    
-                    console.log(1);
-                    // Initialize map after showing
-                    setTimeout(async function() {
-                        var startLatitude = parseFloat($('#routeDetailsData').data('start-latitude'));
-                        var startLongitude = parseFloat($('#routeDetailsData').data('start-longitude'));
-                        var endLatitude = parseFloat($('#routeDetailsData').data('end-latitude'));
-                        var endLongitude = parseFloat($('#routeDetailsData').data('end-longitude'));
-                        var startName = $('#routeDetailsData').data('start-name');
-                        var endName = $('#routeDetailsData').data('end-name');
-
-                        await initializeMap(startLatitude, startLongitude, startName, false);
-                        const { startLocation, endLocation } = await addRouteAndTime(startLatitude, startLongitude, endLatitude, endLongitude);
-                        
-                        if (startLocation && endLocation) {
-                            $('#startAddress').text(startLocation.display_name);
-                            console.log($('#startAddress').text);
-                            $('#endAddress').text(endLocation.display_name);
-                            console.log($('#endAddress').text);
-                        } else {
-                            console.warn(startLocation);
-                            console.warn(endLocation);
-                        }
-                    }, 100);
-                }
-            });
-        });
 
         $(document).ready(function () {
             // Initialize Offcanvas
             const offcanvasEl = document.getElementById('detailsOffcanvas');
             const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);    
         
+            fetchDetails('Route', false, true);
             setInterval(cleanExpiredCache, 35 * 1000); // every 35 seconds
         });
     </script>

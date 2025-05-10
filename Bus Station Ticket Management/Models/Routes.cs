@@ -28,7 +28,10 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Distance")]
         public double Distance { get; set; }
 
+        [DisplayName("Created At")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime LastUpdatedAt { get; set; }
+
+        [DisplayName("Last Updated")]
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
     }
 }

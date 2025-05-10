@@ -1,70 +1,73 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Routes
-<div id="routeDetailsContent">
-    <div class="card-body flex-1 h-100">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
-                            <i class="fas fa-map-marker-alt text-danger fa-lg me-1"></i>
-                            Starting Point
-                        </h6>
-                        <p class="card-subtitle badge bg-secondary mb-2">
-                            (@Model.StartLocation.Latitude , @Model.StartLocation.Longitude)
-                        </p>
-                        <p class="card-text fs-5 text-wrap" id="startAddress">
+<div class="card-body flex-1" id="routeDetailsContent">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
+                        <i class="fas fa-map-marker-alt text-danger fa-lg me-1"></i>
+                        Starting Point
+                    </h6>
+                    <p class="card-subtitle badge bg-secondary mb-2">
+                        (@Model.StartLocation.Latitude , @Model.StartLocation.Longitude)
+                    </p>
+                    <p class="card-text fs-5 text-wrap" id="startAddress">
 
-                        </p>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
+                        <i class="fas fa-map-marker-alt text-success fa-lg me-1"></i>
+                        Ending Point
+                    </h6>
+                    <p class="card-subtitle badge bg-secondary mb-2">
+                        (@Model.DestinationLocation.Latitude , @Model.DestinationLocation.Longitude)
+                    </p>
+                    <p class="card-text fs-5 text-wrap" id="endAddress">
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-lg mb-2 mb-5">
+        <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
+        <div class="card-body px-0 py-0">
+            <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
+        </div>
+    </div>
+
+    <div class="card shadow-lg mb-3">
+        <div class="card-header"><i class="fa-solid fa-money-bill-1 fa-lg me-1"></i> Fare Information</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="text-start">
+                        <small class="text-muted fs-4">Based Fare</small>
+                        <h5 class="text-primary fs-4 mb-1">@Model.Price.ToString("N0") VND</h5>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="text-end">
+                        <small class="text-muted fs-4">Distance</small>
+                        <h5 class="text-primary fs-4 mb-1">@Model.Distance.ToString("N0") km</h5>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
-                            <i class="fas fa-map-marker-alt text-success fa-lg me-1"></i>
-                            Ending Point
-                        </h6>
-                        <p class="card-subtitle badge bg-secondary mb-2">
-                            (@Model.DestinationLocation.Latitude , @Model.DestinationLocation.Longitude)
-                        </p>
-                        <p class="card-text fs-5 text-wrap" id="endAddress">
-
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
-
-        <div class="card shadow-lg mb-2 mb-5">
-            <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
-            <div class="card-body px-0 py-0">
-                <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
-            </div>
-        </div>
-        
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="text-start">
-                    <small class="text-muted fs-4">Based Fare</small>
-                    <h5 class="text-primary fs-4 mb-1">@Model.Price.ToString("N0") VND</h5>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="text-end">
-                    <small class="text-muted fs-4">Distance</small>
-                    <h5 class="text-primary fs-4 mb-1">@Model.Distance.ToString("N0") km</h5>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
+
 <div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
-    <a role="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+    <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
         <i class="fas fa-edit"></i> Edit Route
     </a>
-    <a role="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+    <a role="button" class="btn btn-lg btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
         <i class="fas fa-arrow-left"></i> Back to List
     </a>
 </div>

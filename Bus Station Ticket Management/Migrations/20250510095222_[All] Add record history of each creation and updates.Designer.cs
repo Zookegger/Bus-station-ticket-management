@@ -4,6 +4,7 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Station_Ticket_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250510095222_[All] Add record history of each creation and updates")]
+    partial class AllAddrecordhistoryofeachcreationandupdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +129,7 @@ namespace Bus_Station_Ticket_Management.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("DiscountType")
                         .HasColumnType("int");
@@ -146,33 +149,6 @@ namespace Bus_Station_Ticket_Management.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons");
-                });
-
-            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.DriverLicense", b =>
-                {
-                    b.Property<string>("DriverId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LicenseId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LicenseClass")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly>("LicenseExpirationDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("LicenseIssueDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("LicenseIssuePlace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DriverId", "LicenseId");
-
-                    b.ToTable("DriverLicenses");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Location", b =>
@@ -776,18 +752,11 @@ namespace Bus_Station_Ticket_Management.Migrations
                 {
                     b.HasBaseType("Bus_Station_Ticket_Management.Models.ApplicationUser");
 
+                    b.Property<string>("LicenseId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasDiscriminator().HasValue("Driver");
-                });
-
-            modelBuilder.Entity("Bus_Station_Ticket_Management.Models.DriverLicense", b =>
-                {
-                    b.HasOne("Bus_Station_Ticket_Management.Models.Driver", "Driver")
-                        .WithMany("DriverLicenses")
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Driver");
                 });
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Payment", b =>
@@ -1001,8 +970,6 @@ namespace Bus_Station_Ticket_Management.Migrations
 
             modelBuilder.Entity("Bus_Station_Ticket_Management.Models.Driver", b =>
                 {
-                    b.Navigation("DriverLicenses");
-
                     b.Navigation("TripDriverAssignments");
                 });
 #pragma warning restore 612, 618
