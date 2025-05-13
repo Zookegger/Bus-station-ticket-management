@@ -10,7 +10,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - Bus Station Ticket Management</title>
+        <title>@ViewData["Title"] - EasyRide</title>
         <!-- Import stylesheet -->
         <!-- Site & Shared Styles -->
         <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
@@ -54,7 +54,7 @@
                 <div class="container-fluid">
                     <div class="navbar-brand-group d-flex">
                         <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fa-solid fa-bus me-2"></i>BusEasy
+                            <i class="fa-solid fa-bus me-2"></i>EasyRide
                         </a>
 
                         @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
@@ -108,7 +108,7 @@
                         <!-- Left side -->
                         <div class="col-md-6">
                             <div class="small">
-                                &copy; 2025 <strong>BusEasy</strong><br />
+                                &copy; 2025 <strong>EasyRide</strong><br />
                                 All rights reserved.
                                 <a asp-area="" asp-controller="Home" asp-action="Privacy"
                                     class="text-white text-decoration-underline ms-1">Privacy Policy</a>
