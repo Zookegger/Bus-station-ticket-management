@@ -1,4 +1,4 @@
-# 🚌 BusEasy
+# 🚌 EasyRide
 
 **BusEasy** is a Bus Station Ticket Management System designed to streamline the booking and management of bus tickets. It supports both administrative operations and customer-facing features such as trip browsing, seat selection, and digital ticketing.
 
