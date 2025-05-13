@@ -21,27 +21,39 @@
                     }
                     Hello @userName!
                 </li>
+                
                 <li class="nav-item">
-                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i
-                            class="fa fa-user-circle gap-2" aria-hidden="true"></i>
-                        Profile</a>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-user-circle gap-2" aria-hidden="true"></i>
+                            <span>Profile</span>
+                        </div>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="MyTickets">
-                        <div class="d-flex align-items-center gap-2"><i class="fa fa-ticket"></i><span>My Tickets</span></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-ticket"></i>
+                            <span>My Tickets</span>
+                        </div>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="dropdown-item" asp-area="Admin" asp-controller="Ratings" asp-action="MyRatings">
-                        <div class="d-flex align-items-center gap-2"><i class="fa fa-star"></i><span>My Ratings</span></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-star"></i>
+                            <span>My Ratings</span>
+                        </div>
                     </a>
                 </li>
                 <li class="nav-item">
                     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout"
                         asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button id="logout" type="submit" class="dropdown-item">
-                            <div class="d-flex align-items-center gap-2"><i class="fa fa-sign-out"
-                                    aria-hidden="true"></i><span>Logout</span></div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                <span>Logout</span>
+                            </div>
                         </button>
                     </form>
                 </li>
