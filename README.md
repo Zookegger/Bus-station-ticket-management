@@ -10,7 +10,6 @@
 - QR code generation for e-tickets
 - Email confirmation with QR codes
 - Admin dashboard for full control
-- Supports online and offline booking modes
 
 ## 🛠 Tech Stack
 
