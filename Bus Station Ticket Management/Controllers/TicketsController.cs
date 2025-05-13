@@ -18,6 +18,7 @@ public class TicketsController : Controller
         _userManager = userManager;
     }
 
+    [Authorize]
     public async Task<IActionResult> MyTickets()
     {
         // Lấy thông tin người dùng hiện tại

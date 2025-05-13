@@ -18,16 +18,22 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly VnPaymentSetting vnPaysetting;
         private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly QrCodeService _qrCodeService;
+        private readonly IEmailBackgroundQueue _emailQueue;
 
-        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger, IConfiguration configuration)
+        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger, IConfiguration configuration, QrCodeService qrCodeService, IEmailBackgroundQueue emailQueue)
         {
             this.vnPayment = vnPayment;
             this.context = context;
             this.vnPaysetting = vnPaymentSettings.Value;
-            this._logger = logger;
+            _logger = logger;
             _configuration = configuration;
+            _qrCodeService = qrCodeService;
+            _emailQueue = emailQueue;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Checkout()
         {
             _logger.LogInformation("Checkout called");
@@ -89,7 +95,6 @@ namespace Bus_Station_Ticket_Management.Controllers
             string queryString = BuildQueryString(queryParams);
             _logger.LogInformation($"Query string for hash: {queryString}");
 
-
             string? hashSecret = _configuration["Payment:HashSecret"];
             string expectedHash = Helper.HashHmac512(queryString, hashSecret);
             string receivedHash = paymentResponse.SecureHash;
@@ -144,6 +149,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                 int? vehicleId = null, tripId = null;
                 foreach (var ticket in tickets)
                 {
+                    if (ticket.Payment == null) {
+                        ticket.Payment = new Payment();
+                    }
+
                     ticket.IsPaid = true;
                     ticket.Payment.PaymentStatus = 1;
                     if (vehicleId == null || tripId == null) {
@@ -157,11 +166,16 @@ namespace Bus_Station_Ticket_Management.Controllers
                 
                 context.VnPayments.Add(paymentResponse);
                 _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
+                
                 int result = await context.SaveChangesAsync();
+
                 if (result > 0)
                 {
                     await transaction.CommitAsync();
                     _logger.LogInformation("Transaction saved successfully");
+
+                    SendTicketEmail(tickets);
+
                     return RedirectToAction("SelectSeats", "Seat", new { VehicleId = vehicleId, TripId = tripId });
                 }
 
@@ -173,11 +187,54 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                 foreach (var ticket in tickets)
                 {
+                    if (ticket.Payment == null) {
+                        ticket.Payment = new Payment();
+                    }
                     ticket.IsPaid = false;
                     ticket.Payment.PaymentStatus = 2;
                 }
+
+                await context.SaveChangesAsync();
+                
                 _logger.LogError(ex.ToString(), "Exception during VnPaymentResponse processing");
                 return StatusCode(500, new { Message = "Internal server error", Error = ex.ToString() });
+            }
+        }
+
+        // Send ticket QR code to user and guest (Can be improve in the future)
+        // Right now it sends multiple emails to the same user which could be annoying or spammy
+        private void SendTicketEmail(List<Ticket> tickets) {
+            try {
+                foreach (var ticket in tickets) {
+                    var baseUrl = $"{Request.Scheme}://{Request.Host}";
+                    var ticketUrl = $"{baseUrl}/Ticket/Details?id={ticket.Id}";
+
+                    var qrCode = _qrCodeService.GenerateQrCode(ticketUrl);
+                    var emailContent = 
+                    $"<span>Your ticket has been successfully purchased. Please scan the QR code below to access your ticket:</span> <br /> <img src='{qrCode}' />";
+                    
+                    if (ticket.GuestEmail != null) {
+                        _emailQueue.QueueEmail(new EmailMessage {
+                            To = ticket.GuestEmail,
+                            Subject = "Ticket Purchase Confirmation",
+                            HtmlBody = emailContent
+                        });
+                    } else {
+                        if (ticket.User == null || ticket.User.Email == null) {
+                            _logger.LogError("Email not found");
+                            throw new Exception("Email not found");
+                        }
+
+                        _emailQueue.QueueEmail(new EmailMessage {
+                            To = ticket.User.Email,
+                            Subject = "Ticket Purchase Confirmation",
+                            HtmlBody = emailContent
+                        });
+                    }
+                }
+            } catch (Exception ex) {
+                _logger.LogError(ex.ToString(), "Exception during SendTicketEmail processing");
+                throw new Exception("Failed to send ticket email");
             }
         }
 

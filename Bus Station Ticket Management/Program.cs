@@ -41,6 +41,9 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IEmailBackgroundQueue, EmailBackgroundQueue>();
 builder.Services.AddHostedService<EmailBackgroundService>();
 
+// QR Code
+builder.Services.AddTransient<QrCodeService>();
+
 // Session & Cookie Policy
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

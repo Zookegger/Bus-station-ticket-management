@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Bus_Station_Ticket_Management.Services;
+using System.Data.Common;
 
 namespace Bus_Station_Ticket_Management.Controllers
 {
@@ -15,11 +17,15 @@ namespace Bus_Station_Ticket_Management.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<SeatController> _logger;
+        private readonly EmailBackgroundService _emailBackgroundService;
 
-        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<SeatController> logger, EmailBackgroundService emailBackgroundService)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
+            _emailBackgroundService = emailBackgroundService;
         }
 
         // GET: Seat
@@ -32,78 +38,89 @@ namespace Bus_Station_Ticket_Management.Controllers
         [Route("Seat/SelectSeats", Name = "DefaultSelectSeats")]
         public async Task<IActionResult> SelectSeats(int VehicleId, int TripId)
         {
-            TempData.Keep();
+            try {
+                TempData.Keep();
 
-            var trip = await _context.Trips
-                .Include(t => t.Vehicle)
-                    .ThenInclude(vt => vt.VehicleType)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .FirstOrDefaultAsync(t => t.Id == TripId && t.VehicleId == VehicleId);
+                var trip = await _context.Trips
+                    .Include(t => t.Vehicle)
+                        .ThenInclude(vt => vt.VehicleType)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                    .FirstOrDefaultAsync(t => t.Id == TripId && t.VehicleId == VehicleId);
 
-            if (trip == null)
-            {
-                return NotFound("Trip not found or doesn't match with vehicle.");
-            }
-
-            if (_context.Seats == null)
-            {
-                return NotFound("Seats data is not available.");
-            }
-
-            var seats = await _context.Seats
-                .Where(s => s.Trip != null && s.Trip.VehicleId == VehicleId && s.Trip.Id == TripId)
-                .OrderBy(s => s.Floor)
-                .ThenBy(s => s.Row)
-                .ThenBy(s => s.Column)
-                .ToListAsync();
-
-            if (seats.Count == 0)
-            {
-                return NotFound("Seat hasn't been generated.");
-            }
-
-            SelectSeatsViewModel viewModel = new SelectSeatsViewModel
-            {
-                TripId = trip.Id,
-                VehicleId = trip.VehicleId,
-                RouteName = trip.Route != null ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" : "N/A",
-                DepartureLocation = trip.Route?.StartLocation?.Name ?? "N/A",
-                DepartureLocationAddress = trip.Route?.StartLocation?.Address ?? "N/A",
-                DestinationLocation = trip.Route?.DestinationLocation?.Name ?? "N/A",
-                DestinationLocationAddress = trip.Route?.DestinationLocation?.Address ?? "N/A",
-                DepartureTime = trip.DepartureTime,
-                VehicleName = trip.Vehicle?.Name ?? "",
-                LicensePlate = trip.Vehicle?.LicensePlate ?? "",
-                Price = trip.TotalPrice,
-                Seats = seats,
-                TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
-                TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
-                TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
-                TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
-            };
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                try
+                if (trip == null)
                 {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userId))
+                    return NotFound("Trip not found or doesn't match with vehicle.");
+                }
+
+                if (_context.Seats == null)
+                {
+                    return NotFound("Seats data is not available.");
+                }
+
+                var seats = await _context.Seats
+                    .Where(s => s.Trip != null && s.Trip.VehicleId == VehicleId && s.Trip.Id == TripId)
+                    .OrderBy(s => s.Floor)
+                    .ThenBy(s => s.Row)
+                    .ThenBy(s => s.Column)
+                    .ToListAsync();
+
+                if (seats.Count == 0)
+                {
+                    return NotFound("Seat hasn't been generated.");
+                }
+
+                SelectSeatsViewModel viewModel = new SelectSeatsViewModel
+                {
+                    TripId = trip.Id,
+                    VehicleId = trip.VehicleId,
+                    RouteName = trip.Route != null ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" : "N/A",
+                    DepartureLocation = trip.Route?.StartLocation?.Name ?? "N/A",
+                    DepartureLocationAddress = trip.Route?.StartLocation?.Address ?? "N/A",
+                    DestinationLocation = trip.Route?.DestinationLocation?.Name ?? "N/A",
+                    DestinationLocationAddress = trip.Route?.DestinationLocation?.Address ?? "N/A",
+                    DepartureTime = trip.DepartureTime,
+                    VehicleName = trip.Vehicle?.Name ?? "",
+                    LicensePlate = trip.Vehicle?.LicensePlate ?? "",
+                    Price = trip.TotalPrice,
+                    Seats = seats,
+                    TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
+                    TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
+                    TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
+                    TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
+                };
+
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    try
                     {
-                        var user = await _userManager.FindByIdAsync(userId);
-                        if (user != null)
-                            viewModel.User = user;
+                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        if (!string.IsNullOrEmpty(userId))
+                        {
+                            var user = await _userManager.FindByIdAsync(userId);
+                            if (user != null)
+                                viewModel.User = user;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
-            }
 
-            return View(viewModel);
+                return View(viewModel);   
+            }
+            catch (DbException ex) {
+                _logger.LogError(ex, "An unexpected error occurred while selecting seats.");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while selecting seats.");
+                return RedirectToAction(nameof(Index));
+            }
         }
 
 
@@ -111,20 +128,23 @@ namespace Bus_Station_Ticket_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get userId
-
-            if (!string.IsNullOrEmpty(userId) && User.Identity?.IsAuthenticated == true)
-            {
-                userId = _userManager.GetUserId(User);
-            }
-
-            if (!IsBookingValid(TripId, VehicleId, selectedSeatIds, numberOfTickets, userId, guestName, guestEmail, guestPhone, totalPrice, couponId, paymentMethod, out var seats, out var bookedSeats))
-            {
-                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
-            }
-
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get userId
+
+                if (!string.IsNullOrEmpty(userId) && User.Identity?.IsAuthenticated == true)
+                {
+                    userId = _userManager.GetUserId(User);
+                }
+
+                _logger.LogInformation("Booking seats for user: {UserId}", userId);
+
+                if (!IsBookingValid(TripId, VehicleId, selectedSeatIds, numberOfTickets, userId, guestName, guestEmail, guestPhone, totalPrice, couponId, paymentMethod, out var seats, out var bookedSeats))
+                {
+                    _logger.LogError("Invalid booking request: {Error}", TempData["Error"]);
+                    return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
+                }
+                
                 var ticketIds = new List<string>();
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -164,6 +184,11 @@ namespace Bus_Station_Ticket_Management.Controllers
                         if(paymentMethod != "Cash") {
                             ticket.IsReserved = true;
                         }
+                        
+                        if (ticket.Id == null) {
+                            _logger.LogError("Ticket ID is null for seat: {SeatId}", seat.Id);
+                            throw new Exception("Ticket ID is null for seat: " + seat.Id);
+                        }
 
                         ticketIds.Add(ticket.Id);
                         ticketList.Add(ticket);
@@ -171,19 +196,19 @@ namespace Bus_Station_Ticket_Management.Controllers
                     await _context.Tickets.AddRangeAsync(ticketList);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-
-                    TempData["TicketIds"] = string.Join(",", ticketIds);
-                    TempData["TotalPrice"] = totalPrice;
-                    TempData["Success"] = "Successfully booked seat!";
-                    TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
-
-                    // Redirect to the SelectSeats or Payment checkout view with TempData
-                    return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Payment") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
                 }
+
+                TempData["TicketIds"] = string.Join(",", ticketIds);
+                TempData["TotalPrice"] = totalPrice;
+                TempData["Success"] = "Successfully booked seat!";
+                TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+
+                // Redirect to the SelectSeats or Payment checkout view with TempData
+                return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Payment") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
             }
             catch (DbUpdateException ex)
             {
-                System.Diagnostics.Debug.WriteLine($"\nError: {ex}\n");
+                _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
                 TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
             }
@@ -222,25 +247,30 @@ namespace Bus_Station_Ticket_Management.Controllers
                     return false;
                 }
             }
+            try {
+                seats = _context.Seats
+                    .Include(s => s.Trip)
+                    .Where(s =>
+                        seatIds.Contains(s.Id) &&
+                        s.TripId == TripId &&
+                        s.Trip != null &&
+                        s.Trip.VehicleId == VehicleId)
+                    .ToList();
 
-            seats = _context.Seats
-                .Include(s => s.Trip)
-                .Where(s =>
-                    seatIds.Contains(s.Id) &&
-                    s.TripId == TripId &&
-                    s.Trip != null &&
-                    s.Trip.VehicleId == VehicleId)
-                .ToList();
+                bookedSeats = seats.Where(s => !s.IsAvailable).ToList();
 
-            bookedSeats = seats.Where(s => !s.IsAvailable).ToList();
+                if (bookedSeats.Any())
+                {
+                    TempData["Error"] = "These seats are already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
+                    return false;
+                }
 
-            if (bookedSeats.Any())
-            {
-                TempData["Error"] = "These seats are already booked: " + string.Join(", ", bookedSeats.Select(s => s.Number));
+                return true;
+            }
+            catch (DbException ex) {
+                _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
                 return false;
             }
-
-            return true;
         }
 
         private bool SeatExists(int id)
