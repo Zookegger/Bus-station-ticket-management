@@ -198,7 +198,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHttpsRedirection();
 }
-
+// Add user secrets from dotnet secrets
 builder.Configuration.AddUserSecrets<Program>();
 
 app.UseHttpsRedirection();
