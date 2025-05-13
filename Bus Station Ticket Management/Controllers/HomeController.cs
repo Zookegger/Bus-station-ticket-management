@@ -32,7 +32,7 @@ public class HomeController : Controller
                 .ThenInclude(r => r.StartLocation) 
             .Include(t => t.Route)
                 .ThenInclude(r => r.DestinationLocation) 
-            .Where(t => t.Status == "Stand By" && t.DepartureTime > DateTime.Now)
+            .Where(t => t.Status == "Standby" && t.DepartureTime > DateTime.Now)
             .Take(9)
             .OrderByDescending(t => t.Route.StartLocation.Name)
             .ToListAsync();

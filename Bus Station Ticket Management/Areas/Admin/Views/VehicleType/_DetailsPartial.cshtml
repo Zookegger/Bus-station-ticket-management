@@ -1,42 +1,42 @@
 ﻿@model Bus_Station_Ticket_Management.Models.VehicleType
-<div class="row">
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.Name)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.Name)
-    </dd>
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.Price)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.Price)
-    </dd>
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.TotalSeats)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.TotalSeats)
-    </dd>
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.TotalColumn)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.TotalColumn)
-    </dd>
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.TotalRow)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.TotalRow)
-    </dd>
-    <dt class="col-sm-12 fs-5">
-        @Html.DisplayNameFor(model => model.TotalFlooring)
-    </dt>
-    <dd class="col-sm-12 fs-5">
-        @Html.DisplayFor(model => model.TotalFlooring)
-    </dd>
+<div class="card-body flex-1">
+    <div class="row mb-4 gap-sm-3 gap-md-0">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="fa-solid fa-bus me-2"></i>Vehicle Information
+                    </h6>
+                    <p class="card-text fs-5">
+                        <strong>Name:</strong><br>@Model.Name
+                    </p>
+                    <p class="card-text fs-5">
+                        <strong>Price:</strong><br>@Html.DisplayFor(model => model.Price)
+                    </p>
+                    <p class="card-text fs-5">
+                        <strong>Total Seats:</strong><br>@Model.TotalSeats
+                    </p>
+                    <p class="card-text fs-5">
+                        <strong>Total Column:</strong><br>@Model.TotalColumn
+                    </p>
+                    <p class="card-text fs-5">
+                        <strong>Total Row:</strong><br>@Model.TotalRow
+                    </p>
+                    <p class="card-text fs-5">
+                        <strong>Total Flooring:</strong><br>@Model.TotalFlooring
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="card-footer form-group d-flex justify-content-between mt-4" role="group" aria-label="Button group">
-    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+
+<div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+        <i class="fas fa-edit"></i> Edit Vehicle Type
+    </a>
+    <a role="button" class="btn btn-lg btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
 </div>
+

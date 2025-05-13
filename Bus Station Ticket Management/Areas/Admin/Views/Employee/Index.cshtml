@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Application Users</h1>
+<h1>Employees</h1>
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button" data-tippy-content="Use this to add users with special roles to database">
     <i class="fa fa-plus-circle"></i> Add New Users
@@ -16,7 +16,8 @@
     <select id="roleFilter" class="form-select w-auto d-inline-block ms-2" data-tippy-content="Use this to filter data in the table by user's role">
         <option value="">All Roles</option>
         <option value="Admin">Admin</option>
-        <option value="Employee">Staff</option>
+        <option value="Manager">Manager</option>
+        <option value="Employee">Employee</option>
         <option value="Drivers">Driver</option>
         <option value="Conductor">Conductor</option>
     </select>
@@ -25,9 +26,9 @@
 <div class="table-responsive mb-3 shadow rounded">
     <table id="DataTable" 
         class="table table-hover table-striped align-middle mb-0" 
-        data-details-url="/Admin/ApplicationUser/DetailsPartial"
-        data-table-name="ApplicationUser"
-        data-table-title="Application Users">
+        data-details-url="/Admin/Employee/DetailsPartial"
+        data-table-name="Employee"
+        data-table-title="Employees">
         <thead style="position: sticky; top: 0">
             <tr>
                 <th style="min-width: 240px; max-width: 440px;">UserName</th>
@@ -35,7 +36,8 @@
                 <th>Email</th>
                 <th style="max-width: 120px;">Phone Number</th>
                 <th>Role</th>
-                <th>Actions</th>
+                <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
+
             </tr>
         </thead>
         <tbody class="table-group=divider">
@@ -59,12 +61,15 @@
                                 <i class="fa fa-ellipsis-v"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
                                         asp-route-id="@item.Id">
                                         <i class="fa fa-edit text-primary"></i> Edit
-                                    </a>
-                                </li>
+                                        </a>
+                                    </li>
+                                }
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
                                         asp-route-id="@item.Id">
@@ -76,10 +81,13 @@
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
                         <div class="btn-group simple-buttons" role="group" style="display:none;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
-                                asp-route-id="@item.Id">
-                                <i class="fa fa-edit"></i>
-                            </a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit"
+                                    asp-route-id="@item.Id">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            }
                             <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fa fa-trash"></i>
                             </a>
@@ -93,7 +101,7 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title text-primary fs-4" id="detailsOffcanvasLabel">User Details</h5>
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">User Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">

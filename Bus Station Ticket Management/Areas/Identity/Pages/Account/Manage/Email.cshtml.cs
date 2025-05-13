@@ -3,6 +3,7 @@
 #nullable disable
 
 using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,22 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailBackgroundQueue _emailQueue;
+        private readonly ILogger<EmailModel> _logger;
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IEmailBackgroundQueue emailQueue,
+            ILogger<EmailModel> logger    
+        )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _emailQueue = emailQueue;
+            _logger = logger;
         }
 
         /// <summary>
@@ -97,38 +105,67 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostChangeEmailAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+            try {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) {
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
 
-            if (!ModelState.IsValid) {
-                await LoadAsync(user);
-                return Page();
-            }
+                if (!ModelState.IsValid) {
+                    await LoadAsync(user);
+                    return Page();
+                }
 
-            var email = await _userManager.GetEmailAsync(user);
-            if (Input.NewEmail != email) {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
-                    protocol: Request.Scheme);
-                    
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var email = await _userManager.GetEmailAsync(user);
+                if (Input.NewEmail != email) {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmailChange",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
+                        protocol: Request.Scheme);
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                    var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
+                    var htmlBody = $@"
+                            <div style=""margin: 0 auto; padding: 12px;"">
+                                <header style=""margin-top: 1rem;"">
+                                    <span style=""font-size: 28px; font-weight: 700;"">Confirm your account</span>
+                                </header>
+                                <main style=""margin-top: 1.5rem;"">
+                                    <span style=""font-size: 20px; font-weight: 400;"">
+                                        Please click the button below to confirm your email address and finish setting up your account.
+                                    </span>
+                                </main>
+                                <footer style=""margin-top: 1rem;"">
+                                    <a href=""{encodedUrl}"" 
+                                    style=""display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; 
+                                            cursor: pointer; user-select: none; padding: 0.375rem 0.75rem; font-size: 1rem; 
+                                            line-height: 1.5; border-radius: 0.25rem; color: #fff; background-color: #007bff; 
+                                            text-decoration: none;"">
+                                    Confirm
+                                    </a>
+                                </footer>
+                            </div>";
+                        
+                    _emailQueue.QueueEmail(new EmailMessage {
+                        To = Input.NewEmail,
+                        Subject = "Confirm your email",
+                        HtmlBody = htmlBody
+                    });
+
+                    StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                    return RedirectToPage();
+                }
+
+                StatusMessage = "Your email is unchanged.";
+                return RedirectToPage();
+            } catch (Exception ex) {
+                _logger.LogError(ex, "An error occurred while changing the email.");
+                StatusMessage = "An unexpected error occurred.";
                 return RedirectToPage();
             }
-
-            StatusMessage = "Your email is unchanged.";
-            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
@@ -152,11 +189,35 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+            var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
+            var htmlBody = $@"
+                    <div style=""margin: 0 auto; padding: 12px;"">
+                        <header style=""margin-top: 1rem;"">
+                            <span style=""font-size: 28px; font-weight: 700;"">Confirm your account</span>
+                        </header>
+                        <main style=""margin-top: 1.5rem;"">
+                            <span style=""font-size: 20px; font-weight: 400;"">
+                                Please click the button below to confirm your email address and finish setting up your account.
+                            </span>
+                        </main>
+                        <footer style=""margin-top: 1rem;"">
+                            <a href=""{encodedUrl}"" 
+                            style=""display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; 
+                                    cursor: pointer; user-select: none; padding: 0.375rem 0.75rem; font-size: 1rem; 
+                                    line-height: 1.5; border-radius: 0.25rem; color: #fff; background-color: #007bff; 
+                                    text-decoration: none;"">
+                            Confirm
+                            </a>
+                        </footer>
+                    </div>";
+                
+            _emailQueue.QueueEmail(new EmailMessage {
+                To = Input.NewEmail,
+                Subject = "Confirm your email",
+                HtmlBody = htmlBody
+            });
+            
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();
         }

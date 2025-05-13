@@ -49,17 +49,17 @@ namespace Bus_Station_Ticket_Management.Services
                                 if (now >= trip.ArrivalTime)
                                 {
                                     newTripStatus = "Completed";
-                                    newVehicleStatus = "Stand By";
+                                    newVehicleStatus = "Standby";
                                 }
                                 else if (now >= trip.DepartureTime && now < trip.ArrivalTime)
                                 {
-                                    newTripStatus = "In Progress";
+                                    newTripStatus = "In-Progress";
                                     newVehicleStatus = "Busy";
                                 }
                                 else
                                 {
-                                    newTripStatus = "Stand By";
-                                    newVehicleStatus = "Stand By";
+                                    newTripStatus = "Standby";
+                                    newVehicleStatus = "Standby";
                                 }
 
                                 // Only update if something actually changed

@@ -319,9 +319,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         public async Task<IActionResult> CheckTrips() {
             try {
-                // Get all trips that are not assigned and are in "Stand By" status
+                // Get all trips that are not assigned and are in "Standby" status
                 var unassignedTrips = await _context.Trips
-                    .Where(t => t.Status == "Stand By" && 
+                    .Where(t => t.Status == "Standby" && 
                            !_context.TripDriverAssignments.Any(a => a.TripId == t.Id))
                     .Include(t => t.Route)
                         .ThenInclude(r => r.StartLocation)
@@ -333,7 +333,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 if (!unassignedTrips.Any()) {
                     return Json(new {
                         success = false,
-                        message = "No available trips to assign. All trips are either assigned or not in 'Stand By' status."
+                        message = "No available trips to assign. All trips are either assigned or not in 'Standby' status."
                     });
                 }
 

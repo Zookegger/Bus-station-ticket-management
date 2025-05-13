@@ -38,7 +38,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
                 else if (trip.ArrivalTime <= now)
                 {
-                    trip.Vehicle.Status = "Stand-By";
+                    trip.Vehicle.Status = "Standby";
                 }
             }
             await _context.SaveChangesAsync();

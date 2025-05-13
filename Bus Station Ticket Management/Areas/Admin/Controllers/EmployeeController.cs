@@ -9,16 +9,16 @@ using Microsoft.EntityFrameworkCore;
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Manager")]
     [Route("Admin/[controller]/[action]")]
 
-    public class ApplicationUserController : Controller
+    public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ApplicationUserController(
+        public EmployeeController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager
@@ -29,7 +29,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
-        // GET: ApplicationUser
+        // GET: Employee
         public async Task<IActionResult> Index()
         {
             var usersQuery = _context.Users.AsQueryable();
@@ -53,7 +53,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(await usersQuery.Where(u => userIdsToInclude.Contains(u.Id)).ToListAsync());
         }
 
-        // GET: ApplicationUser/Details/5
+        // GET: Employee/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -107,7 +107,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return PartialView("_DetailsPartial", applicationUser);
         }
 
-        // GET: ApplicationUser/Create
+        // GET: Employee/Create
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.Select(r => r.Name).ToList();
@@ -115,7 +115,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: ApplicationUser/Create
+        // POST: Employee/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -160,7 +160,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(applicationUser);
         }
 
-        // GET: ApplicationUser/Edit/5
+        // GET: Employee/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -184,7 +184,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(applicationUser);
         }
 
-        // POST: ApplicationUser/Edit/5
+        // POST: Employee/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -277,7 +277,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ApplicationUserExists(applicationUser.Id))
+                if (!EmployeeExists(applicationUser.Id))
                 {
                     return NotFound();
                 }
@@ -305,7 +305,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(applicationUser);
         }
 
-        // GET: ApplicationUser/Delete/5
+        // GET: Employee/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -323,7 +323,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return View(applicationUser);
         }
 
-        // POST: ApplicationUser/Delete/5
+        // POST: Employee/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -338,7 +338,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ApplicationUserExists(string id)
+        private bool EmployeeExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
         }

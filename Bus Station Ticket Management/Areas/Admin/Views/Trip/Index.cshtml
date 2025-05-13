@@ -12,8 +12,8 @@
 <select class="form-control" name="filterByStatus" id="filterByStatus" onchange="this.form.submit()">
     <option value="" disabled selected>Filter</option>
     <option value="">All</option>
-    <option value="Stand By">Stand By</option>
-    <option value="In Progress">In Progress</option>
+    <option value="Standby">Standby</option>
+    <option value="In-Progress">In-Progress</option>
     <option value="Completed">Completed </option>
 </select>
 
@@ -112,6 +112,7 @@
 
 @section Scripts {
     <script src="~/js/table.js"></script>
+    <script src="~/js/initOSM.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const dataTable = $("#DataTable").DataTable();
@@ -126,6 +127,10 @@
                     dataTable.column(statusColumnIndex).search('').draw();
                 }
             });
+
+            // fetchDetails(tableName, isLocation, isRoute)
+            fetchDetails('Trip', false, true);
+            setInterval(cleanExpiredCache, 35 * 1000); // every 35 seconds
         });
     </script>
 }

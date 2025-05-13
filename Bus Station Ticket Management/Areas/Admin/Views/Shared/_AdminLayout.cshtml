@@ -17,6 +17,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Font Awesome 4.x compatibility layer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -48,6 +50,8 @@
         crossorigin="anonymous">
     @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-colresize-unofficial@latest/jquery.dataTables.colResize.css"/> *@    <!-- Can't use because of the colReorder plugin iz not supporting DataTables 2.3.0 -->
 
+    <!--  Leaflet.awesome-markers -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" integrity="sha512-cUoWMYmv4H9TGP4hbm1mIjYo90WzIQFo/5jj+P5tQcDTf+iVR59RyIj/a9fRsBxzxt5Dnv/Ex7MzRIxcDwaOLw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
@@ -58,14 +62,13 @@
         <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand fw-semibold" asp-area="Admin" asp-controller="Home" asp-action="Index">
-                    <i class="fa-solid fa-bus me-2"></i>Bus Station Admin
+                    <i class="fa-solid fa-bus me-2"></i>EasyRide - Admin
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar"
                     aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
 
                 <div class="collapse navbar-collapse" id="adminNavbar">
                     <div class="accordion w-100" id="navbarAccordion">
@@ -75,29 +78,29 @@
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#homeAccordion" aria-expanded="false"
                                     aria-controls="homeAccordion">
-                                    <i class="bi bi-house-door me-2"></i>Home
+                                    <i class="bi bi-house-door fs-5 me-2"></i>Home
                                 </button>
                             </h2>
                             <div id="homeAccordion" class="accordion-collapse collapse"
                                 data-bs-parent="#navbarAccordion">
                                 <div class="accordion-body bg-light p-0">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Home"
                                                 asp-action="Index">
-                                                <i class="bi bi-columns-gap me-2"></i>Dashboard
+                                                <i class="bi bi-columns-gap fs-5 me-2"></i>Dashboard
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Tickets"
                                                 asp-action="Revenue">
-                                                <i class="bi bi-bar-chart me-2"></i>Revenue
+                                                <i class="bi bi-bar-chart fs-5 me-2"></i>Revenue
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="" asp-controller="Home"
                                                 asp-action="Index">
-                                                <i class="bi bi-house-door me-2"></i>User Home
+                                                <i class="bi bi-house-door fs-5 me-2"></i>User Home
                                             </a>
                                         </li>
                                     </ul>
@@ -111,23 +114,23 @@
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#vehicleAccordion" aria-expanded="false"
                                     aria-controls="vehicleAccordion">
-                                    <i class="bi bi-truck me-2"></i>Vehicle
+                                    <i class="bi bi-truck fs-5 me-2"></i>Vehicle
                                 </button>
                             </h2>
                             <div id="vehicleAccordion" class="accordion-collapse collapse"
                                 data-bs-parent="#navbarAccordion">
                                 <div class="accordion-body bg-light p-0">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Vehicle"
                                                 asp-action="Index">
-                                                <i class="bi bi-truck-front me-2"></i>Vehicles
+                                                <i class="bi bi-truck-front fs-5 me-2"></i>Vehicles
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin"
                                                 asp-controller="VehicleType" asp-action="Index">
-                                                <i class="bi bi-truck-flatbed me-2"></i>Vehicle Types
+                                                <i class="bi bi-truck-flatbed fs-5 me-2"></i>Vehicle Types
                                             </a>
                                         </li>
                                     </ul>
@@ -141,42 +144,42 @@
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#tripAccordion" aria-expanded="false"
                                     aria-controls="tripAccordion">
-                                    <i class="bi bi-calendar-check me-2"></i>Trip
+                                    <i class="bi bi-calendar-check fs-5 me-2"></i>Trip
                                 </button>
                             </h2>
                             <div id="tripAccordion" class="accordion-collapse collapse"
                                 data-bs-parent="#navbarAccordion">
                                 <div class="accordion-body bg-light p-0">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin"
                                                 asp-controller="Location" asp-action="Index">
-                                                <i class="bi bi-geo-alt me-2"></i>Locations
+                                                <i class="bi bi-geo-alt fs-5 me-2"></i>Locations
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Route"
                                                 asp-action="Index">
-                                                <i class="bi bi-signpost-2 me-2"></i>Routes
+                                                <i class="fa-solid fa-route fs-5 me-2"></i>Routes
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Trip"
                                                 asp-action="Index">
-                                                <i class="bi bi-calendar-range me-2"></i>Trips
+                                                <i class="bi bi-calendar-range fs-5 me-2"></i>Trips
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Driver"
                                                 asp-action="Index">
-                                                <img width="16" height="20" src="/assets/img/driver.svg" class="me-2"
+                                                <img width="23" height="25" src="/assets/img/driver.svg" class="me-2"
                                                     alt="driver" />Drivers
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin"
                                                 asp-controller="TripDriverAssignment" asp-action="Index">
-                                                <i class="bi bi-person-lines-fill me-2"></i>Trip Assignments
+                                                <i class="bi bi-person-lines-fill fs-5 me-2"></i>Trip Assignments
                                             </a>
                                         </li>
                                     </ul>
@@ -190,35 +193,35 @@
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#userAccordion" aria-expanded="false"
                                     aria-controls="userAccordion">
-                                    <i class="fa-solid fa-users me-2"></i>User
+                                    <i class="fa-solid fa-users fs-5 me-2"></i>User
                                 </button>
                             </h2>
                             <div id="userAccordion" class="accordion-collapse collapse"
                                 data-bs-parent="#navbarAccordion">
                                 <div class="accordion-body bg-light p-0">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin"
-                                                asp-controller="ApplicationUser" asp-action="Index">
-                                                <i class="bi bi-people me-2"></i>Application Users
+                                                asp-controller="Employee" asp-action="Index">
+                                                <i class="bi bi-people fs-5 me-2"></i>Employees
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Ratings"
                                                 asp-action="Index">
-                                                <i class="bi bi-star-half me-2"></i>Ratings
+                                                <i class="bi bi-star-half fs-5 me-2"></i>Ratings
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Tickets"
                                                 asp-action="Index">
-                                                <i class="bi bi-ticket-perforated me-2"></i>Tickets
+                                                <i class="bi bi-ticket-perforated fs-5 me-2"></i>Tickets
                                             </a>
                                         </li>
-                                        <li class="nav-item ps-5">
+                                        <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Coupons"
                                                 asp-action="Index">
-                                                <i class="bi bi-ticket-detailed me-2"></i>Coupons
+                                                <i class="bi bi-ticket-detailed fs-5 me-2"></i>Coupons
                                             </a>
                                         </li>
                                     </ul>
@@ -245,7 +248,7 @@
                 <a asp-controller="Home" asp-action="Index"
                     class="offcanvas-title d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <i class="fa-solid fa-bus me-2"></i>
-                    <span class="fs-5 fw-semibold">Bus Admin</span>
+                    <span class="fs-5 fw-semibold">EasyRide</span>
                 </a>
                 <button type="button"
                     class="btn-transparent d-flex justify-content-center align-items-center navbar-toggler"
@@ -351,7 +354,7 @@
                                     <li>
                                         <a class="nav-link text-white ps-2" asp-area="Admin" asp-controller="Route"
                                             asp-action="Index">
-                                            <i class="bi bi-signpost-2 me-2"></i>
+                                            <i class="fa-solid fa-route me-2"></i>
                                             Routes
                                         </a>
                                     </li>
@@ -396,8 +399,8 @@
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
                                         <a class="nav-link text-white ps-2" asp-area="Admin"
-                                            asp-controller="ApplicationUser" asp-action="Index">
-                                            <i class="bi bi-people me-2"></i>Application Users
+                                            asp-controller="Employee" asp-action="Index">
+                                            <i class="bi bi-people me-2"></i>Employees
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -505,6 +508,12 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Font Awesome 4.x -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/js/font-awesome.min.js"></script>
+
+    <!-- Leaflet.awesome-markers -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
 
     <!-- Scripts -->
     <script>

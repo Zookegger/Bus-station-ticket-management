@@ -30,12 +30,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // // Bulk update trip statuses directly in the database
             // await _context.Trips
-            //     .Where(t => t.DepartureTime > now && t.Status != "Stand By")
-            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Stand By"));
+            //     .Where(t => t.DepartureTime > now && t.Status != "Standby")
+            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Standby"));
 
             // await _context.Trips
-            //     .Where(t => t.DepartureTime <= now && t.ArrivalTime > now && t.Status != "In Progress")
-            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "In Progress"));
+            //     .Where(t => t.DepartureTime <= now && t.ArrivalTime > now && t.Status != "In-Progress")
+            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "In-Progress"));
 
             // await _context.Trips
             //     .Where(t => t.ArrivalTime <= now && t.Status != "Completed")
@@ -78,8 +78,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             // tripsQuery = filterBy switch
             // {
             //     "All" => tripsQuery,
-            //     "Stand By" => tripsQuery.Where(t => t.Status == "Stand By"),
-            //     "In Progress" => tripsQuery.Where(t => t.Status == "In Progress"),
+            //     "Standby" => tripsQuery.Where(t => t.Status == "Standby"),
+            //     "In-Progress" => tripsQuery.Where(t => t.Status == "In-Progress"),
             //     "Completed" => tripsQuery.Where(t => t.Status == "Completed"),
             //     _ => tripsQuery,
             // };
@@ -255,7 +255,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (route == null)
                 return NotFound("Error: Cannot find route!");
 
-            trip.Status = "Stand By";
+            trip.Status = "Standby";
             var vehicleType = vehicle.VehicleType;
             if (vehicleType == null) {
                 return NotFound("Error: Cannot find vehicle type for the equivalent vehicle!");

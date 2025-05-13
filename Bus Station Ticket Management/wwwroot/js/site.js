@@ -15,3 +15,13 @@ $(document).ready(function () {
         }
     });
 });
+
+function lockScroll() {
+    document.body.style.overflowY = 'hidden';
+    document.documentElement.style.overflowY = 'hidden';
+}
+
+function unlockScroll() {
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+}

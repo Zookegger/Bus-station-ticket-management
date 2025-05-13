@@ -19,7 +19,8 @@
                 <th style="min-width: 240px; max-width: 440px;">Full Name</th>
                 <th>Email</th>
                 <th style="max-width: 120px;">Phone Number</th>
-                <th>Actions</th>
+                <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
+
             </tr>
         </thead>
         <tbody class="table-group=divider">
@@ -72,7 +73,7 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title text-primary fs-4" id="detailsOffcanvasLabel">User Details</h5>
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">User Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
@@ -91,7 +92,9 @@
 @section Scripts {
     <script src="~/js/table.js"></script>
     <script>
+        
         document.addEventListener("DOMContentLoaded", function () {
+            fetchDetails('Customers');
             const dataTable = $("#DataTable").DataTable();
 
             $('#roleFilter').on('change', function() {

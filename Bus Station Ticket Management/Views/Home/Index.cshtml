@@ -9,6 +9,10 @@
     var time = ViewBag.DepartureTime != null ? (ViewBag.DepartureTime).ToString("yyyy-MM-dd") : null;
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home.css">
+}
+
 <div data-aos="fade-up">
     <div class="background-img">
         <div class="container pt-5">
@@ -35,24 +39,22 @@
             <!-- Search Form -->
             <form asp-action="SearchTrips" method="post" class="row w-100 justify-content-center g-3 mb-md-5">
                 <div class="col-8 col-md-4 mb-md-2 mb-0 position-relative">
-                    <div class="input-group input-group-lg">
-                        <input type="text" id="input_departure" name="departure" class="form-control fs-5"
-                            placeholder="From" required />
-                        <button type="button" class="btn btn-secondary" id="popoverDepartureBtn"
+                    <div class="input-group">
+                        <button type="button" class="btn btn-secondary d-flex align-items-center py-0 ps-0 pe-3 w-100" id="popoverDepartureBtn"
                             data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
                             data-bs-content="" data-bs-custom-class="custom-popover">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <input type="text" id="input_departure" name="departure" class="form-control fs-5" readonly placeholder="From" required style="cursor: pointer; border-top-right-radius: 0; border-bottom-right-radius: 0;"/>
+                            <i class="fas fa-map-marker-alt fa-lg ps-3"></i>
                         </button>
                     </div>
                 </div>
                 <div class="col-8 col-md-4 mb-2 mb-md-0">
-                    <div class="input-group input-group-lg">
-                        <input type="text" id="input_destination" name="destination" class="form-control fs-5"
-                            placeholder="To" required />
-                        <button type="button" class="btn btn-secondary" id="popoverDestinationBtn"
+                    <div class="input-group">
+                        <button type="button" class="btn btn-secondary d-flex align-items-center py-0 ps-0 pe-3 w-100" id="popoverDestinationBtn"
                             data-bs-toggle="popover" data-popper-placement="bottom" data-bs-html="true"
                             data-bs-content="" data-bs-custom-class="custom-popover">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <input type="text" id="input_destination" name="destination" class="form-control fs-5" readonly placeholder="To" required style="cursor: pointer; border-top-right-radius: 0; border-bottom-right-radius: 0;"/>
+                            <i class="fas fa-map-marker-alt fa-lg ps-3"></i>
                         </button>
                     </div>
                 </div>
@@ -343,5 +345,4 @@
             padding-top: 0px !important;
         }
     </style>
-    <link rel="stylesheet" href="~/css/Home.css">
 }

@@ -19,5 +19,8 @@ namespace Bus_Station_Ticket_Management.Models
 
         [DisplayName("Date Of Birth")]
         public DateOnly? DateOfBirth { get; set; }
+
+        [DisplayName("Avatar")]
+        public string? Avatar { get; set; }
     }
 }

@@ -163,7 +163,7 @@ using (var scope = app.Services.CreateScope())
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var roles = new[] { "Admin", "Employee", "Conductor", "Driver", "Customer" };
+    var roles = new[] { "Admin", "Manager", "Employee", "Conductor", "Driver", "Customer" };
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -219,19 +219,23 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Redirect short /Admin to actual Admin panel route
+// Redirect when user enter in url
 app.Use(async (context, next) =>
 {
     switch (context.Request.Path.Value?.ToLowerInvariant())
     {
         case "/admin":
-            context.Response.Redirect("/Admin/Admin/Index");
+            context.Response.Redirect("/Admin/Home/Index");
             return;
 
         // You can add more path-based cases here in the future
         // case "/example":
         //     context.Response.Redirect("/some/other/path");
         //     return;
+
+        case "/home":
+            context.Response.Redirect("/");
+            return;
 
         default:
             await next();

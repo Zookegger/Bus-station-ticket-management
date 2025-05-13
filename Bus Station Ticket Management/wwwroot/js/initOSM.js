@@ -20,14 +20,15 @@ const osrmUrl = `https://router.project-osrm.org/route/v1/driving/`;
 
 // Initialize the map
 function initializeMap(lat = 10.762622, lon = 106.660172, name, draggableMarker = true, zoom = 13) { // Default: Ho Chi Minh City center
-    if (map) {
-        map.remove();
-        map = null;
-        marker = null;
-    }
     try {
+        if (map) {
+            map.remove();
+            map = null;
+            marker = null;
+        }
+            
         map = L.map('map').setView([lat, lon], zoom);
-        
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
@@ -40,10 +41,6 @@ function initializeMap(lat = 10.762622, lon = 106.660172, name, draggableMarker 
         }
         
         marker = L.marker([lat, lon], { draggable: draggableMarker }).addTo(map);
-        
-        // console.log(lat);
-        // console.log(lon);
-        // console.log(name);
 
         if (lat === 0 && lon === 0) {
             searchLocation(name)
@@ -153,9 +150,6 @@ function updateFormAndMarkerFromSearch(data) {
     
     const name = item.name;
     const displayName = item.display_name;
-    // console.log(name);
-    // console.log(displayName);
-
     const searchName = document.getElementById("searchName");
     const searchAddress = document.getElementById("searchAddress");
     const latitudeInput = document.getElementById('Latitude');
@@ -200,10 +194,37 @@ function drawRoute(data, moveMarker = false) {
         throw new Error("Invalid start or end location", startLocation, endLocation);
     }
 
-    startMarker = L.marker([startLocation.lat, startLocation.lon], { draggable: moveMarker })
-        .addTo(map).bindPopup(`Start: ${startLocation.display_name}`);
-    endMarker = L.marker([endLocation.lat, endLocation.lon], { draggable: moveMarker })
-        .addTo(map).bindPopup(`End: ${endLocation.display_name}`);
+    const startMarkerIcon = L.AwesomeMarkers.icon({
+        icon: 'fa fa-map-marker',
+        markerColor: 'red',
+        prefix: 'fa',
+        spin: false,
+        extraClasses: ''
+    });
+
+    const endMarkerIcon = L.AwesomeMarkers.icon({
+        icon: 'fa fa-map-marker',
+        markerColor: 'green',
+        prefix: 'fa',
+        spin: false,
+        extraClasses: ''
+    });
+    
+    startMarker = L.marker([startLocation.lat, startLocation.lon], { 
+        draggable: moveMarker,
+        icon: startMarkerIcon
+    })
+        .addTo(map)
+        .bindPopup(`Start: ${startLocation.display_name}`)
+        .bindTooltip("Start Point", { permanent: true, direction: "bottom" });
+    
+    endMarker = L.marker([endLocation.lat, endLocation.lon], { 
+        draggable: moveMarker,
+        icon: endMarkerIcon
+    })
+        .addTo(map)
+        .bindPopup(`End: ${endLocation.display_name}`)
+        .bindTooltip("End Point", { permanent: true, direction: "bottom" });
 
     const duration = data.route.duration;
     const hours = Math.floor(duration / 3600);
@@ -400,18 +421,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         const searchName = document.getElementById("searchName");
         const searchAddress = document.getElementById("searchAddress");
         
-        // For Edit View
-        if (searchName.value || (searchAddress && searchAddress.value.trim() != "")) {
-            await reverseGeoCode(searchAddress.value.trim());
+        if (searchName && searchAddress && searchName.value && searchAddress.value.trim() != "") {
+            searchName.addEventListener('input', function () {
+                handleDebounce(this, async () => searchLocation(this.value), 1500)
+            });
+
+            searchAddress.addEventListener('input', function () {
+                handleDebounce(this, async () => searchLocation(this.value), 1500)
+            });
+
+            // For Edit View
+            if (searchName.value || (searchAddress && searchAddress.value.trim() != "")) {
+                await reverseGeoCode(searchAddress.value.trim());
+            }
         }
-        
-        searchAddress.addEventListener('input', function () {
-            handleDebounce(this, async () => searchLocation(this.value), 1500)
-        });
-        
-        searchName.addEventListener('input', function () {
-            handleDebounce(this, async () => searchLocation(this.value), 1500)
-        });
     } catch (error) {
         console.error(error);
     }

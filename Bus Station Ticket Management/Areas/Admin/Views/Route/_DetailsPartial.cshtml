@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div class="card shadow-lg mb-2 mb-5">
+    <div class="card shadow-lg mb-2">
         <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
         <div class="card-body px-0 py-0">
             <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
@@ -72,7 +72,8 @@
     </a>
 </div>
 
-<div id="routeDetailsData" data-start-name="@Model?.StartLocation.Name"
+<div id="routeDetailsData" 
+    data-start-name="@Model?.StartLocation.Name"
     data-start-latitude="@Model?.StartLocation.Latitude" data-start-longitude="@Model?.StartLocation.Longitude"
     data-end-name="@Model?.DestinationLocation.Name" data-end-latitude="@Model?.DestinationLocation.Latitude"
     data-end-longitude="@Model?.DestinationLocation.Longitude">

@@ -1,90 +1,96 @@
 ﻿@model Bus_Station_Ticket_Management.Models.TripDriverAssignment
 
-<div id="routeDetailsContent" class="card flex-1 h-100">
-    <div class="card-body flex-1 h-100">
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
-                            <i class="fas fa-map-marker-alt text-danger fa-lg me-1"></i>
-                            Starting Point
-                        </h6>
-                        <p class="card-text">
-                            <strong>Location:</strong> @Model.Trip.Route.StartLocation.Name<br />
-                            <small class="card-subtitle badge bg-secondary mb-2">
-                                @Model.Trip.Route.StartLocation.Latitude, @Model.Trip.Route.StartLocation.Longitude
-                            </small>
-                        </p>
-                        <div id="startAddress" class="text-muted"></div>
-                        <p class="card-text">
-                            <strong>Departure Time:</strong> @Model.Trip.DepartureTime.ToString("MM/dd/yyyy HH:mm:ss")
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-subtitle fs-xs-4 fs-sm-4 fs-md-4 mb-2 text-muted">
-                            <i class="fas fa-map-marker-alt text-success fa-lg me-1"></i>
-                            Ending Point
-                        </h6>
-                        <p class="card-text">
-                            <strong>Location:</strong> @Model.Trip.Route.DestinationLocation.Name<br />
-                            <small class="card-subtitle badge bg-secondary mb-2">
-                                @Model.Trip.Route.DestinationLocation.Latitude, @Model.Trip.Route.DestinationLocation.Longitude
-                            </small>
-                        </p>
-                        <div id="endAddress" class="text-muted"></div>
-                        <p class="card-text">
-                            <strong>Arrival Time:</strong> @Model.Trip.ArrivalTime.ToString("MM/dd/yyyy HH:mm:ss")
-                        </p>
-                    </div>
+<div class="card-body flex-1" id="tripDriverAssignmentDetailsContent">
+    <div class="row mb-4 gap-sm-3 gap-md-0">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle fs-4 mb-2 text-muted">
+                        <i class="fas fa-map-marker-alt text-danger fa-lg me-1"></i>
+                        Starting Point
+                    </h6>
+                    <p class="card-text">
+                        <strong>Location:</strong> @Model.Trip.Route.StartLocation.Name<br />
+                        <small class="card-subtitle badge bg-secondary mb-1">
+                            @Model.Trip.Route.StartLocation.Latitude, @Model.Trip.Route.StartLocation.Longitude
+                        </small>
+                    </p>
+                    <div id="startAddress" class="text-muted mb-2"></div>
+                    <p class="card-text">
+                        <i class="fa-solid fa-calendar-days me-2"></i><strong>Departure Time:</strong> @Model.Trip.DepartureTime.ToString("MM/dd/yyyy HH:mm:ss")
+                    </p>
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle fs-4 mb-2 text-muted">
+                        <i class="fas fa-map-marker-alt text-success fa-lg me-1"></i>
+                        Ending Point
+                    </h6>
+                    <p class="card-text">
+                        <strong>Location:</strong> @Model.Trip.Route.DestinationLocation.Name<br />
+                        <small class="card-subtitle badge bg-secondary mb-1">
+                            @Model.Trip.Route.DestinationLocation.Latitude, @Model.Trip.Route.DestinationLocation.Longitude
+                        </small>
+                    </p>
+                    <div id="endAddress" class="text-muted mb-2"></div>
+                    <p class="card-text">
+                        <i class="fa-solid fa-calendar-days me-2"></i><strong>Arrival Time:</strong> @Model.Trip.ArrivalTime.ToString("MM/dd/yyyy HH:mm:ss")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Trip Information</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="card-text">
-                                    <strong>Driver:</strong> @Model.Driver.FullName<br />
-                                    <strong>Vehicle Type:</strong> @Model.Trip.Vehicle.VehicleType.Name<br />
-                                    <strong>Vehicle:</strong> @Model.Trip.Vehicle.Name
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="card-text">
-                                    <strong>Date Assigned:</strong> @Model.DateAssigned.ToString("MM/dd/yyyy")<br />
-                                    <strong>Time Assigned:</strong> @Model.DateAssigned.ToString("HH:mm:ss")<br />
-                                    <strong>Status:</strong> @Model.Trip.Status
-                                </p>
-                            </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="fas fa-info-circle fa-lg text-primary me-1"></i>
+                        Trip Information
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <strong>Driver:</strong> @Model.Driver.FullName<br />
+                                <strong>Vehicle Type:</strong> @Model.Trip.Vehicle.VehicleType.Name<br />
+                                <strong>Vehicle:</strong> @Model.Trip.Vehicle.Name
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <strong>Date Assigned:</strong> @Model.DateAssigned.ToString("MM/dd/yyyy")<br />
+                                <strong>Time Assigned:</strong> @Model.DateAssigned.ToString("HH:mm:ss")<br />
+                                <strong>Status:</strong> @Model.Trip.Status
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;" class="rounded"></div>
-
-        @if (Model.LastUpdated != null && Model.LastUpdated != DateTime.Parse("01/01/0001 00:00:00")) {
-            <p class="text-muted">Last Updated: @Model.LastUpdated.ToString("MM/dd/yyyy HH:mm:ss")</p>
-        }
     </div>
-    <div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
-        <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
-            <i class="fas fa-edit"></i> Edit Assignment
-        </a>
-        <a role="button" class="btn btn-lg btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
-            <i class="fas fa-arrow-left"></i> Back to List
-        </a>
+
+    <div class="card shadow-lg mb-2 mb-5">
+        <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
+        <div class="card-body px-0 py-0">
+            <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
+        </div>
     </div>
+
+    @if (Model.LastUpdated != null && Model.LastUpdated != DateTime.Parse("01/01/0001 00:00:00")) {
+        <p class="text-muted">Last Updated: @Model.LastUpdated.ToString("MM/dd/yyyy HH:mm:ss")</p>
+    }
+</div>
+<div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+        <i class="fas fa-edit"></i> Edit Assignment
+    </a>
+    <a role="button" class="btn btn-lg btn-secondary" data-bs-dismiss="offcanvas" aria-label="Close">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
 </div>
 
 <div id="routeDetailsData"

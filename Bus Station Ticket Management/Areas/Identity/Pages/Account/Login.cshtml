@@ -4,102 +4,100 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="pb-3">
-    <div class="card shadow mx-auto" style="max-width: 500px;">
-        <div class="card-header bg-success-subtle bg-gradient">
-            <h1 class="mb-0 fw-bolder text-center text-dark fs-2">@ViewData["Title"]</h1>
-        </div>
+<div class="card shadow mx-auto mt-2 mb-5" style="max-width: 550px;">
+    <div class="card-header bg-success-subtle bg-gradient">
+        <h1 class="mb-0 fw-bolder text-center text-dark fs-2">@ViewData["Title"]</h1>
+    </div>
 
-        <div class="card-body p-4">
-            <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+    <div class="card-body p-4">
+        <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-                @if (Model.ShowResendConfirmation)
-                {
-                    <div class="alert alert-warning">
-                        Didn't receive the confirmation email?
-                        <a asp-page="/Account/ResendEmailConfirmation" asp-route-email="@Model.Input.Email">Resend it</a>
-                    </div>
-                }
-
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
-                    <div class="form-floating flex-grow-1">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                            placeholder="name@example.com" />
-                        <label asp-for="Input.Email">Email</label>
-                    </div>
+            @if (Model.ShowResendConfirmation)
+            {
+                <div class="alert alert-warning">
+                    Didn't receive the confirmation email?
+                    <a asp-page="/Account/ResendEmailConfirmation" asp-route-email="@Model.Input.Email">Resend it</a>
                 </div>
+            }
 
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
-                    <div class="form-floating flex-grow-1 position-relative">
-                        <input asp-for="Input.Password" class="form-control" type="password" id="passwordInput"
-                            autocomplete="current-password" placeholder="password" />
-                        <label asp-for="Input.Password">Password</label>
-                        <button type="button"
-                            class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
-                            onclick="togglePasswordVisibility()" tabindex="-1">
-                            <i id="eyeIcon" class="fa fa-eye"></i>
-                        </button>
-                    </div>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-envelope fa-fw"></i></span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                        placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Email</label>
                 </div>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
 
-                <div class="form-check mb-3">
-                    <input asp-for="Input.RememberMe" class="form-check-input" />
-                    <label asp-for="Input.RememberMe" class="form-check-label prevent-select" >Remember me</label>
-                </div>
-
-                <div class="mb-3">
-                    <a asp-page="./ForgotPassword" class="prevent-select">Forgot your password?</a>
-                </div>
-
-                <div class="row gap-2 w-100 mx-auto">
-                    <button id="login-submit" type="submit"
-                        class="col btn btn-lg btn-primary d-flex align-items-center gap-4">
-                        <i class="fas fa-sign-in d-flex justify-content-center align-items-center"></i>
-                        <span class="flex-grow-1 py-auto fw-bold flex-fill fs-5">Log in</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-key fa-fw"></i></span>
+                <div class="form-floating flex-grow-1 position-relative">
+                    <input asp-for="Input.Password" class="form-control" type="password" id="passwordInput"
+                        autocomplete="current-password" placeholder="password" />
+                    <label asp-for="Input.Password">Password</label>
+                    <button type="button"
+                        class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                        onclick="togglePasswordVisibility()" tabindex="-1">
+                        <i id="eyeIcon" class="fa fa-eye"></i>
                     </button>
-                    <a class="col btn btn-lg btn-secondary d-flex align-items-center gap-4" role="button"
-                        asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="flex-grow-1 fw-bold flex-fill fs-5">Register</span>
-                    </a>
+                </div>
+            </div>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <div class="form-check mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label prevent-select" >Remember me</label>
+            </div>
+
+            <div class="mb-3">
+                <a asp-page="./ForgotPassword" class="prevent-select">Forgot your password?</a>
+            </div>
+
+            <div class="row gap-2 w-100 mx-auto">
+                <button id="login-submit" type="submit"
+                    class="col btn btn-lg btn-primary d-flex align-items-center gap-4">
+                    <i class="fas fa-sign-in d-flex justify-content-center align-items-center"></i>
+                    <span class="flex-grow-1 py-auto fw-bold flex-fill fs-5">Log in</span>
+                </button>
+                <a class="col btn btn-lg btn-secondary d-flex align-items-center gap-4" role="button"
+                    asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+                    <i class="fas fa-user-plus"></i>
+                    <span class="flex-grow-1 fw-bold flex-fill fs-5">Register</span>
+                </a>
+            </div>
+        </form>
+
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <hr class="my-4" />
+            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2 class="h5 border-bottom pb-2 mb-3">Or log in using</h2>
+                <div class="d-flex flex-column gap-2">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        var providerLower = provider.Name.ToLower();
+                        if (providerLower == "facebook")
+                        {
+                            providerLower = "facebook-f";
+                        }
+                        var btnClass = providerLower switch
+                        {
+                            "facebook-f" => "btn-outline-primary",
+                            "google" => "btn-outline-danger",
+                            _ => "btn-outline-secondary"
+                        };
+
+                        <button type="submit" class="btn w-100 @btnClass d-flex align-items-center gap-2" name="provider"
+                            value="@provider.Name">
+                            <i class="fa-brands fa-@providerLower" style="font-size: 1.25rem; min-width: 24px"></i>
+                            <span class="fw-bold">@provider.DisplayName</span>
+                        </button>
+                    }
                 </div>
             </form>
-
-            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-            {
-                <hr class="my-4" />
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <h2 class="h5 border-bottom pb-2 mb-3">Or log in using</h2>
-                    <div class="d-flex flex-column gap-2">
-                        @foreach (var provider in Model.ExternalLogins!)
-                        {
-                            var providerLower = provider.Name.ToLower();
-                            if (providerLower == "facebook")
-                            {
-                                providerLower = "facebook-f";
-                            }
-                            var btnClass = providerLower switch
-                            {
-                                "facebook-f" => "btn-outline-primary",
-                                "google" => "btn-outline-danger",
-                                _ => "btn-outline-secondary"
-                            };
-
-                            <button type="submit" class="btn w-100 @btnClass d-flex align-items-center gap-2" name="provider"
-                                value="@provider.Name">
-                                <i class="fa-brands fa-@providerLower" style="font-size: 1.25rem; min-width: 24px"></i>
-                                <span class="fw-bold">@provider.DisplayName</span>
-                            </button>
-                        }
-                    </div>
-                </form>
-            }
-        </div>
+        }
     </div>
 </div>
 @section Scripts {

@@ -1,8 +1,13 @@
+let tableTitleGlobal = null;
+
+
 document.addEventListener("DOMContentLoaded", function () {
 	const tableSelector = "#DataTable";
 	const detailsUrl = document.querySelector(tableSelector).dataset.detailsUrl;
 	const tableName = document.querySelector(tableSelector).dataset.tableName;
 	const tableTitle = document.querySelector(tableSelector).dataset.tableTitle;
+
+	tableTitleGlobal = tableTitle;
 
 	initializeDataTable(tableName, tableTitle, tableSelector, {
 		ajax: null, // Loads data via AJAX
@@ -192,31 +197,31 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 				buttons: [
 					{
 						extend: "copy",
-						text: '<i class="fa-solid fa-copy me-1"></i> Copy',
+						text: '<i class="fa-solid fa-copy fs-5 me-1" style="min-width: 22.5px;"></i> Copy',
 						attr: { "data-tippy-content": "Copy table data" },
 						exportOptions: { columns: ':not(:last-child)' },
 					},
 					{
 						extend: "csv",
-						text: '<i class="fa-solid fa-file-csv me-1"></i> CSV',
+						text: '<i class="fa-solid fa-file-csv fs-5 me-1" style="min-width: 22.5px; color:rgb(3, 100, 191)"></i> CSV',
 						attr: { "data-tippy-content": "Export to CSV" },
 						exportOptions: { columns: ':not(:last-child)' },
 					},
 					{
 						extend: "excel",
-						text: '<i class="fa-solid fa-file-excel me-1"></i> Excel',
+						text: '<i class="fa-solid fa-file-excel fs-5 me-1" style="min-width: 22.5px; color: #32a852"></i> Excel',
 						attr: { "data-tippy-content": "Export to Excel" },
 						exportOptions: { columns: ':not(:last-child)' },
 					},
 					{
 						extend: "pdf",
-						text: '<i class="fa-solid fa-file-pdf me-1"></i> PDF',
+						text: '<i class="fa-solid fa-file-pdf fs-5 me-1" style="min-width: 22.5px; color: #d33333"></i> PDF',
 						attr: { "data-tippy-content": "Export to PDF" },
 						exportOptions: { columns: ':not(:last-child)' },
 					},
 					{
 						extend: "print",
-						text: '<i class="fa-solid fa-print me-1"></i> Print',
+						text: '<i class="fa-solid fa-print fs-5 me-1" style="min-width: 22.5px; color: #000000"></i> Print',
 						attr: { "data-tippy-content": "Print table data" },
 						exportOptions: { columns: ':not(:last-child)' },
 					},
@@ -260,7 +265,7 @@ function initializeRowClickHandler(tableSelector, detailsUrl, offcanvasSelector,
 			$(offcanvasBodySelector).html(data);
 		}).fail(function () {
 			$(offcanvasBodySelector).html(
-				`<div class="alert alert-danger">Failed to load ${tableTitle} details.</div>`
+				`<div class="alert alert-danger">Failed to load ${tableTitleGlobal} details.</div>`
 			);
 		});
 	});

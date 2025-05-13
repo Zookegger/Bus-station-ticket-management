@@ -59,11 +59,16 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
         public async Task<IActionResult> DetailsPartial(string? id) {
-            var customer = await GetCustomers(id);
-            if (customer == null) {
-                return NotFound($"Cannot find customer with id {id}");
+            try {
+                var customer = await GetCustomers(id);
+                if (customer == null) {
+                    return NotFound($"Cannot find customer with id {id}");
+                }
+                return PartialView("_DetailsPartial", customer.FirstOrDefault());
             }
-            return PartialView("_DetailsPartial", customer);
+            catch (Exception ex) {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

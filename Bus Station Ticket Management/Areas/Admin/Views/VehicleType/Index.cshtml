@@ -14,12 +14,12 @@
         <thead>
             <tr>
                 <th style="min-width: 200px;">Name</th>
-                <th>Base Fare</th>
-                <th style="max-width: 100px;">Total Seats</th>
-                <th style="max-width: 100px;">Total Flooring</th>
-                <th style="max-width: 100px;">Total Row</th>
-                <th style="max-width: 100px;">Total Column</th>
-                <th style="max-width: 100px;">Actions</th>
+                <th style="min-width: 150px;">Base Fare</th>
+                <th style="min-width: 100px;">Total Seats</th>
+                <th style="min-width: 100px;">Total Flooring</th>
+                <th style="min-width: 100px;">Total Row</th>
+                <th style="min-width: 100px;">Total Column</th>
+                <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
             </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -28,10 +28,10 @@
                 <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                     <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalSeats)</td>
-                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalFlooring)</td>
-                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalRow)</td>
-                    <td style="max-width: 100px;">@Html.DisplayFor(modelItem => item.TotalColumn)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalFlooring)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalRow)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalColumn)</td>
                     <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
                         <!-- Dropdown Buttons (Hidden by default) -->
                         <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
@@ -56,7 +56,7 @@
                         </div>
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
-                        <div class="btn-group simple-buttons" role="group" style="display:none;">
+                        <div class="btn-group simple-buttons" role="group" style="display:none; min-width: 90px;">
                             <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
                                 <i class="fa fa-edit"></i>
                             </a>
@@ -70,16 +70,22 @@
         </tbody>
     </table>
 </div>
-<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
-    style="width: 40%; min-width: 660px;">
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Vehicle Type Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body" id="detailsOffcanvasBody">
+    <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
+        <div class="text-center p-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
 
     </div>
 </div>
+
 @section Styles{
     <link rel="stylesheet" href="~/css/Index.css">
 }
