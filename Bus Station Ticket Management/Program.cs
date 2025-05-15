@@ -41,24 +41,14 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IEmailBackgroundQueue, EmailBackgroundQueue>();
 builder.Services.AddHostedService<EmailBackgroundService>();
 
-// QR Code
-builder.Services.AddTransient<QrCodeService>();
-
 // Session & Cookie Policy
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-
-    // Custom logic to set IdleTimeout based on user role
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Default timeout
-    options.Cookie.Name = ".BusStation.Session";
-
-    options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
-
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax; // Ensure cookies are sent with cross-site requests
@@ -86,51 +76,51 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
     options.SlidingExpiration = true;
-})
-.AddGoogle(options =>
-{
-    if (config is not null &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-    {
-        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
-        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-    }
-    else
-    {
-        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
-    }
-
-    options.CallbackPath = "/signin-google";
-
-    // // Request extra scopes for additional profile details.
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-
-    // // Request access to birthday, phone number, address, and gender information.
-    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
-
-    // options.SaveTokens = true;
-})
-.AddFacebook(options =>
-{
-    if (config is not null &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-    {
-        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
-        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-    }
-    else
-    {
-        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
-    }
-
-    options.CallbackPath = "/signin-facebook";
 });
+//.AddGoogle(options =>
+//{
+//    if (config is not null &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+//    {
+//        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
+//        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+//    }
+//    else
+//    {
+//        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
+//    }
+
+//    options.CallbackPath = "/signin-google";
+
+//    // // Request extra scopes for additional profile details.
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+//    // // Request access to birthday, phone number, address, and gender information.
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+//    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+//    // options.SaveTokens = true;
+//})
+//.AddFacebook(options =>
+//{
+//    if (config is not null &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+//    {
+//        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
+//        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+//    }
+//    else
+//    {
+//        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
+//    }
+
+//    options.CallbackPath = "/signin-facebook";
+//});
 
 // ==================== Identity ====================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -166,7 +156,7 @@ using (var scope = app.Services.CreateScope())
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var roles = new[] { "Admin", "Manager", "Employee", "Conductor", "Driver", "Customer" };
+    var roles = new[] { "Admin", "Employee", "Conductor", "Driver", "Customer" };
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -201,7 +191,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHttpsRedirection();
 }
-// Add user secrets from dotnet secrets
+
 builder.Configuration.AddUserSecrets<Program>();
 
 app.UseHttpsRedirection();
@@ -215,30 +205,26 @@ app.UseAuthorization();
 // Middleware to handle ngrok requests
 app.Use(async (context, next) =>
 {
-    if (context.Request.Host.Value != null && context.Request.Host.Value.Contains("ngrok.io"))
+    if (context.Request.Host.Value.Contains("ngrok.io"))
     {
         context.Request.Headers["Host"] = "localhost";
     }
     await next();
 });
 
-// Redirect when user enter in url
+// Redirect short /Admin to actual Admin panel route
 app.Use(async (context, next) =>
 {
     switch (context.Request.Path.Value?.ToLowerInvariant())
     {
         case "/admin":
-            context.Response.Redirect("/Admin/Home/Index");
+            context.Response.Redirect("/Admin/Admin/Index");
             return;
 
         // You can add more path-based cases here in the future
         // case "/example":
         //     context.Response.Redirect("/some/other/path");
         //     return;
-
-        case "/home":
-            context.Response.Redirect("/");
-            return;
 
         default:
             await next();
@@ -263,4 +249,3 @@ app.MapStaticAssets();
 app.MapRazorPages();
 app.MapControllers();
 app.Run();
-

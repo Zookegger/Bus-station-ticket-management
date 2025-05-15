@@ -1,0 +1,72 @@
+﻿@model Bus_Station_Ticket_Management.Models.DriverLicense
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>DriverLicense</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DriverId" class="control-label"></label>
+                <select asp-for="DriverId" class="form-control" asp-items="ViewBag.DriverId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicenseId" class="control-label"></label>
+                <input asp-for="LicenseId" class="form-control" />
+                <span asp-validation-for="LicenseId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicenseClass" class="control-label"></label>
+                <select asp-for="LicenseClass" class="form-control">
+                    <option value="" disabled selected> -- Choose the class -- </option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="A3">A3</option>
+                    <option value="A4">A4</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="FC">FC</option>
+                </select>
+                <span asp-validation-for="LicenseClass" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicenseIssueDate" class="control-label"></label>
+                <input asp-for="LicenseIssueDate" class="form-control" type="date" />
+                <span asp-validation-for="LicenseIssueDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicenseExpirationDate" class="control-label"></label>
+                <input asp-for="LicenseExpirationDate" class="form-control" type="date" />
+                <span asp-validation-for="LicenseExpirationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicenseIssuePlace" class="control-label"></label>
+                <input asp-for="LicenseIssuePlace" class="form-control" />
+                <span asp-validation-for="LicenseIssuePlace" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

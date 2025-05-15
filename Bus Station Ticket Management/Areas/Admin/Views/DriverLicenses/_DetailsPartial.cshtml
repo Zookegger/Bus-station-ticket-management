@@ -1,0 +1,43 @@
+﻿@model Bus_Station_Ticket_Management.Models.DriverLicense
+
+<div class="row">
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        Driver
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.Driver.FullName)
+    </dd>
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        License ID
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicenseId)
+    </dd>
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        @Html.DisplayNameFor(model => model.LicenseClass)
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicenseClass)
+    </dd>
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        @Html.DisplayNameFor(model => model.LicenseIssueDate)
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicenseIssueDate)
+    </dd>
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        @Html.DisplayNameFor(model => model.LicenseExpirationDate)
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicenseExpirationDate)
+    </dd>
+    <dt class="col-sm-4 mt-2 fs-xs-6 fs-sm-5 fs-md-6">
+        @Html.DisplayNameFor(model => model.LicenseIssuePlace)
+    </dt>
+    <dd class="col-sm-8 mt-2 fs-xs-4 fs-sm-4 fs-md-5">
+        @Html.DisplayFor(model => model.LicenseIssuePlace)
+    </dd>
+</div>
+<div class="card-footer form-group d-flex justify-content-between mt-3" role="group" aria-label="Button group">
+    <a role="button" class="btn btn-primary btn-lg" asp-action="Edit" asp-route-driverId="@Model?.DriverId" asp-route-licenseId="@Model?.LicenseId">Edit</a>
+</div>

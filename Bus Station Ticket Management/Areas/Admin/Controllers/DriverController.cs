@@ -89,7 +89,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     PhoneNumber = driver.PhoneNumber,
                 };
 
-                var result = await _userManager.CreateAsync(user, password: "defaultpassword123");
+                var result = await _userManager.CreateAsync(user, password: "Defaultpassword123@");
                 if (result.Succeeded) {
                     driver.Id = user.Id;
                     _context.Add(driver);
