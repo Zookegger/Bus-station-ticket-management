@@ -15,6 +15,7 @@
     <form asp-action="Edit" class="card-body" enctype="multipart/form-data" id="editForm">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
         <input type="hidden" asp-for="DriverId" />
+        <input type="hidden" asp-for="RowVersion" />
 
         @* Driver's Personal Information *@
         <div class="row g-3">
@@ -44,7 +45,7 @@
                             </div>
 
                             <img id="avatarPreview"
-                                src="@(hasImage ? Url.Content("~/images/avatar/" + Model.Avatar) : "#")" alt="Avatar"
+                                src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")" alt="Avatar"
                                 class="rounded-circle shadow"
                                 style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
                         </div>

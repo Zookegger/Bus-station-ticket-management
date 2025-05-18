@@ -39,6 +39,9 @@ namespace Bus_Station_Ticket_Management.ViewModels {
         [DisplayName("Licenses")]
         [Required]
         public List<DriverLicenseViewModel>? Licenses { get; set; } = [];
+
+        [Timestamp]
+        public byte[]? RowVersion { get; set; }
     }
 
     public class DriverLicenseViewModel {
