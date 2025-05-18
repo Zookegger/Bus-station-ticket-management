@@ -29,7 +29,7 @@
                 }
                 @if (hasImage) {
                     <img id="avatar"
-                        src="@(hasImage ? Url.Content("~/images/avatar/" + Model.Avatar) : "#")" alt="Avatar"
+                        src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")" alt="Avatar"
                         class="rounded-circle shadow"
                         style="width: 80px; height: 80px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
                 } else {
