@@ -6,45 +6,98 @@
 }
 
 <div class="container pb-3">
-    <h1 class="text-danger fw-bold mb-4">Delete Vehicle Type</h1>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <i class="fas fa-trash-alt text-danger" style="font-size: 2rem;"></i>
+        <h1 class="text-danger fw-bold mb-0">Delete Vehicle Type</h1>
+    </div>
 
-    <h3 class="mb-3">Are you sure you want to delete this?</h3>
-
-    <div class="card shadow-sm">
-        <h4 class="card-header">Vehicle Type</h4>
+    <div class="card shadow border-0">
+        <div class="card-header bg-white py-3">
+            <h4 class="card-title mb-0 text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Are you sure you want to delete this vehicle type?
+            </h4>
+        </div>
         <div class="card-body">
             <dl class="row mb-0">
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-md-9">@Html.DisplayFor(model => model.Name)</dd>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-tag me-2"></i>Name
+                </dt>
+                <dd class="col-md-9 fw-bold fs-5">@Html.DisplayFor(model => model.Name)</dd>
 
-                <dt class="col-sm-3">Price</dt>
-                <dd class="col-md-9">@Html.DisplayFor(model => model.Price)</dd>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-dollar-sign me-2"></i>Price
+                </dt>
+                <dd class="col-md-9 fs-5">@Html.DisplayFor(model => model.Price)</dd>
 
-                <dt class="col-sm-3">Total Seats</dt>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-chair me-2"></i>Total Seats
+                </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalSeats)</dd>
 
-                <dt class="col-sm-3">Total Flooring</dt>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-layer-group me-2"></i>Total Flooring
+                </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalFlooring)</dd>
-                
 
-                <dt class="col-sm-3">Total Row</dt>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-grip-lines me-2"></i>Total Row
+                </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalRow)</dd>
 
-                <dt class="col-sm-3">Total Column</dt>
+                <dt class="col-sm-3 text-muted">
+                    <i class="fas fa-grip-lines-vertical me-2"></i>Total Column
+                </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalColumn)</dd>
             </dl>
-
         </div>
-    </div>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <div class="d-flex justify-content-between mt-3">
-            <a role="button" class="btn btn-outline-secondary" asp-action="Index">
-                <i class="fas fa-arrow-left"></i> Back to List
+
+        <div class="card-footer bg-light d-flex justify-content-between gap-2 py-3">
+            <a role="button" class="btn btn-outline-secondary hvr-icon-back" asp-action="Index">
+                <i class="fas fa-arrow-left me-2 hvr-icon"></i>Back to List
             </a>
-            <button type="submit" class="btn btn-danger me-2">
-                <i class="fas fa-trash-alt"></i> Delete
+            <button type="button" class="btn btn-danger hvr-icon-pulse-grow" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                <i class="fas fa-trash-alt me-2 hvr-icon"></i>Delete
             </button>
         </div>
-    </form>
+    </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" role="dialog" aria-labelledby="deleteConfirmationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Delete" id="deleteForm">
+                <input type="hidden" asp-for="Id" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                        <i class="fas fa-exclamation-circle text-danger me-2"></i>Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-bus text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center">Are you sure you want to delete this vehicle type? This action
+                        cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/Shared/confirmDeleteModal.css">
+
+@section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
+}

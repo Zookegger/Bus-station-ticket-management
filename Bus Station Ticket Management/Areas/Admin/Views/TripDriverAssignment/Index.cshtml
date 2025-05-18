@@ -7,88 +7,98 @@
 
 <h1 class="text-success fw-bold mb-4">Assignment</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button" id="assignButton"><i class="fa fa-plus-circle"></i> Assign</a>
+<a asp-action="Create" class="btn btn-primary mb-3" role="button" id="assignButton"><i class="fa fa-plus-circle"></i>
+    Assign</a>
 
 @if (ViewBag.ErrorMessage != null)
 {
-    <span class="text-danger">@ViewBag.ErrorMessage</span>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa fa-exclamation-circle me-2"></i>
+        @ViewBag.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 @if (Model.Count() == 0)
 {
-    <span class="text-danger">No assignments found.</span>
+    <div class="alert alert-info text-center py-4">
+        <i class="fa fa-info-circle fa-2x mb-3"></i>
+        <h5>No Assignments Found</h5>
+        <p class="mb-0">There are currently no driver assignments. Click the "Assign" button above to create a new assignment.</p>
+    </div>
 }
 else
 {
     <div class="table-responsive mb-3 shadow rounded">
-        <table id="DataTable" 
-            class="table table-hover table-striped align-middle mb-0" 
-            @* style="max-height: 876px;" *@
-            data-details-url="/Admin/TripDriverAssignment/DetailsPartial"
-            data-table-name="TripDriverAssignment"
+        <table id="DataTable" class="table table-hover table-striped align-middle mb-0" @* style="max-height: 876px;" *@
+            data-details-url="/Admin/TripDriverAssignment/DetailsPartial" data-table-name="TripDriverAssignment"
             data-table-title="TripDriverAssignment">
-        <thead style="position: sticky; top: 0">
-            <tr>
-                <th>Trip</th>
-                <th>Driver</th>
-                <th>Date Assigned</th>
-                <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
+            <thead style="position: sticky; top: 0">
+                <tr>
+                    <th>Trip</th>
+                    <th>Driver</th>
+                    <th>Date Assigned</th>
+                    <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                    <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
-                    <td>
-                        @item.Trip.Route.StartLocation.Name ➞ @item.Trip.Route.DestinationLocation.Name
-                    </td>
-                    <td>
-                        @item.Driver.FullName
-                    </td>
-                    <td>
-                        @item.DateAssigned.ToShortDateString()
-                    </td>
-                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
-                        <!-- Dropdown Buttons (Hidden by default) -->
-                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
-                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
-                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
-                                        asp-route-id="@item.Id">
-                                        <i class="fa fa-edit text-primary"></i> Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
-                                        asp-route-id="@item.Id">
-                                        <i class="fa fa-trash text-danger"></i> Delete
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Simple Buttons (Visible by default on small tables) -->
-                        <div class="btn-group simple-buttons" role="group" style="display:none;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
+                        <td>
+                            @item.Trip.Route.StartLocation.Name ➞ @item.Trip.Route.DestinationLocation.Name
+                        </td>
+                        <td>
+                            @item.Driver.Account.FullName
+                        </td>
+                        <td>
+                            @item.DateAssigned.ToShortDateString()
+                        </td>
+                        <td class="action-buttons" onclick="event.stopPropagation()"
+                            style="min-width: 90px; max-width: 90px; width: 90px !important;">
+                            <!-- Dropdown Buttons (Hidden by default) -->
+                            <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                                <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                    data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                            asp-route-id="@item.Id">
+                                            <i class="fa fa-edit text-primary hvr-icon-pulse-grow"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                            asp-route-id="@item.Id">
+                                            <i class="fa fa-trash text-danger hvr-icon-pulse-grow"></i> Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Simple Buttons (Visible by default on small tables) -->
+                            <div class="btn-group simple-buttons" role="group" style="display:none;">
+                                <a role="button" class="btn btn-secondary rounded-start hvr-icon-pulse-grow" asp-action="Edit"
+                                    asp-route-id="@item.Id" data-tippy-content="Edit Content">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a role="button" class="btn btn-danger rounded-end hvr-icon-pulse-grow" asp-action="Delete" asp-route-id="@item.Id"
+                                    data-tippy-content="Delete Content">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 550px;">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
+        style="width: 40%; min-width: 550px;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Trip Assignment Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -103,7 +113,7 @@ else
     </div>
 }
 
-@section Styles{
+@section Styles {
     <link rel="stylesheet" href="~/css/Index.css">
 }
 
@@ -114,17 +124,17 @@ else
         // Handle row clicks
         $('.clickable-row').on('click', function () {
             var routeId = $(this).data('id');
-            
+
             console.log(routeId);
             $.ajax({
                 url: '/Admin/TripDriverAssignment/DetailsPartial?id=' + routeId,
                 method: 'GET',
                 success: function (data) {
                     $('#detailsOffcanvasBody').html(data);
-                    
+
                     console.log(1);
                     // Initialize map after showing
-                    setTimeout(async function() {
+                    setTimeout(async function () {
                         var startLatitude = parseFloat($('#routeDetailsData').data('start-latitude'));
                         var startLongitude = parseFloat($('#routeDetailsData').data('start-longitude'));
                         var endLatitude = parseFloat($('#routeDetailsData').data('end-latitude'));
@@ -134,7 +144,7 @@ else
 
                         await initializeMap(startLatitude, startLongitude, startName, false);
                         const { startLocation, endLocation } = await addRouteAndTime(startLatitude, startLongitude, endLatitude, endLongitude);
-                        
+
                         if (startLocation && endLocation) {
                             $('#startAddress').text(startLocation.display_name);
                             console.log($('#startAddress').text);
@@ -154,8 +164,11 @@ else
             const offcanvasEl = document.getElementById('detailsOffcanvas');
             const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
 
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
             // Handle assign button click
-            $('#assignButton').on('click', function(e) {
+            document.getElementById('assignButton').addEventListener('click', function(e) {
                 e.preventDefault();
                 checkTrips();
             });
@@ -167,8 +180,8 @@ else
                     url: '/Admin/TripDriverAssignment/CheckTrips',
                     method: 'GET'
                 });
-                
-                if (response.success) {
+
+                if (response.success && response.data.length > 0) {
                     window.location.href = '/Admin/TripDriverAssignment/Create';
                 } else {
                     // Show error message to user

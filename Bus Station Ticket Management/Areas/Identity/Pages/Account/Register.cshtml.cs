@@ -122,39 +122,42 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            try
             {
-                var user = CreateUser();
 
-                user.FullName = Input.FullName;
-                user.Address = Input.Address;
-                user.Gender = Input.Gender;
-                user.DateOfBirth = Input.DateOfBirth;
-                user.PhoneNumber = Input.PhoneNumber;
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                returnUrl ??= Url.Content("~/");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                if (ModelState.IsValid)
                 {
-                    await _userManager.AddToRoleAsync(user, "Customer");
-                    _logger.LogInformation("User created a new account with password.");
+                    var user = CreateUser();
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    user.FullName = Input.FullName;
+                    user.Address = Input.Address;
+                    user.Gender = Input.Gender;
+                    user.DateOfBirth = Input.DateOfBirth;
+                    user.PhoneNumber = Input.PhoneNumber;
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                    var result = await _userManager.CreateAsync(user, Input.Password);
 
-                    var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
-                    var htmlBody = $@"
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Customer");
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var userId = await _userManager.GetUserIdAsync(user);
+
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
+
+                        var encodedUrl = HtmlEncoder.Default.Encode(callbackUrl);
+                        var htmlBody = $@"
                         <div style=""margin: 0 auto; padding: 12px;"">
                             <header style=""margin-top: 1rem;"">
                                 <span style=""font-size: 28px; font-weight: 700;"">Confirm your account</span>
@@ -175,31 +178,38 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                             </footer>
                         </div>";
 
-                    _emailQueue.QueueEmail(new EmailMessage
-                    {
-                        To = Input.Email,
-                        Subject = "Confirm your email",
-                        HtmlBody = htmlBody
-                    });
+                        _emailQueue.QueueEmail(new EmailMessage
+                        {
+                            To = Input.Email,
+                            Subject = "Confirm your email",
+                            HtmlBody = htmlBody
+                        });
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
                     }
-                    else
+                    foreach (var error in result.Errors)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+
+                // If we got this far, something failed, redisplay form
+                return Page();
             }
-
-            // If we got this far, something failed, redisplay form
-            return Page();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while registering.");
+                ModelState.AddModelError(string.Empty, "An error occurred while registering. Please try again later.");
+                return Page();
+            }
         }
 
         private ApplicationUser CreateUser()

@@ -147,9 +147,9 @@
                             <div class="col">
                                 <p class="card-text">
                                     <strong>Date Assigned:</strong> @Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.DateAssigned.ToString("MM/dd/yyyy HH:mm")<br />
-                                    <strong>Driver:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.FullName ?? "N/A")<br />
-                                    <strong>Phone:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.PhoneNumber ?? "N/A")<br />
-                                    <strong>Email:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.Email ?? "N/A")
+                                    <strong>Driver:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.Account?.FullName ?? "N/A")<br />
+                                    <strong>Phone:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.Account?.PhoneNumber ?? "N/A")<br />
+                                    <strong>Email:</strong> @(Model.Trip?.TripDriverAssignments?.FirstOrDefault()?.Driver?.Account?.Email ?? "N/A")
                                 </p>
                             </div>
                         </div>

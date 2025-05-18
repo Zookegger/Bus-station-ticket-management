@@ -122,6 +122,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FullName,Address,Gender,DateOfBirth,UserName,Email,PhoneNumber")] ApplicationUser applicationUser, string Password, string selectedRole)
         {
+            if (!validateEmployee(applicationUser))
+            {
+                return View(applicationUser);
+            }
 
             if (ModelState.IsValid)
             {
@@ -200,10 +204,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            if (!string.IsNullOrEmpty(applicationUser?.PhoneNumber) &&
-            (applicationUser.PhoneNumber.Length < 8 || applicationUser.PhoneNumber.Length > 11))
+            if (!validateEmployee(applicationUser))
             {
-                ModelState.AddModelError("PhoneNumber", "Invalid phone number!");
                 return View(applicationUser);
             }
 
@@ -217,10 +219,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (!roles.Any())
             {
                 ModelState.AddModelError("", "Error: No roles available.");
-                return View(applicationUser);
-            }
-
-            if (applicationUser == null) {
                 return View(applicationUser);
             }
 
@@ -253,7 +251,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
 
                 // Change password if provided
-                if (!string.IsNullOrWhiteSpace(newPassword))
+                if (!string.IsNullOrWhiteSpace(newPassword) && newPassword.Length > 0 && !string.IsNullOrEmpty(newPassword))
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
@@ -290,6 +288,34 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
         }
 
+        private bool validateEmployee(ApplicationUser applicationUser){
+            if (applicationUser == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(applicationUser?.PhoneNumber) &&
+            (applicationUser.PhoneNumber.Length < 8 || applicationUser.PhoneNumber.Length > 11))
+            {
+                ModelState.AddModelError("PhoneNumber", "Invalid phone number!");
+                return false;
+            }
+
+            if (applicationUser.DateOfBirth.HasValue && (applicationUser.DateOfBirth.Value > DateOnly.FromDateTime(DateTime.Now)))
+            {
+                ModelState.AddModelError("DateOfBirth", "Date of birth cannot be in the future");
+                return false;
+            }
+
+            if (applicationUser.DateOfBirth.HasValue && (DateTime.Now.Year - applicationUser.DateOfBirth.Value.Year) < 18)
+            {
+                ModelState.AddModelError("DateOfBirth", "Employee must be at least 18 years old");
+                return false;
+            }
+
+            return true;
+        }
+
         private void AddErrorsToModelState(IEnumerable<IdentityError> errors)
         {
             foreach (var error in errors)
@@ -301,7 +327,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private IActionResult ReloadViewWithRoles(ApplicationUser applicationUser, List<string> roles, ApplicationUser user)
         {
             ViewBag.Roles = roles;
-            ViewBag.CurrentRole = (user != null ? _userManager.GetRolesAsync(user).Result.FirstOrDefault() : null);
+            ViewBag.CurrentRole = user != null ? _userManager.GetRolesAsync(user).Result.FirstOrDefault() : null;
             return View(applicationUser);
         }
 

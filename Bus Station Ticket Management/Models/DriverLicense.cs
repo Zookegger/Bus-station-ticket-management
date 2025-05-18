@@ -34,5 +34,11 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("License Issue Place")]
         [Required]
         public string? LicenseIssuePlace { get; set; }
+
+        [DisplayName("Front Image")]
+        public string? FrontImg { get; set; }
+
+        [DisplayName("Back Image")]
+        public string? BackImg { get; set; }
     }
 }

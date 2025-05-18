@@ -6,7 +6,7 @@
 }
 
 
-<h3>ApplicationUser</h3>
+<h3>Add New Employee</h3>
 <hr />
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -30,17 +30,72 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="Password" class="control-label">Password</label>
-                        <input type="password" id="Password" name="Password" class="form-control" minlength="10"
-                            required pattern=".*[!#$%^&*(),.?\:{}|<>].*" />
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" name="Password" id="Password" class="form-control"
+                                    placeholder="Password" autocomplete="new-password"
+                                    oninput="checkPasswordRequirements(); validatePasswords();" />
+
+                                <label for="Password">Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword"
+                                data-bs-toggle="tooltip" title="Show/Hide Password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Password Strength Meter -->
+                        <div class="password-strength-meter mt-2">
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"
+                                    id="passwordStrengthMeter" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password Requirements -->
+                        <div class="password-requirements mt-2">
+                            <small class="d-block text-muted my-1">
+                                <i class="bi bi-shield-lock me-1"></i>
+                                Password must contain:
+                            </small>
+                            <small class="d-block" id="length-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least 8 characters
+                            </small>
+                            <small class="d-block" id="uppercase-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one uppercase letter
+                            </small>
+                            <small class="d-block" id="lowercase-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one lowercase letter
+                            </small>
+                            <small class="d-block" id="number-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one number
+                            </small>
+                            <small class="d-block" id="special-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one special character
+                            </small>
+                        </div>
+
                         <span id="PasswordError" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="ConfirmPassword" class="control-label">Confirm Password</label>
-                        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control"
-                            required />
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" id="ConfirmPassword" class="form-control"
+                                    placeholder="Confirm Password" />
+                                <label for="ConfirmPassword">Confirm Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                         <span id="PasswordConfirmError" class="text-danger"></span>
                     </div>
 
@@ -65,6 +120,72 @@
                 </div>
 
                 <div class="card-body">
+                    <div class="col-12 mb-4">
+                        <div class="row g-3 align-items-center">
+                            <!-- File Input -->
+                            <div class="col-md-6 col-lg-8">
+                                <div class="form-group">
+                                    <label asp-for="Avatar" class="form-label fw-semibold">Upload Avatar</label>
+                                    <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
+                                        onchange="previewImage(this);" title="Only image files allowed" />
+                                    <small class="form-text text-muted">Supported formats: JPG, PNG, GIF. Max size:
+                                        2MB</small>
+                                    <span asp-validation-for="Avatar" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Preview -->
+                            <div class="col-md-6 col-lg-4 d-flex justify-content-md-end justify-content-center">
+                                <div class="card shadow-sm border-0 rounded-circle"
+                                    style="width: 200px; height: 200px;">
+                                    <div
+                                        class="card-body p-0 position-relative d-flex align-items-center justify-content-center">
+                                        @{
+                                            var hasImage = Model?.Avatar != null && System.IO.File.Exists(
+                                            System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images",
+                                            "avatar", Model.Avatar)
+                                            );
+                                        }
+
+                                        <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
+                                            <div id="defaultAvatar"
+                                                class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 200px; height: 200px;">
+                                                <i class="fas fa-user fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+
+                                        <img id="avatarPreview"
+                                            src="@(hasImage ? Url.Content("~/images/avatar/" + Model.Avatar) : "#")"
+                                            alt="Avatar" class="rounded-circle shadow position-absolute top-0 start-0"
+                                            style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <script>
+                        function previewImage(input) {
+                            const preview = document.getElementById('avatarPreview');
+                            const defaultAvatarWrapper = document.getElementById('defaultAvatarWrapper');
+
+                            if (input.files && input.files[0]) {
+
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    preview.src = e.target.result;
+                                    preview.style.display = 'block';
+                                    if (defaultAvatarWrapper) {
+                                        defaultAvatarWrapper.style.display = 'none';
+                                    }
+                                };
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
+                    </script>
+
                     <div class="form-group mb-3">
                         <label asp-for="FullName" class="control-label"></label>
                         <input asp-for="FullName" class="form-control" />
@@ -95,7 +216,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="PhoneNumber" class="control-label"></label>
+                        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
                         <input asp-for="PhoneNumber" class="form-control" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
@@ -120,3 +241,30 @@
     }
     <script src="~/js/password.js"></script>
 }
+
+<style>
+    .password-requirements {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item {
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item small {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .password-strength-meter .progress {
+        background-color: #e9ecef;
+        border-radius: 2px;
+    }
+
+    .password-strength-meter .progress-bar {
+        transition: width 0.3s ease;
+    }
+</style>

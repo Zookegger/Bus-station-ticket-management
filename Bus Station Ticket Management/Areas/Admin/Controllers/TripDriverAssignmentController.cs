@@ -27,6 +27,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             try {
                 var assignments = await _context.TripDriverAssignments
                     .Include(t => t.Driver)
+                        .ThenInclude(d => d.Account)
                     .Include(t => t.Trip)
                         .ThenInclude(t => t.Route)
                             .ThenInclude(r => r.StartLocation)
@@ -53,6 +54,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
                 var tripDriverAssignment = await _context.TripDriverAssignments
                     .Include(t => t.Driver)
+                        .ThenInclude(d => d.Account)
                     .Include(t => t.Trip)
                         .ThenInclude(t => t.Route)
                             .ThenInclude(r => r.StartLocation)
@@ -79,6 +81,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             try {
                 var tripDriverAssignment = await _context.TripDriverAssignments
                     .Include(t => t.Driver)
+                        .ThenInclude(d => d.Account)
                     .Include(t => t.Trip)
                     .ThenInclude(t => t.Route)
                         .ThenInclude(r => r.StartLocation)
@@ -104,7 +107,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> Create(int? tripId)
         {
             try {
-                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName");
+                // Get available drivers with their account information
+                var drivers = await _context.Drivers
+                    .Include(d => d.Account)
+                    .Where(d => d.Account != null && d.Account.FullName != null)
+                    .Select(d => new { d.Id, FullName = d.Account.FullName })
+                    .ToListAsync();
+
+                if (!drivers.Any())
+                {
+                    ModelState.AddModelError("", "No drivers available. Please add drivers before creating an assignment.");
+                    return View();
+                }
+
+                ViewData["DriverId"] = new SelectList(drivers, "Id", "FullName");
 
                 if (tripId != null)
                 {
@@ -118,8 +134,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         return NotFound($"Cannot find trip with id: {tripId}");
 
                     ViewData["TripId"] = tripId;
-                    ViewData["TripDisplayName"] = $"{selectedTrip.Route?.StartLocation?.Name} → {selectedTrip.Route?.DestinationLocation?.Name}";
-                    ViewData["TripVehicle"] = $"{selectedTrip.Vehicle?.Name} : {selectedTrip.Vehicle?.LicensePlate}";
+                    ViewData["TripDisplayName"] = $"{selectedTrip.Route?.StartLocation?.Name ?? "N/A"} → {selectedTrip.Route?.DestinationLocation?.Name ?? "N/A"}";
+                    ViewData["TripVehicle"] = $"{selectedTrip.Vehicle?.Name ?? "N/A"} : {selectedTrip.Vehicle?.LicensePlate ?? "N/A"}";
                     ViewData["TripTime"] = $"{selectedTrip.DepartureTime:g} → {selectedTrip.DepartureTime:g}";
                     return View("CreateWithPreselectedTrip", new TripDriverAssignment { TripId = tripId.Value });
                 }
@@ -129,19 +145,28 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     .Include(t => t.Route).ThenInclude(r => r.StartLocation)
                     .Include(t => t.Route).ThenInclude(r => r.DestinationLocation)
                     .Include(t => t.Vehicle)
+                    .Where(t => t.Route != null && t.Route.StartLocation != null && t.Route.DestinationLocation != null)
                     .Select(t => new
                     {
                         t.Id,
                         Name = 
-                            t.Route.StartLocation.Name + " → " + t.Route.DestinationLocation.Name + 
+                            (t.Route.StartLocation.Name ?? "N/A") + " → " + (t.Route.DestinationLocation.Name ?? "N/A") + 
                             " | " + (t.Vehicle != null ? t.Vehicle.Name : "No Vehicle") + 
                             " | " + t.DepartureTime.ToString("g")
-                    }).ToListAsync();
+                    })
+                    .ToListAsync();
+
+                if (!trips.Any())
+                {
+                    ModelState.AddModelError("", "No trips available. Please add trips before creating an assignment.");
+                    return View();
+                }
 
                 ViewData["TripSelectList"] = new SelectList(trips, "Id", "Name");
                 return View();   
             } catch (Exception ex) {
-                return NotFound(ex.Message);
+                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                return View();
             }
         }
 
@@ -159,10 +184,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     .Include(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
                     .Include(t => t.Vehicle)
+                    .Where(t => t.Route != null && t.Route.StartLocation != null && t.Route.DestinationLocation != null)
                     .ToListAsync();
 
                 tripDriverAssignment.DateAssigned = DateTime.Now;
                 tripDriverAssignment.LastUpdated = DateTime.Now;
+
                 if (ModelState.IsValid)
                 {
                     _context.Add(tripDriverAssignment);
@@ -173,15 +200,23 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 var tripSelectList = trips.Select(t => new
                 {
                     t.Id,
-                    Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
+                    Name = $"{t.Route?.StartLocation?.Name ?? "N/A"} → {t.Route?.DestinationLocation?.Name ?? "N/A"} | {t.Vehicle?.Name ?? "No Vehicle"} | {t.DepartureTime:g}"
                 }).ToList();
 
+                // Get available drivers with their account information
+                var drivers = await _context.Drivers
+                    .Include(d => d.Account)
+                    .Where(d => d.Account != null && d.Account.FullName != null)
+                    .Select(d => new { d.Id, FullName = d.Account.FullName })
+                    .ToListAsync();
+
                 ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name");
-                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+                ViewData["DriverId"] = new SelectList(drivers, "Id", "FullName", tripDriverAssignment.DriverId);
 
                 return View(tripDriverAssignment);   
             } catch (Exception ex) {
-                return NotFound(ex.Message);
+                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                return View(tripDriverAssignment);
             }
         }
 
@@ -280,6 +315,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
                 var tripDriverAssignment = await _context.TripDriverAssignments
                     .Include(t => t.Driver)
+                        .ThenInclude(d => d.Account)
                     .Include(t => t.Trip)
                     .FirstOrDefaultAsync(m => m.Id == id);
                 if (tripDriverAssignment == null)

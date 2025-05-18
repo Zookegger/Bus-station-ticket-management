@@ -5,36 +5,116 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 text-danger">
+                    <i class="fas fa-route me-2"></i>Delete Route
+                </h4>
+                <a class="btn btn-outline-secondary" asp-action="Index">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Are you sure you want to delete this route? This action cannot be undone.
+            </div>
 
-<div class="card">
-    <div class="card-header bg-success-subtle"><h2>@ViewData["Title"]</h2></div>
-    <div class="card-body">
-        <h4 class="card-title">Are you sure you want to delete this?</h4>
+            <div class="route-info p-4 bg-light rounded">
+                <h5 class="mb-4">Route Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Start Location</label>
+                            <p class="mb-0 fw-bold">@(Model.StartLocation?.Name ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Destination Location</label>
+                            <p class="mb-0 fw-bold">@(Model.DestinationLocation?.Name ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Price</label>
+                            <p class="mb-0 fw-bold">@string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", Model.Price)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dl class="row mt-3">
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.StartId)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @Html.DisplayFor(model => model.StartLocation.Name)
-            </dd>
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.DestinationId)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @Html.DisplayFor(model => model.DestinationLocation.Name)
-            </dd>
-            <dt class="card-text col-sm-5 col-md-4 fs-5">
-                @Html.DisplayNameFor(model => model.Price)
-            </dt>
-            <dd class="card-text col-sm-7 col-md-8 fs-5">
-                @string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", Model.Price)
-            </dd>
-        </dl>
+            <div class="mt-4">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Route
+                </button>
+            </div>
+        </div>
     </div>
-    <form asp-action="Delete" class="card-footer form-group d-flex justify-content-between">
-        <input type="hidden" asp-for="Id" />
-        <a role="button" class="btn btn-outline-secondary btn-lg" asp-action="Index">Back to List</a>
-        <input type="submit" value="Delete" class="btn btn-danger btn-lg" />
-    </form>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" role="dialog" aria-labelledby="deleteConfirmationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Delete" id="deleteForm">
+                <input type="hidden" asp-for="Id" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                        <i class="fas fa-exclamation-circle text-danger me-2"></i>Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-route text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center">Are you sure you want to delete this route? This action
+                        cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .info-item label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
+
+
+<link rel="stylesheet" href="~/css/Shared/confirmDeleteModal.css">
+
+@section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
+}
