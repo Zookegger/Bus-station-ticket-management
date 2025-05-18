@@ -7,7 +7,7 @@ namespace Bus_Station_Ticket_Management.Models
     public class Driver
     {
         [Key]
-        public string? Id { get; set; }
+        public string Id { get; set; }
         
         [ForeignKey("Id")]
         public ApplicationUser? Account { get; set; }
@@ -15,5 +15,8 @@ namespace Bus_Station_Ticket_Management.Models
         public ICollection<DriverLicense>? DriverLicenses { get; set; }
 
         public ICollection<TripDriverAssignment>? TripDriverAssignments { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
