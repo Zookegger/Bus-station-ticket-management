@@ -1,63 +1,147 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Ticket
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Ticket";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0 text-danger">
+                <i class="fa-solid fa-ticket me-2"></i>
+                Delete Ticket
+            </h2>
+            <a class="btn btn-outline-secondary" asp-action="Index">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Are you sure you want to delete this ticket? This action cannot be undone.
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Trip)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Trip.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Seat)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Seat.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BookingDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BookingDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPaid)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsCanceled)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsCanceled)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CancelationTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CancelationTime)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+        <div class="ticket-info p-4 bg-light rounded">
+            <h5 class="mb-4">Ticket Information</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">User</label>
+                        <p class="mb-0 fw-bold">@(Model.User?.FullName ?? Model.User?.Id ?? "N/A")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">Trip</label>
+                        <p class="mb-0 fw-bold">@(Model.Trip?.Route?.StartLocation?.Name ?? "N/A") → @(Model.Trip?.Route?.DestinationLocation?.Name ?? "N/A")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">Seat</label>
+                        <p class="mb-0 fw-bold">@(Model.Seat?.Number ?? "N/A")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">Booking Date</label>
+                        <p class="mb-0 fw-bold">@Model.BookingDate.ToString("g")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">Payment Status</label>
+                        <p class="mb-0 fw-bold">@(Model.IsPaid ? "Paid" : "Unpaid")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <label class="text-muted small">Status</label>
+                        <p class="mb-0 fw-bold">@(Model.IsCanceled ? "Canceled" : "Active")</p>
+                    </div>
+                </div>
+                @if (Model.IsCanceled && Model.CancelationTime.HasValue)
+                {
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Cancelation Time</label>
+                            <p class="mb-0 fw-bold">@Model.CancelationTime.Value.ToString("g")</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-start">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+            <i class="fas fa-trash-alt me-2"></i>Delete Ticket
+        </button>
+    </div>
 </div>
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                        <i class="fas fa-exclamation-circle text-danger me-2"></i>Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-ticket-alt text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center">Are you sure you want to delete this ticket? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .info-item:hover {
+        transform: translateY(-2px);
+    }
+
+    .info-item label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
+
+<link rel="stylesheet" href="~/css/Shared/confirmDeleteModal.css">
+
+@section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
+}

@@ -218,7 +218,7 @@ app.Use(async (context, next) =>
     switch (context.Request.Path.Value?.ToLowerInvariant())
     {
         case "/admin":
-            context.Response.Redirect("/Admin/Admin/Index");
+            context.Response.Redirect("/Admin/Home/Index");
             return;
 
         // You can add more path-based cases here in the future

@@ -4,6 +4,7 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Station_Ticket_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250516152155_[Driver] Fix some stuffs")]
+    partial class DriverFixsomestuffs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,12 +161,6 @@ namespace Bus_Station_Ticket_Management.Migrations
 
                     b.Property<string>("LicenseId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BackImg")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FrontImg")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LicenseClass")
                         .IsRequired()

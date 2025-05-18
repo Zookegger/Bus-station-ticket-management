@@ -8,9 +8,9 @@
 
 <h1 class="text-success fw-bold mb-4">Vehicle List</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button"
+<a asp-action="Create" class="btn btn-primary mb-3 hvr-icon-back" role="button"
     data-tippy-content="Use this to add more vehicle to database">
-    <i class="fa fa-plus-circle"></i> Add New Vehicle
+    <i class="fa fa-plus-circle hvr-icon"></i> Add New Vehicle
 </a>
 
 <div class="d-flex gap-3 mb-3">
@@ -82,11 +82,11 @@
 
                         <!-- Simple Buttons (Visible by default on small tables) -->
                         <div class="btn-group simple-buttons" role="group" style="display:none; min-width: 90px;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
-                                <i class="fa fa-edit"></i>
+                            <a role="button" class="btn btn-secondary rounded-start hvr-icon-grow-rotate" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
+                                <i class="fa fa-edit hvr-icon"></i>
                             </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
-                                <i class="fa fa-trash"></i>
+                            <a role="button" class="btn btn-danger rounded-end hvr-icon-grow" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
+                                <i class="fa fa-trash hvr-icon"></i>
                             </a>
                         </div>
                     </td>

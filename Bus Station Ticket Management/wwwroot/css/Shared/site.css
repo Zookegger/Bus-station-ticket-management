@@ -10,11 +10,13 @@ body {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 60px;
-	font-family: 'Segoe UI', sans-serif, 'Franklin Gothic Medium', 'Arial Narrow', Arial;
+	font-family: "Segoe UI", sans-serif, "Franklin Gothic Medium",
+		"Arial Narrow", Arial;
 	overflow-y: hidden;
 }
 
-html, body {
+html,
+body {
 	min-height: 100vh;
 	overflow-x: hidden;
 }
@@ -146,14 +148,6 @@ footer ul {
 	margin-top: 5px;
 }
 
-.accordion-item:focus {
-    border-color: #f7f7f7 !important; /* Blue border on active/focus */
-}
-
-.accordion-item:hover {
-	box-shadow: inset 0 0 3px 3px rgba(236, 236, 236, 0.59);
-}
-
 /* .accordion-item:active {
 	box-shadow: inset 0 0 5px 5px rgb(223, 222, 222);
 	border: 2px solid rgba(223, 222, 222);
@@ -164,6 +158,9 @@ footer ul {
 	box-shadow: none !important;
 }
 
+.accordion-button:not(.collapsed) {
+	box-shadow: none !important;
+}
 
 .accordion-button::after {
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
@@ -172,13 +169,14 @@ footer ul {
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
 }
 
-.accordion-body{
+.accordion-body {
 	padding: 0 !important;
-	padding-bottom: .5rem !important;
+	padding-bottom: 0.5rem !important;
 }
 
 @media (max-width: 397px) {
-	.navbar-brand, footer * {
+	.navbar-brand,
+	footer * {
 		font-size: 14px !important;
 	}
 
@@ -260,12 +258,12 @@ footer ul {
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-    background-color: #20874e !important;
-    color: white;
+	background-color: #20874e !important;
+	color: white;
 }
 
 .bg-primary {
-    background-color: #20874e !important;
+	background-color: #20874e !important;
 }
 
 .prevent-select {
@@ -283,4 +281,38 @@ footer ul {
 .btn-transparent .fa-bars {
 	font-size: 24px; /* Adjust the icon size */
 	color: #fff; /* Optional: Adjust the icon color */
+}
+
+/* Remove border and box-shadow from accordion items */
+.accordion-item {
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.accordion-item.hvr-border-fade:hover,
+.accordion-item.hvr-border-fade:active,
+.accordion-item.hvr-border-fade:focus {
+	box-shadow: inset 0 0 0 3px #dcdada79 !important; /* Creates border-like effect with rounded corners */
+	border-radius: 12px; /* Matches the border radius used elsewhere */
+}
+
+.nav-link.hvr-border-fade {
+	box-shadow: none !important;
+}
+
+.nav-link.hvr-border-fade:hover {
+	box-shadow: inset 0 0 0 3px #dcdada79 !important; /* Creates border-like effect with rounded corners */
+	border-radius: 12px; /* Matches the border radius used elsewhere */
+}
+
+.hvr-underline-from-center:before,
+.hvr-underline-from-left:before {
+	background-color: #ffffff !important; /* White underline */
+	height: 2px !important; /* Slightly thicker underline */
+}
+
+/* Optional: Add transition for smoother effect */
+.hvr-underline-from-center,
+.hvr-underline-from-left {
+	transition: all 0.3s ease !important;
 }

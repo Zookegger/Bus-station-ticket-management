@@ -22,7 +22,19 @@
     <div class="d-flex align-items-center mb-4">
         <div class="flex-shrink-0">
             <div class="avatar avatar-xl bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
-                <i class="fas fa-user fa-2x text-primary"></i>
+                @{
+                    var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                    "images", "avatar", Model.Avatar ?? "");
+                    var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
+                }
+                @if (hasImage) {
+                    <img id="avatar"
+                        src="@(hasImage ? Url.Content("~/images/avatar/" + Model.Avatar) : "#")" alt="Avatar"
+                        class="rounded-circle shadow"
+                        style="width: 80px; height: 80px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                } else {
+                    <i class="fas fa-user fa-2x text-primary"></i>
+                }
             </div>
         </div>
         <div class="flex-grow-1 ms-3">
@@ -36,7 +48,7 @@
 
     <div class="row g-3">
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title text-white my-2">
                         <i class="fas fa-info-circle me-2"></i>Personal Information
@@ -68,7 +80,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="card-title text-white my-2">
                         <i class="fas fa-phone-alt me-2"></i>Contact Information
@@ -135,11 +147,11 @@
         height: 80px;
     }
     
-    .card {
+    .card-body .card {
         transition: transform 0.2s ease-in-out;
     }
     
-    .card:hover {
+    .card-body .card:hover {
         transform: translateY(-5px);
     }
     

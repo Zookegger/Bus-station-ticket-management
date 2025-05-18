@@ -18,28 +18,6 @@
 	</div>
 
 	<div class="form-group input-group">
-		<select title="Sort" class="form-control" name="sortBy" id="sortBy" onchange="this.form.submit()">
-			<option value="" disabled selected>Sort By...</option>
-			<optgroup label="Sort by Name">
-				<option value="name_asc" selected="@(ViewBag.SortBy == "name_asc" ? "selected" : null)">Name Ascending ↑
-				</option>
-				<option value="name_desc" selected="@(ViewBag.SortBy == "name_desc" ? "selected" : null)">Name
-					Descending ↓</option>
-			</optgroup>
-			<optgroup label="Sort by Email">
-				<option value="email_asc" selected="@(ViewBag.SortBy == "email_asc" ? "selected" : null)">Email
-					Ascending ↑</option>
-				<option value="email_desc" selected="@(ViewBag.SortBy == "email_desc" ? "selected" : null)">Email
-					Descending ↓</option>
-			</optgroup>
-			<optgroup label="Sort by License">
-				<option value="license_asc" selected="@(ViewBag.SortBy == "license_asc" ? "selected" : null)">License
-					Ascending ↑</option>
-				<option value="license_desc" selected="@(ViewBag.SortBy == "license_desc" ? "selected" : null)">License
-					Descending ↓</option>
-			</optgroup>
-		</select>
-
 		<select class="form-control ms-2" name="filterByGender" id="filterByGender" onchange="this.form.submit()">
 			<option value="" disabled selected>Filter By Gender</option>
 			<option value="Male" selected="@(ViewBag.FilterByGender == "Male" ? "selected" : null)">Male</option>
@@ -58,7 +36,6 @@
 			<tr>
 				<th style="min-width: 200px;">FullName</th>
 				<th style="min-width: 250px;">Address</th>
-				<th style="min-width: 150px;">Drivers License</th>
 				<th style="min-width: 100px;">Gender</th>
 				<th>DateOfBirth</th>
 				<th>Email</th>
@@ -66,72 +43,80 @@
 				<th style="width: 30px">Actions</th>
 			</tr>
 		</thead>
-		<tbody class="table-group=divider">
+		<tbody class="table-group-divider">
 			@foreach (var item in Model)
 			{
                 <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
 					<td>
-						@Html.DisplayFor(modelItem => item.FullName)
+						@(item.Account.FullName ?? "N/A")
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Address)
-					</td>
-					@* <td>
-						@Html.DisplayFor(modelItem => item.LicenseId)
-					</td> *@
-					<td>
-						@Html.DisplayFor(modelItem => item.Gender)
+						@(item.Account.Address ?? "N/A")
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.DateOfBirth)
+						@(item.Account.Gender ?? "N/A")
+					</td>
+					<td>
+						@(item.Account.DateOfBirth?.ToString("MM/dd/yyyy") ?? "N/A")
 					</td>
 					<td style="max-width: 328px; word-wrap: break-word; white-space: normal;">
-						@Html.DisplayFor(modelItem => item.Email)
+						@(item.Account.Email ?? "N/A")
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.PhoneNumber)
+						@(item.Account.PhoneNumber ?? "N/A")
 					</td>
-					<td class="px-1 py-1 text-center" onclick="event.stopPropagation()"> @* Problem: Stuck inside .table-responsive's layer -> Solution: Make it escape the .table-responsive *@
-						<div class="dropdown" data-bs-theme="dark">
-							<button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
-								data-bs-toggle="dropdown" data-tippy-content="More Actions">
-								<i class="fa fa-ellipsis-v"></i>
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end shadow">
-								<li>
-									<a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
-										asp-route-id="@item.Id">
-										<i class="fa fa-edit text-primary"></i> Edit
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
-										asp-route-id="@item.Id">
-										<i class="fa fa-trash text-danger"></i> Delete
-									</a>
-								</li>
-							</ul>
-						</div>
-					</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+					<td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 100px; width: 95px !important;">
+                        <!-- Dropdown Buttons (Hidden by default) -->
+                        <div class="dropdown dropdown-buttons" style="display:none; flex-wrap: nowrap;" data-bs-theme="dark">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-edit text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                        asp-route-id="@item.Id">
+                                        <i class="fa fa-trash text-danger"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Simple Buttons (Visible by default on small tables) -->
+                        <div class="btn-group simple-buttons" role="group" style="display:none; flex-wrap: nowrap; min-width: 90px; max-width: 100px; width: 95px !important;">
+                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel"
     style="width: 40%; min-width: 550px;">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Route Details</h5>
+	<div class="offcanvas-header">
+        <h5 class="offcanvas-title text-primary fs-1 fw-bold" id="detailsOffcanvasLabel">Driver Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" --bs-offcanvas-padding-x="3400px" aria-label="Close"></button>
-    </div>
+	</div>
     <div class="offcanvas-body px-0 py-0 card" id="detailsOffcanvasBody">
         <div class="text-center p-3">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-    </div>
+	</div>
 </div>
 
 @section Styles{

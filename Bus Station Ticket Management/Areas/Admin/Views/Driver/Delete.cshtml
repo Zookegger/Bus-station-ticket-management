@@ -5,60 +5,246 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<link rel="stylesheet" href="~/css/Shared/confirmDeleteModal.css">
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Driver</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        @* <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LicenseId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LicenseId)
-        </dd> *@
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfBirth)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DateOfBirth)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-    </dl>
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 text-danger">
+                    <i class="fas fa-user-minus me-2"></i>Delete Driver
+                </h4>
+                <a class="btn btn-outline-secondary" asp-action="Index">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Are you sure you want to delete this driver? This action cannot be undone.
+            </div>
 
-    <form asp-action="Delete" class="btn-group gap-1">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a class="btn btn-outline-secondary" role="button" asp-action="Index">Back to List</a>
-    </form>
+            <div class="driver-info p-4 bg-light rounded">
+                <h5 class="mb-4">Driver Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Full Name</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.FullName ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Email</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.Email ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Phone Number</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.PhoneNumber ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Gender</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.Gender ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Date of Birth</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.DateOfBirth?.ToString("MM/dd/yyyy") ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small">Address</label>
+                            <p class="mb-0 fw-bold">@(Model.Account.Address ?? "N/A")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.DriverLicenses != null && Model.DriverLicenses.Any())
+            {
+                <div class="driver-licenses mt-4 p-4 bg-light rounded">
+                    <h5 class="mb-4">
+                        <i class="fas fa-id-card me-2"></i>Driver's Licenses
+                    </h5>
+                    <div class="row g-3">
+                        @foreach (var license in Model.DriverLicenses)
+                        {
+                            <div class="col-md-6">
+                                <div class="license-card">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-white">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-car me-2"></i>License @license.LicenseId
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="license-info">
+                                                <div class="mb-2">
+                                                    <label class="text-muted small">License Class</label>
+                                                    <p class="mb-0 fw-bold">@(license.LicenseClass ?? "N/A")</p>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="text-muted small">Issue Date</label>
+                                                    <p class="mb-0 fw-bold">@(license.LicenseIssueDate?.ToString("MM/dd/yyyy") ?? "N/A")</p>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="text-muted small">Expiration Date</label>
+                                                    <p class="mb-0 fw-bold">@(license.LicenseExpirationDate?.ToString("MM/dd/yyyy") ?? "N/A")</p>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="text-muted small">Issue Place</label>
+                                                    <p class="mb-0 fw-bold">@(license.LicenseIssuePlace ?? "N/A")</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Driver
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Delete" id="deleteForm">
+                <input type="hidden" asp-for="Id" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                        <i class="fas fa-exclamation-circle text-danger me-2"></i>Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-slash text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center">Are you sure you want to delete this driver? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .info-item label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .license-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .license-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .license-card .card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .license-card .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding: 1rem;
+    }
+
+    .license-info {
+        padding: 0.5rem;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+    }
+
+    .modal-header {
+        background-color: #f8f9fa;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .modal-footer {
+        background-color: #f8f9fa;
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #bb2d3b;
+        border-color: #bb2d3b;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#deleteConfirmationModal').on('show.bs.modal', function () {
+                $('.modal-backdrop').remove();
+                var backdrop = $('<div class="modal-backdrop fade show"></div>');
+                $('main').append(backdrop);
+                backdrop.css('z-index', '1040');
+            });
+
+            $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            });
+        });
+    </script>
+}

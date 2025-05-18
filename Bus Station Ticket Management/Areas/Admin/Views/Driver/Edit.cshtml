@@ -1,66 +1,373 @@
-﻿@model Bus_Station_Ticket_Management.Models.Driver
+﻿@model Bus_Station_Ticket_Management.ViewModels.DriverViewModel;
+@using System.IO;
 
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-
 }
 
-<h1>Edit</h1>
+<div class="card shadow-sm">
+    <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-start">
+        <a class="btn btn-outline-secondary text-white me-2" asp-action="Index"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="h3 mb-0" style="margin-top: 3px;">Edit Driver</h1>
+    </div>
 
-<h4>Driver</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+    <form asp-action="Edit" class="card-body" enctype="multipart/form-data" id="editForm">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        <input type="hidden" asp-for="DriverId" />
+
+        @* Driver's Personal Information *@
+        <div class="row g-3">
+            <div class="col-12 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-7 col-lg-8">
+                        <div class="form-group">
+                            <label asp-for="Avatar" class="form-label"></label>
+                            <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
+                                onchange="previewImage(this);" />
+                            <span asp-validation-for="Avatar" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-4 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                        <div class="avatar-preview position-relative">
+                            @{
+                                var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                                "images", "avatar", Model.Avatar ?? "");
+                                var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
+                            }
+                            <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
+                                <div id="defaultAvatar"
+                                    class="avatar avatar-xl bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center shadow"
+                                    style="width: 200px; height: 200px;">
+                                    <i class="fas fa-user fa-2x text-primary"></i>
+                                </div>
+                            </div>
+
+                            <img id="avatarPreview"
+                                src="@(hasImage ? Url.Content("~/images/avatar/" + Model.Avatar) : "#")" alt="Avatar"
+                                class="rounded-circle shadow"
+                                style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+
+            <script>
+                function previewImage(input) {
+                    const preview = document.getElementById('avatarPreview');
+                    const defaultAvatarWrapper = document.getElementById('defaultAvatarWrapper');
+
+                    if (input.files && input.files[0]) {
+
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                            if (defaultAvatarWrapper) {
+                                defaultAvatarWrapper.style.display = 'none';
+                            }
+                        };
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+            </script>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="FullName" class="form-control" placeholder="Full Name" />
+                    <label asp-for="FullName"></label>
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
             </div>
-            @* <div class="form-group">
-                <label asp-for="LicenseId" class="control-label"></label>
-                <input asp-for="LicenseId" class="form-control" />
-                <span asp-validation-for="LicenseId" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
+
+            @* Login Information *@
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <label asp-for="Email"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" type="date" class="form-control" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <div class="input-group">
+                        <div class="form-floating flex-grow-1">
+                            <input type="password" name="Password" id="Password" class="form-control"
+                                placeholder="Password" oninput="checkPasswordRequirements(); validatePasswords();" />
+                            <label for="Password">Password</label>
+                        </div>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-requirements mt-2">
+                        <small class="d-block text-muted">Password must contain:</small>
+                        <small class="d-block" id="length-check"><i class="bi bi-x-circle text-danger"></i> At least 8
+                            characters</small>
+                        <small class="d-block" id="uppercase-check"><i class="bi bi-x-circle text-danger"></i> At least
+                            one uppercase letter</small>
+                        <small class="d-block" id="lowercase-check"><i class="bi bi-x-circle text-danger"></i> At least
+                            one lowercase letter</small>
+                        <small class="d-block" id="number-check"><i class="bi bi-x-circle text-danger"></i> At least one
+                            number</small>
+                        <small class="d-block" id="special-check"><i class="bi bi-x-circle text-danger"></i> At least
+                            one special character</small>
+                        <div class="password-strength-meter mt-2">
+                            <div class="progress" style="height: 5px;">
+                                <div id="passwordStrengthMeter" class="progress-bar" role="progressbar"
+                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="PasswordError" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <div class="input-group">
+                        <div class="form-floating flex-grow-1">
+                            <input type="password" id="ConfirmPassword" class="form-control"
+                                placeholder="Confirm Password" />
+                            <label for="ConfirmPassword">Confirm Password</label>
+                        </div>
+                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span id="PasswordConfirmError" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                    <label asp-for="PhoneNumber"></label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group mt-2">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <select asp-for="Gender" class="form-select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <label asp-for="Gender"></label>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
             </div>
-        </form>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="DateOfBirth" type="date" class="form-control" placeholder="Date of Birth" />
+                    <label asp-for="DateOfBirth"></label>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input asp-for="Address" class="form-control" placeholder="Address" />
+                    <label asp-for="Address"></label>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        @* Driver's License Information *@
+        <div class="mt-4">
+            <h4 class="mb-3">Driver's License Information</h4>
+            <div id="licenseRepeater">
+                @for (int i = 0; i < Model.Licenses.Count; i++)
+                {
+                    <div class="license-item card mb-3">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="Licenses[@i].LicenseId" class="form-control"
+                                            placeholder="License ID" />
+                                        <label asp-for="Licenses[@i].LicenseId"></label>
+                                        <span asp-validation-for="Licenses[@i].LicenseId" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select asp-for="Licenses[@i].LicenseClass" class="form-select">
+                                            <option value="" disabled>Select a class</option>
+                                            <option value="A1">A1</option>
+                                            <option value="A2">A2</option>
+                                            <option value="A3">A3</option>
+                                            <option value="A4">A4</option>
+                                            <option value="B1">B1</option>
+                                            <option value="B2">B2</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                            <option value="E">E</option>
+                                            <option value="F">F</option>
+                                            <option value="FC">FC</option>
+                                        </select>
+                                        <label asp-for="Licenses[@i].LicenseClass"></label>
+                                        <span asp-validation-for="Licenses[@i].LicenseClass" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 issued-date-group">
+                                    <div class="form-floating">
+                                        <input asp-for="Licenses[@i].LicenseIssueDate" type="date"
+                                            class="form-control issued-date" />
+                                        <label asp-for="Licenses[@i].LicenseIssueDate"></label>
+                                        <span asp-validation-for="Licenses[@i].LicenseIssueDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 expiration-date-group">
+                                    <div class="form-floating">
+                                        <input asp-for="Licenses[@i].LicenseExpirationDate" type="date"
+                                            class="form-control expiration-date" />
+                                        <label asp-for="Licenses[@i].LicenseExpirationDate"></label>
+                                        <span asp-validation-for="Licenses[@i].LicenseExpirationDate"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-floating">
+                                        <input asp-for="Licenses[@i].LicenseIssuePlace" class="form-control" />
+                                        <label asp-for="Licenses[@i].LicenseIssuePlace"></label>
+                                        <span asp-validation-for="Licenses[@i].LicenseIssuePlace"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-check mt-3">
+                                    <input class="form-check-input has-exp" type="checkbox" value="true"
+                                        name="HasExpiration" />
+                                    <label class="form-check-label">
+                                        Has expiration date
+                                    </label>
+                                </div>
+
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-danger remove-license mt-2">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button type="button" id="addLicense" class="btn btn-outline-primary mt-2">
+                <i class="fas fa-plus me-2"></i>Add Another License
+            </button>
+        </div>
+
+    </form>
+
+    <div class="card-footer d-flex justify-content-between mt-3">
+        <a class="btn btn-outline-secondary" asp-action="Index">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+        <button type="submit" class="btn btn-primary" id="submitEdit" form="editForm">
+            <i class="fas fa-save me-2"></i>Save Changes
+        </button>
     </div>
 </div>
 
-<div>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", (e) => {
+
+            // Handle expiration date toggle for each license item
+            function handleExpirationToggle(licenseItem) {
+                const hasExp = licenseItem.querySelector('.has-exp');
+                const expirationGroup = licenseItem.querySelector('.expiration-date-group');
+                const issuedGroup = licenseItem.querySelector('.issued-date-group');
+
+                hasExp.addEventListener("change", function () {
+                    if (!this.checked) {
+                        expirationGroup.style.display = "none";
+                        expirationGroup.querySelector('input').value = null;
+                        issuedGroup.classList.remove('col-md-6');
+                        issuedGroup.classList.add('col-12');
+                    } else {
+                        expirationGroup.style.display = "block";
+                        issuedGroup.classList.remove('col-12');
+                        issuedGroup.classList.add('col-md-6');
+                    }
+                });
+
+                // Initial state
+                if (!hasExp.checked) {
+                    expirationGroup.style.display = "none";
+                    expirationGroup.querySelector('input').value = null;
+                    issuedGroup.classList.remove('col-md-6');
+                    issuedGroup.classList.add('col-12');
+                }
+            }
+
+            // Initialize expiration toggle for existing items
+            document.querySelectorAll('.license-item').forEach(handleExpirationToggle);
+
+            // Add new license
+            document.getElementById('addLicense').addEventListener('click', function () {
+                const licenseRepeater = document.getElementById('licenseRepeater');
+                const licenseItems = licenseRepeater.querySelectorAll('.license-item');
+                const lastIndex = licenseItems.length - 1;
+
+                const newLicense = licenseItems[0].cloneNode(true);
+
+                // Update indices in the new license
+                newLicense.querySelectorAll('[name]').forEach(el => {
+                    el.name = el.name.replace('[0]', `[${lastIndex + 1}]`);
+                });
+                newLicense.querySelectorAll('[id]').forEach(el => {
+                    if (el.id.includes('Licenses_')) {
+                        el.id = el.id.replace('_0_', `_${lastIndex + 1}_`);
+                    }
+                });
+
+                // Clear values
+                newLicense.querySelectorAll('input, select').forEach(input => {
+                    input.value = '';
+                    if (input.type === 'checkbox') {
+                        input.checked = false;
+                    }
+                });
+
+                licenseRepeater.appendChild(newLicense);
+                handleExpirationToggle(newLicense);
+            });
+
+            // Remove license
+            document.getElementById('licenseRepeater').addEventListener('click', function (e) {
+                if (e.target.classList.contains('remove-license')) {
+                    const licenseItems = document.querySelectorAll('.license-item');
+                    if (licenseItems.length > 1) {
+                        const licenseItem = e.target.closest('.license-item');
+                        licenseItem.remove();
+
+                        // Reindex remaining items
+                        document.querySelectorAll('.license-item').forEach((item, index) => {
+                            item.querySelectorAll('[name]').forEach(el => {
+                                el.name = el.name.replace(/\[\d+\]/, `[${index}]`);
+                            });
+                            item.querySelectorAll('[id]').forEach(el => {
+                                if (el.id.includes('Licenses_')) {
+                                    el.id = el.id.replace(/_\d+_/, `_${index}_`);
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script src="~/js/password.js"></script>
 }
