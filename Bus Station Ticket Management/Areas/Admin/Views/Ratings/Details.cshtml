@@ -1,7 +1,7 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Rating
 
 @{
-    ViewData["Title"] = "Chi tiết đánh giá";
+    ViewData["Title"] = "Rating Details";
     // Convert the TripRating (assumed to be between 1 and 10) to a 5-star scale
     double stars = Model.TripRating / 2.0;
     int fullStars = (int)Math.Floor(stars);
@@ -9,10 +9,10 @@
     int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 }
 
-<h2>Chi tiết đánh giá chuyến đi</h2>
+<h2>Rating Details</h2>
 
 <div>
-    <h4>Chuyến đi: @Model.Trip.Route.StartLocation.Name - @Model.Trip.Route.DestinationLocation.Name</h4>
+    <h4>Trip: @Model.Trip.Route.StartLocation.Name - @Model.Trip.Route.DestinationLocation.Name</h4>
     <p>
         <strong>Rating:</strong>
         @for (int i = 0; i < fullStars; i++)
@@ -30,7 +30,7 @@
         <span> (@Model.TripRating)</span>
     </p>
     <p><strong>Comment:</strong> @Model.Comment</p>
-    <p><strong>Ngày tạo:</strong> @Model.CreatedAt</p>
+    <p><strong>Created At:</strong> @Model.CreatedAt</p>
 </div>
 
-<a href="@Url.Action("MyRatings")" class="btn btn-secondary">Trở lại</a>
+<a href="@Url.Action("MyRatings")" class="btn btn-secondary">Back</a>

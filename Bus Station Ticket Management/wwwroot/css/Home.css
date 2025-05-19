@@ -27,6 +27,7 @@
     
     #location-suggestions {
         flex: 1;
+        max-height: none !important;
     }
 }
 
@@ -37,6 +38,7 @@
 .popover-body {
     max-height: 50vh;
 }
+
 #location-suggestions {
     max-height: 30vh;
 }

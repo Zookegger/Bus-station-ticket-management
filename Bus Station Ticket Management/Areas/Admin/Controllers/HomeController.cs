@@ -29,7 +29,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
         
-        public IActionResult Index() {
+        public IActionResult Dashboard() {
             return View();
         }
         
@@ -110,7 +110,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme); // Use Identity's scheme
             if (result?.Principal == null)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Dashboard));
 
             var claims = result.Principal.Identities
                 .FirstOrDefault()?.Claims

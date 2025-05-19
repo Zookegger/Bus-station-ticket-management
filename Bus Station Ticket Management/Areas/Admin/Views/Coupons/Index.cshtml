@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/Index.css">
 </head>
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="mb-4 text-primary fw-bold">@ViewData["Title"]</h1>
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button">Create New</a>
 
@@ -23,18 +23,23 @@
     </div>
 </div>
 
-
-<div class="table-responsive mb-3 shadow rounded">
-    <table id="DataTable" 
+@if (Model.Count() == 0) {
+    <div class="alert alert-info">
+        No coupons found.
+    </div>
+}
+else {
+    <div class="table-responsive mb-3 shadow rounded">
+        <table id="DataTable" 
         class="table table-hover table-striped align-middle mb-0" 
         data-details-url="/Admin/Coupons/DetailsPartial"
         data-table-name="Coupons"
         data-table-title="Coupons">
         <thead style="position: sticky; top: 0">
             <tr>
-                <th style="min-width: 150px;">Coupon Code</th>
-                <th style="min-width: 120px;">Type</th>
-                <th style="min-width: 150px;">Amount</th>
+                <th style="min-width: 200px;">Coupon Code</th>
+                <th style="min-width: 200px;">Type</th>
+                <th style="min-width: 200px;">Amount</th>
                 <th style="min-width: 200px;">Start Period</th>
                 <th style="min-width: 200px;">End Period</th>
                 <th>Active</th>
@@ -108,7 +113,7 @@
         </tbody>
     </table>
 </div>
-
+}
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">

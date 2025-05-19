@@ -52,9 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Initial call to adjust visibility
     adjustButtonVisibility();
 
-    // Adjust visibility on window resize (optional)
+    // Optimize resize handling with debounce
+    let resizeTimeout;
     window.addEventListener("resize", function () {
-        adjustButtonVisibility();
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            adjustButtonVisibility();
+        }, 150); // Debounce resize events
     });
     
 	tippy("[data-tippy-content]", {
@@ -68,25 +72,30 @@ function adjustButtonVisibility() {
 	const table = document.querySelector("#DataTable");
 	if (!table) return;
 
-	// Use timeout to wait for DOM render (rows must have height)
-	setTimeout(function () {
+	// Use requestAnimationFrame for smoother updates
+	requestAnimationFrame(() => {
 		const firstRow = table.querySelector("tbody tr");
 		if (!firstRow) return;
 
 		const rowHeight = firstRow.offsetHeight;
 		const minTableHeight = 4 * rowHeight;
-
 		const tableHeight = table.offsetHeight;
-
 		const useSimpleButtons = tableHeight < minTableHeight;
 
+		// Batch DOM updates
+		const updates = [];
 		document.querySelectorAll(".dropdown-buttons").forEach(function (btnGroup) {
-			btnGroup.style.display = useSimpleButtons ? "none" : "flex";
+			updates.push(() => btnGroup.style.display = useSimpleButtons ? "none" : "flex");
 		});
 		document.querySelectorAll(".simple-buttons").forEach(function (btnGroup) {
-			btnGroup.style.display = useSimpleButtons ? "block" : "none";
+			updates.push(() => btnGroup.style.display = useSimpleButtons ? "block" : "none");
 		});
-	}, 100); // Wait briefly to ensure rows are fully rendered
+
+		// Execute updates in next frame
+		requestAnimationFrame(() => {
+			updates.forEach(update => update());
+		});
+	});
 }
 
 function fetchDetails(controllerName, showMap = false, showRoute = false) {
@@ -164,10 +173,13 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 		pageLength: -1,
 		processing: true,
 		scrollX: false,
-		// scrollY: "600px",
 		scrollY: false,
 		scrollCollapse: true,
 		stateSave: false,
+		renderer: 'bootstrap',
+		drawCallback: function() {
+			$(this).find('tr').css('transition', 'none');
+		},
 		language: {
 			search: 'Search:',
 			lengthMenu: "Show _MENU_ entries",

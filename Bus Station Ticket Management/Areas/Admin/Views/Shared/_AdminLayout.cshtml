@@ -73,7 +73,7 @@
                 <div class="collapse navbar-collapse" id="adminNavbar">
                     <div class="accordion w-100" id="navbarAccordion">
                         <!-- Home -->
-                        <div class="accordion-item bg-success border-0">
+                        <div class="accordion-item bg-success bg-opacity-25 border-0">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#homeAccordion" aria-expanded="false"
@@ -87,7 +87,7 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item ps-4">
                                             <a class="nav-link text-dark ps-2" asp-area="Admin" asp-controller="Home"
-                                                asp-action="Index">
+                                                asp-action="Dashboard">
                                                 <i class="bi bi-columns-gap fs-5 me-2"></i>Dashboard
                                             </a>
                                         </li>
@@ -109,7 +109,7 @@
                         </div>
 
                         <!-- Vehicle -->
-                        <div class="accordion-item bg-success border-0">
+                        <div class="accordion-item bg-success bg-opacity-25 border-0">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#vehicleAccordion" aria-expanded="false"
@@ -139,7 +139,7 @@
                         </div>
 
                         <!-- Trip -->
-                        <div class="accordion-item bg-success border-0">
+                        <div class="accordion-item bg-success bg-opacity-50 border-0">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#tripAccordion" aria-expanded="false"
@@ -188,7 +188,7 @@
                         </div>
 
                         <!-- User -->
-                        <div class="accordion-item bg-success border-0">
+                        <div class="accordion-item bg-success bg-opacity-75 border-0">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed bg-transparent text-white" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#userAccordion" aria-expanded="false"
@@ -245,7 +245,7 @@
             tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" aria-controls="offcanvasResponsive"
             style="position: fixed; top: 0; left: 0; height: 100vh; width: 250px; z-index: 1030; overflow-y: auto; scrollbar-color: #d6d6d6 #20874e">
             <div class="offcanvas-header d-flex px-2 justify-content-center align-items-center">
-                <a asp-controller="Home" asp-action="Index"
+                <a asp-controller="Home" asp-action="Dashboard"
                     class="offcanvas-title d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <i class="fa-solid fa-bus me-2"></i>
                     <span class="fs-5 fw-semibold">EasyRide</span>
@@ -268,8 +268,10 @@
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white hvr-underline-from-center" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#homeMenu" aria-expanded="false"
                                 aria-controls="homeMenu">
-                                <i class="bi bi-view-stacked me-2 hvr-icon-grow"></i>
-                                Home
+                                <span class="fs-5 fw-semibold">
+                                    <i class="bi bi-view-stacked me-2 hvr-icon-back"></i>
+                                    Home
+                                </span>
                             </button>
                         </h2>
                         <div id="homeMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
@@ -277,23 +279,29 @@
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Home"
-                                            asp-action="Index">
-                                            <i class="bi bi-columns-gap me-2 hvr-icon-bounce"></i>
-                                            Dashboard
+                                            asp-action="Dashboard">
+                                            <span class="fs-6">
+                                                <i class="bi bi-columns-gap me-2 hvr-icon-back"></i>
+                                                Dashboard
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Tickets"
                                             asp-action="Revenue">
-                                            <i class="bi bi-bar-chart me-2 hvr-icon-bounce"></i>
-                                            Revenue
+                                            <span class="fs-6">
+                                                <i class="bi bi-bar-chart me-2 hvr-icon-back"></i>
+                                                Revenue
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="" asp-controller="Home"
                                             asp-action="Index">
-                                            <i class="bi bi-house-door me-2 hvr-icon-bounce"></i>
-                                            User Home
+                                            <span class="fs-6">
+                                                <i class="bi bi-house-door me-2 hvr-icon-back"></i>
+                                                User Home
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -307,8 +315,10 @@
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white hvr-underline-from-center" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#vehicleMenu" aria-expanded="false"
                                 aria-controls="vehicleMenu">
-                                <i class="bi bi-truck me-2 hvr-icon-grow"></i>
-                                Vehicle
+                                <span class="fs-5 fw-semibold">
+                                    <i class="bi bi-truck me-2 hvr-icon-back"></i>
+                                    Vehicle
+                                </span>
                             </button>
                         </h2>
                         <div id="vehicleMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
@@ -317,15 +327,19 @@
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Vehicle"
                                             asp-action="Index">
-                                            <i class="bi bi-truck-front me-2 hvr-icon-bounce"></i>
-                                            Vehicles
+                                            <span class="fs-6">
+                                                <i class="bi bi-truck-front me-2 hvr-icon-back"></i>
+                                                Vehicles
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin"
                                             asp-controller="VehicleType" asp-action="Index">
-                                            <i class="bi bi-truck-flatbed me-2 hvr-icon-bounce"></i>
-                                            Vehicle Types
+                                            <span class="fs-6">
+                                                <i class="bi bi-truck-flatbed me-2 hvr-icon-back"></i>
+                                                Vehicle Types
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -339,8 +353,10 @@
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white hvr-underline-from-center" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#tripMenu" aria-expanded="false"
                                 aria-controls="tripMenu">
-                                <i class="bi bi-calendar-check me-2 hvr-icon-grow"></i>
-                                Trip
+                                <span class="fs-5 fw-semibold">
+                                    <i class="bi bi-calendar-check me-2 hvr-icon-back"></i>
+                                    Trip
+                                </span>
                             </button>
                         </h2>
                         <div id="tripMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
@@ -349,37 +365,47 @@
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Location"
                                             asp-action="Index">
-                                            <i class="bi bi-geo-alt me-2 hvr-icon-bounce"></i>
-                                            Locations
+                                            <span class="fs-6">
+                                                <i class="bi bi-geo-alt me-2 hvr-icon-back"></i>
+                                                Locations
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Route"
                                             asp-action="Index">
-                                            <i class="fa-solid fa-route me-2 hvr-icon-bounce"></i>
-                                            Routes
+                                            <span class="fs-6">
+                                                <i class="fa-solid fa-route me-2 hvr-icon-back"></i>
+                                                Routes
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Trip"
                                             asp-action="Index">
-                                            <i class="bi bi-calendar-range me-2 hvr-icon-bounce"></i>
-                                            Trips
+                                            <span class="fs-6">
+                                                <i class="bi bi-calendar-range me-2 hvr-icon-back"></i>
+                                                Trips
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Driver"
                                             asp-action="Index">
-                                            <img width="16" height="20" src="/assets/img/driver.svg"
-                                                style="filter: invert(100%)" class="me-2 hvr-icon-bounce" alt="driver" />
-                                            Drivers
+                                            <span class="fs-6">
+                                                <img width="16" height="20" src="/assets/img/driver.svg"
+                                                    style="filter: invert(100%)" class="me-2 hvr-icon-back" alt="driver" />
+                                                Drivers
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin"
                                             asp-controller="TripDriverAssignment" asp-action="Index">
-                                            <i class="bi bi-person-lines-fill me-2 hvr-icon-bounce"></i>
-                                            Assignments
+                                            <span class="fs-6">
+                                                <i class="bi bi-person-lines-fill me-2 hvr-icon-back"></i>
+                                                Assignments
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -393,7 +419,9 @@
                             <button class="accordion-button px-0 py-3 collapsed bg-transparent text-white hvr-underline-from-center" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#userMenu" aria-expanded="false"
                                 aria-controls="userMenu">
-                                <i class="fa-solid fa-users me-2 hvr-icon-grow"></i>User
+                                <span class="fs-5 fw-semibold">
+                                    <i class="fa-solid fa-users me-2 hvr-icon-back"></i>User
+                                </span>
                             </button>
                         </h2>
                         <div id="userMenu" class="accordion-collapse collapse" data-bs-parent="#accordionSidepanel">
@@ -402,31 +430,46 @@
                                     <li>
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin"
                                             asp-controller="Employee" asp-action="Index">
-                                            <i class="bi bi-people me-2 hvr-icon-bounce"></i>Employees
+                                            <span class="fs-6">
+                                                <i class="bi bi-people me-2 hvr-icon-back"></i>
+                                                Employees
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Customers"
                                             asp-action="Index">
-                                            <i class="bi bi-person-circle me-2 hvr-icon-bounce"></i>Customers
+                                            <span class="fs-6">
+                                                <i class="bi bi-person-circle me-2 hvr-icon-back"></i>
+                                                Customers
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Ratings"
                                             asp-action="Index">
-                                            <i class="bi bi-star-half me-2 hvr-icon-bounce"></i>Ratings
+                                            <span class="fs-6">
+                                                <i class="bi bi-star-half me-2 hvr-icon-back"></i>
+                                                Ratings
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left hvr-icon-bounce" asp-area="Admin" asp-controller="Tickets"
                                             asp-action="Index">
-                                            <i class="bi bi-ticket-perforated me-2 hvr-icon"></i>Tickets
+                                            <span class="fs-6">
+                                                <i class="bi bi-ticket-perforated me-2 hvr-icon-back"></i>
+                                                Tickets
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left hvr-icon-bounce" asp-area="Admin" asp-controller="Coupons"
+                                        <a class="nav-link w-100 text-white ps-2 hvr-underline-from-left" asp-area="Admin" asp-controller="Coupons"
                                             asp-action="Index">
-                                            <i class="bi bi-ticket-detailed me-2 hvr-icon"></i>Coupons
+                                            <span class="fs-6">
+                                                <i class="bi bi-ticket-detailed me-2 hvr-icon-back"></i>
+                                                Coupons
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -437,9 +480,9 @@
                 </ul>
             </div>
 
-            <div class="mt-auto" id="sidePanelLoginPartial">
+            <div class="mt-auto w-100" id="sidePanelLoginPartial">
                 <hr class="mb-0 w-100">
-                <partial name="_LoginPartial" />
+                <partial name="_LoginPartial"/>
             </div>
         </div>
 
@@ -516,6 +559,15 @@
 
     <!-- Leaflet.awesome-markers -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+
+    <!-- jsPDF library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- jsPDF-AutoTable plugin for creating tables in PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- SheetJS library for Excel file handling -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
     <!-- Scripts -->
     <script>

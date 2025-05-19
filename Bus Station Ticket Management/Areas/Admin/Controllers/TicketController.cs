@@ -9,7 +9,6 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using X.PagedList.Extensions;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -20,258 +19,247 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<TicketsController> _logger;
 
-        public TicketsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TicketsController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            ILogger<TicketsController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> MyTickets()
         {
-            // Lấy thông tin người dùng hiện tại
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
+            try
             {
-                return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập nếu người dùng chưa đăng nhập
+                // Lấy thông tin người dùng hiện tại
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập nếu người dùng chưa đăng nhập
+                }
+
+                // Lấy danh sách vé của người dùng từ cơ sở dữ liệu, bao gồm thông tin về chuyến đi và tuyến đường
+                var tickets = await _context.Tickets
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.StartLocation : null)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.DestinationLocation : null)
+                    .Include(t => t.Seat)
+                    .Where(t => t.UserId == user.Id)
+                    .ToListAsync();
+
+                return View(tickets);
             }
-
-            // Lấy danh sách vé của người dùng từ cơ sở dữ liệu, bao gồm thông tin về chuyến đi và tuyến đường
-            var tickets = await _context.Tickets
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                    .ThenInclude(route => route.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                    .ThenInclude(route => route.DestinationLocation)
-                .Include(t => t.Seat)
-                .Where(t => t.UserId == user.Id)
-                .ToListAsync();
-
-            return View(tickets);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in MyTickets");
+                return View(new List<Ticket>());
+            }
         }
 
         public async Task<IActionResult> Revenue(DateTime? fromDate, DateTime? toDate)
         {
-            // Khởi tạo truy vấn cơ bản
-            var query = _context.Tickets.AsQueryable();
-
-            // Lọc theo ngày nếu có
-            if (fromDate.HasValue)
+            try
             {
-                query = query.Where(t => t.BookingDate.Date >= fromDate.Value.Date);
-            }
 
-            if (toDate.HasValue)
+                // Khởi tạo truy vấn cơ bản
+                var query = _context.Tickets.AsQueryable();
+
+                // Lọc theo ngày nếu có
+                if (fromDate.HasValue)
+                {
+                    query = query.Where(t => t.BookingDate.Date >= fromDate.Value.Date);
+                }
+
+                if (toDate.HasValue)
+                {
+                    query = query.Where(t => t.BookingDate.Date <= toDate.Value.Date);
+                }
+
+                // Sau khi áp dụng điều kiện lọc, ta mới thực hiện Include
+                query = query
+                    .Include(t => t.User)  // Bao gồm thông tin User
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.StartLocation : null)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.DestinationLocation : null)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Vehicle : null)
+                    .Include(t => t.Seat);
+
+                // Tính tổng doanh thu và số lượng vé
+                var totalRevenue = await query.SumAsync(t => t.TotalPrice); // Tính tổng giá trị vé
+                var totalTickets = await query.CountAsync();  // Đếm số lượng vé
+
+                // Lưu giá trị vào ViewBag để hiển thị trên view
+                ViewBag.TotalRevenue = totalRevenue;
+                ViewBag.TotalTickets = totalTickets;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+
+                // Lấy danh sách vé sau khi đã lọc
+                var tickets = await query.ToListAsync();
+
+                // Trả về View với danh sách vé và doanh thu
+                return View("Revenue", tickets);
+            }
+            catch (Exception ex)
             {
-                query = query.Where(t => t.BookingDate.Date <= toDate.Value.Date);
+                _logger.LogError(ex, "Error in Revenue");
+                return View(new List<Ticket>());
             }
-
-            // Sau khi áp dụng điều kiện lọc, ta mới thực hiện Include
-            query = query
-                .Include(t => t.User)  // Bao gồm thông tin User
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                            .ThenInclude(route => route.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                            .ThenInclude(route => route.DestinationLocation)
-                .Include(t => t.Trip.Vehicle)  // Bao gồm thông tin xe trong chuyến đi
-                .Include(t => t.Seat);  // Bao gồm thông tin ghế trong vé
-
-            // Tính tổng doanh thu và số lượng vé
-            var totalRevenue = await query.SumAsync(t => t.TotalPrice); // Tính tổng giá trị vé
-            var totalTickets = await query.CountAsync();  // Đếm số lượng vé
-
-            // Lưu giá trị vào ViewBag để hiển thị trên view
-            ViewBag.TotalRevenue = totalRevenue;
-            ViewBag.TotalTickets = totalTickets;
-            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
-            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd"); 
-
-            // Lấy danh sách vé sau khi đã lọc
-            var tickets = await query.ToListAsync();
-
-            // Trả về View với danh sách vé và doanh thu
-            return View("Revenue", tickets);
         }
 
         // GET: Admin/Tickets
-        public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, bool? IsPaid, bool? IsCanceled)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 15;
-            int pageNumber = page ?? 1;
-
-            ViewBag.SortBy = sortBy;
-            ViewBag.IsPaid = IsPaid;
-            ViewBag.IsCanceled = IsCanceled;
-            ViewBag.SearchString = searchString;
-
-            searchString = searchString?.ToLower();
-
-            var ticketsQuery = _context.Tickets
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.DestinationLocation)
-                .Include(t => t.Seat)
-                .Include(t => t.User)
-                .AsQueryable();
-
-
-            if (searchString != null)
+            try
             {
-                if (DateTime.TryParse(searchString, out DateTime searchByDateTime)) {
-                    ticketsQuery = ticketsQuery.Where(t => t.BookingDate == searchByDateTime);
-                } else {
-                    ticketsQuery = ticketsQuery.Where(t =>
-                        t.GuestName != null && EF.Functions.Collate(t.GuestName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.GuestEmail != null && EF.Functions.Collate(t.GuestEmail.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.GuestPhone != null && EF.Functions.Collate(t.GuestPhone.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null && EF.Functions.Collate(t.Trip.Route.StartLocation.Name.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null && EF.Functions.Collate(t.Trip.Route.DestinationLocation.Name.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.Seat != null && t.Seat.Number != null && EF.Functions.Collate(t.Seat.Number.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.User != null && t.User.UserName != null && EF.Functions.Collate(t.User.UserName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.User != null && t.User.FullName != null && EF.Functions.Collate(t.User.FullName.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.User != null && t.User.PhoneNumber != null && EF.Functions.Collate(t.User.PhoneNumber.ToLower(), "Latin1_General_CI_AI").Contains(searchString) ||
-                        t.User != null && t.User.Email != null && EF.Functions.Collate(t.User.Email.ToLower(), "Latin1_General_CI_AI").Contains(searchString)
-                    );
-                }
+                var tickets = await _context.Tickets
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.StartLocation : null)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.DestinationLocation : null)
+                    .Include(t => t.Seat)
+                    .Include(t => t.User)
+                    .OrderBy(t => t.Id)
+                    .ToListAsync();
+
+                return View(tickets);
             }
-
-            // Apply sorting based on sortBy parameter
-            ticketsQuery = sortBy switch
+            catch (Exception ex)
             {
-                "customer_asc" => ticketsQuery.OrderBy(t => t.User != null ? t.User.FullName : string.Empty),
-                "customer_desc" => ticketsQuery.OrderByDescending(t => t.User != null ? t.User.FullName : string.Empty),
-                "trip_StartLocation_asc" => ticketsQuery.OrderBy(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null ? t.Trip.Route.StartLocation.Name : string.Empty),
-                "trip_StartLocation_desc" => ticketsQuery.OrderByDescending(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.StartLocation != null ? t.Trip.Route.StartLocation.Name : string.Empty),
-                "trip_DestinationLocation_asc" => ticketsQuery.OrderBy(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null ? t.Trip.Route.DestinationLocation.Name : string.Empty),
-                "trip_DestinationLocation_desc" => ticketsQuery.OrderByDescending(t => t.Trip != null && t.Trip.Route != null && t.Trip.Route.DestinationLocation != null ? t.Trip.Route.DestinationLocation.Name : string.Empty),
-                "bookingDate_asc" => ticketsQuery.OrderBy(t => t.BookingDate),
-                "bookingDate_desc" => ticketsQuery.OrderByDescending(t => t.BookingDate),
-                "cancelationTime_asc" => ticketsQuery.OrderBy(t => t.CancelationTime),
-                "cancelationTime_desc" => ticketsQuery.OrderByDescending(t => t.CancelationTime),
-                _ => ticketsQuery,
-            };
-
-            // Apply filtering based on IsPaid and IsCancelled
-            if (IsPaid.HasValue)
-            {
-                ticketsQuery = ticketsQuery.Where(t => t.IsPaid == IsPaid.Value);
+                return View(new List<Ticket>());
             }
-
-            if (IsCanceled.HasValue)
-            {
-                ticketsQuery = ticketsQuery.Where(t => t.IsCanceled == IsCanceled.Value);
-            }
-
-            // Retrieve total count for pagination
-            int totalCount = await ticketsQuery.CountAsync();
-
-            // Apply pagination
-            var tickets = await ticketsQuery
-                .OrderBy(t => t.Id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return View(tickets.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin/Tickets/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
 
-            var ticket = await _context.Tickets.Include(t => t.Trip)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.DestinationLocation)
-                .Include(t => t.Seat)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Id == id);
-                
-            if (ticket == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var ticket = await _context.Tickets.Include(t => t.Trip)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route)
+                            .ThenInclude(route => route.StartLocation)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route)
+                            .ThenInclude(route => route.DestinationLocation)
+                    .Include(t => t.Seat)
+                    .Include(t => t.User)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+
+                return View(ticket);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error in Details");
+                return View(new Ticket());
             }
-
-            return View(ticket);
         }
-        
+
         [AllowAnonymous]
         public async Task<IActionResult> DetailsPartial(string id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var ticket = await _context.Tickets
-                .AsNoTracking()
-                .Include(t => t.Trip)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route!)
-                        .ThenInclude(route => route.StartLocation!)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route!)
-                        .ThenInclude(route => route.DestinationLocation!)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.TripDriverAssignments!)
-                        .ThenInclude(tda => tda.Driver!)
-                .Include(t => t.Seat)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Vehicle)
-                        .ThenInclude(vehicle => vehicle.VehicleType)    
-                .Include(t => t.User)
-                .Include(t => t.Coupon)
-                .Include(t => t.Payment)
-                    .ThenInclude(p => p.VnPayment)
-                .FirstOrDefaultAsync(t => t.Id == id);
-                
-            if (ticket == null)
+                var ticket = await _context.Tickets
+                    .AsNoTracking()
+                    .Include(t => t.Trip)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route!)
+                            .ThenInclude(route => route.StartLocation!)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route!)
+                            .ThenInclude(route => route.DestinationLocation!)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.TripDriverAssignments!)
+                            .ThenInclude(tda => tda.Driver!)
+                    .Include(t => t.Seat)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Vehicle)
+                            .ThenInclude(vehicle => vehicle.VehicleType)
+                    .Include(t => t.User)
+                    .Include(t => t.Coupon)
+                    .Include(t => t.Payment)
+                        .ThenInclude(p => p.VnPayment)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView("_DetailsPartial", ticket);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error in DetailsPartial");
+                return PartialView("_DetailsPartial", new Ticket());
             }
-
-            return PartialView("_DetailsPartial", ticket);
         }
 
         // GET: Admin/Tickets/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var ticket = await _context.Tickets.Include(t => t.Trip)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route)
+                            .ThenInclude(route => route.StartLocation)
+                    .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.Route)
+                            .ThenInclude(route => route.DestinationLocation)
+                    .Include(t => t.Seat)
+                    .Include(t => t.User)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+
+                return View(ticket);
             }
-
-            var ticket = await _context.Tickets.Include(t => t.Trip)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.StartLocation)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                        .ThenInclude(route => route.DestinationLocation)
-                .Include(t => t.Seat)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (ticket == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error in Edit");
+                return View(new Ticket());
             }
-
-            return View(ticket);
         }
 
         // POST: Admin/Tickets/Edit/5
@@ -281,66 +269,84 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,TripId,SeatId,BookingDate,IsPaid")] Ticket ticket)
         {
-            if (id != ticket.Id)
+            try
             {
-                return NotFound("Id do not match");
-            }
+                if (id != ticket.Id)
+                {
+                    return NotFound("Id do not match");
+                }
 
-            var fetchTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticket.Id);
-            if (fetchTicket == null) {
-                return NotFound("Cannot Find Ticket");
-            }
+                var fetchTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticket.Id);
+                if (fetchTicket == null)
+                {
+                    return NotFound("Cannot Find Ticket");
+                }
 
-            if (ModelState.IsValid)
+                if (ModelState.IsValid)
+                {
+                    if (fetchTicket.IsPaid == false && fetchTicket.IsPaid != ticket.IsPaid && fetchTicket.IsReserved)
+                    {
+                        ticket.IsPaid = true;
+                    }
+
+                    try
+                    {
+                        _context.Update(ticket);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!TicketExists(ticket.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id", ticket.SeatId);
+                ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", ticket.TripId);
+                ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticket.UserId);
+                return View(ticket);
+            }
+            catch (Exception ex)
             {
-                if (fetchTicket.IsPaid == false && fetchTicket.IsPaid != ticket.IsPaid && fetchTicket.IsReserved) {
-                    ticket.IsPaid = true;
-                }
-
-                try
-                {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TicketExists(ticket.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _logger.LogError(ex, "Error in Edit");
+                return View(new Ticket());
             }
-
-            ViewData["SeatId"] = new SelectList(_context.Seats, "Id", "Id", ticket.SeatId);
-            ViewData["TripId"] = new SelectList(_context.Trips, "Id", "Id", ticket.TripId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticket.UserId);
-            return View(ticket);
         }
 
         // GET: Admin/Tickets/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var ticket = await _context.Tickets
-                .Include(t => t.Seat)
-                .Include(t => t.Trip)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
+                var ticket = await _context.Tickets
+                    .Include(t => t.Seat)
+                    .Include(t => t.Trip)
+                    .Include(t => t.User)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+
+                return View(ticket);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error in Delete");
+                return View(new Ticket());
             }
-
-            return View(ticket);
         }
 
         // POST: Admin/Tickets/Delete/5
@@ -348,19 +354,65 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket != null)
+            try
             {
-                _context.Tickets.Remove(ticket);
-            }
+                var ticket = await _context.Tickets.FindAsync(id);
+                if (ticket != null)
+                {
+                    _context.Tickets.Remove(ticket);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in DeleteConfirmed");
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool TicketExists(string id)
         {
             return _context.Tickets.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetFilteredRevenue(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                var query = _context.Tickets.AsQueryable();
+
+                // Apply date filters
+                if (fromDate.HasValue)
+                {
+                    query = query.Where(t => t.BookingDate.Date >= fromDate.Value.Date);
+                }
+
+                if (toDate.HasValue)
+                {
+                    query = query.Where(t => t.BookingDate.Date <= toDate.Value.Date);
+                }
+
+
+                // Group by date and calculate daily revenue
+                var revenueData = await query
+                    .GroupBy(t => t.BookingDate.Date)
+                    .Select(g => new
+                    {
+                        Date = g.Key.ToString("dd/MM/yyyy"),
+                        Revenue = g.Sum(t => t.TotalPrice)
+                    })
+                    .OrderBy(x => DateTime.ParseExact(x.Date, "dd/MM/yyyy", null))
+                    .ToListAsync();
+
+                return Json(revenueData);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
     }
 }
