@@ -1,35 +1,52 @@
 ﻿@model Bus_Station_Ticket_Management.Models.TripDriverAssignment
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Trip-Driver Assignment";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary"><i class="bi bi-pencil-square"></i> @ViewData["Title"]</h2>
+        <a class="btn btn-outline-secondary hvr-icon-back" asp-action="Index">
+            <i class="fa-solid fa-arrow-left hvr-icon"></i> Back to List
+        </a>
+    </div>
 
-<h4>Trip-Driver Assignment</h4>
-<hr />
-<div class="row w-100">
-    <form asp-action="Edit" class="col col-md-7">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="Id" />
-        <div class="form-group mb-3">
-            <label asp-for="TripId" class="control-label"></label>
-            <select asp-for="TripId" class="form-control" asp-items="ViewBag.TripId"></select>
-            <span asp-validation-for="TripId" class="text-danger"></span>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-4">
+                    <label asp-for="TripId" class="form-label fw-semibold">Trip</label>
+                    <select asp-for="TripId" class="form-select" asp-items="ViewBag.TripId">
+                        <option value="">-- Select Trip --</option>
+                    </select>
+                    <span asp-validation-for="TripId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="DriverId" class="form-label fw-semibold">Driver</label>
+                    <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId">
+                        <option value="">-- Select Driver --</option>
+                    </select>
+                    <span asp-validation-for="DriverId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow">
+                        <i class="fa-regular fa-floppy-disk hvr-icon me-2"></i>Save
+                    </button>
+                    <a class="btn btn-lg btn-outline-secondary fw-semibold hvr-icon-back" asp-action="Index">
+                        <i class="fa-solid fa-arrow-left hvr-icon me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
         </div>
-        <div class="form-group mb-3">
-            <label asp-for="DriverId" class="control-label"></label>
-            <select asp-for="DriverId" class="form-control" asp-items="ViewBag.DriverId"></select>
-            <span asp-validation-for="DriverId" class="text-danger"></span>
-        </div>
-        <div class="form-group btn-group mb-3 gap-1">
-            <input type="submit" value="Save" class="btn btn-primary" />
-            <a class="btn btn-outline-secondary" role="button" asp-action="Index">Back to List</a>
-        </div>
-    </form>
+    </div>
 </div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

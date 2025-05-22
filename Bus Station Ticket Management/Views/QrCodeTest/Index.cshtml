@@ -1,0 +1,75 @@
+ @{
+    ViewData["Title"] = "QR Code Generator Test";
+}
+
+<div class="container mt-5">
+    <h2>QR Code Generator Test</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Generate QR Code</h5>
+                    <div class="form-group">
+                        <label for="ticketId">Ticket ID:</label>
+                        <input type="text" class="form-control" id="ticketId" placeholder="Enter ticket ID">
+                    </div>
+                    <button class="btn btn-primary mt-3" onclick="generateQrCode()">Generate QR Code</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">QR Code Result</h5>
+                    <div id="qrCodeResult" class="text-center">
+                        <img id="qrCodeImage" style="display: none;" class="img-fluid" alt="QR Code">
+                        <p id="qrCodeMessage" class="text-muted">QR code will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function generateQrCode() {
+            const ticketId = document.getElementById('ticketId').value;
+            if (!ticketId) {
+                alert('Please enter a ticket ID');
+                return;
+            }
+
+            fetch('/QrCodeTest/GenerateQrCode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `ticketId=${encodeURIComponent(ticketId)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const qrCodeImage = document.getElementById('qrCodeImage');
+                const qrCodeMessage = document.getElementById('qrCodeMessage');
+                
+                if (data.qrCode) {
+                    qrCodeImage.src = `data:image/png;base64,${data.qrCode}`;
+                    qrCodeImage.style.display = 'block';
+                    qrCodeMessage.style.display = 'none';
+                } else {
+                    qrCodeImage.style.display = 'none';
+                    qrCodeMessage.textContent = 'Failed to generate QR code';
+                    qrCodeMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const qrCodeMessage = document.getElementById('qrCodeMessage');
+                qrCodeMessage.textContent = 'Error generating QR code';
+                qrCodeMessage.style.display = 'block';
+            });
+        }
+    </script>
+}

@@ -2,7 +2,12 @@ using QRCoder;
 
 namespace Bus_Station_Ticket_Management.Services 
 {
-    public class QrCodeService
+    public interface IQrCodeService
+    {
+        string GenerateQrCode(string ticketId);
+    }
+
+    public class QrCodeService : IQrCodeService
     {
         public string GenerateQrCode(string ticketId)
         {

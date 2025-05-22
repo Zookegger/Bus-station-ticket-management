@@ -6,7 +6,9 @@
 }
 
 <div class="card">
-    <div class="card-header bg-success-subtle"><h2>@ViewData["Title"]</h2></div>
+    <div class="card-header bg-success-subtle">
+        <h2>@ViewData["Title"]</h2>
+    </div>
 
     <div class="card-body">
         <div class="card-title"></div>
@@ -17,26 +19,33 @@
 
                 <div class="col-md form-group mb-3">
                     <label asp-for="StartId" class="control-label"></label>
-                    <select asp-for="StartId" class="form-control route-select" asp-items="ViewBag.StartLocation"></select>
+                    <select asp-for="StartId" class="form-control route-select"
+                        asp-items="ViewBag.StartLocation"></select>
                     <span asp-validation-for="StartId" class="text-danger"></span>
                 </div>
                 <div class="col-md form-group mb-3">
                     <label asp-for="DestinationId" class="control-label"></label>
-                    <select asp-for="DestinationId" class="form-control route-select" asp-items="ViewBag.DestinationLocation"></select>
+                    <select asp-for="DestinationId" class="form-control route-select"
+                        asp-items="ViewBag.DestinationLocation"></select>
                     <span asp-validation-for="DestinationId" class="text-danger"></span>
                 </div>
             </div>
-                
+
             <div class="form-group mb-3">
                 <label asp-for="Price" class="control-label"></label>
                 <!-- Input for smaller screens -->
-                <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall" class="form-control d-md-none d-block" placeholder="..VND"/>
+                <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall"
+                    class="form-control d-md-none d-block" placeholder="..VND" />
                 <!-- Input for larger screens -->
-                <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block" placeholder="..VND"/>
+                <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block"
+                    placeholder="..VND" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Distance">
             <span asp-validation-for="Distance" class="text-danger"></span>
+
+            <input type="hidden" asp-for="Duration">
+            <span asp-validation-for="Duration" class="text-danger"></span>
 
             <div id="map" style="height: 400px;"></div>
 
@@ -57,7 +66,9 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script src="~/js/initOSM.js"></script>
 
     <script>
@@ -73,7 +84,7 @@
 
                 if (startData && destinationData) {
                     await initializeMap(startData.lat, startData.lng, startData.name, false);
-                    
+
                     setTimeout(async () => {
                         let routeData = await addRouteAndTime(
                             startData.lat,
@@ -83,20 +94,41 @@
                             true
                         );
 
-                        if (routeData?.route?.distance) {
-                            const distanceInKm = (routeData.route.distance / 1000).toFixed(2); // convert from meters to kilometers
-                            console.log("Distance (km):", distanceInKm);
-                            document.querySelector('input[name="Distance"]').value = distanceInKm;
+                        if (routeData?.route) {
+                            const { distance, duration } = routeData.route;
+
+                            // Handle Distance
+                            if (distance) {
+                                const distanceInKm = (distance / 1000).toFixed(2);
+                                console.log("Distance (km):", distanceInKm);
+                                document.querySelector('input[name="Distance"]').value = distance; // meters
+                            } else {
+                                document.querySelector('input[name="Distance"]').value = '';
+                                console.warn('Route distance data is missing or incomplete.');
+                            }
+
+                            // Handle Duration
+                            if (duration) {
+                                const durationInHours = (duration / 3600).toFixed(2);
+                                console.log("Duration (hours):", durationInHours);
+                                document.querySelector('input[name="Duration"]').value = duration; // seconds
+                            } else {
+                                document.querySelector('input[name="Duration"]').value = '';
+                                console.warn('Route duration data is missing or incomplete.');
+                            }
+                        } else {
+                            document.querySelector('input[name="Distance"]').value = '';
+                            document.querySelector('input[name="Duration"]').value = '';
+                            console.warn('Route data is missing or incomplete.');
                         }
 
-                        document.querySelector('input[name="Distance"]').value = routeData.route.distance;
                     }, 500);
                 }
             }
         }
 
         $('.route-select').on('change', GetRouteMapData);
-                
+
         // Price input for smaller screens
         const priceInputSmall = document.getElementById('priceInputSmall');
         // Price input for larger screens
@@ -127,10 +159,10 @@
                 if (inputElement === priceInputSmall)
                     priceInputLarge.value = priceInputSmall.value;
                 else if (inputElement === priceInputLarge)
-                    priceInputSmall.value = priceInputLarge.value; 
+                    priceInputSmall.value = priceInputLarge.value;
             });
         }
-        
+
         // Call the function for both inputs
         formatPriceInput(priceInputSmall);
         formatPriceInput(priceInputLarge);

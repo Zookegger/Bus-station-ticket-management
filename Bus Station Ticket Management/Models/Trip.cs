@@ -22,18 +22,21 @@ namespace Bus_Station_Ticket_Management.Models
         
         [DisplayName("Status")]
         public string? Status { get; set; }
+
         [DisplayName("Total Price")] [DisplayFormat(DataFormatString = "{0:N0} VNĐ")]
         public int TotalPrice { get; set; }
 
         [Required]
         [DisplayName("Route Name")]
         public int RouteId { get; set; }
+        
         [ForeignKey(nameof(RouteId))]
         public Routes? Route { get; set; }
 
         [Required]
         [DisplayName("Vehicle Name")]
         public int VehicleId { get; set; }
+        
         [ForeignKey(nameof(VehicleId))]
         public Vehicle? Vehicle { get; set; }
 

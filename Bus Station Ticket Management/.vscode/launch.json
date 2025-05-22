@@ -5,7 +5,12 @@
       "name": ".NET Core Launch (Watch + Hot Reload)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "dotnet: build",
+      "preLaunchTask": "build",
+      "tasks": [
+        "dotnet: clean",
+        "dotnet: restore",
+        "dotnet: build"
+      ],
       "program": "${workspaceFolder}/bin/Debug/net9.0/Bus Station Ticket Management.dll",
       "args": [
         "watch",

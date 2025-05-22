@@ -85,7 +85,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
+        public async Task<IActionResult> Create([Bind("Id,StartId,DestinationId,Price,Distance,Duration")] Routes routes)
         {
             try {
                 if (routes.StartId == routes.DestinationId)
@@ -148,7 +148,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartId,DestinationId,Price,Distance")] Routes routes)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartId,DestinationId,Price,Distance,Duration")] Routes routes)
         {
             
             try

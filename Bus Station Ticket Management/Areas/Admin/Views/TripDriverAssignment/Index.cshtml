@@ -7,8 +7,11 @@
 
 <h1 class="text-success fw-bold mb-4">Assignment</h1>
 
-<a asp-action="Create" class="btn btn-primary mb-3" role="button" id="assignButton"><i class="fa fa-plus-circle"></i>
-    Assign</a>
+<div class="d-flex align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-primary me-3" role="button" id="assignButton"><i class="fa fa-plus-circle"></i>
+        Assign </a>
+    <span id="assignableTripsCount" class="h-100"><i class="fa fa-spinner fa-spin fs-4"></i></span>
+</div>
 
 @if (ViewBag.ErrorMessage != null)
 {
@@ -36,10 +39,10 @@ else
             <thead style="position: sticky; top: 0">
                 <tr>
                     <th>Trip</th>
+                    <th>Time</th>
                     <th>Driver</th>
                     <th>Date Assigned</th>
                     <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +51,9 @@ else
                     <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
                         <td>
                             @item.Trip.Route.StartLocation.Name ➞ @item.Trip.Route.DestinationLocation.Name
+                        </td>
+                        <td>
+                            @item.Trip.DepartureTime.ToString("hh:mm tt") → @item.Trip.ArrivalTime.ToString("hh:mm tt")
                         </td>
                         <td>
                             @item.Driver.Account.FullName
@@ -125,7 +131,6 @@ else
         $('.clickable-row').on('click', function () {
             var routeId = $(this).data('id');
 
-            console.log(routeId);
             $.ajax({
                 url: '/Admin/TripDriverAssignment/DetailsPartial?id=' + routeId,
                 method: 'GET',
@@ -172,16 +177,16 @@ else
                 e.preventDefault();
                 checkTrips();
             });
+
         });
 
         async function checkTrips() {
             try {
                 const response = await $.ajax({
-                    url: '/Admin/TripDriverAssignment/CheckTrips',
+                    url: window.location.origin + '/Admin/api/TripDriverAssignmentApi/check-trips',
                     method: 'GET'
                 });
-
-                if (response.success && response.data.length > 0) {
+                if (response.success && response.tripCount > 0) {
                     window.location.href = '/Admin/TripDriverAssignment/Create';
                 } else {
                     // Show error message to user
@@ -192,5 +197,20 @@ else
                 alert('An error occurred while checking available trips.');
             }
         }
+
+        async function countAssignableTrips() {
+            const response = await $.ajax({
+                url: window.location.origin + '/Admin/api/TripDriverAssignmentApi/check-trips',
+                method: 'GET'
+            });
+            if (response.success && response.tripCount > 0) {
+                $('#assignableTripsCount').text(response.tripCount);
+                $('#assignableTripsCount').addClass('badge bg-secondary');
+            } else {
+                $('#assignableTripsCount').text(response.message || 'There are no available trips to assign.');
+                $('#assignableTripsCount').addClass('badge bg-secondary');
+            }
+        }
+        countAssignableTrips();
     </script>
 }

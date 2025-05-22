@@ -288,7 +288,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             await _context.Seats.AddRangeAsync(seats);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Create", "TripDriverAssignment", new { tripId = trip.Id });
+            return RedirectToAction("CreateWithPreselectedTrip", "TripDriverAssignment", new { tripId = trip.Id });
         }
 
         // GET

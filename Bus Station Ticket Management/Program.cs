@@ -16,11 +16,79 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Services;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Utilities;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // ==================== Service Registration ====================
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+// API
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Bus Station Ticket Management API",
+        Version = "v1",
+        Description = "API for Bus Station Ticket Management System"
+    });
+
+    // Set the comments path for the Swagger JSON and UI
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    
+    if (System.IO.File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+    else
+    {
+        // Try alternative path
+        var altXmlPath = Path.Combine(AppContext.BaseDirectory, "bin", "Debug", "net9.0", xmlFile);
+        if (System.IO.File.Exists(altXmlPath))
+        {
+            c.IncludeXmlComments(altXmlPath);
+        }
+    }
+
+    // Add security definitions
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // Hosted Background Services
 builder.Services.AddHostedService<ExpiredPaymentCleanupService>();
@@ -74,53 +142,52 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(options =>
 {
-    options.ExpireTimeSpan = TimeSpan.FromHours(1);
     options.SlidingExpiration = true;
+})
+.AddGoogle(options =>
+{
+   if (config is not null &&
+       !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+       !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+   {
+       options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
+       options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+   }
+   else
+   {
+       System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
+   }
+
+   options.CallbackPath = "/signin-google";
+
+   // // Request extra scopes for additional profile details.
+   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+   // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+
+   // // Request access to birthday, phone number, address, and gender information.
+   // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
+   // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
+
+   // options.SaveTokens = true;
+})
+.AddFacebook(options =>
+{
+   if (config is not null &&
+       !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
+       !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+   {
+       options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
+       options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+   }
+   else
+   {
+       System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
+   }
+
+   options.CallbackPath = "/signin-facebook";
 });
-//.AddGoogle(options =>
-//{
-//    if (config is not null &&
-//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-//    {
-//        options.ClientId = config["Authentication:Google:ClientId"] ?? string.Empty;
-//        options.ClientSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-//    }
-//    else
-//    {
-//        System.Diagnostics.Debug.WriteLine("[Google Authentication] ClientId or ClientSecret is not set");
-//    }
-
-//    options.CallbackPath = "/signin-google";
-
-//    // // Request extra scopes for additional profile details.
-//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-//    // options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-
-//    // // Request access to birthday, phone number, address, and gender information.
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.phonenumbers.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.addresses.read");
-//    // options.Scope.Add("https://www.googleapis.com/auth/user.gender.read");
-
-//    // options.SaveTokens = true;
-//})
-//.AddFacebook(options =>
-//{
-//    if (config is not null &&
-//        !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-//        !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
-//    {
-//        options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
-//        options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
-//    }
-//    else
-//    {
-//        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
-//    }
-
-//    options.CallbackPath = "/signin-facebook";
-//});
 
 // ==================== Identity ====================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -145,6 +212,19 @@ builder.Services.AddRazorPages()
     });
 
 builder.Services.AddControllersWithViews();
+
+// Add API services
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
+
+// Add QR Code Service
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
+
+// Add Chatbot Service
+builder.Services.AddScoped<IChatbotService, ChatbotService>();
 
 // ==================== Application Setup ====================
 var app = builder.Build();
@@ -186,7 +266,16 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ==================== Middleware ====================
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bus Station Ticket Management API V1");
+        c.RoutePrefix = "swagger";
+    });
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHttpsRedirection();
@@ -198,6 +287,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
 app.UseSession();
+app.UseCors();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
@@ -235,17 +325,12 @@ app.Use(async (context, next) =>
 // ==================== Routing ====================
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller}/{action}/{id?}",
-    defaults: new { controller = "Home", action = "" }
-);
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller}/{action}/{id?}",
-    defaults: new { controller = "Home", action = "Index" }
-);
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapStaticAssets();
 app.MapRazorPages();
-app.MapControllers();
+
 app.Run();

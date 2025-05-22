@@ -167,7 +167,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                         // Redirect based on role
                         if (roles.Contains("Admin"))
                         {
-                            return RedirectToAction("Index", "Home", new { area = "Admin" });
+                            return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
                         }
                         else if (roles.Contains("Employee"))
                         {

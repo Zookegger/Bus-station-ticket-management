@@ -1,36 +1,90 @@
 ﻿@model Bus_Station_Ticket_Management.Models.TripDriverAssignment
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Assign Driver to Trip";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary"><i class="bi bi-person-plus"></i> Assign Driver to Trip</h2>
+        <a class="btn btn-outline-secondary hvr-icon-back" asp-action="Index">
+            <i class="fa-solid fa-arrow-left hvr-icon"></i> Back to List
+        </a>
+    </div>
 
-<h4>TripDriverAssignment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group mb-3">
-                <label asp-for="TripId" class="control-label">Trip</label>
-                <select asp-for="TripId" class ="form-control" asp-items="ViewBag.TripId"></select>
-            </div>
-            <!-- Driver Assigment -->
-            <div class="form-group mb-3">
-                <label asp-for="DriverId" class="control-label">Driver</label>
-                <select asp-for="DriverId" class ="form-control" asp-items="ViewBag.DriverId"></select>
-            </div>
-            <div class="form-group btn-group gap-1 mb-3" role="group" aria-label="Button">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a class="btn btn-outline-secondary" role="button" asp-action="Index">Back to List</a>
-            </div>
-        </form>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-4">
+                    <label asp-for="TripId" class="form-label fw-semibold">Select Trip</label>
+                    <select asp-for="TripId" class="form-select" asp-items="ViewBag.TripId">
+                        <option value="">-- Select Trip --</option>
+                    </select>
+                    <span asp-validation-for="TripId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4" id="driverSelection" style="display: none;">
+                    <label asp-for="DriverId" class="form-label fw-semibold">Select Driver</label>
+                    <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId">
+                        <option value="">-- Select Driver --</option>
+                    </select>
+                    <span asp-validation-for="DriverId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow">
+                        <i class="fa-regular fa-plus hvr-icon me-2"></i>Assign
+                    </button>
+                    <a class="btn btn-lg btn-outline-secondary fw-semibold hvr-icon-back" asp-action="Index">
+                        <i class="fa-solid fa-arrow-left hvr-icon me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#TripId').change(function () {
+                var tripId = $(this).val();
+                if (tripId) {
+                    $.ajax({
+                        url: '/Admin/api/TripDriverAssignmentApi/free-drivers',
+                        type: 'GET',
+                        data: { tripId: tripId },
+                        success: function (data) {
+                            const $driverSelect = $('#DriverId');
+                            $driverSelect.empty();
+                            $driverSelect.append('<option value="">-- Select Driver --</option>');
+
+                            if (data.length === 0) {
+                                alert("No available drivers for the selected trip.");
+                                $('#driverSelection').hide();
+                                return;
+                            }
+
+                            $.each(data, function (index, item) {
+                                $driverSelect.append('<option value="' + item.id + '">' + item.fullName + '</option>');
+                            });
+
+                            $('#driverSelection').fadeIn(200);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                            alert('Failed to fetch drivers. Please try again.');
+                        }
+                    });
+                } else {
+                    $('#DriverId').empty().append('<option value="">-- Select Driver --</option>');
+                    $('#driverSelection').hide();
+                }
+            });
+        });
+    </script>
 }

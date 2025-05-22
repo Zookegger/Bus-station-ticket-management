@@ -25,12 +25,25 @@
                 <p class="form-control">@ViewData["TripTime"]</p>
             </div>
             <!-- Driver Assigment -->
-            <div class="form-group mb-3">
-                <label asp-for="DriverId" class="control-label">Driver</label>
-                <select asp-for="DriverId" class="form-control route-select" asp-items="ViewBag.DriverId"></select>
-            </div>
+            @if (ViewBag.DriverId != null)
+            {
+                <div class="form-group mb-3">
+                    <label asp-for="DriverId" class="control-label">Driver</label>
+                    <select asp-for="DriverId" class="form-control route-select" asp-items="ViewBag.DriverId"></select>
+                </div>
+            } else {
+                <div class="form-group mb-3">
+                    <label asp-for="DriverId" class="control-label">Driver</label>
+                    <p class="form-control">No drivers available</p>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        $('#assignButton').prop('disabled', true);
+                    });
+                </script>
+            }
             <div class="d-flex gap-3 justify-content-end" role="group" aria-label="Button">
-                <input type="submit" value="Assign" class="btn btn-primary" />
+                <input type="submit" value="Assign" id="assignButton" class="btn btn-primary" />
             </div>
         </form>
     </div>
