@@ -10,69 +10,76 @@
     data-tippy-content="Use this to add more location to database"><i class="fa fa-plus-circle"></i> Add New
     Location</a>
 
-<div class="table-responsive mb-3 shadow rounded">
-    <table id="DataTable" 
-            class="table table-hover table-striped align-middle mb-0" 
-            @* style="max-height: 876px;" *@
-            data-details-url="/Admin/Location/DetailsPartial"
-            data-table-name="Location"
-            data-table-title="Locations">
-        <thead style="position: sticky; top: 0">
-            <tr>
-                <th style="min-width: 150px; max-width: 250px;">Name</th>
-                <th style="min-width: 250px; max-width: 300px;">Address</th>
-                <th style="min-width: 58px; max-width: 58px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="table-group=divider">
-            @foreach (var item in Model)
-            {
-                @* <tr class="clickable-row" data-href="@Url.Action("_DetailsPartial", "Location", new { id = item.Id })"> *@
-                <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Address)
-                    </td>
-                    <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
-                        <!-- Dropdown Buttons (Hidden by default) -->
-                        <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
-                            <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
-                                data-bs-toggle="dropdown" data-tippy-content="More Actions">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
-                                        asp-route-id="@item.Id">
-                                        <i class="fa fa-edit text-primary"></i> Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
-                                        asp-route-id="@item.Id">
-                                        <i class="fa fa-trash text-danger"></i> Delete
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Simple Buttons (Visible by default on small tables) -->
-                        <div class="btn-group simple-buttons" role="group" style="display:none;">
-                            <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
+@if (Model.Count() == 0) {
+    <div class="alert alert-info">
+        No locations found.
+    </div>
+}
+else {
+    <div class="table-responsive mb-3 shadow rounded">
+        <table id="DataTable" 
+                class="table table-hover table-striped align-middle mb-0" 
+                @* style="max-height: 876px;" *@
+                data-details-url="/Admin/Location/DetailsPartial"
+                data-table-name="Location"
+                data-table-title="Locations">
+            <thead style="position: sticky; top: 0">
+                <tr>
+                    <th style="min-width: 150px; max-width: 250px;">Name</th>
+                    <th style="min-width: 250px; max-width: 300px;">Address</th>
+                    <th style="min-width: 58px; max-width: 58px;">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody class="table-group=divider">
+                @foreach (var item in Model)
+                {
+                    @* <tr class="clickable-row" data-href="@Url.Action("_DetailsPartial", "Location", new { id = item.Id })"> *@
+                    <tr class="clickable-row" data-id="@item.Id" style="cursor: pointer;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
+                            <!-- Dropdown Buttons (Hidden by default) -->
+                            <div class="dropdown dropdown-buttons" style="display:none;" data-bs-theme="dark">
+                                <button class="btn btn-outline-secondary dropdown-toggle px-2 py-1" type="button"
+                                    data-bs-toggle="dropdown" data-tippy-content="More Actions">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Edit"
+                                            asp-route-id="@item.Id">
+                                            <i class="fa fa-edit text-primary"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center gap-2" asp-action="Delete"
+                                            asp-route-id="@item.Id">
+                                            <i class="fa fa-trash text-danger"></i> Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Simple Buttons (Visible by default on small tables) -->
+                            <div class="btn-group simple-buttons" role="group" style="display:none;">
+                                <a role="button" class="btn btn-secondary rounded-start" asp-action="Edit" asp-route-id="@item.Id" data-tippy-content="Edit Content">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a role="button" class="btn btn-danger rounded-end" asp-action="Delete" asp-route-id="@item.Id" data-tippy-content="Delete Content">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="detailsOffcanvas" aria-labelledby="detailsOffcanvasLabel" style="width: 40%; min-width: 500px;">
     <div class="offcanvas-header">

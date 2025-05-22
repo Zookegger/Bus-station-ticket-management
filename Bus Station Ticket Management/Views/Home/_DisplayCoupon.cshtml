@@ -1,0 +1,33 @@
+@model dynamic
+<!-- Coupon Carousel -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Special Offers</h2>
+    <div id="couponCarousel" class="carousel slide shadow-sm" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#couponCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#couponCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#couponCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner rounded">
+            @foreach (var coupon in Model.Coupons)
+            {
+                    <div class="carousel-item @(coupon == Model.Coupons[0] ? "active" : "")">
+                        <img src="https://picsum.photos/300/300" width="300" height="300" class="d-block w-100"
+                            alt="Special Offer 1">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>@coupon.Title</h5>
+                            <p>@coupon.Description</p>
+                        </div>
+                    </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#couponCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#couponCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>

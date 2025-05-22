@@ -9,224 +9,311 @@ using Microsoft.EntityFrameworkCore;
 namespace Bus_Station_Ticket_Management.Controllers
 {
     [Authorize]
+    [Route("[controller]/[action]")]
     public class RatingsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<RatingsController> _logger;
 
-        public RatingsController(ApplicationDbContext context)
+        public RatingsController(ApplicationDbContext context, ILogger<RatingsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var ratings = _context.Ratings
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.StartLocation)
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.DestinationLocation)
-                .Include(r => r.User)
-                .Where(r => r.UserId == userId)
-                .ToList();
-
-            var unratedTrips = _context.Tickets
-            .Include(t => t.Trip)
-            .Where(t => t.UserId == userId)
-            .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
-            .ToList();
-
-            ViewBag.HasUnratedTrips = unratedTrips.Any();
-
-            return View(ratings);
-        }
-
-        public IActionResult Details(int id)
-        {
-            var rating = _context.Ratings
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.StartLocation)
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
-                        .ThenInclude(r => r.DestinationLocation)
-                .FirstOrDefault(r => r.Id == id);
-
-            if (rating == null)
+            try
             {
-                return NotFound();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var ratings = await _context.Ratings
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .Include(r => r.User)
+                    .Where(r => r.UserId == userId)
+                    .ToListAsync();
+
+                var unratedTrips = await _context.Tickets
+                    .Include(t => t.Trip)
+                    .Where(t => t.UserId == userId)
+                    .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
+                    .ToListAsync();
+
+                ViewBag.HasUnratedTrips = unratedTrips.Any();
+
+                return View(ratings);
             }
-
-            return View(rating);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting index");
+                return View(new List<Rating>());
+            }
         }
 
-
-        public IActionResult Create(int tripId)
+        public async Task<IActionResult> Details(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var ratedTripIds = _context.Ratings
-                .Where(r => r.UserId == userId)
-                .Select(r => r.TripId)
-                .ToList();
-
-            var trips = _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .Where(t => !ratedTripIds.Contains(t.Id))
-                .ToList();
-
-            var tripOptions = trips.Select(t => new
+            try
             {
-                Id = t.Id,
-                Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.DepartureTime:dd/MM/yyyy HH:mm}"
-            }).ToList();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", tripId);
+                var rating = await _context.Ratings
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
-            var rating = new Rating
+                if (rating == null)
+                {
+                    return NotFound();
+                }
+
+                return View(rating);
+            }
+            catch (Exception ex)
             {
-                UserId = userId,
-                TripId = tripId
-            };
-
-            return View(rating);
+                _logger.LogError(ex, "Error getting details");
+                return NotFound("Error getting data");
+            }
         }
 
+        public async Task<IActionResult> Create(int tripId)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(userId) || userId == null || userId == "0")
+                {
+                    return BadRequest("User not found");
+                }
 
+                var ratedTripIds = await _context.Ratings
+                    .Where(r => r.UserId == userId)
+                    .Select(r => r.TripId)
+                    .ToListAsync();
+
+                var trips = await _context.Trips
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.StartLocation)
+                    .Include(t => t.Route)
+                        .ThenInclude(r => r.DestinationLocation)
+                    .Where(t => !ratedTripIds.Contains(t.Id))
+                    .ToListAsync();
+
+                var tripOptions = trips.Select(t => new
+                {
+                    Id = t.Id,
+                    Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.DepartureTime:dd/MM/yyyy HH:mm}"
+                }).ToList();
+
+                ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", tripId);
+
+                var rating = new Rating
+                {
+                    UserId = userId,
+                    TripId = tripId
+                };
+
+                return View(rating);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting create");
+                return View(new Rating());
+            }
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TripId,UserId,TripRating,Comment")] Rating rating)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            rating.UserId = userId ?? throw new Exception("Unable to get UserId");
-
-            // Check if already rated
-            var alreadyRated = _context.Ratings.Any(r => r.UserId == userId && r.TripId == rating.TripId);
-            if (alreadyRated)
+            try
             {
-                ModelState.AddModelError(string.Empty, "You have already rated this trip.");
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                rating.UserId = userId ?? throw new Exception("Unable to get UserId");
 
-            if (ModelState.IsValid && !alreadyRated)
-            {
-                rating.CreatedAt = DateTime.Now;
-                _context.Add(rating);
-                await _context.SaveChangesAsync();
+                // Check if already rated
+                var alreadyRated = await _context.Ratings
+                    .AnyAsync(r => r.UserId == userId && r.TripId == rating.TripId);
 
-                // Stay on the same page with a clean model
-                ModelState.Clear();
-                rating = new Rating { UserId = userId };
-            }
+                if (alreadyRated)
+                {
+                    ModelState.AddModelError(string.Empty, "You have already rated this trip.");
+                }
 
-            // Get updated trip list for the form
-            var ratedTripIds = _context.Ratings
-                .Where(r => r.UserId == userId)
-                .Select(r => r.TripId)
-                .ToList();
+                if (ModelState.IsValid && !alreadyRated)
+                {
+                    rating.CreatedAt = DateTime.Now;
+                    _context.Add(rating);
+                    await _context.SaveChangesAsync();
 
-            var trips = _context.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.StartLocation)
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.DestinationLocation)
-                .Where(t => !ratedTripIds.Contains(t.Id))
-                .ToList();
+                    // Stay on the same page with a clean model
+                    ModelState.Clear();
+                    rating = new Rating { UserId = userId };
+                }
 
-            var tripOptions = trips.Select(t => new
-            {
-                Id = t.Id,
-                Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name}"
-            }).ToList();
+                // Get updated trip list for the form
+                var ratedTripIds = await _context.Ratings
+                    .Where(r => r.UserId == userId)
+                    .Select(r => r.TripId)
+                    .ToListAsync();
 
-            ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", rating.TripId);
-
-            return View(rating);
-        }
-
-        public IActionResult Edit(int id)
-        {
-            var rating = _context.Ratings
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
+                var trips = await _context.Trips
+                    .Include(t => t.Route)
                         .ThenInclude(r => r.StartLocation)
-                .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
+                    .Include(t => t.Route)
                         .ThenInclude(r => r.DestinationLocation)
-                .FirstOrDefault(r => r.Id == id);
+                    .Where(t => !ratedTripIds.Contains(t.Id))
+                    .ToListAsync();
 
-            if (rating == null)
-            {
-                return NotFound();
+                var tripOptions = trips.Select(t => new
+                {
+                    Id = t.Id,
+                    Display = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.DepartureTime:dd/MM/yyyy HH:mm}"
+                }).ToList();
+
+                ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", rating.TripId);
+
+                return View(rating);
             }
-
-            return View(rating);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating rating");
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the rating.");
+                return View(rating);
+            }
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var rating = await _context.Ratings
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(r => r.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
+                if (rating == null)
+                {
+                    return NotFound();
+                }
+
+                return View(rating);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting edit");
+                return NotFound("Error getting data");
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Rating rating)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TripId,UserId,TripRating,Comment")] Rating rating)
         {
-            if (id != rating.Id)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (id != rating.Id)
                 {
-                    _context.Update(rating);
-                    _context.SaveChanges();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (rating.UserId != userId)
                 {
-                    if (!_context.Ratings.Any(r => r.Id == id))
+                    return Forbid();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        return NotFound();
+                        _context.Update(rating);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!await _context.Ratings.AnyAsync(r => r.Id == id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                }
+                return View(rating);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error editing rating");
+                ModelState.AddModelError(string.Empty, "An error occurred while editing the rating.");
+                return View(rating);
+            }
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var rating = await _context.Ratings
+                    .Include(r => r.Trip)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
+                if (rating == null)
+                {
+                    return NotFound();
+                }
+
+                return View(rating);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting data");
+                return NotFound("Error getting data");
+            }
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var rating = await _context.Ratings
+                    .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
+                if (rating != null)
+                {
+                    _context.Ratings.Remove(rating);
+                    await _context.SaveChangesAsync();
                 }
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.TripList = new SelectList(_context.Trips, "Id", "TripDisplayName", rating.TripId);
-            return View(rating);
-        }
-        public IActionResult Delete(int id)
-        {
-            var rating = _context.Ratings
-                .Include(r => r.Trip)
-                .FirstOrDefault(r => r.Id == id);
-
-            if (rating == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error deleting rating");
+                return RedirectToAction(nameof(Index));
             }
-
-            return View(rating);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var rating = _context.Ratings.Find(id);
-            if (rating != null)
-            {
-                _context.Ratings.Remove(rating);
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }

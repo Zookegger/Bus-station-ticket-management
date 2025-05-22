@@ -11,56 +11,149 @@
 
 <div class="container-fluid">
     <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down" data-aos-anchor-placement="top-bottom">
+    <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
         <h2 class="text-success fw-bold mb-0">Revenue Statistics</h2>
+        <div class="btn-group">
+            <button class="btn btn-outline-primary" onclick="exportToExcel()">
+                <i class="fa-solid fa-file-excel"></i> Export to Excel
+            </button>
+            <button class="btn btn-outline-primary" onclick="exportToPDF()">
+                <i class="fa-solid fa-file-pdf"></i> Export to PDF
+            </button>
+        </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Enhanced Statistics Cards -->
     <div class="row g-4 mb-4">
-        <div class="col-md-6" data-aos="fade-right" data-aos-anchor-placement="top-bottom">
+        <!-- Total Revenue Card -->
+        <div class="col-md-3" data-aos="fade-right">
             <div class="card text-bg-primary shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Total Revenue</h6>
                             <h3 class="mb-0">@ViewBag.TotalRevenue.ToString("N0") VND</h3>
+                            <small class="text-white-50">All time</small>
                         </div>
                         <i class="fa-solid fa-coins fa-2x opacity-50"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6" data-aos="fade-left" data-aos-anchor-placement="top-bottom">
+
+        <!-- Average Ticket Price Card -->
+        <div class="col-md-3" data-aos="fade-up">
             <div class="card text-bg-dark shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Average Ticket Price</h6>
                             <h3 class="mb-0">
-                                @((ViewBag.TotalRevenue / (ViewBag.TotalTickets > 0 ? ViewBag.TotalTickets :
-                                                                1)).ToString("N0")) VND
+                                @((ViewBag.TotalRevenue / (ViewBag.TotalTickets > 0 ? ViewBag.TotalTickets : 1)).ToString("N0")) VND
                             </h3>
+                            <small class="text-white-50">Per ticket</small>
                         </div>
                         <i class="fa-solid fa-chart-line fa-2x opacity-50"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-12" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+
+        <!-- Tickets Sold Card -->
+        <div class="col-md-3" data-aos="fade-up">
             <div class="card text-bg-warning shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Tickets Sold</h6>
                             <h3 class="mb-0">@ViewBag.TotalTickets</h3>
+                            <small class="text-white-50">Total tickets</small>
                         </div>
                         <i class="fa-solid fa-ticket fa-2x opacity-50"></i>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Payment Status Card -->
+        <div class="col-md-3" data-aos="fade-left">
+            <div class="card text-bg-info shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Payment Status</h6>
+                            <h3 class="mb-0">
+                                @(Model.Count(t => t.IsPaid).ToString("N0")) / @Model.Count.ToString("N0")
+                            </h3>
+                            <small class="text-white-50">Paid / Total</small>
+                        </div>
+                        <i class="fa-solid fa-money-bill-wave fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Additional Statistics -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3" data-aos="fade-right">
+            <div class="card text-bg-success shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Revenue (This Month)</h6>
+                    <h4 class="mb-0">
+                        @{
+                            var thisMonth = DateTime.Now.Month;
+                            var thisYear = DateTime.Now.Year;
+                            var monthRevenue = Model.Where(t => t.BookingDate.Month == thisMonth && t.BookingDate.Year == thisYear).Sum(t => t.TotalPrice);
+                        }
+                        @monthRevenue.ToString("N0") VND
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-up">
+            <div class="card text-bg-secondary shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Revenue (This Week)</h6>
+                    <h4 class="mb-0">
+                        @{
+                            var startOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+                            var weekRevenue = Model.Where(t => t.BookingDate >= startOfWeek).Sum(t => t.TotalPrice);
+                        }
+                        @weekRevenue.ToString("N0") VND
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-up">
+            <div class="card text-bg-danger shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Canceled Tickets</h6>
+                    <h4 class="mb-0">
+                        @(Model.Count(t => t.IsCanceled).ToString("N0"))
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-left">
+            <div class="card text-bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Top Route (by Revenue)</h6>
+                    <h5 class="mb-0">
+                        @{
+                            var topRoute = Model
+                                .Where(t => t.Trip?.Route != null)
+                                .GroupBy(t => t.Trip.Route.StartLocation.Name + " ➞ " + t.Trip.Route.DestinationLocation.Name)
+                                .Select(g => new { Route = g.Key, Revenue = g.Sum(t => t.TotalPrice) })
+                                .OrderByDescending(g => g.Revenue)
+                                .FirstOrDefault();
+                        }
+                        @(topRoute != null ? $"{topRoute.Route} ({topRoute.Revenue.ToString("N0")} VND)" : "N/A")
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Revenue Chart -->
     <div class="row mb-4" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
@@ -73,6 +166,16 @@
         </div>
     </div>
 
+    <!-- Revenue by Route Chart -->
+    <div class="row mb-4" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <canvas id="routeRevenueChart" class="w-100 h-100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Filter Section -->
     <div class="row mb-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-once="true">
@@ -172,19 +275,18 @@
 @section Scripts {
     <script src="~/js/table.js"></script>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             AOS.init({ duration: 1200 });
+
+            document.getElementById('clearFilter').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('fromDate').value = '';
+                document.getElementById('toDate').value = '';
+                document.getElementById('filterForm').submit();
+            });
         });
 
-
-        document.getElementById('clearFilter').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            document.getElementById('filterForm').submit();
-        });
         // Revenue Chart
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const revenueData = @Html.Raw(Json.Serialize(Model.GroupBy(t => t.BookingDate.Date)
@@ -204,6 +306,10 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0 // Disable animations for better performance
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -212,6 +318,57 @@
                 },
                 scales: {
                     y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false // Hide grid lines for better performance
+                        },
+                        ticks: {
+                            callback: function (value) {
+                                return value.toLocaleString() + ' VND';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false // Hide grid lines for better performance
+                        }
+                    }
+                }
+            }
+        });
+
+        // Revenue by Route Chart
+        const routeCtx = document.getElementById('routeRevenueChart').getContext('2d');
+        const routeRevenueData = @Html.Raw(Json.Serialize(
+            Model.Where(t => t.Trip != null && t.Trip.Route != null)
+                .GroupBy(t => t.Trip.Route.StartLocation.Name + " ➞ " + t.Trip.Route.DestinationLocation.Name)
+                .Select(g => new { Route = g.Key, Revenue = g.Sum(t => t.TotalPrice) })
+                .OrderByDescending(g => g.Revenue)
+                .Take(10)
+        ));
+
+        new Chart(routeCtx, {
+            type: 'bar',
+            data: {
+                labels: routeRevenueData.map(d => d.route),
+                datasets: [{
+                    label: 'Revenue by Route',
+                    data: routeRevenueData.map(d => d.revenue),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Top 10 Routes by Revenue'
+                    }
+                },
+                indexAxis: 'y',
+                scales: {
+                    x: {
                         beginAtZero: true,
                         ticks: {
                             callback: function (value) {
@@ -223,11 +380,85 @@
             }
         });
 
-        // Export to Excel
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(16);
+            doc.text("Revenue Report", 14, 16);
+            
+            // Add date range if available
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            if (fromDate || toDate) {
+                doc.setFontSize(12);
+                doc.text(`Date Range: ${fromDate || 'All'} to ${toDate || 'All'}`, 14, 24);
+            }
+
+            // Configure table
+            doc.autoTable({
+                html: '#DataTable',
+                startY: 30,
+                theme: 'grid',
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                columnStyles: {
+                    0: { cellWidth: 40 },  // Ticket ID
+                    1: { cellWidth: 60 },  // Trip
+                    2: { cellWidth: 40 },  // Vehicle
+                    3: { cellWidth: 40 },  // Customer
+                    4: { cellWidth: 30 },  // Seat
+                    5: { cellWidth: 35 },  // Price
+                    6: { cellWidth: 40 },  // Booking Date
+                    7: { cellWidth: 30 }   // Status
+                },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak'
+                },
+                didDrawPage: function(data) {
+                    // Add footer
+                    doc.setFontSize(8);
+                    doc.text(
+                        'Generated on: ' + new Date().toLocaleString(),
+                        data.settings.margin.left,
+                        doc.internal.pageSize.height - 10
+                    );
+                }
+            });
+
+            // Save the PDF
+            doc.save('Revenue_Report.pdf');
+        }
+
+        // Export to Excel with improved formatting
         function exportToExcel() {
-            const table = document.getElementById('revenueTable');
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Revenue Report" });
+            const table = document.getElementById('DataTable');
+            
+            // First, add the header information at the top
+            const wb = XLSX.utils.book_new();  // Create a new workbook
+            const ws = XLSX.utils.aoa_to_sheet([  // Create a new worksheet
+                ["Revenue Report"],
+                [`Date Range: ${fromDate.value || 'All'} to ${toDate.value || 'All'}`],
+            ]);
+
+            // Convert the table to a worksheet starting at row 4 (after our headers)
+            const tableWs = XLSX.utils.table_to_sheet(table, { 
+                origin: "A1",  // Start the table data at row 4
+                raw: true 
+            });
+
+            // Merge the header and table data
+            XLSX.utils.sheet_add_aoa(ws, XLSX.utils.sheet_to_json(tableWs, { header: 1 }), { origin: "A4" });
+
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Revenue Report");
+
+            // Save the file
             XLSX.writeFile(wb, 'Revenue_Report.xlsx');
         }
+
     </script>
 }

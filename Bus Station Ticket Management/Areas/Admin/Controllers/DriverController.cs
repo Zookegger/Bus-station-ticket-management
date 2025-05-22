@@ -197,12 +197,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     try
                     {
                         // Handle avatar upload first
-                        string avatarPath = null;
+                        string? avatarPath = null;
                         if (avatar != null)
                         {
                             try
                             {
                                 avatarPath = await ApplicationUser.UploadAvatar(avatar);
+                                if (avatarPath == null) {
+                                    throw new Exception("Failed to upload avatar");
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -317,11 +320,11 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
+            if (id == null || !DoesDriverExists(id))
+            {
+                return NotFound("Driver not found");
+            }
             try {
-                if (id == null)
-                {
-                    return NotFound();
-                }
 
                 var driver = await _context.Drivers
                     .Include(d => d.Account)
@@ -330,7 +333,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     
                 if (driver == null)
                 {
-                    return NotFound();
+                    return NotFound("No driver found");
                 }
 
                 var viewmodel = new DriverViewModel
@@ -616,7 +619,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
         }
 
-        private bool DriverExists(string id)
+        private bool DoesDriverExists(string id)
         {
             return _context.Drivers.Any(e => e.Id == id);
         }

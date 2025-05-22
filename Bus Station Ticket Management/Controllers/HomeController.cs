@@ -34,11 +34,17 @@ public class HomeController : Controller
                 .ThenInclude(r => r.DestinationLocation) 
             .Where(t => t.Status == "Standby" && t.DepartureTime > DateTime.Now)
             .Take(9)
-            .OrderByDescending(t => t.Route.StartLocation.Name)
+            .OrderByDescending(t => t.Route != null && t.Route.StartLocation != null ? t.Route.StartLocation.Name : string.Empty)
+            .ThenByDescending(t => t.Route != null && t.Route.DestinationLocation != null ? t.Route.DestinationLocation.Name : string.Empty)
             .ToListAsync();
         
+        var coupons = await _context.Coupons
+            .Where(c => c.IsActive && c.StartPeriod <= DateTime.Now && c.EndPeriod >= DateTime.Now)
+            .ToListAsync();
+
         var viewModel = new TripListViewModel {
             TripsList = trips,
+            Coupons = coupons,
             IsSearchResult = false
         };
 
@@ -49,12 +55,11 @@ public class HomeController : Controller
         departure = departure?.Trim() ?? "";
         destination = destination?.Trim() ?? "";
 
-        #pragma warning disable CS8602 // Dereference of a possibly null reference.
         var trips = await _context.Trips
             .Include(t => t.Route)
-                .ThenInclude(r => r.StartLocation)
+                .ThenInclude(r => r != null && r.StartLocation != null ? r.StartLocation : null)
             .Include(t => t.Route)
-                .ThenInclude(r => r.DestinationLocation)
+                .ThenInclude(r => r != null && r.DestinationLocation != null ? r.DestinationLocation : null)
             .Where(t =>
                 t.Route != null && 
                 t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(departure) &&
@@ -63,7 +68,6 @@ public class HomeController : Controller
             )
             .OrderBy(t => t.DepartureTime)
             .ToListAsync();
-        #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         var viewModel = new TripListViewModel
         {
