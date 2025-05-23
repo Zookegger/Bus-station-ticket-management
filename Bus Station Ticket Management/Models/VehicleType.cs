@@ -19,14 +19,14 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Total Seats")]
         public int TotalSeats { get; set; }
 
-        [DisplayName("Total Floorings")]
-        public int TotalFlooring { get; set; }
+        [DisplayName("Total Floors")]
+        public int TotalFloors { get; set; }
 
         [DisplayName("Total Rows")]
-        public int TotalRow { get; set; }
+        public int TotalRows { get; set; }
 
         [DisplayName("Total Columns")]
-        public int TotalColumn { get; set; }
+        public int TotalColumns { get; set; }
 
         [DisplayName("Created At")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

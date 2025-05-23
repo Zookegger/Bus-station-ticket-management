@@ -183,10 +183,10 @@ else
         async function checkTrips() {
             try {
                 const response = await $.ajax({
-                    url: window.location.origin + '/Admin/api/TripDriverAssignmentApi/check-trips',
+                    url: window.location.origin + '/admin/api/assignment/check-available-trips',
                     method: 'GET'
                 });
-                if (response.success && response.tripCount > 0) {
+                if (response.success && response.data.tripCount > 0) {
                     window.location.href = '/Admin/TripDriverAssignment/Create';
                 } else {
                     // Show error message to user
@@ -200,11 +200,11 @@ else
 
         async function countAssignableTrips() {
             const response = await $.ajax({
-                url: window.location.origin + '/Admin/api/TripDriverAssignmentApi/check-trips',
+                url: window.location.origin + '/admin/api/assignment/check-available-trips',
                 method: 'GET'
             });
-            if (response.success && response.tripCount > 0) {
-                $('#assignableTripsCount').text(response.tripCount);
+            if (response.success && response.data.tripCount > 0) {
+                $('#assignableTripsCount').text(response.data.tripCount);
                 $('#assignableTripsCount').addClass('badge bg-secondary');
             } else {
                 $('#assignableTripsCount').text(response.message || 'There are no available trips to assign.');

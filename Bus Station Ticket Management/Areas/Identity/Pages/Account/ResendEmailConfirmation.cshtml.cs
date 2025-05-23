@@ -96,7 +96,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             {
                 To = Input.Email,
                 Subject = "Confirm your email",
-                HtmlBody = htmlBody
+                HtmlContent = htmlBody
             });
 
 

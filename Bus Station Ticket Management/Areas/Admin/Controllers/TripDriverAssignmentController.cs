@@ -333,26 +333,26 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     return NotFound("Id is null");
                 }
 
-                var tripDriverAssignment = await _context.TripDriverAssignments.FindAsync(id);
+                var tripDriverAssignment = await _context.TripDriverAssignments
+                    .Include(tda => tda.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.StartLocation)
+                    .Include(tda => tda.Trip)
+                        .ThenInclude(t => t.Route)
+                            .ThenInclude(r => r.DestinationLocation)
+                    .FirstOrDefaultAsync(tda => tda.Id == id);
+                
                 if (tripDriverAssignment == null)
                 {
                     return NotFound("Assignment not found");
                 }
 
                 var trip = await _context.Trips.FindAsync(tripDriverAssignment.TripId);
+                
                 if (trip == null)
                 {
                     return NotFound("Trip not found");
                 }
-
-                var newTrips = await _context.Trips
-                    .Include(t => t.Route)
-                        .ThenInclude(r => r.StartLocation)
-                    .Include(t => t.Route)
-                        .ThenInclude(r => r.DestinationLocation)
-                    .Include(t => t.Vehicle)
-                    .Where(t => t.Status == "Standby" && !_context.TripDriverAssignments.Any(a => a.TripId == t.Id))
-                    .ToListAsync();
 
                 // Now pass the actual Trip entity to FreeDrivers
                 List<Driver> totalFreeDrivers = await FreeDrivers(trip);
@@ -364,14 +364,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     return View();
                 }
 
-                var tripSelectList = newTrips.Select(t => new
-                {
-                    t.Id,
-                    Name = $"{t.Route?.StartLocation?.Name} → {t.Route?.DestinationLocation?.Name} | {t.Vehicle?.Name} | {t.DepartureTime:g}"
-                }).ToList();
-
-                ViewData["TripId"] = new SelectList(tripSelectList, "Id", "Name", tripDriverAssignment.TripId);
-                ViewData["DriverId"] = new SelectList(_context.Drivers, "Id", "FullName", tripDriverAssignment.DriverId);
+                ViewData["DriverId"] = new SelectList(totalFreeDrivers, "Id", "FullName", tripDriverAssignment.DriverId);
 
                 return View(tripDriverAssignment);
             }

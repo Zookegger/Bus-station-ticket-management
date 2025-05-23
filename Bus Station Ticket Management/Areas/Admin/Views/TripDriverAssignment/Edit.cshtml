@@ -21,9 +21,8 @@
 
                 <div class="mb-4">
                     <label asp-for="TripId" class="form-label fw-semibold">Trip</label>
-                    <select asp-for="TripId" class="form-select" asp-items="ViewBag.TripId">
-                        <option value="">-- Select Trip --</option>
-                    </select>
+                    <input asp-for="TripId" class="form-control" readonly hidden/>
+                    <span class="form-control">@Model.Trip.Route.StartLocation.Name ?? "N/A" - @Model.Trip.Route.DestinationLocation.Name ?? "N/A"</span>
                     <span asp-validation-for="TripId" class="text-danger small"></span>
                 </div>
 

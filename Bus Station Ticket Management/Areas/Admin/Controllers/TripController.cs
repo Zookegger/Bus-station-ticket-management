@@ -267,10 +267,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Generate seats after saving trip
             var seats = new List<Seat>();
-            for (int f = 1; f <= vehicleType.TotalFlooring; f++) {
-                for (int r = 1; r <= vehicleType.TotalRow; r++)
+            for (int f = 1; f <= vehicleType.TotalFloors; f++) {
+                for (int r = 1; r <= vehicleType.TotalRows; r++)
                 {
-                    for (int c = 1; c <= vehicleType.TotalColumn; c++)
+                    for (int c = 1; c <= vehicleType.TotalColumns; c++)
                     {
                         seats.Add(new Seat
                         {
@@ -308,9 +308,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 LicensePlate = vehicle.LicensePlate,
                 VehicleType = vehicle.VehicleType?.Name,
                 TotalSeats = vehicle.VehicleType?.TotalSeats,
-                TotalFloors = vehicle.VehicleType?.TotalFlooring,
-                TotalColumns = vehicle.VehicleType?.TotalColumn,
-                TotalRows = vehicle.VehicleType?.TotalRow,
+                TotalFloors = vehicle.VehicleType?.TotalFloors,
+                TotalColumns = vehicle.VehicleType?.TotalColumns,
+                TotalRows = vehicle.VehicleType?.TotalRows,
             });
         }
 

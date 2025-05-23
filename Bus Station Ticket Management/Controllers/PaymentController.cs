@@ -217,7 +217,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                         _emailQueue.QueueEmail(new EmailMessage {
                             To = ticket.GuestEmail,
                             Subject = "Ticket Purchase Confirmation",
-                            HtmlBody = emailContent
+                            HtmlContent = emailContent
                         });
                     } else {
                         if (ticket.User == null || ticket.User.Email == null) {
@@ -228,7 +228,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                         _emailQueue.QueueEmail(new EmailMessage {
                             To = ticket.User.Email,
                             Subject = "Ticket Purchase Confirmation",
-                            HtmlBody = emailContent
+                            HtmlContent = emailContent
                         });
                     }
                 }

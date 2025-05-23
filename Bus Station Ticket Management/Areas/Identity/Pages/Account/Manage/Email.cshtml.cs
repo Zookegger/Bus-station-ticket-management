@@ -152,7 +152,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                     _emailQueue.QueueEmail(new EmailMessage {
                         To = Input.NewEmail,
                         Subject = "Confirm your email",
-                        HtmlBody = htmlBody
+                        HtmlContent = htmlBody
                     });
 
                     StatusMessage = "Confirmation link to change email sent. Please check your email.";
@@ -215,7 +215,7 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
             _emailQueue.QueueEmail(new EmailMessage {
                 To = Input.NewEmail,
                 Subject = "Confirm your email",
-                HtmlBody = htmlBody
+                HtmlContent = htmlBody
             });
             
             StatusMessage = "Verification email sent. Please check your email.";

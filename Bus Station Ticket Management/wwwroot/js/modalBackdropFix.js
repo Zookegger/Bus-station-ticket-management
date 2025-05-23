@@ -1,11 +1,12 @@
 $(document).ready(function() {
+    // Fix for modal backdrop
     $('#deleteConfirmationModal').on('show.bs.modal', function () {
-        $('.modal-backdrop').remove();
-        var backdrop = $('<div class="modal-backdrop fade show"></div>');
-        $('main').append(backdrop);
-        backdrop.css('z-index', '1040');
+        let modal = $('#deleteConfirmationModal');
+
+        $('body').append(modal);
     });
 
+    // Clean up when modal is hidden
     $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
         $('.modal-backdrop').remove();
         $('body').removeClass('modal-open');

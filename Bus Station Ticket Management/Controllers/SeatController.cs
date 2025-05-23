@@ -18,14 +18,14 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<SeatController> _logger;
-        private readonly EmailBackgroundService _emailBackgroundService;
+        private readonly EmailBackgroundQueue _emailBackgroundQueue;
 
-        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<SeatController> logger, EmailBackgroundService emailBackgroundService)
+        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<SeatController> logger, EmailBackgroundQueue emailBackgroundQueue)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
-            _emailBackgroundService = emailBackgroundService;
+            _emailBackgroundQueue = emailBackgroundQueue;
         }
 
         // GET: Seat
@@ -35,7 +35,6 @@ namespace Bus_Station_Ticket_Management.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        [Route("Seat/SelectSeats", Name = "DefaultSelectSeats")]
         public async Task<IActionResult> SelectSeats(int VehicleId, int TripId)
         {
             try {
@@ -87,9 +86,9 @@ namespace Bus_Station_Ticket_Management.Controllers
                     Price = trip.TotalPrice,
                     Seats = seats,
                     TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
-                    TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
-                    TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
-                    TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
+                    TotalColumns = trip.Vehicle?.VehicleType?.TotalColumns ?? 0,
+                    TotalRows = trip.Vehicle?.VehicleType?.TotalRows ?? 0,
+                    TotalFloors = trip.Vehicle?.VehicleType?.TotalFloors ?? 0,
                 };
 
                 if (User.Identity?.IsAuthenticated == true)

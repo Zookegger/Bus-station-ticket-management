@@ -10,58 +10,57 @@
 <h4>Trip</h4>
 <hr />
 <div class="row">
-    <div class="col-md-8 col-lg-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form asp-action="Create" id="tripForm" class="col-md-8 col-lg-7">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Departure Time -->
-            <div class="form-group">
-                <label asp-for="DepartureTime" class="control-label"></label>
-                <input asp-for="DepartureTime" class="form-control" />
-                <span asp-validation-for="DepartureTime" class="text-danger"></span>
-            </div>
+        <!-- Departure Time -->
+        <div class="form-group">
+            <label asp-for="DepartureTime" class="control-label"></label>
+            <input asp-for="DepartureTime" class="form-control" />
+            <span asp-validation-for="DepartureTime" class="text-danger"></span>
+        </div>
 
-            <!-- Arrival Time -->
-            <div class="form-group mt-3">
-                <label asp-for="ArrivalTime" class="control-label"></label>
-                <input asp-for="ArrivalTime" class="form-control" />
-                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
-            </div>
+        <!-- Arrival Time -->
+        <div class="form-group mt-3">
+            <label asp-for="ArrivalTime" class="control-label"></label>
+            <input asp-for="ArrivalTime" class="form-control" />
+            <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+        </div>
 
-            <!-- Is Two Way -->
-            <div class="form-group mt-3">
-                <div class="form-check">
-                    <input asp-for="IsTwoWay" class="form-check-input" type="checkbox" id="IsTwoWay" />
-                    <label class="form-check-label" for="IsTwoWay">
-                        Is Two Way?
-                    </label>
-                </div>
+        <!-- Is Two Way -->
+        <div class="form-group mt-3">
+            <div class="form-check">
+                <input asp-for="IsTwoWay" class="form-check-input" type="checkbox" id="IsTwoWay" />
+                <label class="form-check-label" for="IsTwoWay">
+                    Is Two Way?
+                </label>
             </div>
+        </div>
 
-            <!-- Route Selection -->
-            <div class="form-group mt-3">
-                <label asp-for="RouteId" class="control-label"></label>
-                <select asp-for="RouteId" class="form-control route-select w-100" asp-items="ViewBag.RouteId"></select>
-                <span asp-validation-for="RouteId" class="text-danger"></span>
-            </div>
+        <!-- Route Selection -->
+        <div class="form-group mt-3">
+            <label asp-for="RouteId" class="control-label"></label>
+            <select asp-for="RouteId" class="form-control route-select w-100" id="Route" asp-items="ViewBag.RouteId"></select>
+            <span asp-validation-for="RouteId" class="text-danger"></span>
+        </div>
 
-            <!-- Vehicle Selection -->
-            <div class="form-group mt-3">
-                <label asp-for="VehicleId" class="control-label"></label>
-                <select asp-for="VehicleId" class="form-control route-select w-100" id="Vehicle" asp-items="ViewBag.VehicleId"></select>
-                <span asp-validation-for="VehicleId" class="text-danger"></span>
-            </div>
+        <!-- Vehicle Selection -->
+        <div class="form-group mt-3">
+            <label asp-for="VehicleId" class="control-label"></label>
+            <select asp-for="VehicleId" class="form-control route-select w-100" id="Vehicle"
+                asp-items="ViewBag.VehicleId"></select>
+            <span asp-validation-for="VehicleId" class="text-danger"></span>
+        </div>
 
-            <!-- Submit Button -->
-            <div class="form-group mt-3" role="group" aria-label="Button">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-8 col-lg-6">
+        <!-- Submit Button -->
+        <div class="form-group mt-3" role="group" aria-label="Button">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </form>
+    <div class="col-md-8 col-lg-5">
         <div class="card">
-            <div class="card-header">Vehicle Information</div>
+            <div class="card-header"><i class="fa-solid fa-car-side fa-lg me-1"></i> Vehicle Information</div>
             <div class="card-body">
                 <p><strong>Name:</strong> <span id="vehicle-name">N/A</span></p>
                 <p><strong>License Plate:</strong> <span id="vehicle-license-plate">N/A</span></p>
@@ -72,14 +71,23 @@
                 <p><strong>Floors:</strong> <span id="vehicle-total-floors">N/A</span></p>
             </div>
         </div>
+
+        <div class="card shadow-lg mt-2">
+            <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
+            <div class="card-body px-0 py-0">
+                <div class="rounded h-100 w-100" id="map" style="min-height: 400px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
     <script src="~/js/site.js"></script>
+    <script src="~/js/initOSM.js"></script>
     <script>
         $(document).ready(function () {
+            // VEHICLE INFO
             const $vehicleSelect = $('#Vehicle');
             const vehicleInfoFields = {
                 name: document.getElementById('vehicle-name'),
@@ -109,23 +117,27 @@
                 }
 
                 try {
-                    const response = await fetch(`/Admin/Trip/GetVehicleInfo?vehicleId=${vehicleId}`);
+                    const response = await fetch(`/admin/api/vehicle/get-vehicle-by-id/${vehicleId}`);
                     if (!response.ok) throw new Error("Fetch failed");
 
                     const vehicle = await response.json();
 
-                    vehicleInfoFields.name.textContent = vehicle.name || 'N/A';
-                    vehicleInfoFields.licensePlate.textContent = vehicle.licensePlate || 'N/A';
-                    vehicleInfoFields.vehicleType.textContent = vehicle.vehicleType || 'N/A';
-                    vehicleInfoFields.totalSeats.textContent = vehicle.totalSeats || 'N/A';
-                    vehicleInfoFields.totalRows.textContent = vehicle.totalRows || 'N/A';
-                    vehicleInfoFields.totalColumns.textContent = vehicle.totalColumns || 'N/A';
-                    vehicleInfoFields.totalFloors.textContent = vehicle.totalFloors || 'N/A';
+                    vehicleInfoFields.name.textContent = vehicle.data.name || 'N/A';
+                    vehicleInfoFields.licensePlate.textContent = vehicle.data.licensePlate || 'N/A';
+                    vehicleInfoFields.vehicleType.textContent = vehicle.data.vehicleType.name || 'N/A';
+                    vehicleInfoFields.totalSeats.textContent = vehicle.data.vehicleType.totalSeats || 'N/A';
+                    vehicleInfoFields.totalRows.textContent = vehicle.data.vehicleType.totalRows || 'N/A';
+                    vehicleInfoFields.totalColumns.textContent = vehicle.data.vehicleType.totalColumns || 'N/A';
+                    vehicleInfoFields.totalFloors.textContent = vehicle.data.vehicleType.totalFloors || 'N/A';
                 } catch (err) {
                     console.error(err);
                     alert("Could not fetch vehicle info.");
                 }
             }
+        
+            // ROUTE MAP
+            const $routeSelect = $('#Route');
+            
         });
     </script>
 }

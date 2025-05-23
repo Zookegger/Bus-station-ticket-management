@@ -24,25 +24,35 @@
             </div>
 
             <div class="location-info p-4 bg-light rounded">
-                <h5 class="mb-4">Location Information</h5>
+                <h5 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>Location Information</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="info-item">
+                        <div class="info-item shadow mb-3">
                             <label class="text-muted small">Name</label>
                             <p class="mb-0 fw-bold">@(Model.Name ?? "N/A")</p>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-item">
+                        <div class="info-item shadow mb-3">
                             <label class="text-muted small">Address</label>
                             <p class="mb-0 fw-bold">@(Model.Address ?? "N/A")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header text-muted fs-5 fw-bold">
+                                <i class="fa-solid fa-map-location-dot fa-lg me-1"></i>
+                                Location Map
+                            </div>
+                            <div class="card-body px-0 py-0">
+                                <div id="map" style="min-height: 400px;" class="rounded h-100 w-100"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteConfirmationModal">
                     <i class="fas fa-trash-alt me-2"></i>Delete Location
                 </button>
             </div>
@@ -88,7 +98,7 @@
         padding: 1rem;
         background: white;
         border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease-in-out;
     }
 
@@ -107,7 +117,7 @@
     }
 
     .card-header {
-        border-bottom: 1px solid rgba(0,0,0,0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .btn {
@@ -142,4 +152,21 @@
 
 @section Scripts {
     <script src="~/js/modalBackdropFix.js"></script>
+    <script src="~/js/initOSM.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            try {
+                const lat = @Model.Latitude;
+                const lon = @Model.Longitude;
+                const name = "@Model.Name";
+                const draggableMarker = false;
+                const zoom = 16;
+
+                initializeMap(lat, lon, name, draggableMarker, zoom);
+            } catch (error) {
+                console.error("Error initializing map:", error);
+            }
+        });
+    </script>
 }

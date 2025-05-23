@@ -13,21 +13,83 @@
     </p>
 </div>
 
-<div>
-    <form id="delete-user" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-        @if (Model.RequirePassword)
-        {
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Please enter your password." />
-                <label asp-for="Input.Password" class="form-label"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+<div class="modal fade" id="deleteConfirmationModal" role="dialog" tabindex="-1"
+    aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="z-index: 1090;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                    <i class="fas fa-user-times text-danger me-1"></i>
+                    Delete Account
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        }
-        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
-    </form>
+            <div class="modal-body">
+                <p>
+                    <i class="fas fa-info-circle text-danger me-1"></i>
+                    Are you sure you want to delete your account? This action cannot be undone.
+                </p>
+            </div>
+            <form class="modal-footer" id="delete-user" method="post">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
 </div>
 
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+@if (Model.RequirePassword)
+{
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true"
+            placeholder="Please enter your password." data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-title="Password is required" />
+        <label asp-for="Input.Password" class="form-label"></label>
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+}
+<button class="w-100 btn btn-lg btn-danger" type="button" id="delete-button">Delete data and close my account</button>
+
+
 @section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#delete-button').click(function () {
+                if (@Model.RequirePassword) {
+                    let password = $('#Input_Password').val();
+
+                    if (password.length < 8) {
+                        e.preventDefault();
+                        const tippyTooltip = tippy('#Input_Password', {
+                            content: 'Password is required',
+                            placement: 'top',
+                            trigger: 'manual'
+                        });
+                        tippyTooltip.show();
+                        $('#Input_Password').attr('data-bs-toggle', 'tooltip');
+                        $('#Input_Password').attr('data-bs-placement', 'top');
+                        $('#Input_Password').attr('title', 'Password is required');
+                    } else {
+                        // Open modal manually if password is valid
+                        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'), {
+                            backdrop: 'static', // optional: prevent closing on backdrop click
+                            keyboard: false     // optional: prevent ESC to close
+                        });
+                        modal.show();
+                    }
+                } else {
+                    // Open modal manually if password is not required
+                    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'), {
+                        backdrop: 'static', // optional: prevent closing on backdrop click
+                        keyboard: false     // optional: prevent ESC to close
+                    });
+                }
+            });
+        });
+    </script>
+
     <partial name="_ValidationScriptsPartial" />
 }

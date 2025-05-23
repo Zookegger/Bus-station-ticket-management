@@ -76,9 +76,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 Price = trip.TotalPrice,
                 Seats = seats,
                 TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
-                TotalColumns = trip.Vehicle?.VehicleType?.TotalColumn ?? 0,
-                TotalRows = trip.Vehicle?.VehicleType?.TotalRow ?? 0,
-                TotalFloors = trip.Vehicle?.VehicleType?.TotalFlooring ?? 0,
+                TotalColumns = trip.Vehicle?.VehicleType?.TotalColumns ?? 0,
+                TotalRows = trip.Vehicle?.VehicleType?.TotalRows ?? 0,
+                TotalFloors = trip.Vehicle?.VehicleType?.TotalFloors ?? 0,
             };
             
             if (User.Identity.IsAuthenticated) {
