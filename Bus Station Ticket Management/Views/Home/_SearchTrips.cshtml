@@ -1,0 +1,213 @@
+@model Bus_Station_Ticket_Management.ViewModels.TripListViewModel;
+@{
+    ViewData["Title"] = "Trips Available";
+}
+
+<div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <h1 class="mb-4">@ViewData["Title"]</h1>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4" id="tripResults">
+            @if (Model != null && Model.TripsList != null && Model.TripsList.Any())
+            {
+                @foreach (var trip in Model.TripsList)
+                {
+                    <div class="col trip-card" 
+                        data-time="@trip.DepartureTime.TimeOfDay.TotalHours"
+                        data-seat-type="@trip.Vehicle?.VehicleType.TotalFloors"
+                        data-vehicle-type="@trip.Vehicle?.VehicleType.Name">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @(trip.Route != null 
+                                        ? $"{trip.Route.StartLocation?.Name} → {trip.Route.DestinationLocation?.Name}" 
+                                        : "No Route")
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Departure:</strong> @trip.DepartureTime.ToString("dd/MM/yyyy HH:mm")<br/>
+                                    <strong>Arrival:</strong> @trip.ArrivalTime.ToString("dd/MM/yyyy HH:mm")<br/>
+                                    <strong>Price:</strong> @trip.TotalPrice.ToString("C", new System.Globalization.CultureInfo("vi-VN"))
+                                </p>
+                                <a asp-controller="Seat" asp-action="SelectSeats" asp-route-vehicleId="@trip.VehicleId" 
+                                   asp-route-tripId="@trip.Id" class="btn btn-primary">
+                                    <i class="fas fa-chair"></i> Select Seat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No trips found matching your search criteria.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-filter"></i> Filters</h5>
+            </div>
+            <div class="card-body">
+                <!-- Time Period Filter -->
+                <div class="mb-4">
+                    <h6 class="fw-bold">Time Period</h6>
+                    <div class="form-check">
+                        <input class="form-check-input time-filter" type="checkbox" value="morning" id="morning">
+                        <label class="form-check-label" for="morning">
+                            Morning (5:00 - 12:00)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input time-filter" type="checkbox" value="afternoon" id="afternoon">
+                        <label class="form-check-label" for="afternoon">
+                            Afternoon (12:00 - 18:00)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input time-filter" type="checkbox" value="evening" id="evening">
+                        <label class="form-check-label" for="evening">
+                            Evening (18:00 - 23:00)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input time-filter" type="checkbox" value="night" id="night">
+                        <label class="form-check-label" for="night">
+                            Night (23:00 - 5:00)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Seat Type Filter -->
+                <div class="mb-4">
+                    <h6 class="fw-bold">Seat Type</h6>
+                    <div class="form-check">
+                        <input class="form-check-input seat-filter" type="checkbox" value="upper" id="upper">
+                        <label class="form-check-label" for="upper">
+                            Upper Floor
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input seat-filter" type="checkbox" value="lower" id="lower">
+                        <label class="form-check-label" for="lower">
+                            Lower Floor
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input seat-filter" type="checkbox" value="mid" id="mid">
+                        <label class="form-check-label" for="mid">
+                            Middle Floor
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Vehicle Type Filter -->
+                <div class="mb-4">
+                    <h6 class="fw-bold">Vehicle Type</h6>
+                    <div class="form-check">
+                        <input class="form-check-input vehicle-filter" type="checkbox" value="sleeper" id="sleeper">
+                        <label class="form-check-label" for="sleeper">
+                            Sleeper Bus
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input vehicle-filter" type="checkbox" value="sitting" id="sitting">
+                        <label class="form-check-label" for="sitting">
+                            Sitting Bus
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input vehicle-filter" type="checkbox" value="limousine" id="limousine">
+                        <label class="form-check-label" for="limousine">
+                            Limousine
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary w-100" onclick="resetFilters()">
+                    <i class="fas fa-undo"></i> Reset Filters
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeFilters = document.querySelectorAll('.time-filter');
+            const seatFilters = document.querySelectorAll('.seat-filter');
+            const vehicleFilters = document.querySelectorAll('.vehicle-filter');
+            const tripCards = document.querySelectorAll('.trip-card');
+
+            function applyFilters() {
+                const selectedTimes = Array.from(timeFilters)
+                    .filter(f => f.checked)
+                    .map(f => f.value);
+                const selectedSeats = Array.from(seatFilters)
+                    .filter(f => f.checked)
+                    .map(f => f.value);
+                const selectedVehicles = Array.from(vehicleFilters)
+                    .filter(f => f.checked)
+                    .map(f => f.value);
+
+                tripCards.forEach(card => {
+                    const time = parseFloat(card.dataset.time);
+                    const seatType = card.dataset.seatType;
+                    const vehicleType = card.dataset.vehicleType;
+
+                    const timeMatch = selectedTimes.length === 0 || selectedTimes.some(t => {
+                        switch(t) {
+                            case 'morning': return time >= 5 && time < 12;
+                            case 'afternoon': return time >= 12 && time < 18;
+                            case 'evening': return time >= 18 && time < 23;
+                            case 'night': return time >= 23 || time < 5;
+                            default: return true;
+                        }
+                    });
+
+                    const seatMatch = selectedSeats.length === 0 || selectedSeats.includes(seatType);
+                    const vehicleMatch = selectedVehicles.length === 0 || selectedVehicles.includes(vehicleType);
+
+                    card.style.display = timeMatch && seatMatch && vehicleMatch ? '' : 'none';
+                });
+
+                // Show message if no results
+                const visibleCards = document.querySelectorAll('.trip-card[style=""]');
+                const noResultsMsg = document.getElementById('noResultsMessage');
+                if (visibleCards.length === 0) {
+                    if (!noResultsMsg) {
+                        const msg = document.createElement('div');
+                        msg.id = 'noResultsMessage';
+                        msg.className = 'alert alert-info mt-3';
+                        msg.innerHTML = '<i class="fas fa-info-circle"></i> No trips match the selected filters.';
+                        document.getElementById('tripResults').appendChild(msg);
+                    }
+                } else {
+                    noResultsMsg?.remove();
+                }
+            }
+
+            timeFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+            seatFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+            vehicleFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+        });
+
+        function resetFilters() {
+            document.querySelectorAll('.time-filter, .seat-filter, .vehicle-filter').forEach(filter => {
+                filter.checked = false;
+            });
+            document.querySelectorAll('.trip-card').forEach(card => {
+                card.style.display = '';
+            });
+            document.getElementById('noResultsMessage')?.remove();
+        }
+    </script>
+} 

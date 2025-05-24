@@ -57,13 +57,15 @@ public class HomeController : Controller
 
         var trips = await _context.Trips
             .Include(t => t.Route)
-                .ThenInclude(r => r != null && r.StartLocation != null ? r.StartLocation : null)
+                .ThenInclude(r => r.StartLocation)
             .Include(t => t.Route)
-                .ThenInclude(r => r != null && r.DestinationLocation != null ? r.DestinationLocation : null)
+                .ThenInclude(r => r.DestinationLocation)
             .Where(t =>
                 t.Route != null && 
-                t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(departure) &&
-                t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(destination) &&
+                t.Route.StartLocation != null && 
+                t.Route.DestinationLocation != null &&
+                EF.Functions.Collate(t.Route.StartLocation.Name, "Vietnamese_CI_AI").Contains(EF.Functions.Collate(departure, "Vietnamese_CI_AI")) &&
+                EF.Functions.Collate(t.Route.DestinationLocation.Name, "Vietnamese_CI_AI").Contains(EF.Functions.Collate(destination, "Vietnamese_CI_AI")) &&
                 t.DepartureTime >= departureTime.ToDateTime(TimeOnly.MinValue)
             )
             .OrderBy(t => t.DepartureTime)
@@ -78,8 +80,8 @@ public class HomeController : Controller
             DepartureTime = departureTime
         };
 
-        ViewBag.Departure = departure;
-        ViewBag.Destination = destination;
+        ViewBag.Departure = departure.Trim();
+        ViewBag.Destination = destination.Trim();
         ViewBag.DepartureTime = departureTime;
 
         return View("Index", viewModel);
