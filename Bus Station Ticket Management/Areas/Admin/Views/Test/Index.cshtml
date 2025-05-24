@@ -5,15 +5,35 @@
 
 @section Styles {
     <style>
+        .card {
+            border-radius: 10px;
+            background: #fff;
+            height: 100%;
+        }
+        
+        @*
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+         *@
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 10px 10px 0 0 !important;
-            padding: 1rem;
+            padding: 1.25rem;
         }
         
+        .test-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
         .card-body {
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
         }
         
         .card-footer {
@@ -21,6 +41,7 @@
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 0 0 10px 10px !important;
             padding: 1rem;
+            margin-top: auto;
         }
         
         .btn-primary {
@@ -37,6 +58,7 @@
         
         .search-bar {
             position: relative;
+            max-width: 300px;
         }
         
         .search-bar .form-control {
@@ -60,30 +82,107 @@
         .section-title {
             color: #0d6efd;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
         }
         
         .card-title {
             font-weight: 600;
             color: #212529;
             margin-bottom: 0.75rem;
+            font-size: 1.1rem;
         }
         
         .card-text {
             color: #6c757d;
             font-size: 0.9rem;
             margin-bottom: 1rem;
+            line-height: 1.5;
         }
         
         .feature-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 1rem;
             color: #0d6efd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            width: 60px;
+            background: rgba(13, 110, 253, 0.1);
+            border-radius: 12px;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-badge i {
+            font-size: 0.75rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+        
+        .refresh-button {
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .refresh-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .status-container {
+            display: flex;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #6c757d;
+        }
+        
+        .status-indicator.connected {
+            background-color: #198754;
+        }
+        
+        .status-indicator.disconnected {
+            background-color: #dc3545;
         }
     </style>
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-primary mb-0">
             <i class="bi bi-speedometer2 me-2"></i> Admin Testing Dashboard
@@ -96,78 +195,70 @@
     <!-- Email Testing Section -->
     <div class="card shadow-sm mb-4" id="emailTestCard">
         <div class="card-header">
-            <h3 class="section-title mb-0">
-                <i class="bi bi-envelope me-2"></i>Email Testing
-            </h3>
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="bi bi-envelope me-2"></i>Email Testing
+                </h3>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="basicEmailTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-envelope-paper"></i>
-                            </div>
-                            <h5 class="card-title">Basic Email Test</h5>
-                            <p class="card-text">Test sending a simple text email to verify email functionality.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("BasicEmail", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-send me-1"></i> Test Basic Email
-                            </a>
-                        </div>
+        <div class="grid-container">
+            <div class="test-card card hvr-float" id="basicEmailTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-envelope-paper"></i>
                     </div>
+                    <h5 class="card-title">Basic Email Test</h5>
+                    <p class="card-text">Test sending a simple text email to verify email functionality.</p>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="qrCodeEmailTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-qr-code"></i>
-                            </div>
-                            <h5 class="card-title">Email with QR Code</h5>
-                            <p class="card-text">Test sending an email with an embedded QR code for ticket verification.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("EmailWithQRCode", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-qr-code me-1"></i> Test QR Code Email
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("BasicEmail", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-send me-1"></i> Test Basic Email
+                    </a>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="htmlEmailTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-code-square"></i>
-                            </div>
-                            <h5 class="card-title">HTML Email Test</h5>
-                            <p class="card-text">Test sending a formatted HTML email with rich content.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("HtmlEmail", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-code-slash me-1"></i> Test HTML Email
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="qrCodeEmailTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-qr-code"></i>
                     </div>
+                    <h5 class="card-title">Email with QR Code</h5>
+                    <p class="card-text">Test sending an email with an embedded QR code for ticket verification.</p>
                 </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("EmailWithQRCode", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-qr-code me-1"></i> Test QR Code Email
+                    </a>
+                </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="imageEmailTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-image"></i>
-                            </div>
-                            <h5 class="card-title">Email with Image</h5>
-                            <p class="card-text">Test sending an email with embedded images and attachments.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("EmailWithImage", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-image me-1"></i> Test Image Email
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="htmlEmailTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-code-square"></i>
                     </div>
+                    <h5 class="card-title">HTML Email Test</h5>
+                    <p class="card-text">Test sending a formatted HTML email with rich content.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("HtmlEmail", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-code-slash me-1"></i> Test HTML Email
+                    </a>
+                </div>
+            </div>
+
+            <div class="test-card card hvr-float" id="imageEmailTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <h5 class="card-title">Email with Image</h5>
+                    <p class="card-text">Test sending an email with embedded images and attachments.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("EmailWithImage", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-image me-1"></i> Test Image Email
+                    </a>
                 </div>
             </div>
         </div>
@@ -176,27 +267,25 @@
     <!-- Miscellaneous Testing Section -->
     <div class="card shadow-sm mb-4" id="miscellaneousTestCard">
         <div class="card-header">
-            <h3 class="section-title mb-0">
-                <i class="bi bi-tools me-2"></i>Miscellaneous Testing
-            </h3>
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="bi bi-tools me-2"></i>Miscellaneous Testing
+                </h3>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="generateQrCodeTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-qr-code-scan"></i>
-                            </div>
-                            <h5 class="card-title">Generate QR Code</h5>
-                            <p class="card-text">Generate and test QR codes for ticket verification system.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("GenerateQrCode", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-qr-code me-1"></i> Generate QR Code
-                            </a>
-                        </div>
+        <div class="grid-container">
+            <div class="test-card card hvr-float" id="generateQrCodeTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-qr-code-scan"></i>
                     </div>
+                    <h5 class="card-title">Generate QR Code</h5>
+                    <p class="card-text">Generate and test QR codes for ticket verification system.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("GenerateQrCode", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-qr-code me-1"></i> Generate QR Code
+                    </a>
                 </div>
             </div>
         </div>
@@ -205,166 +294,163 @@
     <!-- API Testing Section -->
     <div class="card shadow-sm mb-4" id="apiTestCard">
         <div class="card-header">
-            <h3 class="section-title mb-0">
-                <i class="bi bi-code-square me-2"></i>API Testing
+            <h3 class="section-title d-flex justify-content-between align-items-center mb-3">
+                <span><i class="bi bi-code-square me-2"></i>API Testing</span>
+                <button class="btn btn-outline-secondary hvr-icon-spin"
+                    onclick="checkApiConnection();checkDatabaseConnection()"><i
+                        class="fa fa-refresh fa-lg hvr-icon"></i></button>
             </h3>
+            <div class="d-flex justify-content-end align-items-center">
+                <div class="d-flex flex-row align-items-center me-3">
+                    <span class="text-muted fw-semibold">API Server Status:</span>
+                    <span class="badge bg-secondary ms-2 d-flex align-items-center fs-6" id="apiServerStatus">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </span>
+                </div>
+
+                <div class="d-flex flex-row align-items-center me-3">
+                    <span class="text-muted fw-semibold">Database Status:</span>
+                    <span class="badge bg-secondary ms-2 d-flex align-items-center fs-6" id="databaseStatus">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="row g-4">
-                <!-- First Row -->
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="vehicleApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
-                            <h5 class="card-title">Vehicle API</h5>
-                            <p class="card-text">Test vehicle management and tracking endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Vehicle", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-car-front me-1"></i> Test Vehicle API
-                            </a>
-                        </div>
+        <div class="grid-container">
+            <div class="test-card card hvr-float" id="vehicleApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-car-front"></i>
                     </div>
+                    <h5 class="card-title">Vehicle API</h5>
+                    <p class="card-text">Test vehicle management and tracking endpoints.</p>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="tripApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-map"></i>
-                            </div>
-                            <h5 class="card-title">Trip API</h5>
-                            <p class="card-text">Test trip scheduling and management endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Trip", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-map me-1"></i> Test Trip API
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Vehicle", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-car-front me-1"></i> Test Vehicle API
+                    </a>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="routeApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-signpost-split"></i>
-                            </div>
-                            <h5 class="card-title">Route API</h5>
-                            <p class="card-text">Test route planning and optimization endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Route", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-signpost-split me-1"></i> Test Route API
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="tripApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-map"></i>
                     </div>
+                    <h5 class="card-title">Trip API</h5>
+                    <p class="card-text">Test trip scheduling and management endpoints.</p>
                 </div>
-
-                <!-- Second Row -->
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="locationApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-geo-alt"></i>
-                            </div>
-                            <h5 class="card-title">Location API</h5>
-                            <p class="card-text">Test location tracking and management endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Location", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-geo-alt me-1"></i> Test Location API
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Trip", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-map me-1"></i> Test Trip API
+                    </a>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="ticketApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-ticket-perforated"></i>
-                            </div>
-                            <h5 class="card-title">Ticket API</h5>
-                            <p class="card-text">Test ticket booking and management endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Ticket", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-ticket-perforated me-1"></i> Test Ticket API
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="routeApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-signpost-split"></i>
                     </div>
+                    <h5 class="card-title">Route API</h5>
+                    <p class="card-text">Test route planning and optimization endpoints.</p>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="userApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <h5 class="card-title">User API</h5>
-                            <p class="card-text">Test user management and authentication endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("User", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-people me-1"></i> Test User API
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Route", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-signpost-split me-1"></i> Test Route API
+                    </a>
                 </div>
+            </div>
 
-                <!-- Third Row -->
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="couponApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-tag"></i>
-                            </div>
-                            <h5 class="card-title">Coupon API</h5>
-                            <p class="card-text">Test coupon generation and validation endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Coupon", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-tag me-1"></i> Test Coupon API
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="locationApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-geo-alt"></i>
                     </div>
+                    <h5 class="card-title">Location API</h5>
+                    <p class="card-text">Test location tracking and management endpoints.</p>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="ratingApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-star"></i>
-                            </div>
-                            <h5 class="card-title">Rating API</h5>
-                            <p class="card-text">Test rating and feedback management endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Rating", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-star me-1"></i> Test Rating API
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Location", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-geo-alt me-1"></i> Test Location API
+                    </a>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 hvr-float" id="assignmentsApiTest">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="bi bi-person-check"></i>
-                            </div>
-                            <h5 class="card-title">Assignments API</h5>
-                            <p class="card-text">Test driver and vehicle assignment endpoints.</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="@Url.Action("Assignments", "Test")" class="btn btn-primary w-100">
-                                <i class="bi bi-person-check me-1"></i> Test Assignments API
-                            </a>
-                        </div>
+            <div class="test-card card hvr-float" id="ticketApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-ticket-perforated"></i>
                     </div>
+                    <h5 class="card-title">Ticket API</h5>
+                    <p class="card-text">Test ticket booking and management endpoints.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Ticket", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-ticket-perforated me-1"></i> Test Ticket API
+                    </a>
+                </div>
+            </div>
+
+            <div class="test-card card hvr-float" id="userApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5 class="card-title">User API</h5>
+                    <p class="card-text">Test user management and authentication endpoints.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("User", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-people me-1"></i> Test User API
+                    </a>
+                </div>
+            </div>
+
+            <div class="test-card card hvr-float" id="couponApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-tag"></i>
+                    </div>
+                    <h5 class="card-title">Coupon API</h5>
+                    <p class="card-text">Test coupon generation and validation endpoints.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Coupon", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-tag me-1"></i> Test Coupon API
+                    </a>
+                </div>
+            </div>
+
+            <div class="test-card card hvr-float" id="ratingApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <h5 class="card-title">Rating API</h5>
+                    <p class="card-text">Test rating and feedback management endpoints.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Rating", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-star me-1"></i> Test Rating API
+                    </a>
+                </div>
+            </div>
+
+            <div class="test-card card hvr-float" id="assignmentsApiTest">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h5 class="card-title">Assignments API</h5>
+                    <p class="card-text">Test driver and vehicle assignment endpoints.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Assignments", "Test")" class="btn btn-primary w-100">
+                        <i class="bi bi-person-check me-1"></i> Test Assignments API
+                    </a>
                 </div>
             </div>
         </div>
@@ -373,7 +459,47 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
+        function checkDatabaseConnection() {
+            $('#databaseStatus').addClass('bg-secondary').removeClass('bg-success').removeClass('bg-danger');
+            $('#databaseStatus').html("<span class='spinner-border spinner-border-sm me-2' role='status' aria-hidden='true'></span>Loading...");
+
+            $.ajax({
+                url: '/admin/api/system/check-database-connection',
+                type: 'GET',
+                success: function (response) {
+                    $('#databaseStatus').removeClass('bg-secondary');
+                    $('#databaseStatus').addClass('bg-success');
+                    $('#databaseStatus').html("Connected");
+                },
+                error: function (xhr, status, error) {
+                    $('#databaseStatus').removeClass('bg-secondary');
+                    $('#databaseStatus').addClass('bg-danger');
+                    $('#databaseStatus').html("Down");
+                }
+            });
+        }
+
+        function checkApiConnection() {
+            $('#apiServerStatus').addClass('bg-secondary').removeClass('bg-success').removeClass('bg-danger');
+            $('#apiServerStatus').html("<span class='spinner-border spinner-border-sm me-2' role='status' aria-hidden='true'></span>Loading...");
+
+            $.ajax({
+                url: '/admin/api/system/check-api-connection',
+                type: 'GET',
+                success: function (response) {
+                    $('#apiServerStatus').removeClass('bg-secondary');
+                    $('#apiServerStatus').addClass('bg-success');
+                    $('#apiServerStatus').html("Connected");
+                },
+                error: function (xhr, status, error) {
+                    $('#apiServerStatus').removeClass('bg-secondary');
+                    $('#apiServerStatus').addClass('bg-danger');
+                    $('#apiServerStatus').html("Down");
+                }
+            });
+        }
+
+        $(document).ready(function () {
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -381,32 +507,40 @@
             });
 
             // Enhanced search functionality
-            $('#searchInput').on('keyup', function() {
+            $('#searchInput').on('keyup', function () {
                 var searchValue = $(this).val().toLowerCase();
                 if (searchValue === '') {
                     $('.col-md-4').show();
                     $('.card[id$="Card"]').show();
                     return;
                 }
-                
+
                 // Hide/show cards based on search
-                $('.col-md-4').each(function() {
+                $('.col-md-4').each(function () {
                     var cardTitle = $(this).find('.card-title').text().toLowerCase();
                     var cardText = $(this).find('.card-text').text().toLowerCase();
-                    
+
                     if (cardTitle.includes(searchValue) || cardText.includes(searchValue)) {
                         $(this).show();
                     } else {
                         $(this).hide();
                     }
                 });
-                
+
                 // Hide section headers if all cards in that section are hidden
-                $('.card[id$="Card"]').each(function() {
+                $('.card[id$="Card"]').each(function () {
                     var visibleCards = $(this).find('.col-md-4:visible').length;
                     $(this).toggle(visibleCards > 0);
                 });
             });
+
+            checkDatabaseConnection();
+            checkApiConnection();
+
+            setInterval(function() {
+                checkDatabaseConnection();
+                checkApiConnection();
+            }, 30000); // Check every 30 seconds
         });
     </script>
 }
