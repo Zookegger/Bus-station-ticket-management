@@ -510,13 +510,13 @@
             $('#searchInput').on('keyup', function () {
                 var searchValue = $(this).val().toLowerCase();
                 if (searchValue === '') {
-                    $('.col-md-4').show();
+                    $('.grid-container .card').show();
                     $('.card[id$="Card"]').show();
                     return;
                 }
 
                 // Hide/show cards based on search
-                $('.col-md-4').each(function () {
+                $('.grid-container .card').each(function () {
                     var cardTitle = $(this).find('.card-title').text().toLowerCase();
                     var cardText = $(this).find('.card-text').text().toLowerCase();
 
@@ -529,7 +529,7 @@
 
                 // Hide section headers if all cards in that section are hidden
                 $('.card[id$="Card"]').each(function () {
-                    var visibleCards = $(this).find('.col-md-4:visible').length;
+                    var visibleCards = $(this).find('.grid-container .card:visible').length;
                     $(this).toggle(visibleCards > 0);
                 });
             });
