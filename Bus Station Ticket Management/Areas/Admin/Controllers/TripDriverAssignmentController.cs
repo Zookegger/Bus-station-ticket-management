@@ -341,14 +341,19 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         .ThenInclude(t => t.Route)
                             .ThenInclude(r => r.DestinationLocation)
                     .FirstOrDefaultAsync(tda => tda.Id == id);
-                
+
                 if (tripDriverAssignment == null)
                 {
                     return NotFound("Assignment not found");
                 }
 
+                if (tripDriverAssignment.Trip == null || tripDriverAssignment.Trip.Route == null)
+                {
+                    return NotFound("Trip or Route data is missing");
+                }
+
                 var trip = await _context.Trips.FindAsync(tripDriverAssignment.TripId);
-                
+
                 if (trip == null)
                 {
                     return NotFound("Trip not found");
@@ -361,7 +366,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 if (totalFreeDrivers.Count == 0)
                 {
                     ModelState.AddModelError("", "No drivers available.");
-                    return View();
+                    return View(tripDriverAssignment);
                 }
 
                 ViewData["DriverId"] = new SelectList(totalFreeDrivers, "Id", "FullName", tripDriverAssignment.DriverId);

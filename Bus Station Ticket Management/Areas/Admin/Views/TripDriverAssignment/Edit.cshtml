@@ -22,22 +22,46 @@
                 <div class="mb-4">
                     <label asp-for="TripId" class="form-label fw-semibold">Trip</label>
                     <input asp-for="TripId" class="form-control" readonly hidden/>
-                    <span class="form-control">@Model.Trip.Route.StartLocation.Name ?? "N/A" - @Model.Trip.Route.DestinationLocation.Name ?? "N/A"</span>
+                    <span class="form-control">
+                        @if (Model?.Trip?.Route?.StartLocation?.Name != null && Model?.Trip?.Route?.DestinationLocation?.Name != null)
+                        {
+                            @($"{Model.Trip.Route.StartLocation.Name} - {Model.Trip.Route.DestinationLocation.Name}")
+                        }
+                        else
+                        {
+                            <span class="text-danger">Trip route information is incomplete</span>
+                            <span class="text-danger">@Model.Id</span>
+                        }
+                    </span>
                     <span asp-validation-for="TripId" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-4">
                     <label asp-for="DriverId" class="form-label fw-semibold">Driver</label>
                     <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId">
-                        <option value="">-- Select Driver --</option>
+                        @if (ViewBag.DriverId != null && ViewBag.DriverId.Any())
+                        {
+                            <option value="">-- Select Driver --</option>
+                        } else {
+                            <option value="" selected disabled>No drivers available</option>
+                        }
                     </select>
                     <span asp-validation-for="DriverId" class="text-danger small"></span>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow">
-                        <i class="fa-regular fa-floppy-disk hvr-icon me-2"></i>Save
-                    </button>
+                    @if (ViewBag.DriverId == null || !ViewBag.DriverId.Any())
+                    {
+                        <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow" disabled>
+                            <i class="fa-regular fa-floppy-disk hvr-icon me-2"></i>Save
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow">
+                            <i class="fa-regular fa-floppy-disk hvr-icon me-2"></i>Save
+                        </button>
+                    }
                     <a class="btn btn-lg btn-outline-secondary fw-semibold hvr-icon-back" asp-action="Index">
                         <i class="fa-solid fa-arrow-left hvr-icon me-2"></i>Cancel
                     </a>

@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Basic Email Test";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Basic Email Test</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="@Url.Action("SendBasicEmail", "Test")">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Recipient Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="Test Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required>This is a test email from the Bus Station Ticket Management System.</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Email</button>
+                <a href="@Url.Action("Index", "Test")" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+        </div>
+    </div>
+</div> 

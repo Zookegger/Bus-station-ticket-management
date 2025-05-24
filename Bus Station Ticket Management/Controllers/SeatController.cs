@@ -18,14 +18,16 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<SeatController> _logger;
-        private readonly EmailBackgroundQueue _emailBackgroundQueue;
 
-        public SeatController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<SeatController> logger, EmailBackgroundQueue emailBackgroundQueue)
+        public SeatController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            ILogger<SeatController> logger
+        )
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
-            _emailBackgroundQueue = emailBackgroundQueue;
         }
 
         // GET: Seat
@@ -37,7 +39,8 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         public async Task<IActionResult> SelectSeats(int VehicleId, int TripId)
         {
-            try {
+            try
+            {
                 TempData.Keep();
 
                 var trip = await _context.Trips
@@ -109,9 +112,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                     }
                 }
 
-                return View(viewModel);   
+                return View(viewModel);
             }
-            catch (DbException ex) {
+            catch (DbException ex)
+            {
                 _logger.LogError(ex, "An unexpected error occurred while selecting seats.");
                 return RedirectToAction(nameof(Index));
             }
@@ -127,26 +131,26 @@ namespace Bus_Station_Ticket_Management.Controllers
         [HttpPost]
         public async Task<IActionResult> BookSeats(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get userId
+
+            if (!string.IsNullOrEmpty(userId) && User.Identity?.IsAuthenticated == true)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get userId
+                userId = _userManager.GetUserId(User);
+            }
 
-                if (!string.IsNullOrEmpty(userId) && User.Identity?.IsAuthenticated == true)
-                {
-                    userId = _userManager.GetUserId(User);
-                }
+            _logger.LogInformation("Booking seats for user: {UserId}", userId);
 
-                _logger.LogInformation("Booking seats for user: {UserId}", userId);
+            if (!IsBookingValid(TripId, VehicleId, selectedSeatIds, numberOfTickets, userId, guestName, guestEmail, guestPhone, totalPrice, couponId, paymentMethod, out var seats, out var bookedSeats))
+            {
+                _logger.LogError("Invalid booking request: {Error}", TempData["Error"]);
+                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
+            }
 
-                if (!IsBookingValid(TripId, VehicleId, selectedSeatIds, numberOfTickets, userId, guestName, guestEmail, guestPhone, totalPrice, couponId, paymentMethod, out var seats, out var bookedSeats))
-                {
-                    _logger.LogError("Invalid booking request: {Error}", TempData["Error"]);
-                    return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
-                }
-                
-                var ticketIds = new List<string>();
+            var ticketIds = new List<string>();
 
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
                 {
                     var payment = new Payment
                     {
@@ -180,11 +184,13 @@ namespace Bus_Station_Ticket_Management.Controllers
                             PaymentId = payment.Id
                         };
 
-                        if(paymentMethod != "Cash") {
+                        if (paymentMethod != "Cash")
+                        {
                             ticket.IsReserved = true;
                         }
-                        
-                        if (ticket.Id == null) {
+
+                        if (ticket.Id == null)
+                        {
                             _logger.LogError("Ticket ID is null for seat: {SeatId}", seat.Id);
                             throw new Exception("Ticket ID is null for seat: " + seat.Id);
                         }
@@ -196,21 +202,30 @@ namespace Bus_Station_Ticket_Management.Controllers
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
+                catch (DbUpdateException ex)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
+                    TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
+                    return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
+                }
 
-                TempData["TicketIds"] = string.Join(",", ticketIds);
-                TempData["TotalPrice"] = totalPrice;
-                TempData["Success"] = "Successfully booked seat!";
-                TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
+                    TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
+                    return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
+                }
+            }
 
-                // Redirect to the SelectSeats or Payment checkout view with TempData
-                return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Payment") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
-                TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
-                return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
-            }
+            TempData["TicketIds"] = string.Join(",", ticketIds);
+            TempData["TotalPrice"] = totalPrice;
+            TempData["Success"] = "Successfully booked seat!";
+            TempData["RedirectAfterDelay"] = true; // Flag to trigger the delay in the view
+
+            // Redirect to the SelectSeats or Payment checkout view with TempData
+            return paymentMethod != "Cash" ? RedirectToAction("Checkout", "Payment") : RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId });
         }
 
         private bool IsBookingValid(int TripId, int VehicleId, string selectedSeatIds, int numberOfTickets, string? userId, string? guestName, string? guestEmail, string? guestPhone, int totalPrice, int? couponId, string paymentMethod, out List<Seat> seats, out List<Seat> bookedSeats)
@@ -246,7 +261,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                     return false;
                 }
             }
-            try {
+            try
+            {
                 seats = _context.Seats
                     .Include(s => s.Trip)
                     .Where(s =>
@@ -266,7 +282,8 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                 return true;
             }
-            catch (DbException ex) {
+            catch (DbException ex)
+            {
                 _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
                 return false;
             }

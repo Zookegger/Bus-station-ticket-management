@@ -3,13 +3,14 @@
 #nullable disable
 
 using Bus_Station_Ticket_Management.Models;
-using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Services.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -20,13 +21,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
     public class ResendEmailConfirmationModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
         private readonly IEmailBackgroundQueue _emailQueue;
 
-        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBackgroundQueue emailQueue)
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailBackgroundQueue emailQueue)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
             _emailQueue = emailQueue;
         }
 
@@ -92,13 +91,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     </footer>
                 </div>";
 
-            _emailQueue.QueueEmail(new EmailMessage
-            {
-                To = Input.Email,
-                Subject = "Confirm your email",
-                HtmlContent = htmlBody
-            });
-
+            var message = new MimeMessage();
+            message.To.Add(new MailboxAddress("", Input.Email));
+            message.Subject = "Confirm your email";
+            message.Body = new TextPart("html") { Text = htmlBody };
+            await _emailQueue.QueueEmail(message);
 
             SuccessMessage = "Verification email sent. Please check your email.";
             return Page();

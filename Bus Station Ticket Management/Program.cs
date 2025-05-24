@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Google.Apis.Auth.AspNetCore3;
 using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Services.Email;
+using Bus_Station_Ticket_Management.Services.QRCode;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Utilities;
 using Newtonsoft.Json;

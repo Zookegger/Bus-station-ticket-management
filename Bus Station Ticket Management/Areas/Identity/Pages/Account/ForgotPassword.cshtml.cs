@@ -3,11 +3,13 @@
 #nullable disable
 
 using Bus_Station_Ticket_Management.Models;
+using Bus_Station_Ticket_Management.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -17,12 +19,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailBackgroundQueue _emailQueue;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailBackgroundQueue emailQueue)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailQueue = emailQueue;
         }
 
         /// <summary>
@@ -66,10 +68,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var message = new MimeMessage();
+                message.To.Add(new MailboxAddress("", Input.Email));
+                message.Subject = "Reset Password";
+                message.Body = new TextPart("html") { Text = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>." };
+
+                await _emailQueue.QueueEmail(message);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "HTML Email Test";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">HTML Email Test</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="@Url.Action("SendHtmlEmail", "Test")">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Recipient Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="HTML Test Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">HTML Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="8" required>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #2c3e50;">Welcome to Bus Station Ticket Management</h2>
+    <p style="color: #34495e;">This is a test email with HTML formatting.</p>
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="color: #2c3e50;">Features:</h3>
+        <ul style="color: #34495e;">
+            <li>HTML Formatting</li>
+            <li>Styled Content</li>
+            <li>Responsive Design</li>
+        </ul>
+    </div>
+    <p style="color: #7f8c8d;">Thank you for testing our email system!</p>
+</div>
+                    </textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Email</button>
+                <a href="@Url.Action("Index", "Test")" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+        </div>
+    </div>
+</div> 

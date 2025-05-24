@@ -4,6 +4,7 @@
 
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Services.Email;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -14,6 +15,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
+using MimeKit;
 
 namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
 {
@@ -24,7 +26,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
         private readonly IEmailBackgroundQueue _emailQueue;
 
         public RegisterModel(
@@ -32,7 +33,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
             IEmailBackgroundQueue emailQueue
             )
         {
@@ -41,7 +41,6 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
             _emailQueue = emailQueue;
         }
 
@@ -178,12 +177,11 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                             </footer>
                         </div>";
 
-                        _emailQueue.QueueEmail(new EmailMessage
-                        {
-                            To = Input.Email,
-                            Subject = "Confirm your email",
-                            HtmlContent = htmlBody
-                        });
+                        var message = new MimeMessage();
+                        message.To.Add(new MailboxAddress("", Input.Email));
+                        message.Subject = "Confirm your email";
+                        message.Body = new TextPart("html") { Text = htmlBody };
+                        await _emailQueue.QueueEmail(message);
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {

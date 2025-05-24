@@ -1,0 +1,228 @@
+@{
+    ViewData["Title"] = "Vehicle API Test";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        #testConnectionResult,
+        #listVehiclesResult,
+        #vehicleByIdResult,
+        #vehicleByLicensePlateResult {
+            white-space: pre-wrap;
+        }
+
+        pre {
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: 'Consolas', monospace !important;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .form-control {
+            max-width: 300px;
+            border-radius: 6px;
+        }
+        
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            font-weight: 500;
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary mb-0">
+            <i class="bi bi-code-square me-2"></i> Vehicle API Management Console
+        </h2>
+        <a class="btn btn-outline-secondary hvr-icon-back" asp-controller="Test" asp-action="Index">
+            <i class="fa-solid fa-arrow-left hvr-icon me-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle-fill me-2"></i> This console allows administrators to test and verify the Vehicle API endpoints.
+    </div>
+
+    <div class="row g-4">
+        <!-- Test Connection -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-hdd-network me-2"></i>API Connection Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <button class="btn btn-primary" onclick="testConnection()">
+                            <i class="bi bi-broadcast-pin me-1"></i> Test Connection
+                        </button>
+                        <div class="spinner-border text-primary" id="testConnectionSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="testConnectionResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List All Vehicles -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-list-ul me-2"></i>Vehicle Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <button class="btn btn-primary" onclick="listVehicles()">
+                            <i class="bi bi-car-front-fill me-1"></i> Fetch All Vehicles
+                        </button>
+                        <div class="spinner-border text-primary" id="listVehiclesSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="listVehiclesResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get Vehicle by ID -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-search me-2"></i>Vehicle Lookup by ID</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <input type="number" id="vehicleId" class="form-control" placeholder="Enter Vehicle ID" />
+                        <button class="btn btn-primary" onclick="getVehicleById()">
+                            <i class="bi bi-search me-1"></i> Retrieve Vehicle
+                        </button>
+                        <div class="spinner-border text-primary" id="getVehicleByIdSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="vehicleByIdResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get Vehicle by License Plate -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-card-text me-2"></i>License Plate Search</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <input type="text" id="licensePlate" class="form-control" placeholder="Enter License Plate" />
+                        <button class="btn btn-primary" onclick="getVehicleByLicensePlate()">
+                            <i class="bi bi-search me-1"></i> Lookup Vehicle
+                        </button>
+                        <div class="spinner-border text-primary" id="getVehicleByLicensePlateSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="vehicleByLicensePlateResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function displayResult(elementId, data, isError = false) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.innerHTML = `<pre class="${isError ? 'bg-light text-danger' : 'bg-dark text-light'}">${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        async function testConnection() {
+            const spinner = document.getElementById('testConnectionSpinner');
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch('/admin/api/vehicle/test-connection');
+                const data = await response.text();
+                displayResult('testConnectionResult', data);
+            } catch (error) {
+                displayResult('testConnectionResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function listVehicles() {
+            const spinner = document.getElementById('listVehiclesSpinner');
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch('/admin/api/vehicle/list-vehicles');
+                const data = await response.json();
+                displayResult('listVehiclesResult', data);
+            } catch (error) {
+                displayResult('listVehiclesResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function getVehicleById() {
+            const id = document.getElementById('vehicleId').value;
+            const spinner = document.getElementById('getVehicleByIdSpinner');
+            if (!id) {
+                displayResult('vehicleByIdResult', 'Please enter a valid vehicle ID', true);
+                return;
+            }
+
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch(`/admin/api/vehicle/get-vehicle-by-id/${id}`);
+                const data = await response.json();
+                displayResult('vehicleByIdResult', data);
+            } catch (error) {
+                displayResult('vehicleByIdResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function getVehicleByLicensePlate() {
+            const licensePlate = document.getElementById('licensePlate').value;
+            const spinner = document.getElementById('getVehicleByLicensePlateSpinner');
+            if (!licensePlate) {
+                displayResult('vehicleByLicensePlateResult', 'Please enter a license plate', true);
+                return;
+            }
+
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch(`/admin/api/vehicle/get-vehicle-by-license-plate/${licensePlate}`);
+                const data = await response.json();
+                displayResult('vehicleByLicensePlateResult', data);
+            } catch (error) {
+                displayResult('vehicleByLicensePlateResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
+}

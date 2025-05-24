@@ -1,0 +1,263 @@
+@{
+    ViewData["Title"] = "TripDriverAssignment API Test";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        #testConnectionResult,
+        #allAssignmentsResult,
+        #assignmentByIdResult,
+        #freeDriversResult,
+        #availableTripsResult {
+            white-space: pre-wrap;
+        }
+
+        pre {
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: 'Consolas', monospace !important;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .form-control {
+            max-width: 300px;
+            border-radius: 6px;
+        }
+        
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            font-weight: 500;
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary mb-0">
+            <i class="bi bi-code-square me-2"></i> TripDriverAssignment API Management Console
+        </h2>
+        <a class="btn btn-outline-secondary hvr-icon-back" asp-controller="Test" asp-action="Index">
+            <i class="fa-solid fa-arrow-left hvr-icon me-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle-fill me-2"></i> This console allows administrators to test and verify the TripDriverAssignment API endpoints.
+    </div>
+
+    <div class="row g-4">
+        <!-- Test Connection -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-hdd-network me-2"></i>API Connection Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <button class="btn btn-primary" onclick="testConnection()">
+                            <i class="bi bi-broadcast-pin me-1"></i> Test Connection
+                        </button>
+                        <div class="spinner-border text-primary" id="testConnectionSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="testConnectionResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get All Assignments -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-list-ul me-2"></i>Assignment Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <button class="btn btn-primary" onclick="getAllAssignments()">
+                            <i class="bi bi-collection me-1"></i> Fetch All Assignments
+                        </button>
+                        <div class="spinner-border text-primary" id="allAssignmentsSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="allAssignmentsResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get Assignment by ID -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-search me-2"></i>Assignment Lookup</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <input type="number" id="assignmentId" class="form-control" placeholder="Enter Assignment ID" />
+                        <button class="btn btn-primary" onclick="getAssignmentById()">
+                            <i class="bi bi-search me-1"></i> Retrieve Assignment
+                        </button>
+                        <div class="spinner-border text-primary" id="assignmentByIdSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="assignmentByIdResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get Free Drivers -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-person-check me-2"></i>Driver Availability</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <input type="number" id="tripId" class="form-control" placeholder="Enter Trip ID" />
+                        <button class="btn btn-primary" onclick="getFreeDrivers()">
+                            <i class="bi bi-people me-1"></i> Check Available Drivers
+                        </button>
+                        <div class="spinner-border text-primary" id="freeDriversSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="freeDriversResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Check Available Trips -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0"><i class="bi bi-calendar-check me-2"></i>Trip Availability</h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-group mb-3">
+                        <button class="btn btn-primary" onclick="checkAvailableTrips()">
+                            <i class="bi bi-calendar2-check me-1"></i> Check Available Trips
+                        </button>
+                        <div class="spinner-border text-primary" id="availableTripsSpinner" role="status" style="display: none;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="availableTripsResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function displayResult(elementId, data, isError = false) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.innerHTML = `<pre class="${isError ? 'bg-light text-danger' : 'bg-dark text-light'}">${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        async function testConnection() {
+            const spinner = document.getElementById('testConnectionSpinner');
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch('/admin/api/assignment/test-connection');
+                const data = await response.text();
+                displayResult('testConnectionResult', data);
+            } catch (error) {
+                displayResult('testConnectionResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function getAllAssignments() {
+            const spinner = document.getElementById('allAssignmentsSpinner');
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch('/admin/api/assignment');
+                const data = await response.json();
+                displayResult('allAssignmentsResult', data);
+            } catch (error) {
+                displayResult('allAssignmentsResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function getAssignmentById() {
+            const id = document.getElementById('assignmentId').value;
+            const spinner = document.getElementById('assignmentByIdSpinner');
+            if (!id) {
+                displayResult('assignmentByIdResult', 'Please enter a valid assignment ID', true);
+                return;
+            }
+
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch(`/admin/api/assignment/get-assignment/${id}`);
+                const data = await response.json();
+                displayResult('assignmentByIdResult', data);
+            } catch (error) {
+                displayResult('assignmentByIdResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function getFreeDrivers() {
+            const tripId = document.getElementById('tripId').value;
+            const spinner = document.getElementById('freeDriversSpinner');
+            if (!tripId) {
+                displayResult('freeDriversResult', 'Please enter a valid trip ID', true);
+                return;
+            }
+
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch(`/admin/api/assignment/free-drivers/${tripId}`);
+                const data = await response.json();
+                displayResult('freeDriversResult', data);
+            } catch (error) {
+                displayResult('freeDriversResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function checkAvailableTrips() {
+            const spinner = document.getElementById('availableTripsSpinner');
+            spinner.style.display = 'inline-block';
+            try {
+                const response = await fetch('/admin/api/assignment/check-available-trips');
+                const data = await response.json();
+                displayResult('availableTripsResult', data);
+            } catch (error) {
+                displayResult('availableTripsResult', error.message, true);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
+} 

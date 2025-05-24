@@ -3,20 +3,30 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 
-namespace Bus_Station_Ticket_Management.Services
+namespace Bus_Station_Ticket_Management.Services.Email
 {
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<EmailSender> _logger;
+        private readonly IEmailBackgroundQueue _emailQueue;
 
-        public EmailSender(IConfiguration configuration, ILogger<EmailSender> logger)
+        public EmailSender(
+            IConfiguration configuration, 
+            ILogger<EmailSender> logger,
+            IEmailBackgroundQueue emailQueue)
         {
             _configuration = configuration;
             _logger = logger;
+            _emailQueue = emailQueue;
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            await SendEmailAsync(email, subject, htmlMessage, null, null);
+        }
+
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage, byte[]? inlineImage = null, string? imageContentId = null)
         {
             try {
                 var mimeMessage = new MimeMessage();
@@ -25,45 +35,30 @@ namespace Bus_Station_Ticket_Management.Services
                     _configuration["EmailSender:Email"]
                 ));
 
-                _logger.LogInformation("Preparing to send email.");
+                _logger.LogInformation("Preparing to queue email.");
                 _logger.LogInformation("Sender: {SenderName} <{SenderEmail}>", 
                     _configuration["EmailSender:Name"], 
                     _configuration["EmailSender:Email"]);
                 _logger.LogInformation("Recipient: {Recipient}", email);
                 _logger.LogInformation("Subject: {Subject}", subject);
 
-
                 mimeMessage.To.Add(new MailboxAddress("", email));
                 mimeMessage.Subject = subject;
-                mimeMessage.Body = new TextPart("html") { Text = htmlMessage };
+                
+                var builder = new BodyBuilder();
+                builder.HtmlBody = htmlMessage;
+                mimeMessage.Body = builder.ToMessageBody();
 
-                using (var client = new SmtpClient())
-                {
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                if (inlineImage != null && !string.IsNullOrEmpty(imageContentId)) {
+                    var image = builder.LinkedResources.Add(imageContentId, inlineImage);
+                    image.ContentId = imageContentId;
+                    mimeMessage.Body = builder.ToMessageBody();
+                }
 
-                    var host = _configuration["EmailSender:SmtpHost"];
-                    var port = int.Parse(_configuration["EmailSender:SmtpPort"]);
-                    
-                    _logger.LogInformation($"{host}:{port}");
-
-                    _logger.LogInformation("Connecting to SMTP server {Host}:{Port}", host, port);
-                    await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-
-                    _logger.LogInformation("Authenticating SMTP user.");
-                    await client.AuthenticateAsync(
-                        _configuration["EmailSender:Username"],
-                        _configuration["EmailSender:Password"]
-                    );
-
-                    _logger.LogInformation("Sending email...");
-                    await client.SendAsync(mimeMessage);
-                    _logger.LogInformation("Email sent successfully.");
-
-                    await client.DisconnectAsync(true);
-                    _logger.LogInformation("Disconnected from SMTP server.");
-                }   
+                await _emailQueue.QueueEmail(mimeMessage);
+                _logger.LogInformation("Email queued successfully for {Recipient}", email);
             } catch (Exception ex) {
-                _logger.LogError(ex, "Failed to send email to {Recipient}", email);
+                _logger.LogError(ex, "Failed to queue email for {Recipient}", email);
                 throw;
             }
         }

@@ -4,11 +4,13 @@
 
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -19,21 +21,18 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IEmailSender _emailSender;
         private readonly IEmailBackgroundQueue _emailQueue;
         private readonly ILogger<EmailModel> _logger;
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender,
             IEmailBackgroundQueue emailQueue,
             ILogger<EmailModel> logger    
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
             _emailQueue = emailQueue;
             _logger = logger;
         }
@@ -149,11 +148,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                                 </footer>
                             </div>";
                         
-                    _emailQueue.QueueEmail(new EmailMessage {
-                        To = Input.NewEmail,
-                        Subject = "Confirm your email",
-                        HtmlContent = htmlBody
-                    });
+                    var message = new MimeMessage();
+                    message.To.Add(new MailboxAddress("", Input.NewEmail));
+                    message.Subject = "Confirm your email";
+                    message.Body = new TextPart("html") { Text = htmlBody };
+
+                    await _emailQueue.QueueEmail(message);
 
                     StatusMessage = "Confirmation link to change email sent. Please check your email.";
                     return RedirectToPage();
@@ -212,11 +212,12 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account.Manage
                         </footer>
                     </div>";
                 
-            _emailQueue.QueueEmail(new EmailMessage {
-                To = Input.NewEmail,
-                Subject = "Confirm your email",
-                HtmlContent = htmlBody
-            });
+            var message = new MimeMessage();
+            message.To.Add(new MailboxAddress("", Input.NewEmail));
+            message.Subject = "Confirm your email";
+            message.Body = new TextPart("html") { Text = htmlBody };
+
+            await _emailQueue.QueueEmail(message);
             
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();

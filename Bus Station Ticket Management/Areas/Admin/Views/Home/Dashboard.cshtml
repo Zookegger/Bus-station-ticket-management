@@ -7,67 +7,72 @@
     <!-- Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
         <h1 class="h3 text-success fw-bold d-flex align-items-center gap-2">
-            <i class="fa-solid fa-gauge-high fa-xl"></i> Welcome to the Admin Dashboard
+            <i class="bi bi-columns-gap fa-xl"></i> Welcome to the Admin Dashboard
         </h1>
     </div>
 
     <!-- Quick Access Cards -->
     <div class="row g-4" id="quickAccess">
-        <div class="col-md-6 col-xl-3" data-aos="fade-left">
-            <div class="card shadow border-start border-success border-4">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="text-success fs-3"><i class="fa-solid fa-users"></i></div>
-                    <div>
-                        <h5 class="card-title mb-1">Manage Users</h5>
-                        <a asp-controller="Employee" asp-action="Index" class="text-decoration-none">View All</a>
+        <div class="col-md-6 col-xl-3" data-aos="fade-right">
+            <a asp-controller="Employee" asp-action="Index" class="text-decoration-none hvr-bob w-100">
+                <div class="card shadow border-start border-success border-4">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="text-success fs-3"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <h5 class="card-title mb-1">Manage Users</h5>
+                            <span class="text-primary">View All</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-6 col-xl-3" data-aos="fade-left" data-aos-delay="100">
-            <div class="card shadow border-start border-primary border-4">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="text-primary fs-3"><i class="fa-solid fa-bus"></i></div>
-                    <div>
-                        <h5 class="card-title mb-1 fs-lg-6" style="min-height: 27px;">Manage Vehicles</h5>
-                        <a asp-controller="Vehicle" asp-action="Index" class="text-decoration-none">View All</a>
+            <a asp-controller="Vehicle" asp-action="Index" class="text-decoration-none hvr-bob w-100">
+                <div class="card shadow border-start border-primary border-4">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="text-primary fs-3"><i class="fa-solid fa-bus"></i></div>
+                        <div>
+                            <h5 class="card-title mb-1 fs-lg-6" style="min-height: 27px;">Manage Vehicles</h5>
+                            <span class="text-primary">View All</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
-        <div class="col-md-6 col-xl-3" data-aos="fade-left" data-aos-delay="200">
-            <div class="card shadow border-start border-warning border-4">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="text-warning fs-3"><i class="fa-solid fa-route"></i></div>
-                    <div>
-                        <h5 class="card-title mb-1">Manage Trips</h5>
-                        <a asp-controller="Trip" asp-action="Index" class="text-decoration-none">View All</a>
+        <div class="col-md-6 col-xl-3" data-aos="fade-right" data-aos-delay="200">
+            <a asp-controller="Trip" asp-action="Index" class="text-decoration-none hvr-bob w-100">
+                <div class="card shadow border-start border-warning border-4">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="text-warning fs-3"><i class="fa-solid fa-route"></i></div>
+                        <div>
+                            <h5 class="card-title mb-1">Manage Trips</h5>
+                            <span class="text-primary">View All</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-6 col-xl-3" data-aos="fade-left" data-aos-delay="300">
-            <div class="card shadow border-start border-danger border-4">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="text-danger fs-3"><i class="fa-solid fa-chart-line"></i></div>
-                    <div>
-                        <h5 class="card-title mb-1">View Revenue</h5>
-                        <a asp-controller="Tickets" asp-action="Revenue" class="text-decoration-none">Reports</a>
+            <a asp-controller="Tickets" asp-action="Revenue" class="text-decoration-none hvr-bob w-100">
+                <div class="card shadow border-start border-danger border-4">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="text-danger fs-3"><i class="fa-solid fa-chart-line"></i></div>
+                        <div>
+                            <h5 class="card-title mb-1">View Revenue</h5>
+                            <span class="text-primary">Reports</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
-    </div>
 
-    <!-- Statistics Section -->
-    <hr class="my-5" id="statistic" />
-
-    <div class="row g-4">
+        <!-- Statistics Section -->
+        <hr class="my-5" id="statistic" />
         <div class="col-md-6 col-xl-3" data-aos="fade-up">
-            <div class="card text-bg-success shadow-sm text-center">
+            <div class="card hvr-float w-100 text-bg-success shadow-sm text-center">
                 <div class="card-body">
                     <i class="fa-solid fa-user-tie fa-2x mb-2"></i>
                     <h5 class="card-title">Users</h5>
@@ -77,7 +82,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
-            <div class="card text-bg-info shadow-sm text-center">
+            <div class="card hvr-float w-100 text-bg-info shadow-sm text-center">
                 <div class="card-body">
                     <i class="fa-solid fa-bus-simple fa-2x mb-2"></i>
                     <h5 class="card-title">Vehicles</h5>
@@ -87,7 +92,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
-            <div class="card text-bg-warning shadow-sm text-center">
+            <div class="card hvr-float w-100 text-bg-warning shadow-sm text-center">
                 <div class="card-body">
                     <i class="fa-solid fa-road fa-2x mb-2"></i>
                     <h5 class="card-title">Trips</h5>
@@ -97,7 +102,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="card text-bg-danger shadow-sm text-center">
+            <div class="card hvr-float w-100 text-bg-danger shadow-sm text-center">
                 <div class="card-body">
                     <i class="fa-solid fa-coins fa-2x mb-2"></i>
                     <h5 class="card-title">Earnings</h5>
@@ -105,12 +110,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- Revenue Chart -->
+        <hr class="my-5" />
+
     </div>
-
-    <!-- Revenue Chart -->
-    <hr class="my-5" />
-
-    <div class="card mt-5 shadow" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+    <div class="card shadow" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
         <div class="card-header bg-success text-white fw-semibold">
             Monthly Revenue Overview
         </div>
@@ -118,81 +123,80 @@
             <canvas id="revenueChart" class="w-100 h-100"></canvas>
         </div>
     </div>
-</div>
 
 @section Scripts {
-    <!-- AOS + Chart.js Script Dependencies (Make sure these are loaded in layout if not already) -->
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+        <!-- AOS + Chart.js Script Dependencies (Make sure these are loaded in layout if not already) -->
+        <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            AOS.init({ duration: 1200 });
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                AOS.init({ duration: 1200, once: true });
 
-            const fetchDashboardStats = async () => {
-                const baseUrl = window.location.origin;
-                const fullUrl = `${baseUrl}/Admin/Home/GetDashboardStats`;
+                const fetchDashboardStats = async () => {
+                    const baseUrl = window.location.origin;
+                    const fullUrl = `${baseUrl}/Admin/Home/GetDashboardStats`;
 
-                try {
-                    const response = await fetch(fullUrl);
-                    if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
-                    const data = await response.json();
+                    try {
+                        const response = await fetch(fullUrl);
+                        if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
+                        const data = await response.json();
 
-                    animateNumber("userCount", data.userCount);
-                    animateNumber("vehicleCount", data.vehicleCount);
-                    animateNumber("tripCount", data.tripCount);
-                    animateNumber("revenueCount", data.revenueCount);
+                        animateNumber("userCount", data.userCount);
+                        animateNumber("vehicleCount", data.vehicleCount);
+                        animateNumber("tripCount", data.tripCount);
+                        animateNumber("revenueCount", data.revenueCount);
 
-                    new Chart(document.getElementById('revenueChart'), {
-                        type: 'line',
-                        options: {
-                            responsive: true,
-                            scales: {
-                                x: { title: { display: true, text: 'Month' } },
-                                y: { title: { display: true, text: 'Earnings (VND)' } }
-                            }
-                        },
-                        data: {
-                            labels: data.revenueLabels,
-                            datasets: [{
-                                label: 'Monthly Revenue',
-                                data: data.revenueValues,
-                                fill: false,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                tension: 0.1
-                            }]
-                        },
-                    });
+                        new Chart(document.getElementById('revenueChart'), {
+                            type: 'line',
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    x: { title: { display: true, text: 'Month' } },
+                                    y: { title: { display: true, text: 'Earnings (VND)' } }
+                                }
+                            },
+                            data: {
+                                labels: data.revenueLabels,
+                                datasets: [{
+                                    label: 'Monthly Revenue',
+                                    data: data.revenueValues,
+                                    fill: false,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    tension: 0.1
+                                }]
+                            },
+                        });
 
-                    AOS.refresh();
-                } catch (error) {
-                    alert('Error fetching dashboard stats: ' + error.message);
-                    console.error(error);
-                }
-            }
-
-            const animateNumber = (id, end) => {
-                let start = 0;
-                const el = document.getElementById(id);
-                const duration = 800;
-                const step = Math.ceil(end / (duration / 30));
-
-                const counter = setInterval(() => {
-                    start += step;
-                    if (start >= end) {
-                        start = end;
-                        clearInterval(counter);
+                        AOS.refresh();
+                    } catch (error) {
+                        alert('Error fetching dashboard stats: ' + error.message);
+                        console.error(error);
                     }
-                    el.textContent = id === "revenueCount" ? `${start.toLocaleString()} VND` : start.toLocaleString();
-                }, 30);
-            };
+                }
 
-            fetchDashboardStats();
-        });
-    </script>
+                const animateNumber = (id, end) => {
+                    let start = 0;
+                    const el = document.getElementById(id);
+                    const duration = 800;
+                    const step = Math.ceil(end / (duration / 30));
 
-    <style>
-        .fs-lg-6 {
-            font-size: 1.125rem !important;
-        }
-    </style>
+                    const counter = setInterval(() => {
+                        start += step;
+                        if (start >= end) {
+                            start = end;
+                            clearInterval(counter);
+                        }
+                        el.textContent = id === "revenueCount" ? `${start.toLocaleString()} VND` : start.toLocaleString();
+                    }, 30);
+                };
+
+                fetchDashboardStats();
+            });
+        </script>
+
+        <style>
+            .fs-lg-6 {
+                font-size: 1.125rem !important;
+            }
+        </style>
 }

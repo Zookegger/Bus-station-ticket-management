@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Email with Image Test";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Email with Image Test</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="@Url.Action("SendEmailWithImage", "Test")" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Recipient Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" value="Email with Image Test" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required>
+This is a test email with an embedded image.
+The image will be displayed below this text.
+                    </textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image to Embed</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                    <div class="form-text">Select an image to embed in the email.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Email</button>
+                <a href="@Url.Action("Index", "Test")" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+        </div>
+    </div>
+</div> 

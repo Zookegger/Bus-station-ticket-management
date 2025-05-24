@@ -133,7 +133,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                             .ThenInclude(route => route != null ? route.DestinationLocation : null)
                     .Include(t => t.Seat)
                     .Include(t => t.User)
-                    .OrderBy(t => t.Id)
+                    .OrderByDescending(t => t.BookingDate)
                     .ToListAsync();
 
                 return View(tickets);
@@ -157,13 +157,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
                 var ticket = await _context.Tickets.Include(t => t.Trip)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.Route)
-                            .ThenInclude(route => route.StartLocation)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.StartLocation : null)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.Route)
-                            .ThenInclude(route => route.DestinationLocation)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.DestinationLocation : null)
                     .Include(t => t.Seat)
-                    .Include(t => t.User)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
                 if (ticket == null)
@@ -193,23 +192,25 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 var ticket = await _context.Tickets
                     .AsNoTracking()
                     .Include(t => t.Trip)
+                        .ThenInclude(trip => trip.TripDriverAssignments)
+                            .ThenInclude(tda => tda.Driver != null ? tda.Driver : null)
+                                .ThenInclude(driver => driver != null ? driver.Account : null)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.Route!)
-                            .ThenInclude(route => route.StartLocation!)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.StartLocation : null)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.Route!)
-                            .ThenInclude(route => route.DestinationLocation!)
+                        .ThenInclude(trip => trip != null ? trip.Route : null)
+                            .ThenInclude(route => route != null ? route.DestinationLocation : null)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.TripDriverAssignments!)
-                            .ThenInclude(tda => tda.Driver!)
+                        .ThenInclude(trip => trip != null ? trip.TripDriverAssignments : null)
+                            .ThenInclude(tda => tda.Driver != null ? tda.Driver : null)
                     .Include(t => t.Seat)
                     .Include(t => t.Trip)
-                        .ThenInclude(trip => trip.Vehicle)
-                            .ThenInclude(vehicle => vehicle.VehicleType)
-                    .Include(t => t.User)
+                        .ThenInclude(trip => trip != null ? trip.Vehicle : null)
+                            .ThenInclude(vehicle => vehicle != null ? vehicle.VehicleType : null)
                     .Include(t => t.Coupon)
                     .Include(t => t.Payment)
-                        .ThenInclude(p => p.VnPayment)
+                        .ThenInclude(p => p != null ? p.VnPayment : null)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
                 if (ticket == null)

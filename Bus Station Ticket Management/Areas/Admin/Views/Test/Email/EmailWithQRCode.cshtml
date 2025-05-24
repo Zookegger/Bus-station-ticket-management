@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Email with QR Code Test";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Email with QR Code Test</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="@Url.Action("SendEmailWithQRCode", "Test")">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Recipient Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="example@example.com">
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required placeholder="Email with QR Code Test">
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required placeholder="This is a test email with a QR code. The QR code will be displayed below this text."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="qrContent" class="form-label">QR Code Content</label>
+                    <input type="text" class="form-control" id="qrContent" name="qrContent" required placeholder="https://example.com/ticket/123...">
+                    <div class="form-text">Enter the content to be encoded in the QR code (URL, text, etc.)</div>
+                </div>
+                <div class="mb-3">
+                    <label for="qrSize" class="form-label">QR Code Size</label>
+                    <select class="form-select" id="qrSize" name="qrSize">
+                        <option value="200">Small (200x200)</option>
+                        <option value="300" selected>Medium (300x300)</option>
+                        <option value="400">Large (400x400)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Email</button>
+                <a href="@Url.Action("Index", "Test")" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+        </div>
+    </div>
+</div> 

@@ -1,10 +1,13 @@
 ﻿using Bus_Station_Ticket_Management.DataAccess;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Services;
+using Bus_Station_Ticket_Management.Services.Email;
+using Bus_Station_Ticket_Management.Services.QRCode;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using System.Net;
 using System.Text;
 using System.Web;
@@ -18,10 +21,17 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly VnPaymentSetting vnPaysetting;
         private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
-        private readonly QrCodeService _qrCodeService;
+        private readonly IQrCodeService _qrCodeService;
         private readonly IEmailBackgroundQueue _emailQueue;
 
-        public PaymentController(VnPaymentService vnPayment, ApplicationDbContext context, IOptions<VnPaymentSetting> vnPaymentSettings, ILogger<PaymentController> logger, IConfiguration configuration, QrCodeService qrCodeService, IEmailBackgroundQueue emailQueue)
+        public PaymentController(
+            VnPaymentService vnPayment, 
+            ApplicationDbContext context, 
+            IOptions<VnPaymentSetting> vnPaymentSettings, 
+            ILogger<PaymentController> logger, 
+            IConfiguration configuration, 
+            IQrCodeService qrCodeService, 
+            IEmailBackgroundQueue emailQueue)
         {
             this.vnPayment = vnPayment;
             this.context = context;
@@ -174,7 +184,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                     await transaction.CommitAsync();
                     _logger.LogInformation("Transaction saved successfully");
 
-                    SendTicketEmail(tickets);
+                    await SendTicketEmail(tickets);
 
                     return RedirectToAction("SelectSeats", "Seat", new { VehicleId = vehicleId, TripId = tripId });
                 }
@@ -203,33 +213,48 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         // Send ticket QR code to user and guest (Can be improve in the future)
         // Right now it sends multiple emails to the same user which could be annoying or spammy
-        private void SendTicketEmail(List<Ticket> tickets) {
+        private async Task SendTicketEmail(List<Ticket> tickets) {
             try {
                 foreach (var ticket in tickets) {
                     var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                    var ticketUrl = $"{baseUrl}/Ticket/Details?id={ticket.Id}";
+                    var ticketUrl = $"{baseUrl}/Tickets/Details?id={ticket.Id}";
+                    string qrCodeString = _qrCodeService.GenerateQrCode(ticketUrl);
 
-                    var qrCode = _qrCodeService.GenerateQrCode(ticketUrl);
-                    var emailContent = 
-                    $"<span>Your ticket has been successfully purchased. Please scan the QR code below to access your ticket:</span> <br /> <img src='{qrCode}' />";
+                    byte[] qrCodeBytes = Convert.FromBase64String(qrCodeString);
+                    
+                    var builder = new BodyBuilder();
+                    
+                    var image = builder.LinkedResources.Add("qrcode.png", qrCodeBytes);
+                    image.ContentId = MimeKit.Utils.MimeUtils.GenerateMessageId();
+                    
+                    var emailContent = $@"
+                        <span>Your ticket has been successfully purchased. Please scan the QR code below to access your ticket:</span>
+                        <br /> 
+                        <img src=""cid:{image.ContentId}"" />
+                        <br />
+                        <p>If the QR code doesn't load, <a href='{ticketUrl}'>click here to view your ticket</a>.</p>
+                        <br />
+                        <p>Thank you for choosing EasyRide!</p>";
                     
                     if (ticket.GuestEmail != null) {
-                        _emailQueue.QueueEmail(new EmailMessage {
-                            To = ticket.GuestEmail,
-                            Subject = "Ticket Purchase Confirmation",
-                            HtmlContent = emailContent
-                        });
+                        var message = new MimeMessage();
+                        message.To.Add(new MailboxAddress("", ticket.GuestEmail));
+                        message.Subject = "Ticket Purchase Confirmation";
+                        message.Body = new TextPart("html") { Text = emailContent };
+                        
+                        await _emailQueue.QueueEmail(message);
                     } else {
                         if (ticket.User == null || ticket.User.Email == null) {
                             _logger.LogError("Email not found");
                             throw new Exception("Email not found");
                         }
 
-                        _emailQueue.QueueEmail(new EmailMessage {
-                            To = ticket.User.Email,
-                            Subject = "Ticket Purchase Confirmation",
-                            HtmlContent = emailContent
-                        });
+                        var message = new MimeMessage();
+                        message.To.Add(new MailboxAddress("", ticket.User.Email));
+                        message.Subject = "Ticket Purchase Confirmation";
+                        message.Body = new TextPart("html") { Text = emailContent };
+
+                        await _emailQueue.QueueEmail(message);
                     }
                 }
             } catch (Exception ex) {

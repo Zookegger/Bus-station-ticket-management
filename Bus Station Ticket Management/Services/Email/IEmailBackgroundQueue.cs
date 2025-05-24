@@ -1,6 +1,10 @@
-namespace Bus_Station_Ticket_Management.Services
+using System.Threading.Channels;
+using MimeKit;
+
+namespace Bus_Station_Ticket_Management.Services.Email
 {
     public interface IEmailBackgroundQueue {
-        void QueueEmail(EmailMessage message);
+        Task QueueEmail(MimeMessage message);
+        ChannelReader<MimeMessage> Reader { get; }
     }
 }
