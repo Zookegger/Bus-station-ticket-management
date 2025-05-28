@@ -236,30 +236,34 @@ namespace Bus_Station_Ticket_Management.Controllers
                         <br />
                         <p>Thank you for choosing EasyRide!</p>";
                     
+                    builder.HtmlBody = emailContent;
+                    builder.TextBody = "Your ticket has been successfully purchased. Please scan the QR code below to access your ticket.";
+
+                    var message = new MimeMessage();
                     if (ticket.GuestEmail != null) {
-                        var message = new MimeMessage();
                         message.To.Add(new MailboxAddress("", ticket.GuestEmail));
                         message.Subject = "Ticket Purchase Confirmation";
                         message.Body = new TextPart("html") { Text = emailContent };
-                        
-                        await _emailQueue.QueueEmail(message);
                     } else {
-                        if (ticket.User == null || ticket.User.Email == null) {
+                        if (ticket.UserId == null) 
+                        {
                             _logger.LogError("Email not found");
                             throw new Exception("Email not found");
                         }
-
-                        var message = new MimeMessage();
-                        message.To.Add(new MailboxAddress("", ticket.User.Email));
+                        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == ticket.UserId);
+                        if (user == null) 
+                        {
+                            _logger.LogError($"User with ID {ticket.UserId} not found");
+                            throw new Exception("User not found");
+                        }
+                        message.To.Add(new MailboxAddress("", user.Email));
                         message.Subject = "Ticket Purchase Confirmation";
                         message.Body = new TextPart("html") { Text = emailContent };
-
-                        await _emailQueue.QueueEmail(message);
                     }
+                    await _emailQueue.QueueEmail(message);
                 }
             } catch (Exception ex) {
-                _logger.LogError(ex.ToString(), "Exception during SendTicketEmail processing");
-                throw new Exception("Failed to send ticket email");
+                _logger.LogError(ex.ToString(), "Exception during SendTicketEmail() processing");
             }
         }
 
