@@ -1,101 +1,532 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Coupon
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Coupon";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card">
-    <div class="card-header bg-success-subtle">
-        <h4>Edit Coupon</h4>
-    </div>
-    <div class="card-body">
-        <form asp-action="Edit" method="post" class="row">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group mb-3">
-                <label asp-for="CouponString" class="control-label"></label>
-                <input asp-for="CouponString" class="form-control" />
-                <span asp-validation-for="CouponString" class="text-danger"></span>
-            </div>
-            <div class="col-6 form-group mb-3">
-                <label asp-for="DiscountType" class="control-label"></label>
-                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()"
-                    asp-items="Html.GetEnumSelectList<DiscountType>()"></select>
-                <span asp-validation-for="DiscountType" class="text-danger"></span>
-            </div>
-            <div class="col-6 form-group mb-3">
-                <label asp-for="DiscountAmount" class="control-label"></label>
-                <input asp-for="DiscountAmount" id="discountValue" class="form-control" oninput="checkInput()" />
-                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
-            </div>
-            <div class="col-6 form-group mb-3">
-                <label asp-for="StartPeriod" class="control-label"></label>
-                <input asp-for="StartPeriod" class="form-control" />
-                <span asp-validation-for="StartPeriod" class="text-danger"></span>
-            </div>
-            <div class="col-6 form-group mb-3">
-                <label asp-for="EndPeriod" class="control-label"></label>
-                <input asp-for="EndPeriod" class="form-control" />
-                <span asp-validation-for="EndPeriod" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-1">
-                <div class="form-check">
-                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
-                    <label asp-for="IsActive" class="form-check-label"></label>
-                    <span asp-validation-for="IsActive" class="text-danger"></span>
+<!-- Enhanced Edit Page with Modern UI -->
+<div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" class="text-decoration-none">
+                    <i class="fas fa-ticket-alt me-1"></i>Coupons
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="fas fa-edit me-1"></i>Edit Coupon
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle me-3">
+                                <i class="fas fa-edit fa-2x text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-1 fw-bold">Edit Coupon</h3>
+                                <p class="mb-0 opacity-75">Modify coupon details and settings</p>
+                            </div>
+                        </div>
+                        <div class="badge bg-white text-primary fs-6 px-3 py-2 rounded-pill">
+                            <i class="fas fa-ticket-alt me-1"></i>@Model.CouponString
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Form -->
+                <form asp-action="Edit" method="post" id="editCouponForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger m-4 rounded-3 border-0" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Please correct the errors below.
+                    </div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="card-body p-4">
+                        <!-- Coupon Code Section -->
+                        <div class="section-card mb-4">
+                            <div class="section-header mb-3">
+                                <h5 class="text-primary mb-0">
+                                    <i class="fas fa-code me-2"></i>Coupon Identification
+                                </h5>
+                                <small class="text-muted">Unique coupon code and identifier</small>
+                            </div>
+                            
+                            <div class="form-floating mb-3">
+                                <input asp-for="CouponString" class="form-control form-control-lg" 
+                                       placeholder="Enter coupon code" data-tippy-content="Unique identifier for this coupon">
+                                <label asp-for="CouponString" class="form-label">
+                                    <i class="fas fa-tag me-1"></i>Coupon Code
+                                </label>
+                                <span asp-validation-for="CouponString" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Discount Configuration -->
+                        <div class="section-card mb-4">
+                            <div class="section-header mb-3">
+                                <h5 class="text-success mb-0">
+                                    <i class="fas fa-percent me-2"></i>Discount Configuration
+                                </h5>
+                                <small class="text-muted">Set discount type and amount</small>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select asp-for="DiscountType" id="discountType" class="form-select form-select-lg" 
+                                                onchange="updateDiscountType()" asp-items="Html.GetEnumSelectList<DiscountType>()"
+                                                data-tippy-content="Choose between percentage or fixed amount discount">
+                                        </select>
+                                        <label asp-for="DiscountType" class="form-label">
+                                            <i class="fas fa-tags me-1"></i>Discount Type
+                                        </label>
+                                        <span asp-validation-for="DiscountType" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating position-relative">
+                                        <input asp-for="DiscountAmount" id="discountValue" class="form-control form-control-lg" 
+                                               placeholder="Enter discount amount" oninput="checkInput()"
+                                               data-tippy-content="Discount value - percentage (0-100) or fixed amount">
+                                        <label asp-for="DiscountAmount" class="form-label">
+                                            <i class="fas fa-dollar-sign me-1"></i>Discount Amount
+                                        </label>
+                                        <div class="input-icon">
+                                            <i id="discountIcon" class="fas fa-percent text-muted"></i>
+                                        </div>
+                                        <span asp-validation-for="DiscountAmount" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Discount Preview -->
+                            <div class="discount-preview mt-3 p-3 bg-light rounded-3 border" id="discountPreview">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-eye text-primary me-2"></i>
+                                    <span class="text-muted small">Discount Preview: </span>
+                                    <span id="previewText" class="fw-bold text-success ms-1">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Validity Period -->
+                        <div class="section-card mb-4">
+                            <div class="section-header mb-3">
+                                <h5 class="text-warning mb-0">
+                                    <i class="fas fa-calendar-alt me-2"></i>Validity Period
+                                </h5>
+                                <small class="text-muted">Set coupon active period</small>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="StartPeriod" class="form-control form-control-lg" type="datetime-local"
+                                               data-tippy-content="When this coupon becomes active">
+                                        <label asp-for="StartPeriod" class="form-label">
+                                            <i class="fas fa-play-circle me-1"></i>Start Date
+                                        </label>
+                                        <span asp-validation-for="StartPeriod" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input asp-for="EndPeriod" class="form-control form-control-lg" type="datetime-local"
+                                               data-tippy-content="When this coupon expires">
+                                        <label asp-for="EndPeriod" class="form-label">
+                                            <i class="fas fa-stop-circle me-1"></i>End Date
+                                        </label>
+                                        <span asp-validation-for="EndPeriod" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Date Validation Info -->
+                            <div class="date-info mt-3 p-3 bg-info bg-opacity-10 rounded-3 border border-info border-opacity-25">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle text-info me-2"></i>
+                                    <span class="text-info small">End date must be after start date for the coupon to be valid</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Configuration -->
+                        <div class="section-card">
+                            <div class="section-header mb-3">
+                                <h5 class="text-secondary mb-0">
+                                    <i class="fas fa-toggle-on me-2"></i>Status Configuration
+                                </h5>
+                                <small class="text-muted">Enable or disable this coupon</small>
+                            </div>
+                            
+                            <div class="status-toggle p-3 bg-light rounded-3 border">
+                                <div class="form-check form-switch form-check-lg">
+                                    <input asp-for="IsActive" class="form-check-input form-check-input-lg" type="checkbox" 
+                                           id="isActiveSwitch" data-tippy-content="Toggle coupon active status">
+                                    <label asp-for="IsActive" class="form-check-label fs-5 fw-medium" for="isActiveSwitch">
+                                        <span id="statusText">
+                                            <i id="statusIcon" class="me-2"></i>
+                                            <span id="statusLabel"></span>
+                                        </span>
+                                    </label>
+                                    <span asp-validation-for="IsActive" class="text-danger small d-block mt-1"></span>
+                                </div>
+                                <small class="text-muted d-block mt-2">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    Inactive coupons cannot be used by customers
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-footer bg-light border-0 p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill hvr-sweep-to-right" 
+                               data-tippy-content="Cancel and return to coupon list">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-primary btn-lg rounded-pill hvr-pulse" 
+                                        onclick="previewChanges()" data-tippy-content="Preview changes before saving">
+                                    <i class="fas fa-eye me-2"></i>Preview
+                                </button>
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill hvr-wobble-horizontal" 
+                                        data-tippy-content="Save all changes">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-    <div class="card-footer d-flex justify-content-between">
-        <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
-        <button type="submit" class="btn btn-primary">Save</button> <!-- Updated: change input to button -->
+        </div>
     </div>
 </div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-primary text-white border-0 py-4">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle me-3">
+                        <i class="fas fa-eye fa-2x text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="modal-title mb-0" id="previewModalLabel">Coupon Preview</h4>
+                        <small class="opacity-75">Review your changes before saving</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="previewContent">
+                <!-- Preview content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer bg-light border-0 p-4">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-success rounded-pill" onclick="saveFromPreview()">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .section-card {
+        background: rgba(248, 249, 250, 0.5);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-color: rgba(13, 110, 253, 0.25);
+    }
+
+    .section-header {
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+        padding-bottom: 0.75rem;
+    }
+
+    .form-floating > .form-control:focus,
+    .form-floating > .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-control-lg, .form-select-lg {
+        font-size: 1.1rem;
+        padding: 1rem 0.75rem;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .form-check-input-lg {
+        width: 2.5rem;
+        height: 1.25rem;
+    }
+
+    .form-check-input-lg:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .discount-preview, .date-info, .status-toggle {
+        transition: all 0.3s ease;
+    }
+
+    .discount-preview:hover, .date-info:hover, .status-toggle:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        color: #6c757d;
+    }
+
+    .modal-content {
+        backdrop-filter: blur(10px);
+    }
+
+    /* Validation states */
+    .is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+
+    .is-valid {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+
+    /* Loading state */
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* Focus styles for accessibility */
+    .btn:focus, .form-control:focus, .form-select:focus {
+        outline: 2px solid #0d6efd;
+        outline-offset: 2px;
+    }
+</style>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            tippy('[data-tippy-content]', {
+                theme: 'light-border',
+                placement: 'top',
+                animation: 'fade',
+                duration: [300, 200],
+                arrow: true,
+                interactive: true
+            });
+
+            updateDiscountType();
+            updateStatusDisplay();
+        });
+
         // Function to update discount value behavior based on the selected discount type
         function updateDiscountType() {
-            const type = parseInt(document.getElementById('discountType').value); // Ensure it's an integer
+            const type = parseInt(document.getElementById('discountType').value);
             const value = document.getElementById('discountValue');
+            const icon = document.getElementById('discountIcon');
 
-            if (type === 0) { // Assuming 0 represents "Percentage" in your enum
-                value.placeholder = "%";
+            if (type === 0) { // Percentage
+                value.placeholder = "Enter percentage (0-100)";
                 value.setAttribute("max", 100);
-            } else {
-                value.placeholder = "VND";
-                value.removeAttribute("max"); // allow full range for fixed amount
+                icon.className = "fas fa-percent text-success";
+            } else { // Fixed amount
+                value.placeholder = "Enter amount in VND";
+                value.removeAttribute("max");
+                icon.className = "fas fa-dollar-sign text-success";
             }
 
-            // Logging for debugging
-            console.log("1");
-            console.log(type);
-            console.log(value);
+            updateDiscountPreview();
+            console.log("Discount type updated:", type);
         }
 
         // Function to check the discount input value and limit it to 100 if percentage
         function checkInput() {
-            const type = parseInt(document.getElementById('discountType').value); // Ensure it's an integer
+            const type = parseInt(document.getElementById('discountType').value);
             const value = document.getElementById('discountValue');
 
-            if (type === 0 && parseFloat(value.value) > 100) { // If type is percentage (0), limit to 100
+            if (type === 0 && parseFloat(value.value) > 100) {
                 value.value = 100;
             }
 
-            // Logging for debugging
-            console.log("2");
-            console.log(type);
-            console.log(value);
+            updateDiscountPreview();
+            console.log("Input checked:", type, value.value);
         }
 
-        // Ensure the updateDiscountType function runs when the page loads
-        document.addEventListener("DOMContentLoaded", function () {
-            updateDiscountType(); // Correctly call the function with no return value
+        // Function to update discount preview
+        function updateDiscountPreview() {
+            const type = parseInt(document.getElementById('discountType').value);
+            const amount = parseFloat(document.getElementById('discountValue').value) || 0;
+            const previewText = document.getElementById('previewText');
+
+            if (amount > 0) {
+                if (type === 0) {
+                    previewText.textContent = `${amount}% off`;
+                    previewText.className = "fw-bold text-success ms-1";
+                } else {
+                    previewText.textContent = `${amount.toLocaleString()} VND off`;
+                    previewText.className = "fw-bold text-success ms-1";
+                }
+            } else {
+                previewText.textContent = "Enter discount amount";
+                previewText.className = "fw-bold text-muted ms-1";
+            }
+        }
+
+        // Function to update status display
+        function updateStatusDisplay() {
+            const checkbox = document.getElementById('isActiveSwitch');
+            const statusIcon = document.getElementById('statusIcon');
+            const statusLabel = document.getElementById('statusLabel');
+
+            function updateDisplay() {
+                if (checkbox.checked) {
+                    statusIcon.className = "fas fa-check-circle text-success me-2";
+                    statusLabel.textContent = "Active";
+                    statusLabel.className = "text-success";
+                } else {
+                    statusIcon.className = "fas fa-times-circle text-danger me-2";
+                    statusLabel.textContent = "Inactive";
+                    statusLabel.className = "text-danger";
+                }
+            }
+
+            updateDisplay();
+            checkbox.addEventListener('change', updateDisplay);
+        }
+
+        // Preview changes function
+        function previewChanges() {
+            const formData = {
+                couponString: document.querySelector('input[name="CouponString"]').value,
+                discountType: parseInt(document.getElementById('discountType').value),
+                discountAmount: parseFloat(document.getElementById('discountValue').value) || 0,
+                startPeriod: document.querySelector('input[name="StartPeriod"]').value,
+                endPeriod: document.querySelector('input[name="EndPeriod"]').value,
+                isActive: document.getElementById('isActiveSwitch').checked
+            };
+
+            const previewHTML = `
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="preview-item p-3 bg-light rounded-3">
+                            <label class="small text-muted">Coupon Code</label>
+                            <div class="fw-bold">${formData.couponString || 'Not set'}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="preview-item p-3 bg-light rounded-3">
+                            <label class="small text-muted">Discount</label>
+                            <div class="fw-bold">
+                                ${formData.discountType === 0 ? 
+                                    `${formData.discountAmount}% off` : 
+                                    `${formData.discountAmount.toLocaleString()} VND off`}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="preview-item p-3 bg-light rounded-3">
+                            <label class="small text-muted">Start Date</label>
+                            <div class="fw-bold">${formData.startPeriod ? new Date(formData.startPeriod).toLocaleString() : 'Not set'}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="preview-item p-3 bg-light rounded-3">
+                            <label class="small text-muted">End Date</label>
+                            <div class="fw-bold">${formData.endPeriod ? new Date(formData.endPeriod).toLocaleString() : 'Not set'}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="preview-item p-3 bg-light rounded-3">
+                            <label class="small text-muted">Status</label>
+                            <div class="fw-bold">
+                                <span class="badge ${formData.isActive ? 'bg-success' : 'bg-secondary'} fs-6">
+                                    <i class="fas ${formData.isActive ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
+                                    ${formData.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('previewContent').innerHTML = previewHTML;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+            $('.modal-backdrop').remove();
+        }
+
+        // Save from preview
+        function saveFromPreview() {
+            bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
+            document.getElementById('editCouponForm').submit();
+        }
+
+        // Form submission with loading state
+        document.getElementById('editCouponForm').addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            submitBtn.disabled = true;
         });
     </script>
+
 }

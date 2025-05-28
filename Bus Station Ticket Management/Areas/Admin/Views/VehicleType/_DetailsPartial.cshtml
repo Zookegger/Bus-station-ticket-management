@@ -1,36 +1,38 @@
 ﻿@model Bus_Station_Ticket_Management.Models.VehicleType
-<div class="card-body flex-1">
-    <div class="row mb-4 gap-sm-3 gap-md-0">
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <i class="fa-solid fa-bus me-2"></i>Vehicle Information
-                    </h6>
-                    <p class="card-text fs-5">
-                        <strong>Name:</strong><br>@Model.Name
-                    </p>
-                    <p class="card-text fs-5">
-                        <strong>Price:</strong><br>@Html.DisplayFor(model => model.Price)
-                    </p>
-                    <p class="card-text fs-5">
-                        <strong>Total Seats:</strong><br>@Model.TotalSeats
-                    </p>
-                    <p class="card-text fs-5">
-                        <strong>Total Column:</strong><br>@Model.TotalColumns
-                    </p>
-                    <p class="card-text fs-5">
-                        <strong>Total Row:</strong><br>@Model.TotalRows
-                    </p>
-                    <p class="card-text fs-5">
-                        <strong>Total Flooring:</strong><br>@Model.TotalFloors
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
+<div class="card-body">
+    <h5 class="card-title text-primary mb-3">
+        <i class="fa-solid fa-bus me-2"></i>Vehicle Information
+    </h5>
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-tag me-2 text-secondary"></i>Name:</strong>
+            <span class="ms-1">@Model.Name</span>
+        </li>
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-dollar-sign me-2 text-success"></i>Price:</strong>
+            <span class="ms-1">@Html.DisplayFor(model => model.Price)</span>
+        </li>
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-chair me-2 text-secondary"></i>Total Seats:</strong>
+            <span class="ms-1">@Model.TotalSeats</span>
+        </li>
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-columns me-2 text-secondary"></i>Total Columns:</strong>
+            <span class="ms-1">@Model.TotalColumns</span>
+        </li>
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-bars me-2 text-secondary"></i>Total Rows:</strong>
+            <span class="ms-1">@Model.TotalRows</span>
+        </li>
+        <li class="list-group-item px-0">
+            <strong><i class="fas fa-layer-group me-2 text-secondary"></i>Total Flooring:</strong>
+            <span class="ms-1">@Model.TotalFloors</span>
+        </li>
+    </ul>
+</div>
+</div>
 <div class="card-footer form-group d-flex justify-content-between" role="group" aria-label="Button group">
     <a role="button" class="btn btn-lg btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">
         <i class="fas fa-edit"></i> Edit Vehicle Type
@@ -39,4 +41,3 @@
         <i class="fas fa-arrow-left"></i> Back to List
     </a>
 </div>
-

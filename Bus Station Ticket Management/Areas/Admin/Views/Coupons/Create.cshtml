@@ -1,61 +1,479 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Coupon
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create New Coupon";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card">
-    <div class="card-header bg-success-subtle">
-        <h4 class="">Create Coupon</h4>
+<head>
+    <style>
+        
+        .breadcrumb-custom {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .breadcrumb-custom .breadcrumb-item a {
+            color: #667eea;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: #764ba2;
+            transform: translateX(2px);
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .form-container:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .form-header:hover::before {
+            transform: scale(1.1);
+        }
+        
+        .form-header h4 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-header .subtitle {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-body {
+            padding: 2.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-label i {
+            margin-right: 0.5rem;
+            color: #667eea;
+        }
+        
+        .form-control-custom {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .form-control-custom:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+            transform: translateY(-1px);
+        }
+        
+        .form-control-custom:hover {
+            border-color: #ced4da;
+            background: white;
+        }
+        
+        .input-group-custom {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        .discount-preview {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .discount-preview:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .preview-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .preview-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .date-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .date-section:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 0.5rem;
+            color: #667eea;
+        }
+        
+        .btn-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-secondary-custom {
+            background: #6c757d;
+            color: white;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+        
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+        
+        .validation-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .validation-message i {
+            margin-right: 0.5rem;
+        }
+        
+        .form-actions {
+            padding-top: 2rem;
+            border-top: 2px solid #f8f9fa;
+            margin-top: 2rem;
+        }
+        
+        .coupon-code-input {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .generate-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+        
+        .generate-btn:hover {
+            background: #764ba2;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+        
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .step-circle.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .floating-label {
+            position: relative;
+        }
+        
+        .floating-label input:focus + label,
+        .floating-label input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.8);
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<!-- Enhanced Breadcrumb -->
+<nav aria-label="breadcrumb" class="breadcrumb-custom hvr-float">
+    <ol class="breadcrumb bg-transparent p-0 m-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="hvr-underline-from-left">
+                <i class="fas fa-ticket-alt me-2"></i>Coupons
+            </a>
+        </li>
+        <li class="breadcrumb-item active d-flex align-items-center" aria-current="page">
+            <i class="fas fa-plus me-2 text-success"></i>Create New Coupon
+        </li>
+    </ol>
+</nav>
+
+<!-- Enhanced Form Container -->
+<div class="container">
+    <div class="form-header">
+        <h4 class="d-flex align-items-center">
+            <i class="fas fa-ticket-alt me-3"></i>
+            Create New Coupon
+        </h4>
+        <p class="subtitle mt-2">Generate promotional codes for your customers</p>
     </div>
-    <form asp-action="Create" class="card-body">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <form asp-action="Create" class="form-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Please correct the errors below.
+        </div>
+
+        <!-- Basic Information Section -->
         <div class="row">
-            <div class="col form-group">
-                <label asp-for="CouponString" style="left: unset;" for="CouponString" class="control-label"></label>
-                <input asp-for="CouponString" type="text" class="form-control" placeholder=" " id="CouponString" />
-                <span asp-validation-for="CouponString" class="text-danger"></span>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="CouponString" class="form-label">
+                        <i class="fas fa-code"></i>Coupon Code
+                    </label>
+                    <div class="input-group-custom">
+                        <input asp-for="CouponString" type="text" class="form-control form-control-custom coupon-code-input" 
+                                placeholder="Enter coupon code" id="CouponString" />
+                        <button type="button" class="generate-btn" onclick="generateCouponCode()" 
+                                data-bs-toggle="tooltip" title="Generate Random Code">
+                            <i class="fas fa-magic"></i>
+                        </button>
+                    </div>
+                    
+                    <span asp-validation-for="CouponString" class="validation-message"></span>
+                </div>
             </div>
 
-            <div class="col form-group">
-                <label asp-for="DiscountType" class="control-label"></label>
-                <select asp-for="DiscountType" id="discountType" class="form-control" onchange="updateDiscountType()"
-                    asp-items="ViewBag.DiscountType"></select>
-                <span asp-validation-for="DiscountType" class="text-danger"></span>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="DiscountType" class="form-label">
+                        <i class="fas fa-tag"></i>Discount Type
+                    </label>
+                    <select asp-for="DiscountType" id="discountType" class="form-control form-control-custom" 
+                            onchange="updateDiscountType()" asp-items="ViewBag.DiscountType">
+                        <option value="" selected disabled>Select discount type</option>
+                    </select>
+                    <span asp-validation-for="DiscountType" class="validation-message"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="DiscountAmount" class="control-label"></label>
-            <input asp-for="DiscountAmount" type="number" min="0" id='discountValue' class="form-control"
-                oninput="checkInput()" />
-            <span asp-validation-for="DiscountAmount" class="text-danger"></span>
-        </div>
-        <div class="row mt-3">
-            <div class="col form-group">
-                <label asp-for="StartPeriod" class="control-label"></label>
-                <input asp-for="StartPeriod" class="form-control" />
-                <span asp-validation-for="StartPeriod" class="text-danger"></span>
-            </div>
-            <div class="col form-group">
-                <label asp-for="EndPeriod" class="control-label"></label>
-                <input asp-for="EndPeriod" class="form-control" />
-                <span asp-validation-for="EndPeriod" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <input asp-for="IsActive" type="hidden" class="form-control" />
-            <span asp-validation-for="IsActive" class="text-danger"></span>
         </div>
 
-        <div class="form-group d-flex justify-content-between mt-3">
-            <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
-            <input type="submit" value="Create" class="btn btn-primary" />
+        <!-- Discount Amount Section -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="DiscountAmount" class="form-label">
+                        <i class="fas fa-percentage"></i>Discount Amount
+                    </label>
+                    <div class="input-group-custom">
+                        <input asp-for="DiscountAmount" disabled type="number" min="0" id='discountValue' 
+                                class="form-control form-control-custom" oninput="checkInput(); updatePreview()" 
+                                placeholder="Enter discount amount" />
+                        <span class="input-icon" id="discountIcon">
+                            <i class="fas fa-percentage"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="DiscountAmount" class="validation-message"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="discount-preview hvr-pulse" id="discountPreview" style="display: none;">
+                    <div class="preview-label">Preview</div>
+                    <div class="preview-value" id="previewValue">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Range Section -->
+        <div class="date-section hvr-bob">
+            <div class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Validity Period
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="StartPeriod" class="form-label">
+                            <i class="fas fa-calendar-plus"></i>Start Date
+                        </label>
+                        <input asp-for="StartPeriod" type="datetime-local" class="form-control form-control-custom" />
+                        <span asp-validation-for="StartPeriod" class="validation-message"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="EndPeriod" class="form-label">
+                            <i class="fas fa-calendar-minus"></i>End Date
+                        </label>
+                        <input asp-for="EndPeriod" type="datetime-local" class="form-control form-control-custom" />
+                        <span asp-validation-for="EndPeriod" class="validation-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Fields -->
+        <input asp-for="IsActive" type="hidden" value="true" />
+
+        <!-- Form Actions -->
+        <div class="form-actions d-flex justify-content-between align-items-center">
+            <a role="button" class="btn btn-custom btn-secondary-custom hvr-sweep-to-right" asp-action="Index">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+            <button type="submit" class="btn btn-custom btn-primary-custom hvr-sweep-to-right">
+                <i class="fas fa-plus me-2"></i>Create Coupon
+            </button>
         </div>
     </form>
-
 </div>
-
 
 @section Scripts {
     @{
@@ -65,14 +483,27 @@
         function updateDiscountType() {
             const type = document.getElementById('discountType').value;
             const value = document.getElementById('discountValue');
+            const icon = document.getElementById('discountIcon');
+            const preview = document.getElementById('discountPreview');
 
             if (type === "Percentage") {
-                value.placeholder = "%";
+                value.disabled = false;
+                value.placeholder = "Enter percentage (0-100)";
                 value.setAttribute("max", 100);
+                icon.innerHTML = '<i class="fas fa-percentage"></i>';
+            } else if (type === "FixedAmount") {
+                value.disabled = false;
+                value.placeholder = "Enter fixed amount in VND";
+                value.removeAttribute("max");
+                icon.innerHTML = '<i class="fas fa-dollar-sign"></i>';
             } else {
-                value.placeholder = "VND";
-                value.removeAttribute("max"); // allow full range for fixed amount
+                value.placeholder = "Select discount type first";
+                icon.innerHTML = '<i class="fas fa-question"></i>';
+                preview.style.display = 'none';
+                return;
             }
+            
+            updatePreview();
         }
 
         function checkInput() {
@@ -82,8 +513,81 @@
             if (type === "Percentage" && parseFloat(value.value) > 100) {
                 value.value = 100;
             }
+            if (type === "FixedAmount" && parseFloat(value.value) < 0) {
+                value.value = 0;
+            }
         }
 
-        document.addEventListener("DOMContentLoaded", updateDiscountType);
+        function updatePreview() {
+            const type = document.getElementById('discountType').value;
+            const value = document.getElementById('discountValue').value;
+            const preview = document.getElementById('discountPreview');
+            const previewValue = document.getElementById('previewValue');
+
+            if (type && value && value > 0) {
+                preview.style.display = 'block';
+                if (type === "Percentage") {
+                    previewValue.textContent = value + '%';
+                    previewValue.style.color = '#e74c3c';
+                } else if (type === "FixedAmount") {
+                    previewValue.textContent = new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(value);
+                    previewValue.style.color = '#27ae60';
+                }
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function generateCouponCode() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('CouponString').value = result;
+        }
+
+        function validateDates() {
+            const startDate = document.getElementById('StartPeriod').value;
+            const endDate = document.getElementById('EndPeriod').value;
+            
+            if (startDate && endDate) {
+                if (new Date(startDate) >= new Date(endDate)) {
+                    alert('End date must be after start date');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            updateDiscountType();
+            
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+
+            document.getElementById('StartPeriod').addEventListener('change', validateDates);
+            document.getElementById('EndPeriod').addEventListener('change', validateDates);
+
+            // Form submission validation
+            document.querySelector('form').addEventListener('submit', function(e) {
+                if (!validateDates()) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Add loading state to submit button
+                const submitBtn = document.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+                submitBtn.disabled = true;
+            });
+        });
     </script>
 }

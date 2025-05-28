@@ -1,74 +1,76 @@
 ﻿@model Bus_Station_Ticket_Management.Models.VehicleType
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Vehicle Type";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container">
-    <h1 class="text-success fw-bold mb-4">Create Vehicle</h1>
-    <h4 class="mb-3">Vehicle Details</h4>
-    <hr />
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h2 class="text-primary fw-bold mb-3">
+                        <i class="fas fa-plus-circle me-2"></i> Add New Vehicle Type
+                    </h2>
+                    <p class="text-muted mb-4">Fill in the details for the new vehicle type below.</p>
 
-    <div class="row">
-        <div class="col-md-9 col-lg-12 mx-auto">
-            <form asp-action="Create" class="bg-light p-4 rounded shadow-sm">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
-                    Please correct the errors below.
-                </div>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                            Please correct the errors below.
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Name" class="form-label">Name</label>
-                    <input asp-for="Name" class="form-control"
-                        placeholder="Enter vehicle type name (e.g., Electric Bus)" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g., Electric Bus" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Price" class="form-label">Price</label>
-                    <input asp-for="Price" class="form-control" placeholder="Enter base fare (e.g., 100000)" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Price</label>
+                            <input asp-for="Price" class="form-control" placeholder="e.g., 100000" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="TotalSeats" class="form-label">Total Seats</label>
-                    <input asp-for="TotalSeats" class="form-control" placeholder="Enter total seats (e.g., 42)" />
-                    <span asp-validation-for="TotalSeats" class="text-danger"></span>
-                </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TotalSeats" class="form-label">Seats</label>
+                                <input asp-for="TotalSeats" class="form-control" placeholder="e.g., 42" />
+                                <span asp-validation-for="TotalSeats" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TotalFloors" class="form-label">Floors</label>
+                                <input asp-for="TotalFloors" class="form-control" placeholder="e.g., 3" />
+                                <span asp-validation-for="TotalFloors" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TotalRows" class="form-label">Rows</label>
+                                <input asp-for="TotalRows" class="form-control" placeholder="e.g., 7" />
+                                <span asp-validation-for="TotalRows" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="TotalFloors" class="form-label">Total Flooring</label>
-                    <input asp-for="TotalFloors" class="form-control" placeholder="Enter total flooring (e.g., 3)" />
-                    <span asp-validation-for="TotalFloors" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="TotalColumns" class="form-label">Columns</label>
+                            <input asp-for="TotalColumns" class="form-control" placeholder="e.g., 6" />
+                            <span asp-validation-for="TotalColumns" class="text-danger"></span>
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="TotalRows" class="form-label">Total Rows</label>
-                    <input asp-for="TotalRows" class="form-control" placeholder="Enter number of rows (e.g., 7)" />
-                    <span asp-validation-for="TotalRows" class="text-danger"></span>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Create
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="TotalColumns" class="form-label">Total Columns</label>
-                    <input asp-for="TotalColumns" class="form-control" placeholder="Enter number of columns (e.g., 6)" />
-                    <span asp-validation-for="TotalColumns" class="text-danger"></span>
-                </div>
-
-                <div class="form-group btn-group gap-2 mt-3 w-100">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Create
-                    </button>
-                    <a role="button" class="btn btn-outline-secondary" asp-action="Index">
-                        <i class="fa fa-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

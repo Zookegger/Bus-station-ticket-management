@@ -40,7 +40,7 @@ namespace Bus_Station_Ticket_Management.Controllers
         }
 
 
-        public async Task<List<ApplicationUser>> GetCustomers(string? id)
+        public async Task<ApplicationUser> GetCustomer(string? id)
         {
             try
             {
@@ -63,9 +63,16 @@ namespace Bus_Station_Ticket_Management.Controllers
                 ViewBag.TotalTickets = totalTickets;
                 ViewBag.TotalSpent = totalSpent;
 
-                return await _context.Users
-                    .Where(u => customerIds.Contains(u.Id) && u.Id.Contains(id))
-                    .ToListAsync();
+                var customer = await _context.Users
+                    .Where(u => customerIds.Contains(u.Id) && u.Id == id)
+                    .FirstOrDefaultAsync();
+
+                if (customer == null)
+                {
+                    return new();
+                }
+
+                return customer;
             }
             catch (Exception ex)
             {
@@ -86,21 +93,115 @@ namespace Bus_Station_Ticket_Management.Controllers
             }
         }
 
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound($"Invalid id: {id}");
+            }
+            var customer = await GetCustomer(id);
+            if (customer == null)
+            {
+                return NotFound($"Cannot find customer with id {id}");
+            }
+            ViewBag.Roles = await _roleManager.Roles.ToListAsync();
+            ViewBag.UserRoles = await _userManager.GetRolesAsync(customer);
+            return View(customer);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string? id, ApplicationUser customer)
+        {
+            if (id != customer.Id)
+            {
+                return NotFound($"Invalid id: {id}");
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(customer);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (!CustomerExists(customer.Id))
+                    {
+                        return NotFound($"Cannot find customer with id {customer.Id}");
+                    }
+                    else
+                    {
+                        _logger.LogError(ex, "Error updating customer");
+                        ModelState.AddModelError("", "Unable to save changes. Please try again.");
+                    }
+                }
+            }
+            return View(customer);
+        }
+
+        public async Task<IActionResult> Delete(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound($"Invalid id: {id}");
+            }
+            var customer = await GetCustomer(id);
+            if (customer == null)
+            {
+                return NotFound($"Cannot find customer with id {id}");
+            }
+            return View(customer);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound($"Invalid id: {id}");
+            }
+            var customer = await GetCustomer(id);
+            if (customer == null)
+            {
+                return NotFound($"Cannot find customer with id {id}");
+            }
+            try
+            {
+                _context.Users.Remove(customer);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting customer");
+                ModelState.AddModelError("", "Unable to delete customer. Please try again.");
+            }
+            return View(customer);
+        }
+
         public async Task<IActionResult> DetailsPartial(string? id)
         {
             try
             {
-                var customer = await GetCustomers(id);
+                var customer = await GetCustomer(id);
                 if (customer == null)
                 {
                     return NotFound($"Cannot find customer with id {id}");
                 }
-                return PartialView("_DetailsPartial", customer.FirstOrDefault());
+                return PartialView("_DetailsPartial", customer);
             }
             catch (Exception ex)
             {
                 return NotFound($"Error getting details partial: {ex.Message}");
             }
+        }
+
+        private bool CustomerExists(string id)
+        {
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

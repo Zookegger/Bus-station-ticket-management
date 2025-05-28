@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	const tableName = document.querySelector(tableSelector).dataset.tableName;
 	const tableTitle = document.querySelector(tableSelector).dataset.tableTitle;
 
-	initializeDataTable(tableName, tableTitle, tableSelector, {
+	initializeDataTable(tableTitle, tableSelector, {
 		ajax: null, // Loads data via AJAX
 		columns: null, // Defines column data sources
 		order: [[0, "asc"]], // Default column ordering
@@ -32,60 +32,80 @@ document.addEventListener("DOMContentLoaded", function () {
 				}, 10);
 			});
 
-            $(".dt-length").attr("data-tippy-content", "Choose how many entries to display");
-            $(".dt-search").attr("data-tippy-content", `Search for ${tableTitle} in the database`);
+			$(".dt-length").attr(
+				"data-tippy-content",
+				"Choose how many entries to display"
+			);
+			$(".dt-search").attr(
+				"data-tippy-content",
+				`Search for ${tableTitle} in the database`
+			);
 		},
 	});
 
-	initializeRowClickHandler(
-		tableSelector,
-		detailsUrl,
-		"#detailsOffcanvas",
-		"#detailsOffcanvasBody"
-	);
+	if (document.querySelector("#detailsOffcanvas") && document.querySelector("#detailsOffcanvasBody")) {
+		initializeRowClickHandler(
+			tableSelector,
+			detailsUrl,
+			"#detailsOffcanvas",
+			"#detailsOffcanvasBody"
+		);
+	} else {
+		initializeRowClickHandler(
+			tableSelector,
+			detailsUrl
+		);
+	}
+
 
 	// Function to check if the table height is too small and toggle button visibility
-    function adjustButtonVisibility() {
-        const table = document.querySelector("#DataTable");
-        if (!table) return;
+	function adjustButtonVisibility() {
+		const table = document.querySelector("#DataTable");
+		if (!table) return;
 
-        // Use timeout to wait for DOM render (rows must have height)
-        setTimeout(function () {
-            const firstRow = table.querySelector("tbody tr");
-            if (!firstRow) return;
+		// Use timeout to wait for DOM render (rows must have height)
+		setTimeout(function () {
+			const firstRow = table.querySelector("tbody tr");
+			if (!firstRow) return;
 
-            const rowHeight = firstRow.offsetHeight;
-            const minTableHeight = 4 * rowHeight;
+			const rowHeight = firstRow.offsetHeight;
+			const minTableHeight = 4 * rowHeight;
 
-            const tableHeight = table.offsetHeight;
+			const tableHeight = table.offsetHeight;
 
-            const useSimpleButtons = tableHeight < minTableHeight;
+			const useSimpleButtons = tableHeight < minTableHeight;
 
-            document.querySelectorAll(".dropdown-buttons").forEach(function (btnGroup) {
-                btnGroup.style.display = useSimpleButtons ? "none" : "flex";
-            });
-            document.querySelectorAll(".simple-buttons").forEach(function (btnGroup) {
-                btnGroup.style.display = useSimpleButtons ? "block" : "none";
-            });
-        }, 100); // Wait briefly to ensure rows are fully rendered
-    }
+			document
+				.querySelectorAll(".dropdown-buttons")
+				.forEach(function (btnGroup) {
+					btnGroup.style.display = useSimpleButtons ? "none" : "flex";
+				});
+			document
+				.querySelectorAll(".simple-buttons")
+				.forEach(function (btnGroup) {
+					btnGroup.style.display = useSimpleButtons
+						? "block"
+						: "none";
+				});
+		}, 100); // Wait briefly to ensure rows are fully rendered
+	}
 
-    // Initial call to adjust visibility
-    adjustButtonVisibility();
+	// Initial call to adjust visibility
+	adjustButtonVisibility();
 
-    // Adjust visibility on window resize (optional)
-    window.addEventListener("resize", function () {
-        adjustButtonVisibility();
-    });
-    
+	// Adjust visibility on window resize (optional)
+	window.addEventListener("resize", function () {
+		adjustButtonVisibility();
+	});
+
 	tippy("[data-tippy-content]", {
 		placement: "top",
 		theme: "light",
 	});
 });
 
-function initializeDataTable(tableName, tableTitle, selector, options) {
-    console.log(tableTitle);
+function initializeDataTable(tableTitle, selector, options) {
+	console.log(tableTitle);
 
 	const defaultOptions = {
 		ordering: true,
@@ -139,31 +159,31 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 						extend: "copy",
 						text: "Copy",
 						attr: { "data-tippy-content": "Copy table data" },
-                        exportOptions: { columns: ':not(:last-child)' },
+						exportOptions: { columns: ":not(:last-child)" },
 					},
 					{
 						extend: "csv",
 						text: "CSV",
 						attr: { "data-tippy-content": "Export to CSV" },
-                        exportOptions: { columns: ':not(:last-child)' },
+						exportOptions: { columns: ":not(:last-child)" },
 					},
 					{
 						extend: "excel",
 						text: "Excel",
 						attr: { "data-tippy-content": "Export to Excel" },
-                        exportOptions: { columns: ':not(:last-child)' },
+						exportOptions: { columns: ":not(:last-child)" },
 					},
 					{
 						extend: "pdf",
 						text: "PDF",
 						attr: { "data-tippy-content": "Export to PDF" },
-                        exportOptions: { columns: ':not(:last-child)' },
+						exportOptions: { columns: ":not(:last-child)" },
 					},
 					{
 						extend: "print",
 						text: "Print",
 						attr: { "data-tippy-content": "Print table data" },
-                        exportOptions: { columns: ':not(:last-child)' },
+						exportOptions: { columns: ":not(:last-child)" },
 					},
 				],
 			},
@@ -186,21 +206,28 @@ function initializeRowClickHandler(
 			alert("No ID found! Make sure data-id is set properly.");
 			return;
 		}
-
-		$(offcanvasBodySelector).html(
-			'<div class="text-center p-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
-		);
-
-		$.get(`${detailsUrl}?id=${id}`, function (data) {
-			$(offcanvasBodySelector).html(data);
-			const offcanvas = new bootstrap.Offcanvas(
-				document.querySelector(offcanvasSelector)
-			);
-			offcanvas.show();
-		}).fail(function () {
+		if (
+			offcanvasSelector === undefined ||
+			offcanvasBodySelector === undefined
+		) {
+			window.location.href = `${detailsUrl}?id=${id}`;
+			return;
+		} else {
 			$(offcanvasBodySelector).html(
-				`<div class="alert alert-danger">Failed to load ${tableTitle} details.</div>`
+				'<div class="text-center p-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
 			);
-		});
+
+			$.get(`${detailsUrl}?id=${id}`, function (data) {
+				$(offcanvasBodySelector).html(data);
+				const offcanvas = new bootstrap.Offcanvas(
+					document.querySelector(offcanvasSelector)
+				);
+				offcanvas.show();
+			}).fail(function () {
+				$(offcanvasBodySelector).html(
+					`<div class="alert alert-danger">Failed to load ${tableTitle} details.</div>`
+				);
+			});
+		}
 	});
 }

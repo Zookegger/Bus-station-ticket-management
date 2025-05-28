@@ -1,77 +1,94 @@
 ﻿@model Bus_Station_Ticket_Management.Models.VehicleType
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Vehicle Type";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="display-4 text-center">Edit Vehicle Type</h1>
+<div class="container mt-5">
+    <div class="text-left mb-4">
+        <h1 class="display-5 fw-bold text-primary"><i class="fas fa-bus-alt me-2"></i>Edit Vehicle Type</h1>
+        <p class="text-muted">Modify the vehicle details using the form below</p>
+        <hr class="w-25 mx-auto">
+    </div>
 
-<h4 class="text-muted text-center">Modify vehicle details below</h4>
-<hr />
+    <div class="card shadow-sm border-0">
+            <form asp-action="Edit" class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="Id" />
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-            
-            <input type="hidden" asp-for="Id" />
-            
-            <!-- Name Input -->
-            <div class="form-group">
-                <label asp-for="Name" class="form-label">Vehicle Type Name</label>
-                <input asp-for="Name" class="form-control" placeholder="Enter vehicle name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            
-            <!-- Price Input -->
-            <div class="form-group">
-                <label asp-for="Price" class="form-label">Price</label>
-                <input asp-for="Price" class="form-control" placeholder="Enter price" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            
-            <!-- Total Seats Input -->
-            <div class="form-group">
-                <label asp-for="TotalSeats" class="form-label">Total Seats</label>
-                <input asp-for="TotalSeats" class="form-control" placeholder="Enter total seats" />
-                <span asp-validation-for="TotalSeats" class="text-danger"></span>
-            </div>
-            
-            <!-- Total Flooring Input -->
-            <div class="form-group">
-                <label asp-for="TotalFloors" class="form-label">Total Flooring</label>
-                <input asp-for="TotalFloors" class="form-control" placeholder="Enter total flooring" />
-                <span asp-validation-for="TotalFloors" class="text-danger"></span>
-            </div>
-            
-            <!-- Total Row Input -->
-            <div class="form-group">
-                <label asp-for="TotalRows" class="form-label">Total Rows</label>
-                <input asp-for="TotalRows" class="form-control" placeholder="Enter total rows" />
-                <span asp-validation-for="TotalRows" class="text-danger"></span>
-            </div>
-            
-            <!-- Total Column Input -->
-            <div class="form-group">
-                <label asp-for="TotalColumns" class="form-label">Total Columns</label>
-                <input asp-for="TotalColumns" class="form-control" placeholder="Enter total columns" />
-                <span asp-validation-for="TotalColumns" class="text-danger"></span>
-            </div>
-            
-            <!-- Submit and Back Buttons -->
-            <div class="form-group d-flex justify-content-between mt-3">
-                <a asp-action="Index" role="button" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                <!-- Vehicle Name -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold"><i
+                            class="fas fa-tag me-1 text-primary"></i>Vehicle Type Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter vehicle type name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group mb-3">
+                    <label asp-for="Price" class="control-label"></label>
+                    <!-- Input for smaller screens -->
+                    <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall"
+                        class="form-control d-md-none d-block" placeholder="..VND" />
+                    <!-- Input for larger screens -->
+                    <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block"
+                        placeholder="..VND" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+
+                    <!-- Total Seats -->
+                    <div class="col-3">
+                        <label asp-for="TotalSeats" class="form-label fw-semibold"><i
+                                class="fas fa-chair me-1 text-primary"></i>Total Seats</label>
+                        <input asp-for="TotalSeats" class="form-control" placeholder="Enter number of seats" />
+                        <span asp-validation-for="TotalSeats" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Total Floors -->
+                    <div class="col-3">
+                        <label asp-for="TotalFloors" class="form-label fw-semibold"><i
+                                class="fas fa-layer-group me-1 text-primary"></i>Total Floors</label>
+                        <input asp-for="TotalFloors" class="form-control" placeholder="Enter number of floors" />
+                        <span asp-validation-for="TotalFloors" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Total Rows -->
+                    <div class="col-3">
+                        <label asp-for="TotalRows" class="form-label fw-semibold"><i
+                                class="fas fa-bars me-1 text-primary"></i>Total Rows</label>
+                        <input asp-for="TotalRows" class="form-control" placeholder="Enter number of rows" />
+                        <span asp-validation-for="TotalRows" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Total Columns -->
+                    <div class="col-3">
+                        <label asp-for="TotalColumns" class="form-label fw-semibold"><i
+                                class="fas fa-columns me-1 text-primary"></i>Total Columns</label>
+                        <input asp-for="TotalColumns" class="form-control" placeholder="Enter number of columns" />
+                        <span asp-validation-for="TotalColumns" class="text-danger small"></span>
+                    </div>
+                </div>
+
+            </form>
+            <!-- Buttons -->
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary hover-float">
+                    <i class="fas fa-arrow-left me-1"></i>Back
                 </a>
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Save
+                <button type="submit" class="btn btn-success hover-shadow">
+                    <i class="fas fa-save me-1"></i>Save Changes
                 </button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/priceInput.js"></script>
 }

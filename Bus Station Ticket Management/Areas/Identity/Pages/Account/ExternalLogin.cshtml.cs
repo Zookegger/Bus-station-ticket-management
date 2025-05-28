@@ -191,7 +191,8 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
             user.PhoneNumber = null;
             user.Address = null;
             user.DateOfBirth = null;
-
+            user.EmailConfirmed = true;
+            
             return user;
         }
 

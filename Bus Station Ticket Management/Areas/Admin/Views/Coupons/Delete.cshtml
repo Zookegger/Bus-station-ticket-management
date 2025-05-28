@@ -1,58 +1,343 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Coupon
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Coupon";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<!-- Enhanced Delete Page with Modern UI -->
+<div class="container-fluid py-4">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" class="text-decoration-none">
+                    <i class="fas fa-ticket-alt me-1"></i>Coupons
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="fas fa-trash-alt me-1"></i>Delete Coupon
+            </li>
+        </ol>
+    </nav>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Coupon</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CouponString)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CouponString)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DiscountType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DiscountType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DiscountAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DiscountAmount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartPeriod)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartPeriod)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndPeriod)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndPeriod)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <!-- Alert Warning -->
+    <div class="alert alert-warning border-0 mx-md-5 d-flex justify-content-center shadow-sm mb-4 hvr-pulse" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="alert-icon me-3">
+                <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+            </div>
+            <div>
+                <h5 class="alert-heading mb-1">
+                    <i class="fas fa-shield-alt me-2"></i>Permanent Action Warning
+                </h5>
+                <p class="mb-0">You are about to permanently delete this coupon. This action cannot be undone and will affect all related data.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Card Header -->
+                <div class="card-header bg-gradient-danger text-danger py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle bg-white bg-opacity-20 me-3">
+                                <i class="fas fa-ticket-alt fa-2x text-danger"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-1 fw-bold">Delete Coupon</h3>
+                                <p class="mb-0 opacity-75">Review coupon details before deletion</p>
+                            </div>
+                        </div>
+                        <div class="badge bg-white text-danger fs-6 px-3 py-2 rounded-pill">
+                            <i class="fas fa-exclamation-circle me-1"></i>Critical Action
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-0">
+                    <!-- Coupon Details Grid -->
+                    <div class="row g-0">
+                        <!-- Basic Info -->
+                        <div class="col-12 col-md-6">
+                            <div class="p-4 border-end border-bottom">
+                                <h5 class="text-muted mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
+                                </h5>
+                                
+                                <div class="info-card mb-3" data-tippy-content="Unique coupon identifier">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-code me-1"></i>@Html.DisplayNameFor(model => model.CouponString)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        <span class="badge bg-primary fs-6 font-monospace">
+                                            @Html.DisplayFor(model => model.CouponString)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-card mb-3" data-tippy-content="Type of discount applied">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-tags me-1"></i>@Html.DisplayNameFor(model => model.DiscountType)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        <span class="badge bg-info fs-6">
+                                            <i class="fas fa-percent me-1"></i>
+                                            @Html.DisplayFor(model => model.DiscountType)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-card" data-tippy-content="Discount value or percentage">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-dollar-sign me-1"></i>@Html.DisplayNameFor(model => model.DiscountAmount)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        <span class="text-success fw-bold fs-5">
+                                            <i class="fas fa-gift me-1"></i>
+                                            @if (Model.DiscountType == DiscountType.Percentage)
+                                            {
+                                                <span>@Model.DiscountAmount%</span>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(model => model.DiscountAmount)
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Validity Period -->
+                        <div class="col-12 col-md-6">
+                            <div class="p-4 border-bottom">
+                                <h5 class="text-muted mb-3">
+                                    <i class="fas fa-calendar-alt me-2"></i>Validity Period
+                                </h5>
+                                
+                                <div class="info-card mb-3" data-tippy-content="Coupon activation date">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-play-circle me-1"></i>@Html.DisplayNameFor(model => model.StartPeriod)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        <span class="text-success">
+                                            <i class="fas fa-calendar-check me-1"></i>
+                                            @Html.DisplayFor(model => model.StartPeriod)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-card mb-3" data-tippy-content="Coupon expiration date">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-stop-circle me-1"></i>@Html.DisplayNameFor(model => model.EndPeriod)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        <span class="text-danger">
+                                            <i class="fas fa-calendar-times me-1"></i>
+                                            @Html.DisplayFor(model => model.EndPeriod)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-card" data-tippy-content="Current coupon status">
+                                    <label class="form-label text-muted small mb-1">
+                                        <i class="fas fa-toggle-on me-1"></i>@Html.DisplayNameFor(model => model.IsActive)
+                                    </label>
+                                    <div class="info-value bg-light rounded-3 p-3">
+                                        @if (Model.IsActive)
+                                        {
+                                            <span class="badge bg-success fs-6 hvr-pulse">
+                                                <i class="fas fa-check-circle me-1"></i>Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary fs-6">
+                                                <i class="fas fa-times-circle me-1"></i>Inactive
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="p-4 bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill hvr-sweep-to-right" data-tippy-content="Return to coupon list">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            
+                            <button type="button" class="btn btn-danger btn-lg rounded-pill hvr-wobble-horizontal" 
+                                    data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
+                                    data-tippy-content="Permanently delete this coupon">
+                                <i class="fas fa-trash-alt me-2"></i>Delete Coupon
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Enhanced Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <form asp-action="Delete" id="deleteForm" class="h-100">
+                <input type="hidden" asp-for="Id" />
+                
+                <!-- Modal Header -->
+                <div class="modal-header bg-danger text-white border-0 py-4">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle me-3">
+                            <i class="fas fa-exclamation-triangle fa-2x "></i>
+                        </div>
+                        <div>
+                            <h4 class="modal-title mb-0" id="deleteConfirmationModalLabel">
+                                Confirm Coupon Deletion
+                            </h4>
+                            <small class="opacity-75">This action cannot be undone</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="danger-icon-wrapper mb-3">
+                            <i class="fas fa-ticket-alt text-danger hvr-pulse" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Delete Coupon "@Model.CouponString"?</h5>
+                        <p class="text-muted mb-4">This coupon and all its associated data will be permanently removed from the system.</p>
+                    </div>
+
+                    <!-- Warning Details -->
+                    <div class="alert alert-danger border-0 rounded-3" role="alert">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-shield-alt fa-2x text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="alert-heading mb-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>Important Warning
+                                </h6>
+                                <ul class="mb-0 small">
+                                    <li>This action cannot be reversed</li>
+                                    <li>All usage history will be lost</li>
+                                    <li>Active discounts will be invalidated</li>
+                                    <li>Related reports may be affected</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Input -->
+                    <div class="border rounded-3 p-3 bg-light">
+                        <p class="mb-2 small text-muted">To confirm deletion, please type the coupon code:</p>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-keyboard text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 bg-white" 
+                                   id="confirmationInput" placeholder="Enter coupon code here..."
+                                   data-expected="@Model.CouponString">
+                        </div>
+                        <small class="text-muted">Expected: <code>@Model.CouponString</code></small>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-light border-0 p-4">
+                    <button type="button" class="btn btn-outline-secondary btn-lg rounded-pill me-2 hvr-sweep-to-right" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill hvr-wobble-horizontal" id="confirmDeleteBtn" disabled>
+                        <i class="fas fa-trash-alt me-2"></i>Confirm Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/modalBackdropFix.css">
+    <link rel="stylesheet" href="~/lib/tippy.js/dist/tippy.css">
+    <link rel="stylesheet" href="~/lib/tippy.js/themes/light-border.css">
+
+    <style>
+        .hvr-sweep-to-right:hover {
+            border-radius: 1.5rem;
+        }
+        
+    </style>
+}
+
+<!-- Scripts -->
+@section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Tippy.js tooltips
+            tippy('[data-tippy-content]', {
+                theme: 'light-border',
+                placement: 'top',
+                animation: 'fade',
+                duration: [300, 200],
+                arrow: true,
+                interactive: true
+            });
+
+            // Confirmation input validation
+            const confirmationInput = document.getElementById('confirmationInput');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const expectedValue = confirmationInput.dataset.expected;
+
+            confirmationInput.addEventListener('input', function() {
+                const isValid = this.value.trim() === expectedValue;
+                confirmDeleteBtn.disabled = !isValid;
+                
+                if (isValid) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else if (this.value.length > 0) {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+
+            // Modal reset on close
+            const deleteModal = document.getElementById('deleteConfirmationModal');
+            deleteModal.addEventListener('hidden.bs.modal', function() {
+                confirmationInput.value = '';
+                confirmationInput.classList.remove('is-valid', 'is-invalid');
+                confirmDeleteBtn.disabled = true;
+            });
+
+            // Form submission with loading state
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.addEventListener('submit', function() {
+                confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
+                confirmDeleteBtn.disabled = true;
+            });
+
+            // Auto-focus confirmation input when modal opens
+            deleteModal.addEventListener('shown.bs.modal', function() {
+                confirmationInput.focus();
+            });
+        });
+    </script>
+}

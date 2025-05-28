@@ -14,41 +14,56 @@
     .nav-link span {
         line-height: 1;
     }
+
+    .hvr-fade:hover {
+        background-color: #d6d6d6d5 !important;
+    }
 </style>
 
-<ul class="nav nav-pills flex-column gap-2"
+
+<ul class="nav nav-pills flex-md-column flex-row gap-2 my-sm-1 px-sm-1"
     style="--bs-nav-link-color: #686a6b; --bs-nav-link-hover-color: #000000;">
-    
-    <li class="nav-item mt-1">
-        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
-            <i class="fa fa-user"></i> <span>Profile</span>
+
+    <li class="nav-item mt-md-1 hvr-grow hvr-fade">
+        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.IndexNavClass(ViewContext)" id="profile"
+            asp-page="./Index">
+            <i class="fa fa-user fs-5"></i>
+            <span class="d-sm-none d-md-block">Profile</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">
-            <i class="fa fa-envelope"></i> <span>Email</span>
+    <li class="nav-item hvr-grow hvr-fade">
+        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.EmailNavClass(ViewContext)" id="email"
+            asp-page="./Email">
+            <i class="fa fa-envelope fs-5"></i>
+            <span class="d-sm-none d-md-block">Email</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
-            <i class="fa fa-lock"></i> <span>Password</span>
+    <li class="nav-item hvr-grow">
+        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.ChangePasswordNavClass(ViewContext)"
+            id="change-password" asp-page="./ChangePassword">
+            <i class="fa fa-lock fs-5"></i>
+            <span class="d-sm-none d-md-block">Password</span>
         </a>
     </li>
 
     @if (hasExternalLogins)
     {
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.ExternalLoginsNavClass(ViewContext)" id="external-login" asp-page="./ExternalLogins">
-                <i class="fa fa-globe"></i> <span>External Logins</span>
+        <li class="nav-item hvr-grow">
+            <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.ExternalLoginsNavClass(ViewContext)"
+                id="external-login" asp-page="./ExternalLogins">
+                <i class="fa fa-globe fs-5"></i>
+                <span class="d-sm-none d-md-block">External Logins</span>
             </a>
         </li>
     }
 
-    <li class="nav-item">
-        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
-            <i class="fa fa-id-card"></i> <span>Personal Data</span>
+    <li class="nav-item hvr-grow">
+        <a class="nav-link d-flex align-items-center gap-3 @ManageNavPages.PersonalDataNavClass(ViewContext)"
+            id="personal-data" asp-page="./PersonalData">
+            <i class="fa fa-id-card fs-5 fs-sm-6"></i>
+            <span class="d-sm-none d-md-block">Personal Data</span>
         </a>
     </li>
 </ul>

@@ -25,12 +25,12 @@ namespace Bus_Station_Ticket_Management.Controllers
         private readonly IEmailBackgroundQueue _emailQueue;
 
         public PaymentController(
-            VnPaymentService vnPayment, 
-            ApplicationDbContext context, 
-            IOptions<VnPaymentSetting> vnPaymentSettings, 
-            ILogger<PaymentController> logger, 
-            IConfiguration configuration, 
-            IQrCodeService qrCodeService, 
+            VnPaymentService vnPayment,
+            ApplicationDbContext context,
+            IOptions<VnPaymentSetting> vnPaymentSettings,
+            ILogger<PaymentController> logger,
+            IConfiguration configuration,
+            IQrCodeService qrCodeService,
             IEmailBackgroundQueue emailQueue)
         {
             this.vnPayment = vnPayment;
@@ -124,12 +124,12 @@ namespace Bus_Station_Ticket_Management.Controllers
                 await using var transaction = await context.Database.BeginTransactionAsync();
 
                 var payment = await context.Payments.FirstOrDefaultAsync(p => p.Id == paymentId.ToString());
-                
+
                 if (payment == null)
                     return LogAndWarn($"No payment found with ID {paymentId}");
 
                 var tickets = context.Tickets.Where(t => t.PaymentId == paymentId.ToString()).ToList();
-                
+
                 if (!IsPaymentSuccess(paymentResponse))
                 {
                     _logger.LogWarning($"Payment failed. Response code: {paymentResponse.ResponseCode}");
@@ -149,7 +149,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                     else
                     {
                         _logger.LogWarning($"No tickets found for Payment ID {paymentId}");
-                    }  
+                    }
                     return BadRequest(new { Message = "Payment failed or was canceled." });
                 }
 
@@ -159,13 +159,15 @@ namespace Bus_Station_Ticket_Management.Controllers
                 int? vehicleId = null, tripId = null;
                 foreach (var ticket in tickets)
                 {
-                    if (ticket.Payment == null) {
+                    if (ticket.Payment == null)
+                    {
                         ticket.Payment = new Payment();
                     }
 
                     ticket.IsPaid = true;
                     ticket.Payment.PaymentStatus = 1;
-                    if (vehicleId == null || tripId == null) {
+                    if (vehicleId == null || tripId == null)
+                    {
                         tripId = ticket.TripId;
                         vehicleId = this.context.Trips.Where(t => t.Id == tripId).Select(t => t.VehicleId).FirstOrDefault();
                     }
@@ -173,10 +175,10 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }
                 _logger.LogInformation($"Vehicle Id: {vehicleId}");
                 _logger.LogInformation($"Trip Id: {tripId}");
-                
+
                 context.VnPayments.Add(paymentResponse);
                 _logger.LogInformation($"{tickets.Count} ticket(s) marked as paid.");
-                
+
                 int result = await context.SaveChangesAsync();
 
                 if (result > 0)
@@ -197,7 +199,8 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                 foreach (var ticket in tickets)
                 {
-                    if (ticket.Payment == null) {
+                    if (ticket.Payment == null)
+                    {
                         ticket.Payment = new Payment();
                     }
                     ticket.IsPaid = false;
@@ -205,7 +208,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }
 
                 await context.SaveChangesAsync();
-                
+
                 _logger.LogError(ex.ToString(), "Exception during VnPaymentResponse processing");
                 return StatusCode(500, new { Message = "Internal server error", Error = ex.ToString() });
             }
@@ -213,56 +216,78 @@ namespace Bus_Station_Ticket_Management.Controllers
 
         // Send ticket QR code to user and guest (Can be improve in the future)
         // Right now it sends multiple emails to the same user which could be annoying or spammy
-        private async Task SendTicketEmail(List<Ticket> tickets) {
-            try {
-                foreach (var ticket in tickets) {
+        private async Task SendTicketEmail(List<Ticket> tickets)
+        {
+            try
+            {
+                foreach (var ticket in tickets)
+                {
                     var baseUrl = $"{Request.Scheme}://{Request.Host}";
                     var ticketUrl = $"{baseUrl}/Tickets/Details?id={ticket.Id}";
                     string qrCodeString = _qrCodeService.GenerateQrCode(ticketUrl);
-
                     byte[] qrCodeBytes = Convert.FromBase64String(qrCodeString);
-                    
+
                     var builder = new BodyBuilder();
-                    
+
                     var image = builder.LinkedResources.Add("qrcode.png", qrCodeBytes);
                     image.ContentId = MimeKit.Utils.MimeUtils.GenerateMessageId();
-                    
+
                     var emailContent = $@"
-                        <span>Your ticket has been successfully purchased. Please scan the QR code below to access your ticket:</span>
-                        <br /> 
-                        <img src=""cid:{image.ContentId}"" />
-                        <br />
-                        <p>If the QR code doesn't load, <a href='{ticketUrl}'>click here to view your ticket</a>.</p>
-                        <br />
-                        <p>Thank you for choosing EasyRide!</p>";
-                    
+                        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333;'>
+                            <h2 style='color: #2c3e50;'>🎫 Ticket Confirmation</h2>
+                            <p style='font-size: 16px;'>
+                                Your ticket has been successfully purchased. Please scan the QR code below to access your ticket:
+                            </p>
+                            
+                            <div style='text-align: center; margin: 20px 0;'>
+                                <img src='cid:{image.ContentId}' alt='QR Code' style='width: 200px; height: 200px;' />
+                            </div>
+
+                            <p style='font-size: 16px; text-align: center;'>
+                                <a href='{ticketUrl}' style='display: inline-block; background-color: #27ae60; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
+                                    View Ticket Online
+                                </a>
+                            </p>
+
+                            <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;' />
+
+                            <p style='font-size: 14px; text-align: center; color: #777;'>
+                                Thank you for choosing <strong>EasyRide</strong>! We wish you a pleasant journey.
+                            </p>
+                        </div>";
+
                     builder.HtmlBody = emailContent;
                     builder.TextBody = "Your ticket has been successfully purchased. Please scan the QR code below to access your ticket.";
 
                     var message = new MimeMessage();
-                    if (ticket.GuestEmail != null) {
+                    if (ticket.GuestEmail != null)
+                    {
                         message.To.Add(new MailboxAddress("", ticket.GuestEmail));
                         message.Subject = "Ticket Purchase Confirmation";
-                        message.Body = new TextPart("html") { Text = emailContent };
-                    } else {
-                        if (ticket.UserId == null) 
+                        message.Body = builder.ToMessageBody();                    
+                    }
+                    else
+                    {
+                        if (ticket.UserId == null)
                         {
                             _logger.LogError("Email not found");
                             throw new Exception("Email not found");
                         }
                         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == ticket.UserId);
-                        if (user == null) 
+                        if (user == null)
                         {
                             _logger.LogError($"User with ID {ticket.UserId} not found");
                             throw new Exception("User not found");
                         }
                         message.To.Add(new MailboxAddress("", user.Email));
                         message.Subject = "Ticket Purchase Confirmation";
-                        message.Body = new TextPart("html") { Text = emailContent };
+                        message.Body = builder.ToMessageBody();
                     }
                     await _emailQueue.QueueEmail(message);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 _logger.LogError(ex.ToString(), "Exception during SendTicketEmail() processing");
             }
         }

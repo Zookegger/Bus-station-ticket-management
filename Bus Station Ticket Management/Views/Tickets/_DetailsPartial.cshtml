@@ -1,107 +1,129 @@
-@model Bus_Station_Ticket_Management.Models.Ticket;
-@using System.Globalization;
+@model Bus_Station_Ticket_Management.Models.Ticket
+@using System.Globalization
 
+<!-- Cancel Ticket Modal -->
 <div class="modal fade" id="modal-@Model.Id" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="cancelModalLabel">Cancel Ticket</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to cancel your ticket?
-      </div>
-      <div class="modal-footer">
-        <form asp-action="CancelTicket" method="post">
-            <input type="hidden" for="id" name="id" value="@Model.Id">
-            <button type="submit" class="btn btn-danger">Proceed</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </form>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-danger">
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Cancellation</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to <strong>cancel</strong> this ticket?</p>
+			</div>
+			<div class="modal-footer">
+				<form asp-action="CancelTicket" method="post">
+					<input type="hidden" name="id" value="@Model.Id" />
+					<button type="submit" class="btn btn-danger hover-shadow"><i class="fas fa-times-circle me-1"></i>
+						Proceed</button>
+					<button type="button" class="btn btn-secondary hover-grow" data-bs-dismiss="modal">Close</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
+<!-- Ticket Info Card -->
+<div class="card shadow-sm mb-4">
+	<div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+		<h5 class="mb-0"><i class="fas fa-ticket-alt me-2"></i>Ticket #@Model.Id</h5>
+		<span class="badge fs-6 bg-success">@((Model.IsPaid ? "Paid" : "Unpaid"))</span>
+		@if (Model.IsCanceled)
+		{
+			<span class="badge fs-6 bg-danger">Canceled</span>
+		}
+	</div>
 
-<div class="card mb-4">
-    <h4 class="card-header">@Model.Id</h4>
-    <div class="card-body">
-        <div class="row">
-            @if (Model.User != null)
-            {
-                <dt class="col-sm-4">Passenger Name</dt>
-                <dd class="col-sm-8">@Model.User.FullName</dd>
-            }
-            else
-            {
-                <dt class="col-sm-4">Guest Name</dt>
-                <dd class="col-sm-8">@Model.GuestName</dd>
+	<div class="card-body">
+		<!-- Passenger -->
+		<div class="mb-4">
+			<h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-user me-2 text-primary"></i>Passenger Information
+			</h6>
+			<dl class="row mb-0">
+				@if (Model.User != null)
+				{
+					<dt class="col-sm-4">Name</dt>
+					<dd class="col-sm-8">@Model.User.FullName</dd>
+					<dt class="col-sm-4">Email</dt>
+					<dd class="col-sm-8">@Model.User.Email</dd>
+					<dt class="col-sm-4">Phone</dt>
+					<dd class="col-sm-8">@(Model.User.PhoneNumber ?? "N/A")</dd>
+				}
+				else
+				{
+					<dt class="col-sm-4">Guest Name</dt>
+					<dd class="col-sm-8">@Model.GuestName</dd>
+					<dt class="col-sm-4">Guest Email</dt>
+					<dd class="col-sm-8">@Model.GuestEmail</dd>
+					<dt class="col-sm-4">Guest Phone</dt>
+					<dd class="col-sm-8">@Model.GuestPhone</dd>
+				}
+			</dl>
+		</div>
 
-                <dt class="col-sm-4">Guest Email</dt>
-                <dd class="col-sm-8">@Model.GuestEmail</dd>
+		<!-- Trip -->
+		<div class="mb-4">
+			<h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-route me-2 text-primary"></i>Trip Details</h6>
+			<dl class="row mb-0">
+				<dt class="col-sm-4">Route</dt>
+				<dd class="col-sm-8">@Model.Trip?.Route?.StartLocation?.Name →
+					@Model.Trip?.Route?.DestinationLocation?.Name
+				</dd>
+				<dt class="col-sm-4">Departure</dt>
+				<dd class="col-sm-8">@Model.Trip?.DepartureTime.ToString("f")</dd>
+				<dt class="col-sm-4">Seat</dt>
+				<dd class="col-sm-8">@($"F{Model.Seat?.Floor} - R{Model.Seat?.Row}C{Model.Seat?.Column}")</dd>
+				<dt class="col-sm-4">License Plate</dt>
+				<dd class="col-sm-8">@Model.Trip?.Vehicle.LicensePlate</dd>
+			</dl>
+		</div>
 
-                <dt class="col-sm-4">Guest Phone</dt>
-                <dd class="col-sm-8">@Model.GuestPhone</dd>
-            }
+		<!-- Booking -->
+		<div class="mb-4">
+			<h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-calendar-check me-2 text-primary"></i>Booking Info
+			</h6>
+			<dl class="row mb-0">
+				<dt class="col-sm-4">Booking Date</dt>
+				<dd class="col-sm-8">@Model.BookingDate.ToString("f")</dd>
+				<dt class="col-sm-4">Is Canceled?</dt>
+				<dd class="col-sm-8">@((Model.IsCanceled ? "Yes" : "No"))</dd>
+				@if (Model.IsCanceled)
+				{
+					<dt class="col-sm-4">Canceled At</dt>
+					<dd class="col-sm-8">@Model.CancelationTime?.ToString("f")</dd>
+				}
+			</dl>
+		</div>
 
-            <hr class="my-3">
+		<!-- Payment -->
+		<div class="mb-4">
+			<h6 class="text-uppercase fw-bold mb-3"><i class="fas fa-credit-card me-2 text-primary"></i>Payment Info
+			</h6>
+			<dl class="row mb-0">
+				@if (Model.IsPaid)
+				{
+					<dt class="col-sm-4">Payment Time</dt>
+					<dd class="col-sm-8">@(Model.Payment?.CreatedAt.ToString("f") ?? "N/A")</dd>
+				}
+				<dt class="col-sm-4">Payment ID</dt>
+				<dd class="col-sm-8">@Model.Payment?.Id</dd>
+				<dt class="col-sm-4">Ticket Price</dt>
+				<dd class="col-sm-8 text-success fw-bold">@Model.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
+			</dl>
+		</div>
 
-            <h5 class="col-sm-12">Trip Information</h5>
-            <dt class="col-sm-4">Trip</dt>
-            <dd class="col-sm-8">@Model.Trip?.Route?.StartLocation?.Name → @Model.Trip?.Route?.DestinationLocation?.Name</dd>
-
-            <dt class="col-sm-4">Departure</dt>
-            <dd class="col-sm-8">@Model.Trip?.DepartureTime.ToString("f")</dd>
-
-            <dt class="col-sm-4">Seat</dt>
-            <dd class="col-sm-8">@($"F{Model.Seat?.Floor} - R{@Model.Seat?.Row}C{@Model.Seat?.Column}")</dd>
-
-            <dt class="col-sm-4">License Plate</dt>
-            <dd class="col-sm-8">@Model.Trip?.Vehicle.LicensePlate</dd>
-
-            <hr class="my-3">
-
-            <h5 class="col-sm-12">Booking Information</h5>
-            <dt class="col-sm-4">Booking Date</dt>
-            <dd class="col-sm-8">@Model.BookingDate.ToString("f")</dd>
-
-            <dt class="col-sm-4">Is Canceled?</dt>
-            <dd class="col-sm-8">@((Model.IsCanceled ? "Yes" : "No"))</dd>
-
-            @if (Model.IsCanceled)
-            {
-                <dt class="col-sm-4">Cancellation Time</dt>
-                <dd class="col-sm-8">@Model.CancelationTime?.ToString("f")</dd>
-            }
-
-            <hr class="my-3">
-
-            <h5 class="col-sm-12">Payment Information</h5>
-            <dt class="col-sm-4">Is Paid?</dt>
-            <dd class="col-sm-8">@((Model.IsPaid ? "Yes" : "No"))</dd>
-
-            @if (Model.IsPaid) {
-                <dt class="col-sm-4">Payment Timestamp</dt>
-                <dd class="col-sm-8">@Model.Payment?.CreatedAt.ToString("f") ?? "N/A"</dd>
-            }
-
-            <dt class="col-sm-4">Payment ID</dt>
-            <dd class="col-sm-8">@Model.Payment.Id</dd>
-
-            <dt class="col-sm-4">Ticket Price</dt>
-            <dd class="col-sm-8">@Model.TotalPrice.ToString("C", new CultureInfo("vi-VN"))</dd>
-
-            <hr class="my-3">
-
-            <div class="btn-group mt-3">
-                <a role="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">Cancel Ticket</a>
-            </div>
-        </div>
-    </div>
+		<!-- Action -->
+		<div class="text-end mt-4">
+			<a class="btn btn-outline-danger hover-float" data-bs-toggle="modal" data-bs-target="#modal-@Model.Id">
+				<i class="fas fa-times me-1"></i>Cancel Ticket
+			</a>
+		</div>
+	</div>
 </div>
-
 
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }
