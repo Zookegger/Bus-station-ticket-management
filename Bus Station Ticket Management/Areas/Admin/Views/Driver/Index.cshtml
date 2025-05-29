@@ -9,23 +9,15 @@
 
 <a asp-action="Create" class="btn btn-primary mb-3" role="button"><i class="fa fa-plus-circle"></i> Add New Driver</a>
 
-<form asp-action="Index" method="get" class="mb-3">
-	<div class="form-group input-group mb-2">
-		<input type="text" class="form-control" value="@ViewBag.SearchString" name="searchString"
-			placeholder="Search for drivers..." />
-		<button type="submit" class="btn btn-outline-primary">Search <i class="fa fa-search"
-				style="font-size: 18px"></i></button>
-	</div>
+<div class="form-group input-group">
+	<select class="form-control ms-2" name="filterByGender" id="filterByGender" onchange="this.form.submit()">
+		<option value="" disabled selected>Filter By Gender</option>
+		<option value="Male" selected="@(ViewBag.FilterByGender == "Male" ? "selected" : null)">Male</option>
+		<option value="Female" selected="@(ViewBag.FilterByGender == "Female" ? "selected" : null)">Female</option>
+		<option value="Other" selected="@(ViewBag.FilterByGender == "Other" ? "selected" : null)">Other</option>
+	</select>
+</div>
 
-	<div class="form-group input-group">
-		<select class="form-control ms-2" name="filterByGender" id="filterByGender" onchange="this.form.submit()">
-			<option value="" disabled selected>Filter By Gender</option>
-			<option value="Male" selected="@(ViewBag.FilterByGender == "Male" ? "selected" : null)">Male</option>
-			<option value="Female" selected="@(ViewBag.FilterByGender == "Female" ? "selected" : null)">Female</option>
-			<option value="Other" selected="@(ViewBag.FilterByGender == "Other" ? "selected" : null)">Other</option>
-		</select>
-	</div>
-</form>
 <div class="table-responsive mb-3 shadow rounded">
     <table id="DataTable" 
         class="table table-hover table-striped align-middle mb-0" 

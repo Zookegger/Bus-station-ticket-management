@@ -5,252 +5,282 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card shadow-sm">
-    <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-start">
-        <a class="btn btn-outline-secondary text-white me-2" asp-action="Index"><i class="fas fa-arrow-left"></i></a>
-        <h1 class="h3 mb-0" style="margin-top: 3px;">Add new driver</h1>
-    </div>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">
+                <i class="fas fa-user-alt me-1"></i>Drivers
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-user-plus me-1"></i>Add New Driver
+        </li>
+    </ol>
+</nav>
 
-    <form asp-action="Create" class="card-body" enctype="multipart/form-data" id="addDriver">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+<div class="container-fluid">
+    <div class="card">
+        <form asp-action="Create" class="card-body" enctype="multipart/form-data" id="addDriver">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-        @* Driver's Personal Information *@
-        <div class="row g-3">
-            <div class="col-12 mb-4">
-                <div class="row align-items-center">
-                    <div class="col-md-7 col-lg-8">
-                        <div class="form-group">
-                            <label asp-for="Avatar" class="form-label"></label>
-                            <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
-                                onchange="previewImage(this);" title="Only image files allowed" />
-                            <small class="form-text text-muted">Supported formats: JPG, PNG, GIF. Max size:
+            @* Driver's Personal Information *@
+            <div class="row g-3">
+                <div class="col-12 mb-4">
+                    <h4>Profile Information</h4>
+                    <div class="row align-items-center">
+                        <div class="col-md-7 col-lg-8">
+                            <div class="form-group">
+                                <label asp-for="Avatar" class="form-label"></label>
+                                <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
+                                    onchange="previewImage(this);" title="Only image files allowed" />
+                                <small class="form-text text-muted">Supported formats: JPG, PNG, GIF. Max size:
                                     2MB</small>
-                            <span asp-validation-for="Avatar" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-5 col-lg-4 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                        <div class="avatar-preview position-relative">
-                            @{
-                                var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
-                                "images", "avatar", Model.Avatar ?? "");
-                                var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
-                            }
-                            <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
-                                <div id="defaultAvatar"
-                                    class="avatar avatar-xl bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center shadow"
-                                    style="width: 200px; height: 200px;">
-                                    <i class="fas fa-user fa-2x text-primary"></i>
-                                </div>
+                                <span asp-validation-for="Avatar" class="text-danger"></span>
                             </div>
+                        </div>
+                        <div
+                            class="col-md-5 col-lg-4 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                            <div class="avatar-preview position-relative">
+                                @{
+                                    var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                                    "images", "avatar", Model.Avatar ?? "");
+                                    var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
+                                }
+                                <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
+                                    <div id="defaultAvatar"
+                                        class="avatar avatar-xl bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center shadow"
+                                        style="width: 200px; height: 200px;">
+                                        <i class="fas fa-user fa-2x text-primary"></i>
+                                    </div>
+                                </div>
 
-                            <img id="avatarPreview"
-                                src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")" alt="Avatar"
-                                class="rounded-circle shadow"
-                                style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                                <img id="avatarPreview"
+                                    src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")"
+                                    alt="Avatar" class="rounded-circle shadow"
+                                    style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <script>
-                function previewImage(input) {
-                    const preview = document.getElementById('avatarPreview');
-                    const defaultAvatarWrapper = document.getElementById('defaultAvatarWrapper');
+                <script>
+                    function previewImage(input) {
+                        const preview = document.getElementById('avatarPreview');
+                        const defaultAvatarWrapper = document.getElementById('defaultAvatarWrapper');
 
-                    if (input.files && input.files[0]) {
+                        if (input.files && input.files[0]) {
 
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            preview.src = e.target.result;
-                            preview.style.display = 'block';
-                            if (defaultAvatarWrapper) {
-                                defaultAvatarWrapper.style.display = 'none';
-                            }
-                        };
-                        reader.readAsDataURL(input.files[0]);
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';
+                                if (defaultAvatarWrapper) {
+                                    defaultAvatarWrapper.style.display = 'none';
+                                }
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                        }
                     }
-                }
-            </script>
-            
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input asp-for="FullName" class="form-control" placeholder="Full Name" />
-                    <label asp-for="FullName"></label>
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
-            </div>
+                </script>
 
-            @* Login Information *@
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input asp-for="Email" class="form-control" placeholder="Email" />
-                    <label asp-for="Email"></label>
-                    <span asp-validation-for="Email" class="text-danger"></span>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="FullName" class="form-control" placeholder="Full Name" />
+                        <label asp-for="FullName"></label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <div class="input-group">
-                        <div class="form-floating flex-grow-1">
-                            <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" autocomplete="new-password" oninput="checkPasswordRequirements(); validatePasswords();" />
-                            <label for="Password">Password</label>
+                @* Login Information *@
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" placeholder="Email" />
+                        <label asp-for="Email"></label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" name="Password" id="Password" class="form-control"
+                                    placeholder="Password" autocomplete="new-password"
+                                    oninput="checkPasswordRequirements(); validatePasswords();" />
+                                <label for="Password">Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                    <div class="password-strength-meter mt-2">
-                        <div class="progress" style="height: 5px;">
-                            <div id="passwordStrengthMeter" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="password-strength-meter mt-2">
+                            <div class="progress" style="height: 5px;">
+                                <div id="passwordStrengthMeter" class="progress-bar" role="progressbar"
+                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="password-requirements mt-2">
-                        <small class="d-block text-muted my-1"><i class="bi bi-shield-lock me-1"></i>Password must contain:</small>
-                        <small class="d-block" id="length-check"><i class="bi bi-x-circle-fill text-danger"></i> At least 8 characters</small>
-                        <small class="d-block" id="uppercase-check"><i class="bi bi-x-circle-fill text-danger"></i> At least one uppercase letter</small>
-                        <small class="d-block" id="lowercase-check"><i class="bi bi-x-circle-fill text-danger"></i> At least one lowercase letter</small>
-                        <small class="d-block" id="number-check"><i class="bi bi-x-circle-fill text-danger"></i> At least one number</small>
-                        <small class="d-block" id="special-check"><i class="bi bi-x-circle-fill text-danger"></i> At least one special character</small>
-                    </div>
-                    <span id="PasswordError" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <div class="input-group">
-                        <div class="form-floating flex-grow-1">
-                            <input type="password" id="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
-                            <label for="ConfirmPassword">Confirm Password</label>
+                        <div class="password-requirements mt-2">
+                            <small class="d-block text-muted my-1"><i class="bi bi-shield-lock me-1"></i>Password must
+                                contain:</small>
+                            <small class="d-block" id="length-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least 8 characters</small>
+                            <small class="d-block" id="uppercase-check"><i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one uppercase letter</small>
+                            <small class="d-block" id="lowercase-check"><i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one lowercase letter</small>
+                            <small class="d-block" id="number-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least one number</small>
+                            <small class="d-block" id="special-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least one special character</small>
                         </div>
-                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
-                            <i class="bi bi-eye"></i>
-                        </button>
+                        <span id="PasswordError" class="text-danger"></span>
                     </div>
-                    <span id="PasswordConfirmError" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" id="ConfirmPassword" class="form-control"
+                                    placeholder="Confirm Password" />
+                                <label for="ConfirmPassword">Confirm Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span id="PasswordConfirmError" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                        <label asp-for="PhoneNumber"></label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select asp-for="Gender" class="form-select">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <label asp-for="Gender"></label>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="DateOfBirth" type="date" class="form-control" placeholder="Date of Birth" />
+                        <label asp-for="DateOfBirth"></label>
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Address" class="form-control" placeholder="Address" />
+                        <label asp-for="Address"></label>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
-                    <label asp-for="PhoneNumber"></label>
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <select asp-for="Gender" class="form-select">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                    <label asp-for="Gender"></label>
-                    <span asp-validation-for="Gender" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input asp-for="DateOfBirth" type="date" class="form-control" placeholder="Date of Birth" />
-                    <label asp-for="DateOfBirth"></label>
-                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input asp-for="Address" class="form-control" placeholder="Address" />
-                    <label asp-for="Address"></label>
-                    <span asp-validation-for="Address" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
+            @* Driver's License Information *@
+            <div class="mt-4">
+                <h4 class="mb-3">Driver's License Information</h4>
+                <div id="licenseRepeater">
+                    @for (int i = 0; i < Model.Licenses.Count; i++)
+                    {
+                        <div class="license-item card mb-3">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Licenses[@i].LicenseId" class="form-control"
+                                                placeholder="License ID" />
+                                            <label asp-for="Licenses[@i].LicenseId"></label>
+                                            <span asp-validation-for="Licenses[@i].LicenseId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <select asp-for="Licenses[@i].LicenseClass" class="form-select">
+                                                <option value="" disabled>Select a class</option>
+                                                <option value="A1">A1</option>
+                                                <option value="A2">A2</option>
+                                                <option value="A3">A3</option>
+                                                <option value="A4">A4</option>
+                                                <option value="B1">B1</option>
+                                                <option value="B2">B2</option>
+                                                <option value="C">C</option>
+                                                <option value="D">D</option>
+                                                <option value="E">E</option>
+                                                <option value="F">F</option>
+                                                <option value="FC">FC</option>
+                                            </select>
+                                            <label asp-for="Licenses[@i].LicenseClass"></label>
+                                            <span asp-validation-for="Licenses[@i].LicenseClass" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 issued-date-group">
+                                        <div class="form-floating">
+                                            <input asp-for="Licenses[@i].LicenseIssueDate" type="date"
+                                                class="form-control issued-date" />
+                                            <label asp-for="Licenses[@i].LicenseIssueDate"></label>
+                                            <span asp-validation-for="Licenses[@i].LicenseIssueDate"
+                                                class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 expiration-date-group">
+                                        <div class="form-floating">
+                                            <input asp-for="Licenses[@i].LicenseExpirationDate" type="date"
+                                                class="form-control expiration-date" />
+                                            <label asp-for="Licenses[@i].LicenseExpirationDate"></label>
+                                            <span asp-validation-for="Licenses[@i].LicenseExpirationDate"
+                                                class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-floating">
+                                            <input asp-for="Licenses[@i].LicenseIssuePlace" class="form-control" />
+                                            <label asp-for="Licenses[@i].LicenseIssuePlace"></label>
+                                            <span asp-validation-for="Licenses[@i].LicenseIssuePlace"
+                                                class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check ms-2 mt-3">
+                                        <input class="form-check-input has-exp" type="checkbox" value="true"
+                                            name="HasExpiration" />
+                                        <label class="form-check-label">
+                                            Has expiration date
+                                        </label>
+                                    </div>
 
-        @* Driver's License Information *@
-        <div class="mt-4">
-            <h4 class="mb-3">Driver's License Information</h4>
-            <div id="licenseRepeater">
-                @for (int i = 0; i < Model.Licenses.Count; i++)
-                {
-                    <div class="license-item card mb-3">
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input asp-for="Licenses[@i].LicenseId" class="form-control"
-                                            placeholder="License ID" />
-                                        <label asp-for="Licenses[@i].LicenseId"></label>
-                                        <span asp-validation-for="Licenses[@i].LicenseId" class="text-danger"></span>
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-danger remove-license mt-2 hvr-icon-buzz-out">
+                                            <i class="fas fa-trash me-2 hvr-icon"></i>Remove
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select asp-for="Licenses[@i].LicenseClass" class="form-select">
-                                            <option value="" disabled>Select a class</option>
-                                            <option value="A1">A1</option>
-                                            <option value="A2">A2</option>
-                                            <option value="A3">A3</option>
-                                            <option value="A4">A4</option>
-                                            <option value="B1">B1</option>
-                                            <option value="B2">B2</option>
-                                            <option value="C">C</option>
-                                            <option value="D">D</option>
-                                            <option value="E">E</option>
-                                            <option value="F">F</option>
-                                            <option value="FC">FC</option>
-                                        </select>
-                                        <label asp-for="Licenses[@i].LicenseClass"></label>
-                                        <span asp-validation-for="Licenses[@i].LicenseClass" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 issued-date-group">
-                                    <div class="form-floating">
-                                        <input asp-for="Licenses[@i].LicenseIssueDate" type="date" class="form-control issued-date" />
-                                        <label asp-for="Licenses[@i].LicenseIssueDate"></label>
-                                        <span asp-validation-for="Licenses[@i].LicenseIssueDate" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 expiration-date-group">
-                                    <div class="form-floating">
-                                        <input asp-for="Licenses[@i].LicenseExpirationDate" type="date" class="form-control expiration-date" />
-                                        <label asp-for="Licenses[@i].LicenseExpirationDate"></label>
-                                        <span asp-validation-for="Licenses[@i].LicenseExpirationDate" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-floating">
-                                        <input asp-for="Licenses[@i].LicenseIssuePlace" class="form-control" />
-                                        <label asp-for="Licenses[@i].LicenseIssuePlace"></label>
-                                        <span asp-validation-for="Licenses[@i].LicenseIssuePlace" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group form-check mt-3">
-                                    <input class="form-check-input has-exp" type="checkbox" value="true" name="HasExpiration" />
-                                    <label class="form-check-label">
-                                        Has expiration date
-                                    </label>
-                                </div>
-
-                                <div class="col-12">
-                                    <button type="button" class="btn btn-danger remove-license mt-2">Remove</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
+                <button type="button" id="addLicense" class="btn btn-outline-primary mt-2 hvr-icon-grow">
+                    <i class="fas fa-plus me-1 hvr-icon"></i>Add Another License
+                </button>
             </div>
-            <button type="button" id="addLicense" class="btn btn-outline-primary mt-2">
-                <i class="fas fa-plus me-1"></i>Add Another License
+        </form>
+
+        <div class="card-footer d-flex justify-content-between mt-2">
+            <a class="btn btn-outline-secondary hvr-icon-back" asp-action="Index">
+                <i class="fas fa-arrow-left me-2 hvr-icon"></i>Back to List
+            </a>
+            <button type="submit" class="btn btn-primary hvr-icon-pulse" id="submit" form="addDriver">
+                <i class="fas fa-save me-2 hvr-icon"></i>Add New Driver
             </button>
         </div>
-    </form>
-
-    <div class="card-footer d-flex justify-content-between mt-3">
-        <a class="btn btn-outline-secondary" asp-action="Index">
-            <i class="fas fa-arrow-left me-1"></i>Back to List
-        </a>
-        <button type="submit" class="btn btn-primary" id="submit" form="addDriver">
-            <i class="fas fa-save me-1"></i>Create Driver
-        </button>
     </div>
 </div>
 
@@ -267,7 +297,7 @@
                 const expirationGroup = licenseItem.querySelector('.expiration-date-group');
                 const issuedGroup = licenseItem.querySelector('.issued-date-group');
 
-                hasExp.addEventListener("change", function() {
+                hasExp.addEventListener("change", function () {
                     if (!this.checked) {
                         expirationGroup.style.display = "none";
                         expirationGroup.querySelector('input').value = null;
@@ -293,13 +323,13 @@
             document.querySelectorAll('.license-item').forEach(handleExpirationToggle);
 
             // Add new license
-            document.getElementById('addLicense').addEventListener('click', function() {
+            document.getElementById('addLicense').addEventListener('click', function () {
                 const licenseRepeater = document.getElementById('licenseRepeater');
                 const licenseItems = licenseRepeater.querySelectorAll('.license-item');
                 const lastIndex = licenseItems.length - 1;
-                
+
                 const newLicense = licenseItems[0].cloneNode(true);
-                
+
                 // Update indices in the new license
                 newLicense.querySelectorAll('[name]').forEach(el => {
                     el.name = el.name.replace('[0]', `[${lastIndex + 1}]`);
@@ -309,7 +339,7 @@
                         el.id = el.id.replace('_0_', `_${lastIndex + 1}_`);
                     }
                 });
-                
+
                 // Clear values
                 newLicense.querySelectorAll('input, select').forEach(input => {
                     input.value = '';
@@ -323,13 +353,13 @@
             });
 
             // Remove license
-            document.getElementById('licenseRepeater').addEventListener('click', function(e) {
+            document.getElementById('licenseRepeater').addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-license')) {
                     const licenseItems = document.querySelectorAll('.license-item');
                     if (licenseItems.length > 1) {
                         const licenseItem = e.target.closest('.license-item');
                         licenseItem.remove();
-                        
+
                         // Reindex remaining items
                         document.querySelectorAll('.license-item').forEach((item, index) => {
                             item.querySelectorAll('[name]').forEach(el => {
@@ -341,6 +371,8 @@
                                 }
                             });
                         });
+                    } else {
+                        alert("You must have at least one license.");
                     }
                 }
             });

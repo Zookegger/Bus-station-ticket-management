@@ -59,7 +59,7 @@ function initializeMap(lat = 10.762622, lon = 106.660172, name, draggableMarker 
             // Update hidden fields when marker is dragged
             marker.on('dragend', function () {
                 const position = marker.getLatLng();
-                console.log(position);
+                // console.log(position);
                 handleDebounce(this, async () => reverseGeoCode(position.lat, position.lng), 500);
             });
         }
@@ -78,7 +78,7 @@ function cleanExpiredCache() {
         try {
             const data = JSON.parse(item);
             if (data && data.expiry && now > data.expiry) {
-                console.log(`Data clear ${key}`);
+                // console.log(`Data clear ${key}`);
                 localStorage.removeItem(key);
             }
         } catch (error) {
@@ -265,7 +265,7 @@ async function reverseGeoCode(lat, lon) {
     const key = `reverse:${lat},${lon}`;
     const cached = loadWithExpiry(key);
     if (cached) {
-        console.log(cached);
+        // console.log(cached);
         updateFormAndMarkerFromSearch(cached);
         return cached;
     }
@@ -339,14 +339,14 @@ async function searchLocationWithResult(location) {
 
         let result = vnResponse;
 
-        console.log(result);
-        console.log(result.display_name);
+        // console.log(result);
+        // console.log(result.display_name);
         
         if (result == null || result[0].display_name == null) {
             console.warn("Vietnamese not available, falling back to English");
             result = await fetchFromAPI(enUrl);
         } 
-        console.log(result);
+        // console.log(result);
 
         if (result) {
             return {
@@ -387,7 +387,7 @@ async function addRouteAndTime(startLat, startLon, endLat, endLon, moveMarker = 
         const key = `route:${startLat},${startLon}->${endLat},${endLon},`;
         const cached = loadWithExpiry(key);
         if (cached) {
-            console.log(cached);
+            // console.log(cached);
             drawRoute(cached, moveMarker);
             return cached;
         }
@@ -413,6 +413,15 @@ async function addRouteAndTime(startLat, startLon, endLat, endLon, moveMarker = 
     }
 }
 
+
+async function getRoute(location1, location2) {
+    let result1 = await searchLocationWithResult(location1);
+    let result2 = await searchLocationWithResult(location2);
+
+    if (result1 && result2) {
+        await addRouteAndTime(result1.lat, result1.lng, result2.lat, result2.lng);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async function () {    
     try {

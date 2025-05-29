@@ -7,16 +7,26 @@
 
 <link rel="stylesheet" href="~/css/Shared/confirmDeleteModal.css">
 
-<div class="container-fluid py-4">
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">
+                <i class="fas fa-user-alt me-1"></i>Drivers
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-user-minus me-1"></i>Delete Driver
+        </li>
+    </ol>
+</nav>
+
+<div class="container-fluid">
     <div class="card shadow-sm">
         <div class="card-header bg-white">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 text-danger">
                     <i class="fas fa-user-minus me-2"></i>Delete Driver
                 </h4>
-                <a class="btn btn-outline-secondary" asp-action="Index">
-                    <i class="fas fa-arrow-left me-2"></i>Back to List
-                </a>
             </div>
         </div>
         <div class="card-body">
@@ -26,8 +36,8 @@
             </div>
 
             <div class="driver-info p-4 bg-light rounded">
-                <h5 class="mb-4">Driver Information</h5>
-                <div class="row g-3">
+                <h5 class="mb-4 fw-bold"><i class="fas fa-user me-2"></i>Driver Information</h5>
+                <div class="row g-3 p-2 shadow-sm">
                     <div class="col-md-6">
                         <div class="info-item">
                             <label class="text-muted small">Full Name</label>
@@ -70,18 +80,16 @@
             @if (Model.DriverLicenses != null && Model.DriverLicenses.Any())
             {
                 <div class="driver-licenses mt-4 p-4 bg-light rounded">
-                    <h5 class="mb-4">
-                        <i class="fas fa-id-card me-2"></i>Driver's Licenses
-                    </h5>
+                    <h5 class="mb-4 fw-bold"><i class="fas fa-id-card me-2"></i>Driver's Licenses</h5>
                     <div class="row g-3">
                         @foreach (var license in Model.DriverLicenses)
                         {
                             <div class="col-md-6">
                                 <div class="license-card">
-                                    <div class="card h-100">
+                                    <div class="card h-100 shadow-sm">
                                         <div class="card-header bg-white">
                                             <h6 class="mb-0">
-                                                <i class="fas fa-car me-2"></i>License @license.LicenseId
+                                                <i class="fas fa-car me-2"></i>License #@license.LicenseId
                                             </h6>
                                         </div>
                                         <div class="card-body">
@@ -112,11 +120,14 @@
                 </div>
             }
 
-            <div class="mt-4">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
-                    <i class="fas fa-trash-alt me-2"></i>Delete Driver
-                </button>
-            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between mt-2">
+            <a class="btn btn-outline-secondary" asp-action="Index">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                <i class="fas fa-trash-alt me-2"></i>Delete Driver
+            </button>
         </div>
     </div>
 </div>
@@ -232,6 +243,7 @@
 </style>
 
 @section Scripts {
+    <script src="~/js/modalBackdropFix.js"></script>
     <script>
         $(document).ready(function() {
             $('#deleteConfirmationModal').on('show.bs.modal', function () {

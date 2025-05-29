@@ -21,6 +21,7 @@ namespace Bus_Station_Ticket_Management.Models
 
         [Required(ErrorMessage = "Seat number is required")]
         public int SeatId { get; set; }
+        
         [ForeignKey(nameof(SeatId))]
         [ValidateNever]
         public Seat? Seat { get; set; }

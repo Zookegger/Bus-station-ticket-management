@@ -181,7 +181,7 @@ function initializeDataTable(tableName, tableTitle, selector, options) {
 			$(this).find('tr').css('transition', 'none');
 		},
 		language: {
-			search: 'Search:',
+			search: '<i class="fa fa-search" style="font-size: 18px"></i> Search:',
 			lengthMenu: "Show _MENU_ entries",
 			info: "_START_ to _END_ of _TOTAL_ entries",
 		},

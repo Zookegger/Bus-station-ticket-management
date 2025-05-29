@@ -5,79 +5,133 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+@section Styles {
+    <style>
+        .card-header.bg-light {
+            background-color: #d4d4d4 !important;
+        }
+    </style>
+}
 
-<h4>Trip</h4>
-<hr />
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">
+                <i class="fas fa-ticket-alt me-1"></i>Trips
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-plus-circle me-1"></i>Create Trip
+        </li>
+    </ol>
+</nav>
+
+<h1 class="text-success fw-bold mb-4">Create New Trip</h1>
+
 <div class="row">
-    <form asp-action="Create" id="tripForm" class="col-md-8 col-lg-7">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow">
+            <div class="card-header fw-semibold text-dark bg-light bg-gradient"><i
+                    class="fa-solid fa-map fa-lg me-1"></i>Trip Information</div>
 
-        <!-- Departure Time -->
-        <div class="form-group">
-            <label asp-for="DepartureTime" class="control-label"></label>
-            <input asp-for="DepartureTime" class="form-control" />
-            <span asp-validation-for="DepartureTime" class="text-danger"></span>
-        </div>
+            <form asp-action="Create" id="tripForm" class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- Departure Time -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="DepartureTime" class="control-label"></label>
+                        <input asp-for="DepartureTime" class="form-control" />
+                        <span asp-validation-for="DepartureTime" class="text-danger"></span>
+                    </div>
 
-        <!-- Arrival Time -->
-        <div class="form-group mt-3">
-            <label asp-for="ArrivalTime" class="control-label"></label>
-            <input asp-for="ArrivalTime" class="form-control" />
-            <span asp-validation-for="ArrivalTime" class="text-danger"></span>
-        </div>
+                    <!-- Arrival Time -->
+                    <div class="form-group col-md-6">
+                        <label asp-for="ArrivalTime" class="control-label"></label>
+                        <input asp-for="ArrivalTime" class="form-control" />
+                        <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+                    </div>
+                </div>
 
-        <!-- Is Two Way -->
-        <div class="form-group mt-3">
-            <div class="form-check">
-                <input asp-for="IsTwoWay" class="form-check-input" type="checkbox" id="IsTwoWay" />
-                <label class="form-check-label" for="IsTwoWay">
-                    Is Two Way?
-                </label>
+                <!-- Is Two Way -->
+                <div class="form-group mt-3">
+                    <div class="form-check">
+                        <input asp-for="IsTwoWay" class="form-check-input" type="checkbox" id="IsTwoWay" />
+                        <label class="form-check-label" for="IsTwoWay">
+                            Is Two Way?
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Route Selection -->
+                <div class="form-group mt-3">
+                    <label asp-for="RouteId" class="control-label"></label>
+                    <select asp-for="RouteId" class="form-control route-select w-100" id="Route"
+                        asp-items="ViewBag.RouteId"></select>
+                    <span asp-validation-for="RouteId" class="text-danger"></span>
+                </div>
+
+                <!-- Vehicle Selection -->
+                <div class="form-group mt-3">
+                    <label asp-for="VehicleId" class="control-label"></label>
+                    <select asp-for="VehicleId" class="form-control route-select w-100" id="Vehicle"
+                        asp-items="ViewBag.VehicleId"></select>
+                    <span asp-validation-for="VehicleId" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+            </form>
+            <div class="card-footer d-md-flex justify-content-between d-none" role="group" aria-label="Button">
+                <a asp-action="Index" role="button" class="btn btn-outline-secondary hvr-icon-back"><i
+                        class="fa fa-arrow-left me-2 hvr-icon"></i>Back to List</a>
+                <button type="submit" value="Create" class="btn btn-primary hvr-icon-grow"><i
+                        class="fa fa-plus me-2 hvr-icon"></i>Create</button>
             </div>
         </div>
+    </div>
 
-        <!-- Route Selection -->
-        <div class="form-group mt-3">
-            <label asp-for="RouteId" class="control-label"></label>
-            <select asp-for="RouteId" class="form-control route-select w-100" id="Route" asp-items="ViewBag.RouteId"></select>
-            <span asp-validation-for="RouteId" class="text-danger"></span>
-        </div>
-
-        <!-- Vehicle Selection -->
-        <div class="form-group mt-3">
-            <label asp-for="VehicleId" class="control-label"></label>
-            <select asp-for="VehicleId" class="form-control route-select w-100" id="Vehicle"
-                asp-items="ViewBag.VehicleId"></select>
-            <span asp-validation-for="VehicleId" class="text-danger"></span>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="form-group mt-3" role="group" aria-label="Button">
-            <input type="submit" value="Create" class="btn btn-primary" />
-            <a asp-action="Index" role="button" class="btn btn-outline-secondary">Back to List</a>
-        </div>
-    </form>
-    <div class="col-md-8 col-lg-5">
-        <div class="card">
-            <div class="card-header"><i class="fa-solid fa-car-side fa-lg me-1"></i> Vehicle Information</div>
+    <div class="col-lg-5">
+        <div class="card shadow my-3 my-md-0">
+            <div class="card-header fw-semibold text-dark bg-light bg-gradient"><i
+                    class="fa-solid fa-car-side fa-lg me-1"></i> Vehicle Information</div>
             <div class="card-body">
-                <p><strong>Name:</strong> <span id="vehicle-name">N/A</span></p>
-                <p><strong>License Plate:</strong> <span id="vehicle-license-plate">N/A</span></p>
-                <p><strong>Type:</strong> <span id="vehicle-type">N/A</span></p>
-                <p><strong>Total Seats:</strong> <span id="vehicle-total-seats">N/A</span></p>
-                <p><strong>Rows:</strong> <span id="vehicle-total-rows">N/A</span></p>
-                <p><strong>Columns:</strong> <span id="vehicle-total-columns">N/A</span></p>
-                <p><strong>Floors:</strong> <span id="vehicle-total-floors">N/A</span></p>
+                <div class="row">
+                    <div class="col">
+                        <p><strong>Name:</strong> <span id="vehicle-name">N/A</span></p>
+                        <p><strong>License Plate:</strong> <span id="vehicle-license-plate">N/A</span></p>
+                        <p><strong>Type:</strong> <span id="vehicle-type">N/A</span></p>
+                    </div>
+                    <div class="col">
+                        <p><strong>Total Seats:</strong> <span id="vehicle-total-seats">N/A</span></p>
+                        <p><strong>Rows:</strong> <span id="vehicle-total-rows">N/A</span></p>
+                        <p><strong>Columns:</strong> <span id="vehicle-total-columns">N/A</span></p>
+                        <p><strong>Floors:</strong> <span id="vehicle-total-floors">N/A</span></p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card shadow-lg mt-2">
-            <div class="card-header"><i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map</div>
+        <div class="card shadow mt-md-3" id="map-card">
+            <div class="card-header fw-semibold text-dark bg-light bg-gradient">
+                <i class="fa-solid fa-map-location-dot fa-lg me-1"></i> Route Map
+            </div>
             <div class="card-body px-0 py-0">
-                <div class="rounded h-100 w-100" id="map" style="min-height: 400px;"></div>
+                <div class="rounded h-100 w-100 position-relative d-flex justify-content-center align-items-center" id="map" style="min-height: 400px;">
+                    <div class="spinner-border text-primary position-absolute top-50 start-50" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
             </div>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-between d-md-none mt-3" role="group" aria-label="Button">
+        <a asp-action="Index" role="button" class="btn btn-outline-secondary hvr-icon-back"><i
+                class="fa fa-arrow-left me-2 hvr-icon"></i>Back to List</a>
+        <button type="submit" value="Create" class="btn btn-primary hvr-icon-grow"><i
+                class="fa fa-plus me-2 hvr-icon"></i>Create</button>
     </div>
 </div>
 
@@ -134,10 +188,31 @@
                     alert("Could not fetch vehicle info.");
                 }
             }
-        
+
             // ROUTE MAP
             const $routeSelect = $('#Route');
-            
+            const $map = $('#map');
+            const $mapFooter = $('#map-card .card-footer');
+            async function updateRouteMap() {
+                const routeName = $routeSelect.select2('data')[0].text;
+                let route1 = (routeName.split(' - ')[0]);
+                let route2 = (routeName.split(' - ')[1]);
+
+                console.log($mapFooter);
+
+                $mapFooter.removeClass('d-none');
+                $mapFooter.append('<span class="loading-text">Loading...</span>');
+                await getRoute(route1, route2);
+                $mapFooter.find('.loading-text').remove();
+                $mapFooter.addClass('d-none');
+            }
+
+            $routeSelect.on('change', function () {
+                updateRouteMap();
+            });
+
+            // Trigger on load if value exists
+            updateRouteMap();
         });
     </script>
 }
