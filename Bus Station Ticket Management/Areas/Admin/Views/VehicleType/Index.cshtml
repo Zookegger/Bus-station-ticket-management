@@ -16,9 +16,9 @@
                 <th style="min-width: 200px;">Name</th>
                 <th style="min-width: 150px;">Base Fare</th>
                 <th style="min-width: 100px;">Total Seats</th>
-                <th style="min-width: 100px;">Total Flooring</th>
-                <th style="min-width: 100px;">Total Row</th>
-                <th style="min-width: 100px;">Total Column</th>
+                <th style="min-width: 100px;">Total Floors</th>
+                <th style="min-width: 100px;">Total Rows</th>
+                <th style="min-width: 100px;">Total Columns</th>
                 <th style="min-width: 56px; max-width: 56px; text-align: right;">Actions</th>
             </tr>
         </thead>
@@ -30,7 +30,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Price)</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalFloors)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TotalRows)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RowsPerFloor.Sum())</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalColumns)</td>
                     <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
                         <!-- Dropdown Buttons (Hidden by default) -->

@@ -22,11 +22,14 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Total Floors")]
         public int TotalFloors { get; set; }
 
-        [DisplayName("Total Rows")]
-        public int TotalRows { get; set; }
+        [DisplayName("Rows Per Floor")]
+        public List<int> RowsPerFloor { get; set; } = [];
 
         [DisplayName("Total Columns")]
         public int TotalColumns { get; set; }
+        
+        [DisplayName("Seats Per Floor")]
+        public List<int> SeatsPerFloor { get; set; } = [];
 
         [DisplayName("Created At")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

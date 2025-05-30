@@ -36,17 +36,17 @@
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalSeats)</dd>
 
                 <dt class="col-sm-3 text-muted">
-                    <i class="fas fa-layer-group me-2"></i>Total Flooring
+                    <i class="fas fa-layer-group me-2"></i>Total Floors
                 </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalFloors)</dd>
 
                 <dt class="col-sm-3 text-muted">
-                    <i class="fas fa-grip-lines me-2"></i>Total Row
+                    <i class="fas fa-grip-lines me-2"></i>Total Rows
                 </dt>
-                <dd class="col-md-9">@Html.DisplayFor(model => model.TotalRows)</dd>
+                <dd class="col-md-9">@Html.DisplayFor(model => model.RowsPerFloor.Sum())</dd>
 
                 <dt class="col-sm-3 text-muted">
-                    <i class="fas fa-grip-lines-vertical me-2"></i>Total Column
+                    <i class="fas fa-grip-lines-vertical me-2"></i>Total Columns
                 </dt>
                 <dd class="col-md-9">@Html.DisplayFor(model => model.TotalColumns)</dd>
             </dl>

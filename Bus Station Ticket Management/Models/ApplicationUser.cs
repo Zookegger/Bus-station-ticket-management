@@ -21,6 +21,7 @@ namespace Bus_Station_Ticket_Management.Models
         public DateOnly? DateOfBirth { get; set; }
 
         [DisplayName("Avatar")]
+        [ValidateNever]
         public string? Avatar { get; set; }
     
         public static async Task<string?> UploadAvatar(IFormFile image) {

@@ -24,10 +24,10 @@
         </li>
         <li class="list-group-item px-0">
             <strong><i class="fas fa-bars me-2 text-secondary"></i>Total Rows:</strong>
-            <span class="ms-1">@Model.TotalRows</span>
+            <span class="ms-1">@Model.RowsPerFloor.Sum()</span>
         </li>
         <li class="list-group-item px-0">
-            <strong><i class="fas fa-layer-group me-2 text-secondary"></i>Total Flooring:</strong>
+            <strong><i class="fas fa-layer-group me-2 text-secondary"></i>Total Floors:</strong>
             <span class="ms-1">@Model.TotalFloors</span>
         </li>
     </ul>

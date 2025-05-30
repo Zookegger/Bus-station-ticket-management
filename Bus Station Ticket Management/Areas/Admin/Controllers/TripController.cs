@@ -24,88 +24,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Trip
         public async Task<IActionResult> Index(string? searchString, int? page, string? sortBy, string? filterBy)
         {
-            // int pageSize = 30;
-            // int pageNumber = page ?? 1;
-            // var now = DateTime.Now;
-
-            // // Bulk update trip statuses directly in the database
-            // await _context.Trips
-            //     .Where(t => t.DepartureTime > now && t.Status != "Standby")
-            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Standby"));
-
-            // await _context.Trips
-            //     .Where(t => t.DepartureTime <= now && t.ArrivalTime > now && t.Status != "In-Progress")
-            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "In-Progress"));
-
-            // await _context.Trips
-            //     .Where(t => t.ArrivalTime <= now && t.Status != "Completed")
-            //     .ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, "Completed"));
-
-            // // Start with the base query
-            // var tripsQuery = _context.Trips
-            //     .Include(t => t.Route)
-            //         .ThenInclude(r => r.StartLocation)
-            //     .Include(t => t.Route)
-            //         .ThenInclude(r => r.DestinationLocation)
-            //     .Include(t => t.Vehicle)
-            //     .AsQueryable();
-
-            // // Apply search filter if searchString is provided
-            // if (!string.IsNullOrEmpty(searchString))
-            // {
-            //     tripsQuery = tripsQuery.Where(t =>
-            //         t.Route != null && t.Route.StartLocation != null && t.Route.StartLocation.Name.Contains(searchString) ||
-            //         t.Route != null && t.Route.DestinationLocation != null && t.Route.DestinationLocation.Name.Contains(searchString) ||
-            //         t.Vehicle != null && t.Vehicle.Name != null && t.Vehicle.Name.Contains(searchString)
-            //     );
-            // }
-
-            // // Apply sorting based on sortBy parameter
-            // tripsQuery = sortBy switch
-            // {
-            //     "route_asc" => tripsQuery.OrderBy(t => t.Route.StartLocation.Name),
-            //     "route_desc" => tripsQuery.OrderByDescending(t => t.Route.StartLocation.Name),
-            //     "vehicle_asc" => tripsQuery.OrderBy(t => t.Vehicle.Name),
-            //     "vehicle_desc" => tripsQuery.OrderByDescending(t => t.Vehicle.Name),
-            //     "departure_asc" => tripsQuery.OrderBy(t => t.DepartureTime),
-            //     "departure_desc" => tripsQuery.OrderByDescending(t => t.DepartureTime),
-            //     "arrival_asc" => tripsQuery.OrderBy(t => t.ArrivalTime),
-            //     "arrival_desc" => tripsQuery.OrderByDescending(t => t.ArrivalTime),
-            //     _ => tripsQuery.OrderBy(t => t.DepartureTime),
-            // };
-
-            // // Apply filtering based on filterBy parameter
-            // tripsQuery = filterBy switch
-            // {
-            //     "All" => tripsQuery,
-            //     "Standby" => tripsQuery.Where(t => t.Status == "Standby"),
-            //     "In-Progress" => tripsQuery.Where(t => t.Status == "In-Progress"),
-            //     "Completed" => tripsQuery.Where(t => t.Status == "Completed"),
-            //     _ => tripsQuery,
-            // };
-
-            // // Retrieve total count for pagination
-            // int totalCount = await tripsQuery.CountAsync();
-
-            // // Apply pagination
-            // var trips = await tripsQuery
-            //     .Skip((pageNumber - 1) * pageSize)
-            //     .Take(pageSize)
-            //     .ToListAsync();
-
-            // // Set ViewBag properties for use in the view
-            // ViewBag.Routes = await _context.Routes
-            //     .Include(r => r.StartLocation)
-            //     .Include(r => r.DestinationLocation)
-            //     .ToListAsync();
-
-            // ViewBag.SortBy = sortBy;
-            // ViewBag.SearchString = searchString;
-            // ViewBag.FilterBy = filterBy;
-            // ViewBag.PageNumber = pageNumber;
-            // ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            // return View(trips.ToPagedList(pageNumber, pageSize));
             var trips = await _context.Trips
                 .Include(t => t.Route)
                     .ThenInclude(r => r.StartLocation)
@@ -146,7 +64,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Id is null!");
             }
 
             var trip = await _context.Trips
@@ -160,7 +78,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             if (trip == null)
             {
-                return NotFound();
+                return NotFound("Trip not found!");
             }
 
             return PartialView("_DetailsPartial", trip);
@@ -267,20 +185,36 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Generate seats after saving trip
             var seats = new List<Seat>();
-            for (int f = 1; f <= vehicleType.TotalFloors; f++) {
-                for (int r = 1; r <= vehicleType.TotalRows; r++)
+            for (int f = 1; f <= vehicleType.TotalFloors; f++)
+            {
+                // Lấy số ghế của tầng hiện tại
+                int seatsForFloor = vehicleType.SeatsPerFloor[f - 1];
+
+                // Tính số hàng và cột cần thiết dựa trên số ghế
+                // Giả sử sử dụng TotalColumn cố định, tính TotalRow
+                int columns = vehicleType.TotalColumns;
+                int rows = vehicleType.RowsPerFloor[f - 1];
+
+                string prefix = f == 1 ? "A" : "B";
+                int seatNumber = 1;
+
+                for (int r = 1; r <= rows; r++)
                 {
-                    for (int c = 1; c <= vehicleType.TotalColumns; c++)
+                    for (int c = 1; c <= columns; c++)
                     {
-                        seats.Add(new Seat
+                        // Chỉ tạo ghế nếu chưa vượt quá số ghế của tầng
+                        if ((r - 1) * columns + c <= seatsForFloor)
                         {
-                            Row = r,
-                            Column = c,
-                            Floor = f,
-                            Number = $"F{f}R{r}C{c}",
-                            IsAvailable = true,
-                            TripId = trip.Id
-                        });
+                            seats.Add(new Seat
+                            {
+                                Row = r,
+                                Column = c,
+                                Floor = f,
+                                Number = $"{prefix}{seatNumber++}",
+                                IsAvailable = true,
+                                TripId = trip.Id
+                            });
+                        }
                     }
                 }
             }
@@ -310,7 +244,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 TotalSeats = vehicle.VehicleType?.TotalSeats,
                 TotalFloors = vehicle.VehicleType?.TotalFloors,
                 TotalColumns = vehicle.VehicleType?.TotalColumns,
-                TotalRows = vehicle.VehicleType?.TotalRows,
+                TotalRows = vehicle.VehicleType?.RowsPerFloor.Sum(),
             });
         }
 

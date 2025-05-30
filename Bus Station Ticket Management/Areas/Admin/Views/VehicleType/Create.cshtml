@@ -1,11 +1,15 @@
 ﻿@model Bus_Station_Ticket_Management.Models.VehicleType
 
 @{
-    ViewData["Title"] = "Create Vehicle Type";
+    ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container py-4">
+<div class="container">
+    <h1 class="text-success fw-bold mb-4">Create Vehicle Type</h1>
+    <h4 class="mb-3">Vehicle Type Details</h4>
+    <hr />
+
     <div class="row justify-content-center">
         <div class="col-lg-10 col-xl-8">
             <div class="card shadow-sm border-0">
@@ -15,54 +19,51 @@
                     </h2>
                     <p class="text-muted mb-4">Fill in the details for the new vehicle type below.</p>
 
-                    <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                    <form asp-action="Create" class="bg-light p-4 rounded shadow-sm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
                             Please correct the errors below.
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-group mb-3">
                             <label asp-for="Name" class="form-label">Name</label>
-                            <input asp-for="Name" class="form-control" placeholder="e.g., Electric Bus" />
+                            <input asp-for="Name" class="form-control" placeholder="Enter vehicle type name (e.g., Double Decker Bus)" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-group mb-3">
                             <label asp-for="Price" class="form-label">Price</label>
-                            <input asp-for="Price" class="form-control" placeholder="e.g., 100000" />
+                            <input asp-for="Price" class="form-control" type="number" min="0" placeholder="Enter base fare (e.g., 100000)" />
                             <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="TotalSeats" class="form-label">Seats</label>
-                                <input asp-for="TotalSeats" class="form-control" placeholder="e.g., 42" />
-                                <span asp-validation-for="TotalSeats" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="TotalFloors" class="form-label">Floors</label>
-                                <input asp-for="TotalFloors" class="form-control" placeholder="e.g., 3" />
-                                <span asp-validation-for="TotalFloors" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="TotalRows" class="form-label">Rows</label>
-                                <input asp-for="TotalRows" class="form-control" placeholder="e.g., 7" />
-                                <span asp-validation-for="TotalRows" class="text-danger"></span>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="TotalFloors" class="form-label">Total Floors</label>
+                            <input asp-for="TotalFloors" class="form-control" type="number" min="1" max="2" id="totalFlooring" placeholder="Enter total floors (e.g., 1 or 2)" />
+                            <span asp-validation-for="TotalFloors" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="TotalColumns" class="form-label">Columns</label>
-                            <input asp-for="TotalColumns" class="form-control" placeholder="e.g., 6" />
+                        <div id="seatsPerFloorInputs" class="mb-3">
+                            <!-- Dynamic inputs for SeatsPerFloor will be added by JavaScript -->
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="TotalColumns" class="form-label">Total Columns</label>
+                            <input asp-for="TotalColumns" class="form-control" type="number" min="1" id="totalColumns" placeholder="Enter number of columns (e.g., 6)" />
                             <span asp-validation-for="TotalColumns" class="text-danger"></span>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Back to List
-                            </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save me-1"></i> Create
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> 
+                            Rows will be automatically calculated as: <strong>Ceiling(SeatsPerFloor / Columns)</strong>
+                        </div>
+
+                        <div class="form-group btn-group gap-2 mt-3 w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Create
                             </button>
+                            <a role="button" class="btn btn-outline-secondary" asp-action="Index">
+                                <i class="fa fa-arrow-left"></i> Back to List
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -72,5 +73,69 @@
 </div>
 
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            const totalFlooringInput = $('#totalFlooring');
+            const totalColumnsInput = $('#totalColumns');
+            const seatsPerFloorInputs = $('#seatsPerFloorInputs');
+
+            function updateSeatsPerFloorInputs() {
+                const totalFloors = parseInt(totalFlooringInput.val()) || 0;
+                seatsPerFloorInputs.empty();
+
+                if (totalFloors >= 1 && totalFloors <= 2) {
+                    for (let i = 1; i <= totalFloors; i++) {
+                        seatsPerFloorInputs.append(`
+                            <div class="form-group mb-3">
+                                <label for="seatsFloor${i}" class="form-label">Seats for Floor ${i}</label>
+                                <div class="input-group">
+                                    <input type="number" name="SeatsPerFloor[${i-1}]" id="seatsFloor${i}"
+                                           class="form-control seats-floor" min="1" required
+                                           placeholder="Enter seats for floor ${i} (e.g., 20)" />
+                                    <span class="input-group-text">
+                                        Rows: <span id="rowsFloor${i}" class="fw-bold ms-1">0</span>
+                                    </span>
+                                </div>
+                                <span class="text-danger" id="errorFloor${i}"></span>
+                            </div>
+                        `);
+                    }
+                    calculateRows(); // Initial calculation
+                }
+            }
+
+            function calculateRows() {
+                const columns = parseInt(totalColumnsInput.val()) || 1;
+                $('.seats-floor').each(function() {
+                    const floorNum = this.id.replace('seatsFloor', '');
+                    const seats = parseInt($(this).val()) || 0;
+                    const rows = Math.ceil(seats / columns);
+                    $(`#rowsFloor${floorNum}`).text(rows);
+                });
+            }
+
+            // Event handlers
+            totalFlooringInput.on('change', updateSeatsPerFloorInputs);
+            totalColumnsInput.on('change', calculateRows);
+            seatsPerFloorInputs.on('change', '.seats-floor', calculateRows);
+
+            // Client-side validation
+            seatsPerFloorInputs.on('change', '.seats-floor', function() {
+                const seatsFloor1 = parseInt($('#seatsFloor1').val()) || 0;
+                const seatsFloor2 = parseInt($('#seatsFloor2').val()) || 0;
+                const totalFloors = parseInt(totalFlooringInput.val()) || 0;
+
+                if (totalFloors >= 2 && seatsFloor2 > seatsFloor1) {
+                    $('#errorFloor2').text('Upper floors should not have more seats than lower floors.');
+                    $('#seatsFloor2').val(seatsFloor1);
+                    calculateRows();
+                } else {
+                    $('#errorFloor2').text('');
+                }
+            });
+        });
+    </script>
 }

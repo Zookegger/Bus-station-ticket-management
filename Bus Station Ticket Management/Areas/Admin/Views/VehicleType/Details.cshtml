@@ -22,9 +22,9 @@
                 <dd class="col-sm-8">@Html.DisplayFor(model => model.TotalColumns)</dd>
 
                 <dt class="col-sm-4">Total Rows</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.TotalRows)</dd>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.RowsPerFloor.Sum())</dd>
 
-                <dt class="col-sm-4">Total Flooring</dt>
+                <dt class="col-sm-4">Total Floors</dt>
                 <dd class="col-sm-8">@Html.DisplayFor(model => model.TotalFloors)</dd>
             </dl>
             <div class="btn-group mt-3 w-100" role="group" aria-label="Button group">

@@ -63,8 +63,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         public async Task<IActionResult> DetailsPartial(string? id)
         {
-            try {
-                
+            try
+            {
+
                 if (id == null)
                 {
                     return NotFound();
@@ -74,7 +75,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     .Include(d => d.Account)
                     .Include(d => d.DriverLicenses)
                     .FirstOrDefaultAsync(m => m.Id == id);
-                
+
                 if (driver == null)
                 {
                     return NotFound();
@@ -101,7 +102,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 };
 
                 return PartialView("_DetailsPartial", viewmodel);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -159,39 +162,90 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DriverViewModel model, IFormFile avatar, string password)
+        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,DateOfBirth,Gender,Address,Licenses")] DriverViewModel model, IFormFile avatar, string password)
         {
             try
             {
-                if (model == null)
+                var validationResult = await ValidateDriverModel(model);
+                if (!validationResult)
                 {
-                    return View(new DriverViewModel());
-                }
-
-                // Validate model first
-                if (!IsDriver(model))
-                {
-                    return View(model);
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    var firstError = ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
-                    if (!string.IsNullOrEmpty(firstError))
-                    {
-                        ModelState.AddModelError(string.Empty, firstError);
-                    }
                     return View(model);
                 }
 
                 // Check if email already exists
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);
+
                 if (existingUser != null)
                 {
-                    ModelState.AddModelError("Email", "This email is already registered.");
-                    return View(model);
-                }
+                    if (await _userManager.IsInRoleAsync(existingUser, "Driver"))
+                    {
+                        ModelState.AddModelError("Email", "This email is already registered.");
+                        return View(model);
+                    }
+                    else
+                    {
+                        using (var transaction = await _context.Database.BeginTransactionAsync())
+                        {
+                            try
+                            {
+                                // If user exists but is not a driver, add them to the Driver role
+                                await _userManager.AddToRoleAsync(existingUser, "Driver");
+                                existingUser.FullName = model.FullName;
+                                existingUser.Address = model.Address;
+                                existingUser.DateOfBirth = model.DateOfBirth;
+                                existingUser.Gender = model.Gender;
+                                existingUser.PhoneNumber = model.PhoneNumber;
 
+                                // Handle avatar upload if provided
+                                if (avatar != null)
+                                {
+                                    existingUser.Avatar = await ApplicationUser.UploadAvatar(avatar);
+                                }
+
+                                var driver = new Driver
+                                {
+                                    Id = existingUser.Id,
+                                    Account = existingUser
+                                };
+
+                                await _context.Drivers.AddAsync(driver);
+
+                                driver.DriverLicenses = [.. model.Licenses.Select(l => new DriverLicense
+                                {
+                                    DriverId = existingUser.Id,
+                                    LicenseId = l.LicenseId,
+                                    LicenseClass = l.LicenseClass,
+                                    LicenseIssueDate = l.LicenseIssueDate,
+                                    LicenseExpirationDate = l.LicenseExpirationDate,
+                                    LicenseIssuePlace = l.LicenseIssuePlace
+                                })];
+
+                                await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
+
+                                var result = await _userManager.UpdateAsync(existingUser);
+                                if (!result.Succeeded)
+                                {
+                                    foreach (var error in result.Errors)
+                                    {
+                                        ModelState.AddModelError(string.Empty, error.Description);
+                                    }
+                                    return View(model);
+                                }
+
+                                await _context.SaveChangesAsync();
+                                TempData["SuccessMessage"] = "Driver updated successfully.";
+                                return RedirectToAction(nameof(Index));
+                            }
+                            catch (Exception ex)
+                            {
+                                await transaction.RollbackAsync();
+                                _logger.LogError(ex, "Error in driver creation transaction");
+                                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+                                return View(model);
+                            }
+                        }
+                    }
+                }
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
@@ -203,7 +257,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                             try
                             {
                                 avatarPath = await ApplicationUser.UploadAvatar(avatar);
-                                if (avatarPath == null) {
+                                if (avatarPath == null)
+                                {
                                     throw new Exception("Failed to upload avatar");
                                 }
                             }
@@ -317,6 +372,87 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
         }
 
+        public async Task<IActionResult> HandleExistingDriver(ApplicationUser user, DriverViewModel model, IFormFile avatar, string password)
+        {
+            try
+            {
+                if (await _userManager.IsInRoleAsync(user, "Driver"))
+                {
+                    ModelState.AddModelError("Email", "This email is already registered.");
+                    return View(model);
+                }
+                else
+                {
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            // If user exists but is not a driver, add them to the Driver role
+                            await _userManager.AddToRoleAsync(user, "Driver");
+                            user.FullName = model.FullName;
+                            user.Address = model.Address;
+                            user.DateOfBirth = model.DateOfBirth;
+                            user.Gender = model.Gender;
+                            user.PhoneNumber = model.PhoneNumber;
+
+                            // Handle avatar upload if provided
+                            if (avatar != null)
+                            {
+                                user.Avatar = await ApplicationUser.UploadAvatar(avatar);
+                            }
+
+                            var driver = new Driver
+                            {
+                                Id = user.Id,
+                                Account = user
+                            };
+
+                            await _context.Drivers.AddAsync(driver);
+
+                            driver.DriverLicenses = [.. model.Licenses.Select(l => new DriverLicense
+                                {
+                                    DriverId = user.Id,
+                                    LicenseId = l.LicenseId,
+                                    LicenseClass = l.LicenseClass,
+                                    LicenseIssueDate = l.LicenseIssueDate,
+                                    LicenseExpirationDate = l.LicenseExpirationDate,
+                                    LicenseIssuePlace = l.LicenseIssuePlace
+                                })];
+
+                            await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
+
+                            var result = await _userManager.UpdateAsync(user);
+                            if (!result.Succeeded)
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                                return View(model);
+                            }
+
+                            await _context.SaveChangesAsync();
+                            TempData["SuccessMessage"] = "Driver updated successfully.";
+                            return RedirectToAction(nameof(Index));
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError(ex, "Error in driver creation transaction");
+                            ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+                            return View(model);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error in driver creation");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+                return View(model);
+            }
+        }
+
         // GET: Driver/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
@@ -324,13 +460,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             {
                 return NotFound("Driver not found");
             }
-            try {
+            try
+            {
 
                 var driver = await _context.Drivers
                     .Include(d => d.Account)
                     .Include(d => d.DriverLicenses)
                     .FirstOrDefaultAsync(d => d.Id == id);
-                    
+
                 if (driver == null)
                 {
                     return NotFound("No driver found");
@@ -357,7 +494,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     }).ToList() ?? []
                 };
                 return View(viewmodel);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -369,20 +508,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, DriverViewModel model, IFormFile Avatar, string? password)
         {
-            if (id == null || model.DriverId != id)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             try
             {
+                var validationResult = await ValidateDriverModel(model);
+                if (!validationResult)
+                {
+                    return View(model);
+                }
+
                 using var transaction = await _context.Database.BeginTransactionAsync();
-                
+
                 // Get driver with concurrency token
                 var driver = await _context.Drivers
                     .Include(d => d.Account)
@@ -544,7 +679,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: Driver/Delete/5
         public async Task<IActionResult> Delete(string? id)
         {
-            try {
+            try
+            {
                 if (id == null)
                 {
                     return NotFound("Id not found");
@@ -562,7 +698,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
                 return View(driver);
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 _logger.LogError(ex.ToString(), ex);
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
@@ -573,7 +711,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            try {
+            try
+            {
                 var driver = await _context.Drivers.Include(d => d.DriverLicenses).FirstOrDefaultAsync(d => d.Id == id);
 
                 if (driver == null)
@@ -581,16 +720,19 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     return NotFound();
                 }
 
-                using (var transaction = await _context.Database.BeginTransactionAsync()) {
-                    try {
-                        if (driver.DriverLicenses != null) {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        if (driver.DriverLicenses != null)
+                        {
                             _context.DriverLicenses.RemoveRange(driver.DriverLicenses);
                         }
-                        
+
                         _context.Drivers.Remove(driver);
-                        
+
                         await ApplicationUser.DeleteAvatar(driver.Account?.Avatar);
-                        
+
                         var user = await _userManager.FindByIdAsync(driver.Id);
                         if (user != null)
                         {
@@ -609,12 +751,16 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         await _context.SaveChangesAsync();
                         await transaction.CommitAsync();
                         return RedirectToAction(nameof(Index));
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         await transaction.RollbackAsync();
                         throw new Exception($"Failed to delete driver: {ex}");
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -622,6 +768,37 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private bool DoesDriverExists(string id)
         {
             return _context.Drivers.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> ValidateDriverModel(DriverViewModel model)
+        {
+            if (model == null)
+            {
+                return false;
+            }
+
+            if (!IsDriver(model))
+            {
+                return false;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var firstError = ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
+                if (!string.IsNullOrEmpty(firstError))
+                {
+                    ModelState.AddModelError(string.Empty, firstError);
+                }
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email is required");
+                return false;
+            }
+
+            return true;
         }
     }
 }

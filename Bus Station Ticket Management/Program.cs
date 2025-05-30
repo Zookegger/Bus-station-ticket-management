@@ -177,11 +177,11 @@ builder.Services.AddAuthentication(options =>
 .AddFacebook(options =>
 {
    if (config is not null &&
-       !string.IsNullOrEmpty(config["Authentication:Google:ClientId"]) &&
-       !string.IsNullOrEmpty(config["Authentication:Google:ClientSecret"]))
+       !string.IsNullOrEmpty(config["Authentication:Facebook:AppId"]) &&
+       !string.IsNullOrEmpty(config["Authentication:Facebook:AppSecret"]))
    {
-       options.AppId = config["Authentication:Google:ClientId"] ?? string.Empty;
-       options.AppSecret = config["Authentication:Google:ClientSecret"] ?? string.Empty;
+       options.AppId = config["Authentication:Facebook:AppId"] ?? string.Empty;
+       options.AppSecret = config["Authentication:Facebook:AppSecret"] ?? string.Empty;
    }
    else
    {

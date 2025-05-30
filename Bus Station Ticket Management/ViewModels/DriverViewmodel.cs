@@ -1,10 +1,10 @@
 using System.ComponentModel;
 using Bus_Station_Ticket_Management.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace Bus_Station_Ticket_Management.ViewModels {
     public class DriverViewModel {
         [DisplayName("Driver ID")]
-        [Required]
         [Key]
         public string? DriverId { get; set; }
 
@@ -33,6 +33,7 @@ namespace Bus_Station_Ticket_Management.ViewModels {
         public DateOnly? DateOfBirth { get; set; }
 
         [DisplayName("Avatar")]
+        [ValidateNever]
         [Required]
         public string? Avatar { get; set; }
 

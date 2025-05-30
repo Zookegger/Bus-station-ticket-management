@@ -13,68 +13,63 @@
     </div>
 
     <div class="card shadow-sm border-0">
-            <form asp-action="Edit" class="card-body">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                <input type="hidden" asp-for="Id" />
+        <form asp-action="Edit" class="card-body">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RowsPerFloor" /> <!-- Hidden field for RowsPerFloor -->
 
-                <!-- Vehicle Name -->
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label fw-semibold"><i
-                            class="fas fa-tag me-1 text-primary"></i>Vehicle Type Name</label>
-                    <input asp-for="Name" class="form-control" placeholder="Enter vehicle type name" />
-                    <span asp-validation-for="Name" class="text-danger small"></span>
+            <!-- Vehicle Name -->
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-semibold"><i class="fas fa-tag me-1 text-primary"></i>Vehicle Type Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter vehicle type name" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="form-label fw-semibold"><i class="fas fa-money-bill-wave me-1 text-primary"></i>Price</label>
+                <input asp-for="Price" type="number" class="form-control" placeholder="Base fare (e.g., 100000)" min="0" />
+                <span asp-validation-for="Price" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <!-- Total Seats (readonly as it's calculated) -->
+                <div class="col-3">
+                    <label asp-for="TotalSeats" class="form-label fw-semibold"><i class="fas fa-chair me-1 text-primary"></i>Total Seats</label>
+                    <input asp-for="TotalSeats" class="form-control" readonly />
+                    <small class="text-muted">Calculated from floors</small>
                 </div>
 
-                <!-- Price -->
-                <div class="form-group mb-3">
-                    <label asp-for="Price" class="control-label"></label>
-                    <!-- Input for smaller screens -->
-                    <input asp-for="Price" type="tel" pattern="[0-9]*" id="priceInputSmall"
-                        class="form-control d-md-none d-block" placeholder="..VND" />
-                    <!-- Input for larger screens -->
-                    <input asp-for="Price" type="text" id="priceInputLarge" class="form-control d-none d-md-block"
-                        placeholder="..VND" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
+                <!-- Total Floors -->
+                <div class="col-3">
+                    <label asp-for="TotalFloors" class="form-label fw-semibold"><i class="fas fa-layer-group me-1 text-primary"></i>Total Floors</label>
+                    <input asp-for="TotalFloors" class="form-control" id="totalFlooring" placeholder="Enter total floors (1 or 2)" min="1" max="2" />
+                    <span asp-validation-for="TotalFloors" class="text-danger small"></span>
                 </div>
 
-                <div class="row">
-
-                    <!-- Total Seats -->
-                    <div class="col-3">
-                        <label asp-for="TotalSeats" class="form-label fw-semibold"><i
-                                class="fas fa-chair me-1 text-primary"></i>Total Seats</label>
-                        <input asp-for="TotalSeats" class="form-control" placeholder="Enter number of seats" />
-                        <span asp-validation-for="TotalSeats" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Total Floors -->
-                    <div class="col-3">
-                        <label asp-for="TotalFloors" class="form-label fw-semibold"><i
-                                class="fas fa-layer-group me-1 text-primary"></i>Total Floors</label>
-                        <input asp-for="TotalFloors" class="form-control" placeholder="Enter number of floors" />
-                        <span asp-validation-for="TotalFloors" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Total Rows -->
-                    <div class="col-3">
-                        <label asp-for="TotalRows" class="form-label fw-semibold"><i
-                                class="fas fa-bars me-1 text-primary"></i>Total Rows</label>
-                        <input asp-for="TotalRows" class="form-control" placeholder="Enter number of rows" />
-                        <span asp-validation-for="TotalRows" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Total Columns -->
-                    <div class="col-3">
-                        <label asp-for="TotalColumns" class="form-label fw-semibold"><i
-                                class="fas fa-columns me-1 text-primary"></i>Total Columns</label>
-                        <input asp-for="TotalColumns" class="form-control" placeholder="Enter number of columns" />
-                        <span asp-validation-for="TotalColumns" class="text-danger small"></span>
-                    </div>
+                <!-- Total Columns -->
+                <div class="col-3">
+                    <label asp-for="TotalColumns" class="form-label fw-semibold"><i class="fas fa-columns me-1 text-primary"></i>Total Columns</label>
+                    <input asp-for="TotalColumns" class="form-control" id="totalColumns" placeholder="Enter total columns" min="1" />
+                    <span asp-validation-for="TotalColumns" class="text-danger small"></span>
                 </div>
 
-            </form>
+                <!-- Calculated Rows Info -->
+                <div class="col-3">
+                    <label class="form-label fw-semibold"><i class="fas fa-bars me-1 text-primary"></i>Calculated Rows</label>
+                    <div class="form-control bg-light">
+                        <span id="calculatedRowsDisplay">Auto-calculated</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SeatsPerFloor (Dynamic Input) -->
+            <div id="seatsPerFloorInputs" class="mt-4">
+                <!-- JavaScript will render inputs here -->
+            </div>
+
             <!-- Buttons -->
-            <div class="card-footer d-flex justify-content-between align-items-center">
+            <div class="card-footer d-flex justify-content-between align-items-center mt-4">
                 <a asp-action="Index" class="btn btn-outline-secondary hover-float">
                     <i class="fas fa-arrow-left me-1"></i>Back
                 </a>
@@ -82,7 +77,7 @@
                     <i class="fas fa-save me-1"></i>Save Changes
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -90,5 +85,96 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/js/priceInput.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const totalFlooringInput = $('#totalFlooring');
+            const totalColumnsInput = $('#totalColumns');
+            const seatsPerFloorInputs = $('#seatsPerFloorInputs');
+            const calculatedRowsDisplay = $('#calculatedRowsDisplay');
+            const rowsPerFloorHidden = $('input[name="RowsPerFloor"]');
+
+            // Initialize with existing data if available
+            const initialSeatsPerFloor = @Html.Raw(Json.Serialize(Model.SeatsPerFloor ?? new List<int>()));
+            const initialRowsPerFloor = @Html.Raw(Json.Serialize(Model.RowsPerFloor ?? new List<int>()));
+
+            function updateSeatsPerFloorInputs() {
+                const totalFloors = parseInt(totalFlooringInput.val()) || 0;
+                seatsPerFloorInputs.empty();
+
+                if (totalFloors >= 1 && totalFloors <= 2) {
+                    for (let i = 1; i <= totalFloors; i++) {
+                        const seatsValue = initialSeatsPerFloor[i-1] || '';
+                        const rowsValue = initialRowsPerFloor[i-1] || 0;
+                        
+                        seatsPerFloorInputs.append(`
+                            <div class="form-group mb-3">
+                                <label for="seatsFloor${i}" class="form-label">Seats for Floor ${i}</label>
+                                <div class="input-group">
+                                    <input type="number" name="SeatsPerFloor[${i-1}]" id="seatsFloor${i}"
+                                           class="form-control seats-floor" min="1" required
+                                           value="${seatsValue}"
+                                           placeholder="Enter seats for floor ${i} (e.g., 20)" />
+                                    <span class="input-group-text">
+                                        Rows: <span id="rowsFloor${i}" class="fw-bold ms-1">${rowsValue}</span>
+                                    </span>
+                                </div>
+                                <span class="text-danger" id="errorFloor${i}"></span>
+                            </div>
+                        `);
+                    }
+                    calculateRows();
+                }
+            }
+
+            function calculateRows() {
+                const columns = parseInt(totalColumnsInput.val()) || 1;
+                const rowsPerFloor = [];
+                
+                $('.seats-floor').each(function() {
+                    const floorNum = this.id.replace('seatsFloor', '');
+                    const seats = parseInt($(this).val()) || 0;
+                    const rows = Math.ceil(seats / columns);
+                    $(`#rowsFloor${floorNum}`).text(rows);
+                    rowsPerFloor.push(rows);
+                });
+
+                // Update hidden field with JSON array
+                rowsPerFloorHidden.val(JSON.stringify(rowsPerFloor));
+                
+                // Update display
+                calculatedRowsDisplay.text(rowsPerFloor.join(" + ") + " rows total");
+                
+                // Update total seats
+                const totalSeats = $('.seats-floor').toArray()
+                    .reduce((sum, input) => sum + (parseInt($(input).val()) || 0), 0);
+                $('#TotalSeats').val(totalSeats);
+            }
+
+            // Event handlers
+            totalFlooringInput.on('change', updateSeatsPerFloorInputs);
+            totalColumnsInput.on('change', calculateRows);
+            seatsPerFloorInputs.on('change', '.seats-floor', calculateRows);
+
+            // Client-side validation
+            seatsPerFloorInputs.on('change', '.seats-floor', function() {
+                const seatsFloor1 = parseInt($('#seatsFloor1').val()) || 0;
+                const seatsFloor2 = parseInt($('#seatsFloor2').val()) || 0;
+                const totalFloors = parseInt(totalFlooringInput.val()) || 0;
+
+                if (totalFloors >= 2 && seatsFloor2 > seatsFloor1) {
+                    $('#errorFloor2').text('Upper floors should not have more seats than lower floors.');
+                    $('#seatsFloor2').val(seatsFloor1);
+                    calculateRows();
+                } else {
+                    $('#errorFloor2').text('');
+                }
+            });
+
+            // Initialize on load
+            if (totalFlooringInput.val()) {
+                updateSeatsPerFloorInputs();
+            }
+        });
+    </script>
 }

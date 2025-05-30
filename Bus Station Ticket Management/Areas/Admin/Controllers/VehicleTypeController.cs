@@ -23,7 +23,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string? sortBy, string? searchString)
         {
             var vehicleTypesList = _context.VehicleTypes.AsQueryable();
-            if (!string.IsNullOrEmpty(searchString)) {
+            if (!string.IsNullOrEmpty(searchString))
+            {
                 vehicleTypesList = vehicleTypesList.Where(vt => vt.Name.Contains(searchString));
             }
             return View(await vehicleTypesList.ToListAsync());
@@ -32,13 +33,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicleType == null) {
+            if (vehicleType == null)
+            {
                 return NotFound();
             }
 
@@ -47,17 +50,19 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
         public async Task<IActionResult> DetailsPartial(int? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicleType == null) {
+            if (vehicleType == null)
+            {
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartial",vehicleType);
+            return PartialView("_DetailsPartial", vehicleType);
         }
 
         // GET: VehicleType/Create
@@ -71,13 +76,35 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,TotalSeats,TotalFloors,TotalRows,TotalColumns")] VehicleType vehicleType)
+        public async Task<IActionResult> Create([Bind("Id,Name,Price,TotalSeats,TotalFloors,TotalColumns,SeatsPerFloor")] VehicleType vehicleType)
         {
-            if (VehicleTypeExists(vehicleType.Name)) {
+            if (VehicleTypeExists(vehicleType.Name))
+            {
                 ModelState.AddModelError("Name", "This Vehicle Type already exists!");
             }
 
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
+                // Tính tổng số ghế từ SeatsPerFloor (nếu cần)
+                if (vehicleType.SeatsPerFloor != null && vehicleType.SeatsPerFloor.Count > 0)
+                {
+                    vehicleType.TotalSeats = vehicleType.SeatsPerFloor.Sum();
+                }
+
+                if (vehicleType.TotalFloors <= 0)
+                {
+                    ModelState.AddModelError("TotalFloors", "Total Floors must be greater than 0");
+                    return View(vehicleType);
+                }
+
+                if (vehicleType.SeatsPerFloor == null || vehicleType.SeatsPerFloor.Count == 0)
+                {
+                    int seatsPerFloor = (int)Math.Ceiling((double)vehicleType.TotalSeats / vehicleType.TotalFloors);
+                    vehicleType.SeatsPerFloor = [.. Enumerable.Repeat(seatsPerFloor, vehicleType.TotalFloors)];
+                }
+
+                vehicleType.RowsPerFloor = [.. vehicleType.SeatsPerFloor.Select(seats => (int)Math.Ceiling((double)seats / vehicleType.TotalColumns))];
+
                 _context.Add(vehicleType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -88,12 +115,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes.FindAsync(id);
-            if (vehicleType == null) {
+            if (vehicleType == null)
+            {
                 return NotFound();
             }
             return View(vehicleType);
@@ -104,22 +133,28 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,TotalSeats,TotalRows,TotalColumns,TotalFloors")] VehicleType vehicleType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,TotalSeats,TotalRows,TotalColumns,TotalFloors")] VehicleType vehicleType)
         {
-            if (id != vehicleType.Id) {
+            if (id != vehicleType.Id)
+            {
                 return NotFound();
             }
 
-            if (ModelState.IsValid) {
-                try {
+            if (ModelState.IsValid)
+            {
+                try
+                {
                     _context.Update(vehicleType);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException) {
-                    if (!VehicleTypeExists(vehicleType.Id)) {
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VehicleTypeExists(vehicleType.Id))
+                    {
                         return NotFound();
                     }
-                    else {
+                    else
+                    {
                         throw;
                     }
                 }
@@ -131,13 +166,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // GET: VehicleType/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return NotFound();
             }
 
             var vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicleType == null) {
+            if (vehicleType == null)
+            {
                 return NotFound();
             }
 
@@ -150,7 +187,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicleType = await _context.VehicleTypes.FindAsync(id);
-            if (vehicleType != null) {
+            if (vehicleType != null)
+            {
                 _context.VehicleTypes.Remove(vehicleType);
             }
 
