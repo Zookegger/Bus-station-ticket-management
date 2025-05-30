@@ -30,7 +30,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Price)</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalSeats)</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalFloors)</td>
-                    <td>@Html.DisplayFor(modelItem => item.RowsPerFloor.Sum())</td>
+                    <td>@(item.RowsPerFloor?.Sum() ?? 0)</td>
                     <td>@Html.DisplayFor(modelItem => item.TotalColumns)</td>
                     <td class="action-buttons" onclick="event.stopPropagation()" style="min-width: 90px; max-width: 90px; width: 90px !important;">
                         <!-- Dropdown Buttons (Hidden by default) -->

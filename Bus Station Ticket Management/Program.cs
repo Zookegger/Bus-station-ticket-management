@@ -18,8 +18,14 @@ using Bus_Station_Ticket_Management.Services.Email;
 using Bus_Station_Ticket_Management.Services.QRCode;
 using Bus_Station_Ticket_Management.Models;
 using Bus_Station_Ticket_Management.Utilities;
+using Bus_Station_Ticket_Management.ViewModels;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -182,13 +188,31 @@ builder.Services.AddAuthentication(options =>
    {
        options.AppId = config["Authentication:Facebook:AppId"] ?? string.Empty;
        options.AppSecret = config["Authentication:Facebook:AppSecret"] ?? string.Empty;
+       
+       // Configure additional options
+       options.CallbackPath = "/signin-facebook";
+       options.SaveTokens = true;
+       
+       // Request additional scopes
+       options.Scope.Add("email");
+       options.Scope.Add("public_profile");
+       
+       // Configure error handling
+       options.Events = new OAuthEvents
+       {
+           OnRemoteFailure = context =>
+           {
+               context.HandleResponse();
+               context.Response.Redirect("/Account/Login?error=" + 
+                   Uri.EscapeDataString(context.Failure?.Message ?? "Authentication failed"));
+               return Task.CompletedTask;
+           }
+       };
    }
    else
    {
        System.Diagnostics.Debug.WriteLine("[Facebook Authentication] AppId or AppSecret is not set");
    }
-
-   options.CallbackPath = "/signin-facebook";
 });
 
 // ==================== Identity ====================
@@ -276,10 +300,33 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bus Station Ticket Management API V1");
         c.RoutePrefix = "swagger";
     });
+    app.UseDeveloperExceptionPage();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "text/html";
+
+            var error = context.Features.Get<IExceptionHandlerFeature>();
+            var errorViewModel = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? context.TraceIdentifier
+            };
+
+            await context.Response.WriteAsync($"<html><body>\r\n");
+            await context.Response.WriteAsync($"<h1>Error</h1>\r\n");
+            await context.Response.WriteAsync($"<h2>An error occurred while processing your request.</h2>\r\n");
+            if (errorViewModel.ShowRequestId)
+            {
+                await context.Response.WriteAsync($"<p><strong>Request ID:</strong> <code>{errorViewModel.RequestId}</code></p>\r\n");
+            }
+            await context.Response.WriteAsync("</body></html>");
+        });
+    });
     app.UseHttpsRedirection();
 }
 

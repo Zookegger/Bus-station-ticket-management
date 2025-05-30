@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow">
+                    <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow" disabled>
                         <i class="fa-regular fa-plus hvr-icon me-2"></i>Assign
                     </button>
                     <a class="btn btn-lg btn-outline-secondary fw-semibold hvr-icon-back" asp-action="Index">
@@ -55,7 +55,7 @@
                 var tripId = $(this).val();
                 if (tripId) {
                     $.ajax({
-                        url: '/Admin/api/TripDriverAssignmentApi/free-drivers',
+                        url: '/Admin/api/assignment/get-free-drivers',
                         type: 'GET',
                         data: { tripId: tripId },
                         success: function (data) {
@@ -74,6 +74,16 @@
                             });
 
                             $('#driverSelection').fadeIn(200);
+                            
+                            $('#driverSelection').on('change', function () {
+                                console.log($('#DriverId').val());
+                                if ($('#DriverId').val() != '') {
+                                    $('#assignButton').prop('disabled', false);
+                                } else {
+                                    $('#assignButton').prop('disabled', true);
+                                }
+                            });
+
                         },
                         error: function (xhr, status, error) {
                             console.error('Error:', error);

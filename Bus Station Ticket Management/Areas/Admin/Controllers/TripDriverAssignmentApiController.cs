@@ -3,6 +3,7 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
 {
@@ -18,10 +19,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
     public class TripDriverAssignmentApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TripDriverAssignmentApiController> _logger;
 
-        public TripDriverAssignmentApiController(ApplicationDbContext context)
+        public TripDriverAssignmentApiController(ApplicationDbContext context, ILogger<TripDriverAssignmentApiController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
         /// Gets all trip driver assignments
         /// </summary>
         /// <returns>A list of all trip driver assignments</returns>
-        [HttpGet]
+        [HttpGet("get-assignments")]
         [AllowAnonymous]
         public async Task<IActionResult> GetTripDriverAssignments()
         {
@@ -76,9 +79,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
         /// </summary>
         /// <param name="id">The ID of the assignment to retrieve</param>
         /// <returns>The trip driver assignment if found</returns>
-        [HttpGet("get-assignment/{id}")]
+        [HttpGet("get-assignment")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTripDriverAssignment(int id)
+        public async Task<IActionResult> GetTripDriverAssignment([FromQuery] int id)
         {
             try
             {
@@ -113,41 +116,51 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
         /// </summary>
         /// <param name="tripId">The ID of the trip to check driver availability for</param>
         /// <returns>A list of available drivers with their IDs and full names</returns>
-        [HttpGet("free-drivers/{tripId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetFreeDriversByTripId(int tripId)
+        [HttpGet("get-free-drivers")]
+        public async Task<IActionResult> GetFreeDrivers([FromQuery] int tripId)
         {
             try
             {
-                var trip = await _context.Trips.FindAsync(tripId);
-                if (trip == null) return NotFound("Trip not found");
+                var trip = await _context.Trips
+                    .Include(t => t.Route)
+                    .FirstOrDefaultAsync(t => t.Id == tripId);
 
-                var busyDriverIds = await _context.TripDriverAssignments
-                    .Where(tda => tda.Trip != null && tda.Trip.DepartureTime < trip.ArrivalTime && tda.Trip.ArrivalTime > trip.DepartureTime)
+                if (trip == null)
+                {
+                    return NotFound("Trip not found");
+                }
+
+                var assignedDrivers = await _context.TripDriverAssignments
+                    .Where(tda => tda.Trip.DepartureTime < trip.ArrivalTime && 
+                                tda.Trip.ArrivalTime > trip.DepartureTime)
                     .Select(tda => tda.DriverId)
                     .Distinct()
                     .ToListAsync();
 
                 var freeDrivers = await _context.Drivers
                     .Include(d => d.Account)
-                    .Where(d => !busyDriverIds.Contains(d.Id) && d.Account != null && d.Account.FullName != null)
-                    .Select(d => new { d.Id, FullName = d.Account.FullName })
+                    .Include(d => d.DriverLicenses)
+                    .Where(d => !assignedDrivers.Contains(d.Id))
+                    .Select(d => new
+                    {
+                        d.Id,
+                        FullName = d.Account.FullName,
+                        PhoneNumber = d.Account.PhoneNumber,
+                        Licenses = d.DriverLicenses.Select(l => new
+                        {
+                            l.LicenseId,
+                            l.LicenseClass,
+                            l.LicenseExpirationDate
+                        })
+                    })
                     .ToListAsync();
 
-                return Ok(new
-                {
-                    success = true,
-                    message = "Free drivers loaded successfully",
-                    data = freeDrivers
-                });
+                return Ok(freeDrivers);
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    success = false,
-                    message = "An error occurred while checking free drivers." + ex.Message
-                });
+                _logger.LogError(ex, "Error getting free drivers for trip {TripId}", tripId);
+                return StatusCode(500, "An error occurred while getting free drivers");
             }
         }
 

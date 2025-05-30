@@ -171,6 +171,18 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 {
                     return View(model);
                 }
+                foreach (var license in model.Licenses)
+                {
+                    if (license.hasExpDate) {
+                        if (license.LicenseExpirationDate < license.LicenseIssueDate)
+                        {
+                            ModelState.AddModelError("LicenseExpirationDate", "License expiration date cannot be before issue date");
+                            return View(model);
+                        }
+                    } else {
+                        license.LicenseExpirationDate = DateOnly.MaxValue; // Set to a far future date if not provided
+                    }
+                }
 
                 // Check if email already exists
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);
@@ -233,6 +245,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                                 }
 
                                 await _context.SaveChangesAsync();
+                                await transaction.CommitAsync();
                                 TempData["SuccessMessage"] = "Driver updated successfully.";
                                 return RedirectToAction(nameof(Index));
                             }

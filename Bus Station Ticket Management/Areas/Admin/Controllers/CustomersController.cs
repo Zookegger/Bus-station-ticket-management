@@ -155,7 +155,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             return View(customer);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string? id)
         {

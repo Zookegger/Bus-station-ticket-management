@@ -90,7 +90,7 @@ namespace Bus_Station_Ticket_Management.Controllers
                     Seats = seats,
                     TotalSeats = trip.Vehicle?.VehicleType?.TotalSeats ?? 0,
                     TotalColumns = trip.Vehicle?.VehicleType?.TotalColumns ?? 0,
-                    TotalRows = trip.Vehicle?.VehicleType?.RowsPerFloor.Sum() ?? 0,
+                    RowsPerFloor = trip.Vehicle?.VehicleType?.RowsPerFloor ?? [],
                     TotalFloors = trip.Vehicle?.VehicleType?.TotalFloors ?? 0,
                 };
 
@@ -116,13 +116,13 @@ namespace Bus_Station_Ticket_Management.Controllers
             }
             catch (DbException ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while selecting seats.");
-                return View("Error");
+                _logger.LogError("Database error while selecting seats: {Message}", ex.Message);
+                return RedirectToAction("Error", "Home");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while selecting seats.");
-                return View("Error");
+                _logger.LogError("Unexpected error while selecting seats: {Message}", ex.Message);
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -141,7 +141,7 @@ namespace Bus_Station_Ticket_Management.Controllers
 
             if (!IsBookingValid(TripId, VehicleId, selectedSeatIds, numberOfTickets, userId, guestName, guestEmail, guestPhone, totalPrice, couponId, paymentMethod, out var seats, out var bookedSeats))
             {
-                _logger.LogError("Invalid booking request: {Error}", TempData["Error"]);
+                _logger.LogWarning("Invalid booking request: {Error}", TempData["Error"]);
                 return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
             }
 
@@ -204,15 +204,14 @@ namespace Bus_Station_Ticket_Management.Controllers
                 catch (DbUpdateException ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
+                    _logger.LogError("Database error while booking seats: {Message}", ex.Message);
                     TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
                     return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
                 }
-
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
+                    _logger.LogError("Unexpected error while booking seats: {Message}", ex.Message);
                     TempData["Error"] = "An unexpected error occurred while booking your seats. Please try again.";
                     return RedirectToAction(nameof(SelectSeats), new { VehicleId, TripId, selectedSeatIds, numberOfTickets, guestName, guestEmail, guestPhone, couponId });
                 }
@@ -283,7 +282,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             }
             catch (DbException ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while booking your seats.");
+                _logger.LogError("Database error while validating booking: {Message}", ex.Message);
                 return false;
             }
         }

@@ -59,7 +59,7 @@
                     {
                         <div class="floor my-3">
                             <h5>Flooring @floor</h5>
-                            @for (int row = 1; row <= Model.TotalRows; row++)
+                            @for (int row = 1; row <= Model.RowsPerFloor[floor - 1]; row++)
                             {
                                 <div class="seat-row">
                                     @for (int col = 1; col <= Model.TotalColumns; col++)

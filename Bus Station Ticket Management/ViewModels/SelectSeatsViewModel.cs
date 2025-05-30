@@ -19,7 +19,7 @@ namespace Bus_Station_Ticket_Management.ViewModels
         public List<Seat> Seats { get; set; } = new();
         public int TotalSeats { get; set; }
         public int TotalColumns { get; set; }
-        public int TotalRows { get; set; }
+        public List<int> RowsPerFloor { get; set; } = [];
         public int TotalFloors { get; set; }
     }
 }

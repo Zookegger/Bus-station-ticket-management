@@ -61,6 +61,8 @@ namespace Bus_Station_Ticket_Management.ViewModels {
         [DisplayName("License Expiration Date")]
         public DateOnly? LicenseExpirationDate { get; set; }
 
+        public bool hasExpDate { get; set; }
+
         [DisplayName("License Issue Place")]
         [Required]
         public string? LicenseIssuePlace { get; set; }

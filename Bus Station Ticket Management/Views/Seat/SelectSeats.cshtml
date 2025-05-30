@@ -1,509 +1,522 @@
 ﻿@model Bus_Station_Ticket_Management.ViewModels.SelectSeatsViewModel
 
 @{
-    ViewData["Title"] = "Select Seat";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Select Seat";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	// Precompute seat lookup dictionary for O(1) access
+	var seatLookup = Model.Seats.ToDictionary(s => new { s.Floor, s.Row, s.Column });
 }
 
 <link rel="stylesheet" href="~/css/Seat/SelectSeats.css" />
 
-<div class="error">
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">@TempData.Peek("Error")</div>
-    }
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData.Peek("Success")
-            @if (TempData["RedirectAfterDelay"] != null && (bool)TempData["RedirectAfterDelay"])
-            {
-                <span><br>Redirecting in <span id="countdown">5</span> seconds...</span>
-            }
-        </div>
-    }
+<div class="notification-area">
+	@if (TempData["Error"] != null)
+	{
+		<div class="alert alert-danger">@TempData.Peek("Error")</div>
+	}
+	@if (TempData["Success"] != null)
+	{
+		<div class="alert alert-success">
+			@TempData.Peek("Success")
+			@if (TempData["RedirectAfterDelay"] != null && (bool)TempData["RedirectAfterDelay"])
+			{
+				<div class="mt-2">Redirecting in <span id="countdown">5</span> seconds...</div>
+			}
+		</div>
+	}
 </div>
 
-<script>
-    const countdownElement = document.getElementById('countdown');
-    if (countdownElement) {
-        let countdown = 5; // 5 seconds
-
-        const timer = setInterval(() => {
-            countdown--;
-            countdownElement.textContent = countdown;
-
-            if (countdown <= 0) {
-                clearInterval(timer);
-
-                window.location.href = '@Url.Action("Details", "Tickets", new { Id = TempData["TicketIds"] })';
-            }
-        }, 1000); // Update every second
-    }
-</script>
-
 <!-- Bootstrap 5 Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmationModalLabel">Confirm Booking</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to proceed with the booking?
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="modalNoBtn" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-        <button type="button" id="modalYesBtn" class="btn btn-primary">Yes</button>
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Confirm Booking</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to book <span id="modal-seat-count">0</span> seat(s)?</p>
+				<p><strong>Seats:</strong> <span id="modal-seat-numbers"></span></p>
+				<p><strong>Total:</strong> <span id="modal-total-price">0đ</span></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" id="confirm-booking-btn" class="btn btn-primary">Confirm Booking</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <form asp-action="BookSeats" method="post" id="seatForm" class="row pb-5">
-    <div class="col-lg-7">
-        <h1>Select your seats</h1>
-        <!-- Seat Map Section -->
-        <fieldset class="container h-100 mb-3">
-            <legend class="form-label">Seat Information</legend>
-            <input type="hidden" asp-for="TripId" />
-            <input type="hidden" asp-for="VehicleId" />
-            <!-- Hidden field to store selected seat IDs -->
-            <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" value="" />
+	<div class="col-lg-7 ">
+		<div class="card h-100 ">
+			<h1 class="card-header">Select your seats</h1>
+			<!-- Seat Map Section -->
+			<div class="card-body mb-3 flex-1 h-100 w-100">
+				<h1 class="card-title">Seat Information</h1>
+				<input type="hidden" asp-for="TripId" />
+				<input type="hidden" asp-for="VehicleId" />
+				<input type="hidden" id="selectedSeatIds" name="selectedSeatIds" value="" />
 
-            <div class="mb-3">
-                <label class="form-label">Total Ticket:</label>
-                <input type="number" name="numberOfTickets" id="numberOfTickets" value="1" class="form-control" 
-                       min="1" max="@Model.Seats.Count(s => s.IsAvailable)" required />
-            </div>
+				<div class="mb-3">
+					<label class="form-label">Total Ticket:</label>
+					<input type="number" name="numberOfTickets" id="numberOfTickets" value="1" class="form-control"
+						min="1" max="@Model.Seats.Count(s => s.IsAvailable)" required />
+				</div>
 
-            <div class="seat-map gap-3 justify-content-center">
-                <div class="d-flex justify-content-center w-100">
-                    
-                    <div class="seat-grid">
-                        @for (int floor = 1; floor <= Model.TotalFloors; floor++)
-                        {
-                            
-                            <div class="box d-flex flex-column-reverse flex-sm-column-reverse flex-md-row">
-                                <div class="floor w-100 my-3">
-                                    <h5>Flooring @floor</h5>
-                                    @for (int row = 1; row <= Model.TotalRows; row++)
-                                    {
-                                        <div class="seat-row">
-                                            @for (int col = 1; col <= Model.TotalColumns; col++)
-                                            {
-                                                var seat = Model.Seats.FirstOrDefault(s => s.Row == row && s.Column == col && s.Floor == floor);
-                                                if (seat != null)
-                                                {
-                                                    <div class="seat @(seat.IsAvailable ? "available" : "booked")" data-seat-id="@seat.Id">
-                                                        @seat.Number
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="seat empty"></div>
-                                                }
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                                <div class="seat-legend-box">
-                                    <span class="seat-legend booked">Booked</span>
-                                    <span class="seat-legend available">Available</span>
-                                    <span class="seat-legend selected">Selected</span>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-    </div>
+				<div class="seat-map gap-3 justify-content-center flex-1 w-100 h-100">
+					<div class="seat-grid flex-1 h-100 w-100">
+						@for (int floor = 1; floor <= Model.TotalFloors; floor++)
+						{
+							<div class="d-flex flex-column-reverse flex-sm-column-reverse flex-md-row">
+								<div class="w-75 my-3">
+									<h5>Floor @floor</h5>
+									@for (int row = 1; row <= Model.RowsPerFloor[floor - 1]; row++)
+									{
+										<div class="seat-row">
+											@for (int col = 1; col <= Model.TotalColumns; col++)
+											{
+												var key = new { Floor = floor, Row = row, Column = col };
+												if (seatLookup.TryGetValue(key, out Seat seat))
+												{
+													<div class="seat @(seat.IsAvailable ? "available" : "booked")"
+														data-seat-id="@seat.Id" data-seat-number="@seat.Number">
+														@seat.Number
+													</div>
+												}
+												else
+												{
+													<div class="seat empty"></div>
+												}
+											}
+										</div>
+									}
+								</div>
+								<div class="seat-legend-box">
+									<span class="seat-legend booked">Booked</span>
+									<span class="seat-legend available">Available</span>
+									<span class="seat-legend selected">Selected</span>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <!-- Trip Information Section -->
-    <div class="col-lg-5">
-        <div class="card">
-            <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">Trip Information</h5></div>
-            <div class="card-body trip-information" id="TripInfo">
-                <p><strong>Starting Point:</strong> @Model.DepartureLocation <span class="small text-muted">(@Model.DepartureLocationAddress)</span></p>
-                <p><strong>Ending Point:</strong> @Model.DestinationLocation <span class="small text-muted">(@Model.DestinationLocationAddress)</span></p>
-                <p><strong>Departure Time:</strong> @Model.DepartureTime.ToString("HH:mm dd/MM/yyyy")</p>
-                <p><strong>License Plate:</strong> @Model.LicensePlate</p>
-                <p><strong>Total Seats:</strong> <span id="selectedSeatCount">0</span></p>
-                <h5><strong>Seat Number:</strong> <span id="selectedSeats"></span></h5>
-            </div>
-        </div>
+	<!-- Trip Information Section -->
+	<div class="col-lg-5">
+		<div class="card">
+			<div class="card-header bg-secondary-subtle bg-gradient">
+				<h5 class="card-title">Trip Information</h5>
+			</div>
+			<div class="card-body trip-information" id="TripInfo">
+				<p><strong>Starting Point:</strong> @Model.DepartureLocation <span
+						class="small text-muted">(@Model.DepartureLocationAddress)</span></p>
+				<p><strong>Ending Point:</strong> @Model.DestinationLocation <span
+						class="small text-muted">(@Model.DestinationLocationAddress)</span></p>
+				<p><strong>Departure Time:</strong> @Model.DepartureTime.ToString("HH:mm dd/MM/yyyy")</p>
+				<p><strong>License Plate:</strong> @Model.LicensePlate</p>
+				<p><strong>Total Seats:</strong> <span id="selectedSeatCount">0</span></p>
+				<h5><strong>Seat Number:</strong> <span id="selectedSeats"></span></h5>
+			</div>
+		</div>
 
-        <br>
+		<br>
 
-        <div class="card">
-            <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">User Information</h5></div>
-            <div class="card-body user-information" id="CustomerInfo">    
-                @if (@Model.User != null && User.Identity.IsAuthenticated)
-                {
-                    <p><strong>Full Name: </strong> @Model.User.FullName</p>
-                    <p><strong>Address: </strong> @Model.User.Address</p>
-                    <p><strong>Email: </strong> @Model.User.Email</p>
-                    <p><strong>Phone Number: </strong> @Model.User.PhoneNumber</p>
-                }
-                else
-                {
-                    <div class="form-group mb-3">
-                        <label for="guestName">Full Name</label>
-                        <input type="text" id="guestName" name="guestName" class="form-control" required />
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="guestEmail">Email</label>
-                        <input type="email" id="guestEmail" name="guestEmail" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="guestPhone">Phone Number</label>
-                        <input type="tel" id="guestPhone" name="guestPhone" class="form-control" required />
-                    </div>
-                }
-            </div>
-        </div>
+		<div class="card">
+			<div class="card-header bg-secondary-subtle bg-gradient">
+				<h5 class="card-title">User Information</h5>
+			</div>
+			<div class="card-body user-information" id="CustomerInfo">
+				@if (@Model.User != null && User.Identity.IsAuthenticated)
+				{
+					<p><strong>Full Name: </strong> @Model.User.FullName</p>
+					<p><strong>Address: </strong> @Model.User.Address</p>
+					<p><strong>Email: </strong> @Model.User.Email</p>
+					<p><strong>Phone Number: </strong> @Model.User.PhoneNumber</p>
+				}
+				else
+				{
+					<div class="form-group mb-3">
+						<label for="guestName">Full Name</label>
+						<input type="text" id="guestName" name="guestName" class="form-control" required />
+					</div>
+					<div class="form-group mb-3">
+						<label for="guestEmail">Email</label>
+						<input type="email" id="guestEmail" name="guestEmail" class="form-control" required />
+					</div>
+					<div class="form-group">
+						<label for="guestPhone">Phone Number</label>
+						<input type="tel" id="guestPhone" name="guestPhone" class="form-control" required />
+					</div>
+				}
+			</div>
+		</div>
 
-        <br>
+		<br>
 
-        <div class="card">
-            <div class="card-header bg-secondary-subtle bg-gradient"><h5 class="card-title">Coupon</h5></div>
-            <div class="card-body" asp-action="applyCoupon">
-                <input type="hidden" id="tripId" name="tripId" value="@Model.TripId" />
-                <div class="input-group mb-2">
-                    <input type="hidden" id="couponId" name="couponId" value="">
-                    <input type="text" id="couponCode" class="form-control" placeholder="Enter Coupon Code" />
-                    <button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
-                </div>
-                <div id="couponFeedback" class="mt-2"></div>
-                <div class="total-price mt-3"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
-                <input type="hidden" id="totalPrice" name="totalPrice" value="0" />
-            </div>
-        </div>
+		<div class="card">
+			<div class="card-header bg-secondary-subtle bg-gradient">
+				<h5 class="card-title">Coupon</h5>
+			</div>
+			<div class="card-body">
+				<input type="hidden" id="tripId" name="tripId" value="@Model.TripId" />
+				<div class="input-group mb-2">
+					<input type="hidden" id="couponId" name="couponId" value="">
+					<input type="text" id="couponCode" class="form-control" placeholder="Enter Coupon Code" />
+					<button type="button" class="btn btn-outline-primary" id="applyCouponBtn">Apply</button>
+				</div>
+				<div id="couponFeedback" class="mt-2"></div>
+				<div class="total-price mt-3"><strong>Total:</strong> <span id="totalPriceText">0đ</span></div>
+				<input type="hidden" id="totalPrice" name="totalPrice" value="0" />
+			</div>
+		</div>
 
-        <br>
+		<br>
 
-        <div class="card">
-            <div class="card-header bg-secondary-subtle bg-gradient"><span class="card-title">Payment</span></div>
-            <div class="card-body">
-                <select name="paymentMethod" id="payment-method" for="paymentMethod" class="form-select" style="cursor: pointer;">
-                    <option value="" selected disabled>Select a payment method</option>
-                    <option value="Cash" data-icon="fa-solid fa-money-bill">On Cash</option>
-                    <option value="VnPay" data-icon="fa-brands fa-cc-visa">VNPay</option> 
-                    <option value="Visa" data-icon="fa-brands fa-cc-momo">Momo</option>
-                </select>
-            </div>
+		<div class="card">
+			<div class="card-header bg-secondary-subtle bg-gradient"><span class="card-title">Payment</span></div>
+			<div class="card-body">
+				<select name="paymentMethod" id="payment-method" class="form-select" style="cursor: pointer;">
+					<option value="" selected disabled>Select a payment method</option>
+					<option value="Cash" data-icon="fa-solid fa-money-bill">On Cash</option>
+					<option value="VnPay" data-icon="fa-brands fa-cc-visa">VNPay</option>
+					<option value="Visa" data-icon="fa-brands fa-cc-momo">Momo</option>
+				</select>
+			</div>
 
-            <div class="card-footer">
-                <button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>Purchase</button>
-            </div>
-        </div>
-    </div>
+			<div class="card-footer">
+				<button type="button" class="btn btn-primary w-100 mt-2" id="purchaseBtn" disabled>
+					<i class="fas fa-ticket-alt me-2"></i>Purchase
+				</button>
+			</div>
+		</div>
+	</div>
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(document).ready(function () {
-            // --- Bootstrap Modal Setup for Confirmation ---
-            // When Purchase button is clicked, show the confirmation modal.
-            $('#purchaseBtn').click(function (e) {
-                e.preventDefault();
-                var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-                confirmationModal.show();
-            });
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		$(document).ready(function () {
+			// Constants and variables
+			const maxSeats = @Model.Seats.Count(s => s.IsAvailable);
+			const pricePerSeat = @Model.Price;
+			let selectedSeats = [];
+			let discountedAmount = 0;
+			let couponApplied = false;
+			let couponId = null;
 
-            // If user clicks 'Yes' on modal, submit the form.
-            $('#modalYesBtn').click(function () {
-                var confirmationModalEl = document.getElementById('confirmationModal');
-                var confirmationModal = bootstrap.Modal.getInstance(confirmationModalEl);
-                confirmationModal.hide();
-                
-                document.getElementById('totalPrice').value = document.getElementById('totalPrice').value;
-                console.log("Total Price: " + document.getElementById('totalPrice').value);
-                $('#seatForm').submit();
-            });
+			// DOM elements
+			const $purchaseBtn = $('#purchaseBtn');
+			const $seatForm = $('#seatForm');
+			const $modal = $('#confirmationModal');
+			const $confirmBtn = $('#confirm-booking-btn');
+			const $modalSeatCount = $('#modal-seat-count');
+			const $modalSeatNumbers = $('#modal-seat-numbers');
+			const $modalTotalPrice = $('#modal-total-price');
 
-            // --- Your existing seat & coupon logic ---
-            const maxSeats = @Model.Seats.Count(s => s.IsAvailable);
-            const purchaseBtn = document.getElementById('purchaseBtn');
-            let selectedSeats = [];
-            const pricePerSeat = @Model.Price;
-            let discountedAmount = 0;
-            let couponApplied = false;
+			// Initialize Bootstrap modal
+			const confirmationModal = new bootstrap.Modal($modal[0]);
 
-            function updatePurchaseButtonState() {
-                @* const paymentMethod = $('#payment-method'); *@
-                const guestName = document.getElementById('guestName');
-                const guestEmail = document.getElementById('guestEmail');
-                const guestPhone = document.getElementById('guestPhone');
-                const paymentMethod = document.getElementById('payment-method');
-                const numTickets = parseInt($('#numberOfTickets').val());
+			// Update seat selection information
+			function updateSeatSelection() {
+				$('#selectedSeatIds').val(selectedSeats.map(s => s.id).join(','));
+				$('#selectedSeatCount').text(selectedSeats.length);
+				$('#selectedSeats').text(selectedSeats.length ? selectedSeats.map(s => s.number).join(', ') : 'None');
 
-                const isGuest = guestName && guestEmail && guestPhone;
+				updateTotalPrice();
+				updatePurchaseButtonState();
+			}
 
-                const areSeatsValid = selectedSeats.length === numTickets;
-                const isPaymentValid = paymentMethod && paymentMethod.value !== "";
+			// Calculate and update total price
+			function updateTotalPrice() {
+				const total = selectedSeats.length * pricePerSeat;
+				const finalTotal = Math.max(0, total - discountedAmount);
 
-                let isGuestInfoValid = true;
-                if (isGuest) {
-                    isGuestInfoValid =
-                        guestName.value.trim() !== "" &&
-                        guestEmail.value.trim() !== "" &&
-                        guestPhone.value.trim() !== "";
-                }
-                console.log(areSeatsValid && isPaymentValid && isGuestInfoValid);
-                purchaseBtn.disabled = !(areSeatsValid && isPaymentValid && isGuestInfoValid);
-            }
+				$('#totalPriceText').text(finalTotal.toLocaleString('vi-VN') + 'đ');
+				$('#totalPrice').val(finalTotal);
+				$modalTotalPrice.text(finalTotal.toLocaleString('vi-VN') + 'đ');
+			}
 
-            function updateTotalPrice() {
-                const total = selectedSeats.length * pricePerSeat;
-                const finalTotal = total - discountedAmount;
-                if (finalTotal < 0) {
-                    finalTotal = 0;
-                }
-                $('#totalPriceText').text(finalTotal.toLocaleString('vi-VN') + 'đ');
-                $('#totalPrice').val(finalTotal);
-            }
+			// Enable/disable purchase button based on form validity
+			function updatePurchaseButtonState() {
+				const numTickets = parseInt($('#numberOfTickets').val());
+				const paymentSelected = $('#payment-method').val() !== "";
+				const seatsValid = selectedSeats.length === numTickets;
 
-            $('.seat.available').click(function () {
-                const seatId = $(this).data('seat-id');
-                const seatNumber = $(this).text().trim();
-                const numTickets = parseInt($('#numberOfTickets').val());
+				let guestInfoValid = true;
+				if (!@(Model.User != null && User.Identity.IsAuthenticated ? "true" : "false")) {
+					guestInfoValid = $('#guestName').val().trim() !== "" &&
+						$('#guestEmail').val().trim() !== "" &&
+						$('#guestPhone').val().trim() !== "";
+				}
 
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    selectedSeats = selectedSeats.filter(s => s.id !== seatId);
-                } else if (selectedSeats.length < numTickets) {
-                    $(this).addClass('selected');
-                    selectedSeats.push({ id: seatId, number: seatNumber });
-                } else {
-                    alert('You have selected the maximum number of seats based on the ticket quantity!');
-                    return;
-                }
+				$purchaseBtn.prop('disabled', !(seatsValid && paymentSelected && guestInfoValid));
+			}
 
-                updatePurchaseButtonState();
+			// Event: Seat selection
+			$('.seat-map').on('click', '.seat.available', function () {
+				const seatId = $(this).data('seat-id');
+				const seatNumber = $(this).data('seat-number');
+				const numTickets = parseInt($('#numberOfTickets').val());
+				const $seat = $(this);
 
-                // Update dynamic information
-                $('#selectedSeatIds').val(selectedSeats.map(s => s.id).join(','));
-                $('#selectedSeatCount').text(selectedSeats.length);
-                $('#selectedSeats').text(selectedSeats.map(s => s.number).join(', '));
+				// Toggle selection
+				if ($seat.hasClass('selected')) {
+					$seat.removeClass('selected');
+					selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+				} else if (selectedSeats.length < numTickets) {
+					$seat.addClass('selected');
+					selectedSeats.push({ id: seatId, number: seatNumber });
+				} else {
+					alert(`You can only select ${numTickets} seat(s).`);
+					return;
+				}
 
-                updateTotalPrice();
-            });
+				updateSeatSelection();
+			});
 
-            $('#payment-method').change(function() {
-                updatePurchaseButtonState();
-            });
+			// Event: Number of tickets changed
+			$('#numberOfTickets').on('input', function () {
+				let numTickets = parseInt($(this).val());
 
-            $('#guestName').change(function() {
-                updatePurchaseButtonState();
-            })
-            $('#guestEmail').change(function() {
-                updatePurchaseButtonState();
-            })
-            $('#guestPhone').change(function() {
-                updatePurchaseButtonState();
-            })
+				// Validate input
+				if (numTickets > maxSeats) {
+					numTickets = maxSeats;
+					$(this).val(maxSeats);
+					alert(`Maximum available seats: ${maxSeats}`);
+				}
 
-            $('#numberOfTickets').change(function () {
-                const numTickets = parseInt($(this).val());
-                if (numTickets > maxSeats) {
-                    alert('Ticket quantity exceeds available seats!');
-                    $(this).val(maxSeats);
-                }
+				// Adjust selections if needed
+				if (numTickets < selectedSeats.length) {
+					selectedSeats = selectedSeats.slice(0, numTickets);
+					$('.seat.selected').slice(numTickets).removeClass('selected');
+				}
 
-                if (numTickets < selectedSeats.length) {
-                    selectedSeats = selectedSeats.slice(0, numTickets);
-                    $('.seat').removeClass('selected');
-                    selectedSeats.forEach(s => $(`.seat[data-seat-id="${s.id}"]`).addClass('selected'));
-                }
+				updateSeatSelection();
+			});
 
-                $('#selectedSeatIds').val(selectedSeats.map(s => s.id).join(','));
-                $('#selectedSeatCount').text(selectedSeats.length);
-                $('#selectedSeats').text(selectedSeats.map(s => s.number).join(', '));
+			// Event: Apply coupon
+			$('#applyCouponBtn').click(function () {
+				const couponCode = $('#couponCode').val().trim();
+				const tripId = $('#tripId').val();
 
-                updateTotalPrice();
-                updatePurchaseButtonState();
-            });
+				if (!couponCode) {
+					showCouponFeedback('Please enter a coupon code', 'danger');
+					return;
+				}
 
-            $('#applyCouponBtn').click(function () {
-                const couponCode = $('#couponCode').val();
-                const tripId = document.getElementById('tripId').value;
+				if (couponApplied) {
+					showCouponFeedback('Coupon already applied', 'warning');
+					return;
+				}
 
-                if (!couponCode) {
-                    $('#couponFeedback').html('<div class="text-danger">Please enter a coupon code.</div>');
-                    return;
-                }
+				$.ajax({
+					url: '@Url.Action("ApplyCoupon", "Coupons")',
+					type: "POST",
+					data: { couponCode, tripId },
+					success: function (response) {
+						if (response.success) {
+							discountedAmount = response.discountedAmount;
+							couponId = response.couponId;
+							couponApplied = true;
 
-                if (couponApplied) {
-                    $('#couponFeedback').html('<div class="text-warning">Coupon already applied.</div>');
-                    return;
-                }
+							$('#couponId').val(couponId);
+							showCouponFeedback(response.message, 'success');
+							updateTotalPrice();
 
-                $.ajax({
-                    url: '@Url.Action("ApplyCoupon", "Coupons")',
-                    type: "POST",
-                    data: {
-                        couponCode: couponCode,
-                        tripId: tripId,
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            discountedAmount = response.discountedAmount;
-                            document.getElementById('couponId').value = response.couponId;
-                            couponApplied = true;
+							// Disable coupon inputs
+							$('#applyCouponBtn').prop('disabled', true);
+							$('#couponCode').prop('readonly', true);
+						} else {
+							showCouponFeedback(response.message, 'danger');
+						}
+					},
+					error: function () {
+						showCouponFeedback('Error applying coupon', 'danger');
+					}
+				});
+			});
 
-                            console.log(document.getElementById('couponId'));
+			// Event: Purchase button clicked
+			$purchaseBtn.click(function () {
+				// Update modal content
+				$modalSeatCount.text(selectedSeats.length);
+				$modalSeatNumbers.text(selectedSeats.map(s => s.number).join(', '));
 
-                            $('#couponFeedback').html(`
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    ${response.message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `);
+				// Show modal
+				confirmationModal.show();
+			});
 
-                            updateTotalPrice();
+			// Event: Confirm booking
+			$confirmBtn.click(function () {
+				confirmationModal.hide();
+				$seatForm.submit();
+			});
 
-                            $('#applyCouponBtn').prop('disabled', true);
-                            $('#couponCode').prop('readonly', true);
-                        } else {
-                            $('#couponFeedback').html(`
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    ${response.message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `);
-                        }
-                    },
-                    error: function () {
-                        $('#couponFeedback').html(`
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                Something went wrong while applying the coupon.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `);
-                    }
-                });
-            });
+			// Event: Form inputs changed
+			$('#payment-method, #guestName, #guestEmail, #guestPhone').on('change input', updatePurchaseButtonState);
 
-            function formatOption(state) {
-                if (!state.id) return state.text;
-                var icon = $(state.element).data('icon');
-                return $(`<span><i class="${icon} me-2"></i>${state.text}</span>`);
-            }
-        });
-    </script>
-    <style>
-        .seat-map {
-            display: flex;
-            margin-bottom: 20px;
-            height: fit-content;
-            width: 100%;
-        }
-        .seat-grid {
-            @* display: grid;
-            grid-template-rows: repeat(auto-fit, 1fr);
-            grid-template-columns: repeat(2, 1fr); *@
-            flex-basis: 880px;
-            width: 100%;
-        }
-        .seat-row {
-            display: grid;
-            grid-template-columns: repeat(@Model.TotalColumns, 1fr);
-            gap: 10px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-            @* max-width: calc(@Model.TotalColumns * 100px); *@
-        }
-        .seat {
-            max-width: 100px;
-            max-height: 100px;
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .seat.available {
-            background-color: #b3e5fc;
-            color: black;
-        }
-        .seat.booked {
-            background-color: #bdbdbd;
-            color: white;
-            cursor: not-allowed;
-        }
-        .seat.selected {
-            background-color: #ff9800;
-            color: white;
-        }
-        .seat.empty {
-            background-color: transparent;
-            border: none;
-        }
-        .seat.aisle {
-            background-color: transparent;
-            border: none;
-            width: 50px;
-            height: 50px;
-        }
-        .seat-legend-box {
-            display: flex;
-            flex-direction: column;
-            align-items: end;
-            justify-content: center;
-            gap: 20px;
-            max-width: 200px;
-            flex: 1;
-        }
-        .seat-legend {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 640;
-            width: 100%;
-            max-width: 100px;
-            text-align: center;
-        }
-        .seat-legend.booked {
-            background-color: #bdbdbd;
-        }
-        .seat-legend.available {
-            background-color: #b3e5fc;
-        }
-        .seat-legend.selected {
-            background-color: #ff9800;
-        }
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-        .card-body p {
-            margin-bottom: 0.5rem;
-        }
-        .total-price * {
-            font-size: 25px !important;
-        }
-        .modal-backdrop.show {
-            backdrop-filter: blur(15px);
-        }
-        .floor {
-            justify-content: center;
-            align-self: center;
-            max-width: 600px;
-            flex: 1;
-            min-width: 250px;
-        }
-    </style>
+			// Helper: Show coupon feedback
+			function showCouponFeedback(message, type) {
+				$('#couponFeedback').html(`
+		                    <div class="alert alert-${type} alert-dismissible fade show">
+		                        ${message}
+		                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		                    </div>
+		                `);
+			}
+
+			// Redirect countdown
+			const countdownElement = document.getElementById('countdown');
+			if (countdownElement) {
+				let countdown = 5;
+				const timer = setInterval(() => {
+					countdownElement.textContent = --countdown;
+					if (countdown <= 0) {
+						clearInterval(timer);
+						window.location.href = '@Url.Action("Details", "Tickets", new { Id = TempData["TicketIds"] })';
+					}
+				}, 1000);
+			}
+		});
+	</script>
+	<style>
+		/* Seat styling */
+		.seat-map {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+			flex: 1;
+			padding: 1rem;
+		}
+
+		.seat-row {
+			display: grid;
+			grid-template-columns: repeat(
+					@Model.TotalColumns
+					, 1fr);
+			gap: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.seat {
+			aspect-ratio: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			border: 1px solid transparent;
+			max-width: 100px;
+			max-height: 100px;
+			width: 100%;
+			line-height: 1;
+			font-size: 14px;
+			margin: 0;
+			padding: 0;
+		}
+
+		.seat:hover:not(.booked):not(.selected) {
+			transform: scale(1.05);
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.seat.available {
+			background-color: #b3e5fc;
+			color: black;
+			border-color: #bee5eb;
+		}
+
+		.seat.booked {
+			background-color: #bdbdbd;
+			color: white;
+			cursor: not-allowed;
+		}
+
+		.seat.selected {
+			background-color: #ff9800;
+			color: white;
+			border-color: #ffdf7e;
+		}
+
+		.seat.empty {
+			background-color: transparent;
+			border: none;
+			pointer-events: none;
+		}
+
+		/* Floor container */
+		.floor-container {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+			margin-bottom: 2rem;
+		}
+
+		.floor-title {
+			font-size: 1.2rem;
+			font-weight: bold;
+			margin-bottom: 0.5rem;
+			color: #333;
+		}
+
+		/* Legend styling */
+		.seat-legend-box {
+			display: flex;
+			flex-direction: column;
+			align-items: end;
+			justify-content: center;
+			gap: 0.5rem;
+			max-width: 150px;
+			flex: 1;
+			margin-left: 1rem;
+		}
+
+		.seat-legend {
+			padding: 4px 8px;
+			border-radius: 4px;
+			font-size: 14px;
+			font-weight: 500;
+			width: 100%;
+			max-width: 100px;
+			text-align: center;
+		}
+
+		.seat-legend.booked {
+			background-color: #bdbdbd;
+		}
+
+		.seat-legend.available {
+			background-color: #b3e5fc;
+		}
+
+		.seat-legend.selected {
+			background-color: #ff9800;
+		}
+
+		/* Card styling */
+		.card {
+			border: 1px solid #ddd;
+			border-radius: 8px;
+		}
+
+		.card-title {
+			font-size: 1.25rem;
+			font-weight: bold;
+		}
+
+		.card-body p {
+			margin-bottom: 0.5rem;
+		}
+
+		.total-price * {
+			font-size: 25px !important;
+		}
+	</style>
 }

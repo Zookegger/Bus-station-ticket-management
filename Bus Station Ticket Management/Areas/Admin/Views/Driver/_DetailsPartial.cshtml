@@ -8,16 +8,16 @@
             </h5>
 
             <div class="row align-items-center">
-                <div class="col-2 col-md-3 text-center mb-3 mb-md-0">
+                <div class="col-3 col-md-3 text-center mb-3 mb-md-0">
                     <div class="position-relative">
                         @{
-                            var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images",
-                            "avatar", Model.Avatar ?? "");
-                            var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
+                            var avatarPath = "~/images/avatars/" + (Model.Avatar ?? "");
+                            var checkAvatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "avatars", Model.Avatar ?? "");
+                            var hasImage = Model.Avatar != null && System.IO.File.Exists(checkAvatarPath);
                         }
                         @if (hasImage)
                         {
-                            <img id="avatar" src="@(Url.Content("~/images/avatars/" + Model.Avatar))" alt="Avatar"
+                            <img id="avatar" src="@Url.Content(avatarPath)" alt="Avatar"
                                 class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover;" />
                         }
                         else
@@ -30,17 +30,17 @@
                     </div>
                 </div>
 
-                <div class="col-10 col-md-9">
+                <div class="col-9 col-md-9">
                     <div class="row">
                         <div class="col mb-2">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col">
                                     <span><strong>Full Name:</strong> @(Model.FullName ?? "N/A")<br /></span>
                                     <span><strong>Email:</strong> @(Model.Email ?? "N/A")<br /></span>
                                     <span><strong>Address:</strong> @(Model.Address ?? "N/A")<br /></span>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col">
                                     <span><strong>Gender:</strong> @(Model.Gender ?? "N/A")<br /></span>
                                     <span><strong>Date of Birth:</strong>
                                         @(Model.DateOfBirth?.ToString("MM/dd/yyyy") ?? "N/A")<br /></span>
@@ -71,8 +71,11 @@
                                 <p class="mb-1"><strong>License Class:</strong> @(license.LicenseClass ?? "N/A")</p>
                                 <p class="mb-1"><strong>Issue Date:</strong>
                                     @(license.LicenseIssueDate?.ToString("MM/dd/yyyy") ?? "N/A")</p>
-                                <p class="mb-1"><strong>Expiration Date:</strong>
-                                    @(license.LicenseExpirationDate?.ToString("MM/dd/yyyy") ?? "N/A")</p>
+                                @if (license.LicenseExpirationDate != null && license.LicenseExpirationDate != DateOnly.MaxValue)
+                                {
+                                    <p class="mb-1"><strong>Expiration Date:</strong>
+                                        @(license.LicenseExpirationDate?.ToString("MM/dd/yyyy") ?? "N/A")</p>
+                                }
                                 <p class="mb-1"><strong>Issue Place:</strong> @(license.LicenseIssuePlace ?? "N/A")</p>
                             </div>
                         </div>
