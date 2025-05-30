@@ -24,6 +24,7 @@
     <div class="card shadow-sm">
         <form asp-action="Edit" class="card-body" enctype="multipart/form-data" id="editForm">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <input type="hidden" for="id" name="Id" value="@ViewData["Id"]" />
             <input type="hidden" asp-for="DriverId" />
             <input type="hidden" asp-for="RowVersion" />
 
@@ -36,7 +37,9 @@
                             <div class="form-group">
                                 <label asp-for="Avatar" class="form-label"></label>
                                 <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
-                                    onchange="previewImage(this);" />
+                                    onchange="previewImage(this);" title="Only image files allowed" />
+                                <small class="form-text text-muted">Supported formats: JPG, PNG, GIF. Max size:
+                                    2MB</small><br />
                                 <span asp-validation-for="Avatar" class="text-danger"></span>
                             </div>
                         </div>
@@ -44,9 +47,9 @@
                             class="col-md-5 col-lg-4 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
                             <div class="avatar-preview position-relative">
                                 @{
-                                    var avatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
-                                    "images", "avatar", Model.Avatar ?? "");
-                                    var hasImage = Model.Avatar != null && System.IO.File.Exists(avatarPath);
+                                    var avatarPath = "~/images/avatars/" + (Model.Avatar ?? "");
+                                    var checkAvatarPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "avatars", Model.Avatar ?? "");
+                                    var hasImage = Model.Avatar != null && System.IO.File.Exists(checkAvatarPath);
                                 }
                                 <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
                                     <div id="defaultAvatar"
@@ -57,7 +60,7 @@
                                 </div>
 
                                 <img id="avatarPreview"
-                                    src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")"
+                                    src="@(hasImage ? Url.Content(avatarPath) : "#")"
                                     alt="Avatar" class="rounded-circle shadow"
                                     style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
                             </div>
@@ -107,7 +110,7 @@
                         <div class="input-group">
                             <div class="form-floating flex-grow-1">
                                 <input type="password" name="Password" id="Password" class="form-control"
-                                    placeholder="Password"
+                                    placeholder="Password" autocomplete="new-password"
                                     oninput="checkPasswordRequirements(); validatePasswords();" />
                                 <label for="Password">Password</label>
                             </div>
@@ -115,30 +118,25 @@
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
-                        <div class="password-requirements mt-2">
-                            <small class="d-block text-muted">Password must contain:</small>
-                            <small class="d-block" id="length-check"><i class="bi bi-x-circle text-danger"></i> At least
-                                8
-                                characters</small>
-                            <small class="d-block" id="uppercase-check"><i class="bi bi-x-circle text-danger"></i> At
-                                least
-                                one uppercase letter</small>
-                            <small class="d-block" id="lowercase-check"><i class="bi bi-x-circle text-danger"></i> At
-                                least
-                                one lowercase letter</small>
-                            <small class="d-block" id="number-check"><i class="bi bi-x-circle text-danger"></i> At least
-                                one
-                                number</small>
-                            <small class="d-block" id="special-check"><i class="bi bi-x-circle text-danger"></i> At
-                                least
-                                one special character</small>
-                            <div class="password-strength-meter mt-2">
-                                <div class="progress" style="height: 5px;">
-                                    <div id="passwordStrengthMeter" class="progress-bar" role="progressbar"
-                                        style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    </div>
-                                </div>
+                        <div class="password-strength-meter mt-2">
+                            <div class="progress" style="height: 5px;">
+                                <div id="passwordStrengthMeter" class="progress-bar" role="progressbar"
+                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
+                        </div>
+                        <div class="password-requirements mt-2">
+                            <small class="d-block text-muted my-1"><i class="bi bi-shield-lock me-1"></i>Password must
+                                contain:</small>
+                            <small class="d-block" id="length-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least 8 characters</small>
+                            <small class="d-block" id="uppercase-check"><i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one uppercase letter</small>
+                            <small class="d-block" id="lowercase-check"><i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one lowercase letter</small>
+                            <small class="d-block" id="number-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least one number</small>
+                            <small class="d-block" id="special-check"><i class="bi bi-x-circle-fill text-danger"></i> At
+                                least one special character</small>
                         </div>
                         <span id="PasswordError" class="text-danger"></span>
                     </div>
@@ -264,35 +262,37 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group form-check mt-3">
-                                        <input class="form-check-input has-exp" type="checkbox" value="true"
-                                            name="HasExpiration" />
+                                    <div class="form-group form-check ms-2 mt-3">
+                                        <input class="form-check-input has-exp" type="checkbox" value="false"
+                                            id="HasExpiration" for="HasExpiration" name="HasExpiration" />
                                         <label class="form-check-label">
                                             Has expiration date
                                         </label>
                                     </div>
 
                                     <div class="col-12">
-                                        <button type="button" class="btn btn-danger remove-license mt-2">Remove</button>
+                                        <button type="button" class="btn btn-danger remove-license mt-2 hvr-icon-buzz-out">
+                                            <i class="fas fa-trash me-2 hvr-icon"></i>Remove
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
-                <button type="button" id="addLicense" class="btn btn-outline-primary mt-2">
-                    <i class="fas fa-plus me-2"></i>Add Another License
+                <button type="button" id="addLicense" class="btn btn-outline-primary mt-2 hvr-icon-grow">
+                    <i class="fas fa-plus me-1 hvr-icon"></i>Add Another License
                 </button>
             </div>
 
         </form>
 
         <div class="card-footer d-flex justify-content-between mt-2">
-            <a class="btn btn-outline-secondary" asp-action="Index">
-                <i class="fas fa-arrow-left me-2"></i>Back to List
+            <a class="btn btn-outline-secondary hvr-icon-back" asp-action="Index">
+                <i class="fas fa-arrow-left me-2 hvr-icon"></i>Back to List
             </a>
-            <button type="submit" class="btn btn-primary" id="submitEdit" form="editForm">
-                <i class="fas fa-save me-2"></i>Save Changes
+            <button type="submit" class="btn btn-primary hvr-icon-pulse" id="submitEdit" form="editForm">
+                <i class="fas fa-save me-2 hvr-icon"></i>Save Changes
             </button>
         </div>
     </div>
@@ -385,6 +385,8 @@
                                 }
                             });
                         });
+                    } else {
+                        alert("You must have at least one license.");
                     }
                 }
             });
@@ -393,3 +395,29 @@
 
     <script src="~/js/password.js"></script>
 }
+<style>
+    .password-requirements {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item {
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item small {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .password-strength-meter .progress {
+        background-color: #e9ecef;
+        border-radius: 2px;
+    }
+
+    .password-strength-meter .progress-bar {
+        transition: width 0.3s ease;
+    }
+</style>

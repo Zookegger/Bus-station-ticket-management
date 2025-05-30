@@ -34,7 +34,6 @@ namespace Bus_Station_Ticket_Management.ViewModels {
 
         [DisplayName("Avatar")]
         [ValidateNever]
-        [Required]
         public string? Avatar { get; set; }
 
         [DisplayName("Licenses")]

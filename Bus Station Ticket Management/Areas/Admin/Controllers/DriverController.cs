@@ -4,6 +4,7 @@ using Bus_Station_Ticket_Management.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using X.PagedList.Extensions;
@@ -19,12 +20,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<DriverController> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public DriverController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<DriverController> logger)
+        public DriverController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<DriverController> logger, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _signInManager = signInManager;
         }
 
         // GET: Driver
@@ -166,20 +169,24 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             try
             {
-                var validationResult = await ValidateDriverModel(model);
+                var validationResult = ValidateDriverModel(model);
                 if (!validationResult)
                 {
                     return View(model);
                 }
+
                 foreach (var license in model.Licenses)
                 {
-                    if (license.hasExpDate) {
+                    if (license.hasExpDate)
+                    {
                         if (license.LicenseExpirationDate < license.LicenseIssueDate)
                         {
                             ModelState.AddModelError("LicenseExpirationDate", "License expiration date cannot be before issue date");
                             return View(model);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         license.LicenseExpirationDate = DateOnly.MaxValue; // Set to a far future date if not provided
                     }
                 }
@@ -200,53 +207,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         {
                             try
                             {
-                                // If user exists but is not a driver, add them to the Driver role
-                                await _userManager.AddToRoleAsync(existingUser, "Driver");
-                                existingUser.FullName = model.FullName;
-                                existingUser.Address = model.Address;
-                                existingUser.DateOfBirth = model.DateOfBirth;
-                                existingUser.Gender = model.Gender;
-                                existingUser.PhoneNumber = model.PhoneNumber;
-
-                                // Handle avatar upload if provided
-                                if (avatar != null)
-                                {
-                                    existingUser.Avatar = await ApplicationUser.UploadAvatar(avatar);
-                                }
-
-                                var driver = new Driver
-                                {
-                                    Id = existingUser.Id,
-                                    Account = existingUser
-                                };
-
-                                await _context.Drivers.AddAsync(driver);
-
-                                driver.DriverLicenses = [.. model.Licenses.Select(l => new DriverLicense
-                                {
-                                    DriverId = existingUser.Id,
-                                    LicenseId = l.LicenseId,
-                                    LicenseClass = l.LicenseClass,
-                                    LicenseIssueDate = l.LicenseIssueDate,
-                                    LicenseExpirationDate = l.LicenseExpirationDate,
-                                    LicenseIssuePlace = l.LicenseIssuePlace
-                                })];
-
-                                await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
-
-                                var result = await _userManager.UpdateAsync(existingUser);
-                                if (!result.Succeeded)
-                                {
-                                    foreach (var error in result.Errors)
-                                    {
-                                        ModelState.AddModelError(string.Empty, error.Description);
-                                    }
-                                    return View(model);
-                                }
-
-                                await _context.SaveChangesAsync();
+                                await HandleExistingDriver(existingUser, model, avatar, password);
                                 await transaction.CommitAsync();
-                                TempData["SuccessMessage"] = "Driver updated successfully.";
+                                TempData["SuccessMessage"] = "Driver created successfully.";
                                 return RedirectToAction(nameof(Index));
                             }
                             catch (Exception ex)
@@ -259,114 +222,15 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         }
                     }
                 }
+
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        // Handle avatar upload first
-                        string? avatarPath = null;
-                        if (avatar != null)
-                        {
-                            try
-                            {
-                                avatarPath = await ApplicationUser.UploadAvatar(avatar);
-                                if (avatarPath == null)
-                                {
-                                    throw new Exception("Failed to upload avatar");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex, "Error uploading avatar");
-                                ModelState.AddModelError("Avatar", "Failed to upload avatar. Please try again.");
-                                return View(model);
-                            }
-                        }
-
-                        // Create user first
-                        var user = new ApplicationUser
-                        {
-                            UserName = model.Email,
-                            Email = model.Email,
-                            FullName = model.FullName,
-                            Address = model.Address,
-                            DateOfBirth = model.DateOfBirth,
-                            Gender = model.Gender,
-                            PhoneNumber = model.PhoneNumber,
-                            Avatar = avatarPath
-                        };
-
-                        // Create user with password
-                        var result = await _userManager.CreateAsync(user, password);
-                        if (!result.Succeeded)
-                        {
-                            await transaction.RollbackAsync();
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
-                            return View(model);
-                        }
-
-                        // Add to Driver role
-                        result = await _userManager.AddToRoleAsync(user, "Driver");
-                        if (!result.Succeeded)
-                        {
-                            await transaction.RollbackAsync();
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
-                            return View(model);
-                        }
-
-                        // Validate licenses
-                        if (model.Licenses == null || !model.Licenses.Any())
-                        {
-                            await transaction.RollbackAsync();
-                            ModelState.AddModelError(string.Empty, "At least one license is required.");
-                            return View(model);
-                        }
-
-                        // Create driver record
-                        var driver = new Driver
-                        {
-                            Id = user.Id,
-                            Account = user
-                        };
-
-                        _context.Drivers.Add(driver);
-
-                        // Add licenses
-                        foreach (var license in model.Licenses)
-                        {
-                            var driverLicense = new DriverLicense
-                            {
-                                DriverId = user.Id,
-                                LicenseId = license.LicenseId,
-                                LicenseClass = license.LicenseClass,
-                                LicenseIssueDate = license.LicenseIssueDate,
-                                LicenseExpirationDate = license.LicenseExpirationDate,
-                                LicenseIssuePlace = license.LicenseIssuePlace
-                            };
-
-                            _context.DriverLicenses.Add(driverLicense);
-                        }
-
-                        try
-                        {
-                            await _context.SaveChangesAsync();
-                            await transaction.CommitAsync();
-                            TempData["SuccessMessage"] = "Driver created successfully.";
-                            return RedirectToAction(nameof(Index));
-                        }
-                        catch (DbUpdateException ex)
-                        {
-                            await transaction.RollbackAsync();
-                            _logger.LogError(ex, "Database error while creating driver");
-                            ModelState.AddModelError(string.Empty, "An error occurred while saving the driver information. Please try again.");
-                            return View(model);
-                        }
+                        await HandleCreateNewDriver(model, avatar, password);
+                        await transaction.CommitAsync();
+                        TempData["SuccessMessage"] = "Driver created successfully.";
+                        return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
                     {
@@ -385,85 +249,196 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
         }
 
-        public async Task<IActionResult> HandleExistingDriver(ApplicationUser user, DriverViewModel model, IFormFile avatar, string password)
+        public async Task HandleExistingDriver(ApplicationUser existingUser, DriverViewModel model, IFormFile avatar, string password)
         {
             try
             {
-                if (await _userManager.IsInRoleAsync(user, "Driver"))
+                // If user exists but is not a driver, add them to the Driver role
+                var result = await _userManager.AddToRoleAsync(existingUser, "Driver");
+                if (!result.Succeeded)
                 {
-                    ModelState.AddModelError("Email", "This email is already registered.");
-                    return View(model);
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    throw new InvalidOperationException("Failed to add user to Driver role");
                 }
-                else
+
+                existingUser.FullName = model.FullName;
+                existingUser.Address = model.Address;
+                existingUser.DateOfBirth = model.DateOfBirth;
+                existingUser.Gender = model.Gender;
+                existingUser.PhoneNumber = model.PhoneNumber;
+
+                var loginResult = await _signInManager.PasswordSignInAsync(existingUser, password, true, lockoutOnFailure: false);
+                if (!loginResult.Succeeded)
                 {
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
                         {
-                            // If user exists but is not a driver, add them to the Driver role
-                            await _userManager.AddToRoleAsync(user, "Driver");
-                            user.FullName = model.FullName;
-                            user.Address = model.Address;
-                            user.DateOfBirth = model.DateOfBirth;
-                            user.Gender = model.Gender;
-                            user.PhoneNumber = model.PhoneNumber;
-
-                            // Handle avatar upload if provided
-                            if (avatar != null)
-                            {
-                                user.Avatar = await ApplicationUser.UploadAvatar(avatar);
-                            }
-
-                            var driver = new Driver
-                            {
-                                Id = user.Id,
-                                Account = user
-                            };
-
-                            await _context.Drivers.AddAsync(driver);
-
-                            driver.DriverLicenses = [.. model.Licenses.Select(l => new DriverLicense
-                                {
-                                    DriverId = user.Id,
-                                    LicenseId = l.LicenseId,
-                                    LicenseClass = l.LicenseClass,
-                                    LicenseIssueDate = l.LicenseIssueDate,
-                                    LicenseExpirationDate = l.LicenseExpirationDate,
-                                    LicenseIssuePlace = l.LicenseIssuePlace
-                                })];
-
-                            await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
-
-                            var result = await _userManager.UpdateAsync(user);
-                            if (!result.Succeeded)
-                            {
-                                foreach (var error in result.Errors)
-                                {
-                                    ModelState.AddModelError(string.Empty, error.Description);
-                                }
-                                return View(model);
-                            }
-
-                            await _context.SaveChangesAsync();
-                            TempData["SuccessMessage"] = "Driver updated successfully.";
-                            return RedirectToAction(nameof(Index));
+                            var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+                            await _userManager.ResetPasswordAsync(existingUser, token, password);
+                            await transaction.CommitAsync();
                         }
                         catch (Exception ex)
                         {
                             await transaction.RollbackAsync();
                             _logger.LogError(ex, "Error in driver creation transaction");
                             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
-                            return View(model);
+                            throw new InvalidOperationException("Failed to update user information");
                         }
                     }
                 }
+
+                // Handle avatar upload if provided
+                if (avatar != null)
+                {
+                    try
+                    {
+                        existingUser.Avatar = await ApplicationUser.UploadAvatar(avatar);
+                        if (existingUser.Avatar == null)
+                        {
+                            throw new InvalidOperationException("Failed to upload avatar");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error uploading avatar");
+                        throw new InvalidOperationException("Failed to upload avatar");
+                    }
+                }
+
+                var driver = new Driver
+                {
+                    Id = existingUser.Id,
+                    Account = existingUser
+                };
+
+                await _context.Drivers.AddAsync(driver);
+
+                UpdateDriverLicenses(driver, model.Licenses);
+
+                await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
+
+                result = await _userManager.UpdateAsync(existingUser);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    throw new InvalidOperationException("Failed to update user information");
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Driver updated successfully.";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error in driver creation");
+                _logger.LogError(ex, "Error in driver creation transaction");
                 ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
-                return View(model);
+                throw new InvalidOperationException("Failed to update user information");
             }
+        }
+
+        private void UpdateDriverLicenses(Driver driver, IEnumerable<DriverLicenseViewModel> model)
+        {
+            if (driver.DriverLicenses != null)
+            {
+                _context.DriverLicenses.RemoveRange(driver.DriverLicenses);
+            }
+
+            driver.DriverLicenses = [.. model.Select(l => new DriverLicense
+            {
+                DriverId = driver.Id,
+                LicenseId = l.LicenseId,
+                LicenseClass = l.LicenseClass,
+                LicenseIssueDate = l.LicenseIssueDate,
+                LicenseExpirationDate = l.LicenseExpirationDate,
+                LicenseIssuePlace = l.LicenseIssuePlace
+            })];
+        }
+
+        public async Task HandleCreateNewDriver(DriverViewModel model, IFormFile avatar, string password)
+        {
+            // Handle avatar upload first
+            string? avatarPath = null;
+            if (avatar != null)
+            {
+                try
+                {
+                    avatarPath = await ApplicationUser.UploadAvatar(avatar);
+                    if (avatarPath == null)
+                    {
+                        throw new Exception("Failed to upload avatar");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error uploading avatar");
+                    ModelState.AddModelError("Avatar", "Failed to upload avatar. Please try again.");
+                    throw new InvalidOperationException("Failed to upload avatar");
+                }
+            }
+
+            // Create user first
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                Address = model.Address,
+                DateOfBirth = model.DateOfBirth,
+                Gender = model.Gender,
+                PhoneNumber = model.PhoneNumber,
+                Avatar = avatarPath
+            };
+
+            // Create user with password
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                throw new InvalidOperationException("Failed to create user");
+            }
+
+            // Add to Driver role
+            result = await _userManager.AddToRoleAsync(user, "Driver");
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                throw new InvalidOperationException("Failed to add user to Driver role");
+            }
+
+            // Validate licenses
+            if (model.Licenses == null || !model.Licenses.Any())
+            {
+                ModelState.AddModelError(string.Empty, "At least one license is required.");
+                throw new InvalidOperationException("At least one license is required.");
+            }
+
+            // Create driver record
+            var driver = new Driver
+            {
+                Id = user.Id,
+                Account = user
+            };
+
+            await _context.Drivers.AddAsync(driver);
+
+            // Add licenses
+            UpdateDriverLicenses(driver, model.Licenses);
+
+            await _context.DriverLicenses.AddRangeAsync(driver.DriverLicenses);
+
+            await _context.SaveChangesAsync();
         }
 
         // GET: Driver/Edit/5
@@ -475,7 +450,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             }
             try
             {
-
                 var driver = await _context.Drivers
                     .Include(d => d.Account)
                     .Include(d => d.DriverLicenses)
@@ -506,6 +480,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                         LicenseIssuePlace = l.LicenseIssuePlace
                     }).ToList() ?? []
                 };
+                ViewData["Id"] = id;
+
                 return View(viewmodel);
             }
             catch (Exception ex)
@@ -519,173 +495,174 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, DriverViewModel model, IFormFile Avatar, string? password)
+        public async Task<IActionResult> Edit(string id, DriverViewModel model, IFormFile? Avatar, string? password)
         {
-            try
+            ViewData["Id"] = id;
+
+            var validationResult = ValidateDriverModel(model, id);
+            if (!validationResult)
             {
-                var validationResult = await ValidateDriverModel(model);
-                if (!validationResult)
+                return View(model);
+            }
+
+            foreach (var license in model.Licenses)
+            {
+                if (license.hasExpDate)
                 {
-                    return View(model);
-                }
-
-                using var transaction = await _context.Database.BeginTransactionAsync();
-
-                // Get driver with concurrency token
-                var driver = await _context.Drivers
-                    .Include(d => d.Account)
-                    .Include(d => d.DriverLicenses)
-                    .FirstOrDefaultAsync(d => d.Id == id);
-
-                if (driver == null)
-                {
-                    return NotFound();
-                }
-
-                // Check if the record has been modified by another user
-                if (!StructuralComparisons.StructuralEqualityComparer.Equals(driver.RowVersion, model.RowVersion))
-                {
-                    ModelState.AddModelError(string.Empty, "The record was modified by another user. Please refresh and try again.");
-                    return View(model);
-                }
-
-                // Check if email is being changed and if it's already in use
-                var user = await _userManager.FindByIdAsync(driver.Id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                if (user.Email != model.Email)
-                {
-                    var existingUser = await _userManager.FindByEmailAsync(model.Email);
-                    if (existingUser != null && existingUser.Id != user.Id)
+                    if (license.LicenseExpirationDate < license.LicenseIssueDate)
                     {
-                        ModelState.AddModelError("Email", "This email is already registered.");
+                        ModelState.AddModelError("LicenseExpirationDate", "License expiration date cannot be before issue date");
                         return View(model);
                     }
                 }
+                else
+                {
+                    license.LicenseExpirationDate = DateOnly.MaxValue; // Set to a far future date if not provided
+                }
+            }
 
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
                 try
                 {
-                    // Handle avatar upload if provided
-                    if (Avatar != null)
+                    // Get driver with concurrency token
+                    var driver = await _context.Drivers
+                        .Include(d => d.Account)
+                        .Include(d => d.DriverLicenses)
+                        .FirstOrDefaultAsync(d => d.Id == id);
+
+                    if (driver == null)
                     {
-                        try
+                        return NotFound();
+                    }
+
+                    // Check if the record has been modified by another user
+                    if (!StructuralComparisons.StructuralEqualityComparer.Equals(driver.RowVersion, model.RowVersion))
+                    {
+                        ModelState.AddModelError(string.Empty, "The record was modified by another user. Please refresh and try again.");
+                        return View(model);
+                    }
+
+                    // Check if email is being changed and if it's already in use
+                    var user = await _userManager.FindByIdAsync(driver.Id);
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (user.Email != model.Email)
+                    {
+                        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                        if (existingUser != null && existingUser.Id != user.Id)
                         {
-                            var newAvatarPath = await ApplicationUser.UploadAvatar(Avatar);
-                            // Delete old avatar if exists
-                            if (!string.IsNullOrEmpty(user.Avatar))
-                            {
-                                await ApplicationUser.DeleteAvatar(user.Avatar);
-                            }
-                            user.Avatar = newAvatarPath;
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "Error uploading avatar");
-                            ModelState.AddModelError("Avatar", "Failed to upload avatar. Please try again.");
+                            ModelState.AddModelError("Email", "This email is already registered.");
                             return View(model);
                         }
                     }
 
-                    // Update user properties
-                    user.UserName = model.Email;
-                    user.FullName = model.FullName;
-                    user.Address = model.Address;
-                    user.Gender = model.Gender;
-                    user.DateOfBirth = model.DateOfBirth;
-                    user.Email = model.Email;
-                    user.PhoneNumber = model.PhoneNumber;
-
-                    // Update password if provided
-                    if (!string.IsNullOrEmpty(password) && password.Length > 0 && !string.IsNullOrWhiteSpace(password))
+                    try
                     {
-                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                        var result = await _userManager.ResetPasswordAsync(user, token, password);
-                        if (!result.Succeeded)
+                        // Handle avatar upload if provided
+                        if (Avatar != null)
                         {
-                            foreach (var error in result.Errors)
+                            try
+                            {
+                                var newAvatarPath = await ApplicationUser.UploadAvatar(Avatar);
+                                // Delete old avatar if exists
+                                if (!string.IsNullOrEmpty(user.Avatar))
+                                {
+                                    await ApplicationUser.DeleteAvatar(user.Avatar);
+                                }
+                                user.Avatar = newAvatarPath;
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "Error uploading avatar");
+                                ModelState.AddModelError("Avatar", "Failed to upload avatar. Please try again.");
+                                return View(model);
+                            }
+                        }
+
+                        // Update user properties
+                        user.UserName = model.Email;
+                        user.FullName = model.FullName;
+                        user.Address = model.Address;
+                        user.Gender = model.Gender;
+                        user.DateOfBirth = model.DateOfBirth;
+                        user.Email = model.Email;
+                        user.PhoneNumber = model.PhoneNumber;
+
+                        // Update password if provided
+                        if (!string.IsNullOrEmpty(password) && password.Length > 0 && !string.IsNullOrWhiteSpace(password))
+                        {
+                            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                            var result = await _userManager.ResetPasswordAsync(user, token, password);
+                            if (!result.Succeeded)
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                                await transaction.RollbackAsync();
+                                return View(model);
+                            }
+                        }
+
+                        // Update user
+                        var updateResult = await _userManager.UpdateAsync(user);
+                        if (!updateResult.Succeeded)
+                        {
+                            foreach (var error in updateResult.Errors)
                             {
                                 ModelState.AddModelError(string.Empty, error.Description);
                             }
                             await transaction.RollbackAsync();
                             return View(model);
                         }
-                    }
 
-                    // Update user
-                    var updateResult = await _userManager.UpdateAsync(user);
-                    if (!updateResult.Succeeded)
-                    {
-                        foreach (var error in updateResult.Errors)
+                        // Update licenses
+                        if (model.Licenses != null && model.Licenses.Count > 0)
                         {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                        await transaction.RollbackAsync();
-                        return View(model);
-                    }
-
-                    // Update licenses
-                    if (model.Licenses != null && model.Licenses.Any())
-                    {
-                        // Remove existing licenses
-                        if (driver.DriverLicenses != null)
-                        {
-                            _context.DriverLicenses.RemoveRange(driver.DriverLicenses);
+                            UpdateDriverLicenses(driver, model.Licenses);
                         }
 
-                        // Add new licenses
-                        foreach (var license in model.Licenses)
+                        try
                         {
-                            var driverLicense = new DriverLicense
-                            {
-                                DriverId = driver.Id,
-                                LicenseId = license.LicenseId,
-                                LicenseClass = license.LicenseClass,
-                                LicenseIssueDate = license.LicenseIssueDate,
-                                LicenseExpirationDate = license.LicenseExpirationDate,
-                                LicenseIssuePlace = license.LicenseIssuePlace
-                            };
-                            _context.DriverLicenses.Add(driverLicense);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+                            TempData["SuccessMessage"] = "Driver updated successfully.";
+                            return RedirectToAction(nameof(Index));
+                        }
+                        catch (DbUpdateConcurrencyException ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError(ex, "Concurrency error while updating driver");
+                            ModelState.AddModelError(string.Empty, "The record was modified by another user. Please refresh and try again.");
+                            return View(model);
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError(ex, "Database error while updating driver");
+                            ModelState.AddModelError(string.Empty, "An error occurred while saving the changes. Please try again.");
+                            return View(model);
                         }
                     }
-
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        TempData["SuccessMessage"] = "Driver updated successfully.";
-                        return RedirectToAction(nameof(Index));
-                    }
-                    catch (DbUpdateConcurrencyException ex)
+                    catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Concurrency error while updating driver");
-                        ModelState.AddModelError(string.Empty, "The record was modified by another user. Please refresh and try again.");
-                        return View(model);
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Database error while updating driver");
-                        ModelState.AddModelError(string.Empty, "An error occurred while saving the changes. Please try again.");
+                        _logger.LogError(ex, "Error in driver update transaction");
+                        ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
                         return View(model);
                     }
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "Error in driver update transaction");
+                    _logger.LogError(ex, "Unexpected error in driver update");
                     ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
                     return View(model);
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error in driver update");
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
-                return View(model);
             }
         }
 
@@ -783,7 +760,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return _context.Drivers.Any(e => e.Id == id);
         }
 
-        private async Task<bool> ValidateDriverModel(DriverViewModel model)
+        private bool ValidateDriverModel(DriverViewModel model, string? id = null)
         {
             if (model == null)
             {
@@ -795,6 +772,12 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return false;
             }
 
+            if (id != null && !DoesDriverExists(id))
+            {
+                ModelState.ClearValidationState("id");
+            }
+
+            // Validate model state
             if (!ModelState.IsValid)
             {
                 var firstError = ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage;
@@ -808,6 +791,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             if (string.IsNullOrEmpty(model.Email))
             {
                 ModelState.AddModelError("Email", "Email is required");
+                return false;
+            }
+
+            // Only validate avatar in Create mode
+            var isCreateAction = HttpContext.Request.Path.Value?.EndsWith("/Create", StringComparison.OrdinalIgnoreCase) ?? false;
+            if (isCreateAction && string.IsNullOrEmpty(model.Avatar))
+            {
+                ModelState.AddModelError("Avatar", "Avatar is required");
                 return false;
             }
 
