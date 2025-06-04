@@ -61,14 +61,6 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     .Where(r => r.UserId == userId)
                     .ToList();
 
-                var unratedTrips = _context.Tickets
-                .Include(t => t.Trip)
-                .Where(t => t.UserId == userId)
-                .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
-                .ToList();
-
-                ViewBag.HasUnratedTrips = unratedTrips.Any();
-
                 return View(ratings);
             }
             catch (Exception ex)

@@ -29,7 +29,19 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
         [AllowAnonymous]
         public IActionResult TestConnection()
         {
-            return Ok("Connection successful");
+            try
+            {
+                _context.Database.CanConnect();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Connection successful"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Connection failed: " + ex.Message);
+            }
         }
 
         [HttpGet("list-vehicles")]

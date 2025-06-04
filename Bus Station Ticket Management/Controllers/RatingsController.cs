@@ -21,7 +21,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> MyRatings()
         {
             try
             {
@@ -38,19 +38,11 @@ namespace Bus_Station_Ticket_Management.Controllers
                     .Where(r => r.UserId == userId)
                     .ToListAsync();
 
-                var unratedTrips = await _context.Tickets
-                    .Include(t => t.Trip)
-                    .Where(t => t.UserId == userId)
-                    .Where(t => !_context.Ratings.Any(r => r.TripId == t.TripId && r.UserId == userId))
-                    .ToListAsync();
-
-                ViewBag.HasUnratedTrips = unratedTrips.Any();
-
                 return View(ratings);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting index");
+                _logger.LogError(ex, "Error getting your ratings");
                 return View(new List<Rating>());
             }
         }
@@ -180,7 +172,8 @@ namespace Bus_Station_Ticket_Management.Controllers
                 }).ToList();
 
                 ViewBag.TripList = new SelectList(tripOptions, "Id", "Display", rating.TripId);
-
+                TempData["Success"] = true;
+                TempData["Message"] = "Rating created successfully";
                 return View(rating);
             }
             catch (Exception ex)
@@ -291,7 +284,7 @@ namespace Bus_Station_Ticket_Management.Controllers
             }
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -304,15 +297,25 @@ namespace Bus_Station_Ticket_Management.Controllers
                 if (rating != null)
                 {
                     _context.Ratings.Remove(rating);
-                    await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        TempData["Success"] = true;
+                        TempData["Message"] = "Rating deleted successfully";
+                    }
+                    else
+                    {
+                        TempData["Error"] = true;
+                        TempData["Message"] = "Failed to delete rating";
+                    }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyRatings));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting rating");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyRatings));
             }
         }
     }

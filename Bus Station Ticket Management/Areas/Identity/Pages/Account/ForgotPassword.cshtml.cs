@@ -71,7 +71,43 @@ namespace Bus_Station_Ticket_Management.Areas.Identity.Pages.Account
                 var message = new MimeMessage();
                 message.To.Add(new MailboxAddress("", Input.Email));
                 message.Subject = "Reset Password";
-                message.Body = new TextPart("html") { Text = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>." };
+                message.Body = new TextPart("html") { 
+                    Text = $@"
+                    <html>
+                    <head>
+                        <style>
+                            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }}
+                            .container {{ border: 1px solid #ddd; border-radius: 5px; padding: 20px; }}
+                            .header {{ background-color: #0d6efd; color: white; padding: 10px; text-align: center; border-radius: 5px 5px 0 0; }}
+                            .content {{ padding: 20px; }}
+                            .button {{ display: inline-block; background-color: #0d6efd; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 15px; }}
+                            .footer {{ margin-top: 20px; font-size: 12px; color: #777; text-align: center; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>
+                                <h2>Password Reset Request</h2>
+                            </div>
+                            <div class='content'>
+                                <p>Hello,</p>
+                                <p>We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+                                <p>To reset your password, please click the button below:</p>
+                                <p style='text-align: center;'>
+                                    <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' class='button'>Reset Password</a>
+                                </p>
+                                <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+                                <p style='word-break: break-all;'><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>{HtmlEncoder.Default.Encode(callbackUrl)}</a></p>
+                                <p>This link will expire in 24 hours.</p>
+                                <p>Thank you,<br>Bus Station Ticket Management Team</p>
+                            </div>
+                            <div class='footer'>
+                                <p>This is an automated message, please do not reply to this email.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>"
+                };
 
                 await _emailQueue.QueueEmail(message);
 

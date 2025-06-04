@@ -137,6 +137,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(config.GetConnectionString("DefaultConnection"))
 );
 
+// builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
 // Google People API helper
 builder.Services.AddHttpClient<GooglePeopleApiHelper>();
 builder.Services.AddScoped<GooglePeopleApiHelper>();

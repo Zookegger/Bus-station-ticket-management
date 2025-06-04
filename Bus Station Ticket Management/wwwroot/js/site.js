@@ -3,25 +3,30 @@
 
 // Write your JavaScript code.
 $(document).ready(function () {
-    $('.route-select').select2({
-        theme: 'bootstrap-5', // matches the theme you linked
-        width: '100%',
-        dropdownAutoWidth: true
-    });
-    $('.route-select').on('select2:open', function (e) {
-        const selectContainer = $(this).next('.select2-container');
-        if (selectContainer.length) {
-            selectContainer.css('width', '100%');
-        }
-    });
+	try {
+		$(".route-select").select2({
+			theme: "bootstrap-5",
+			allowClear: true,
+			width: "100%",
+			dropdownAutoWidth: true,
+		});
+		$(".route-select").on("select2:open", function (e) {
+			const selectContainer = $(this).next(".select2-container");
+			if (selectContainer.length) {
+				selectContainer.css("width", "100%");
+			}
+		});
+	} catch (error) {
+		console.error("Error initializing Select2:", error);
+	}
 });
 
 function lockScroll() {
-    document.body.style.overflowY = 'hidden';
-    document.documentElement.style.overflowY = 'hidden';
+	document.body.style.overflowY = "hidden";
+	document.documentElement.style.overflowY = "hidden";
 }
 
 function unlockScroll() {
-    document.body.style.overflowY = 'auto';
-    document.documentElement.style.overflowY = 'auto';
+	document.body.style.overflowY = "auto";
+	document.documentElement.style.overflowY = "auto";
 }

@@ -6,63 +6,174 @@
     var hasTripsToRate = tripList != null && tripList.Any();
 }
 
-<h1 class="mb-4">Rate Your Trip</h1>
+@section Styles {
+    <style>
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+            cursor: pointer;
+        }
 
-@if (!hasTripsToRate)
-{
-    <div class="alert alert-info">
-        You've already rated all your trips. Thanks a lot! ❤️
-    </div>
-    <a href="@Url.Action("Index", "Ratings")" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back to Ratings
-    </a>
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ddd;
+            font-size: 24px;
+            padding: 0 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input:checked~label {
+            color: #ffc107;
+        }
+    </style>
 }
-else
-{
-    <form asp-action="Create" method="post">
-        <input type="hidden" asp-for="UserId" />
 
-        <div class="form-group mb-3">
-            <label asp-for="TripId" class="form-label">Trip</label>
-            <select asp-for="TripId" class="form-select select2" asp-items="ViewBag.TripList"></select>
-            <span asp-validation-for="TripId" class="text-danger"></span>
-        </div>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item"><a href="@Url.Action("MyRatings", "Ratings")" class="text-decoration-none"><i
+                    class="fas fa-star me-1"></i>Ratings</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Rate Your Trip</li>
+    </ol>
+</nav>
 
-        <div class="form-group mb-3">
-            <label asp-for="TripRating" class="form-label d-block">Your Rating</label>
-            <div class="btn-group flex-wrap" role="group">
-                @for (int i = 1; i <= 10; i++)
-                {
-                    <input type="radio" class="btn-check" name="TripRating" value="@i" id="rate-@i" autocomplete="off" />
-                    <label class="btn btn-outline-primary m-1" for="rate-@i">@i</label>
-                }
+<div class="container">
+    @if (TempData["Success"] != null)
+    {
+        @if (TempData["Success"].Equals(true))
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["Message"]
             </div>
-            <div id="ratingComment" class="mt-2 text-muted small"></div>
-            <span asp-validation-for="TripRating" class="text-danger"></span>
-        </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="Comment" class="form-label">Comment (optional)</label>
-            <textarea asp-for="Comment" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Comment" class="text-danger"></span>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-paper-plane me-1"></i> Submit
-            </button>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Cancel
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                @TempData["Message"]
+            </div>
+        }
+    }
+    <div class="card shadow-sm rounded">
+        <h1 class="card-header">Rate Your Trip</h1>
+        @if (!hasTripsToRate)
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                You've already rated all your trips. Thanks a lot! ❤️
+            </div>
+            <a href="@Url.Action("Index", "Ratings")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Ratings
             </a>
-        </div>
-    </form>
-}
+        }
+        else
+        {
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="TripId" class="form-label">Trip</label>
+                        <select asp-for="TripId" class="form-select select2" asp-items="ViewBag.TripList">
+                            <option value="">Select a trip</option>
+                        </select>
+                        <span asp-validation-for="TripId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="TripRating" class="form-label d-block">Your Rating</label>
+                        <div class="star-rating">
+                            @for (int i = 10; i >= 1; i--)
+                            {
+                                <input type="radio" id="star-@i" asp-for="TripRating" name="TripRating" value="@i" required />
+                                <label for="star-@i"><i class="fas fa-star"></i></label>
+                            }
+                        </div>
+                        <div id="ratingComment" class="mt-2 text-muted small"></div>
+                        <span asp-validation-for="TripRating" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Comment" class="form-label">Comment (optional)</label>
+                        <textarea asp-for="Comment" class="form-control" rows="3"
+                            placeholder="Tell us about your experience..."></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" id="submitButton" class="btn btn-primary" disabled>
+                            <i class="fas fa-paper-plane me-1"></i> Submit
+                        </button>
+                        <a asp-action="MyRatings" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    @* <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> *@
     <script>
         $(document).ready(function () {
-            $('.select2').select2();
+            try {
+
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    height: 300,
+                    width: '100%',
+                    placeholder: 'Select a trip',
+                    allowClear: true,
+			        dropdownAutoWidth: true,
+                    search: {
+                        minimumInputLength: 3,
+                        caseSensitive: false,
+                        dropdownCssClass: 'select2-dropdown-custom',
+                    },
+                });
+            } catch (error) {
+                console.error('Error initializing Select2:', error);
+            }
+
+            function isTripSelectedValid(e) {
+                return e && e.params && e.params.data && e.params.data.id && e.params.data.id !== '';
+            }
+
+            function isRatingValid(e) {
+                return $('input[name="TripRating"]:checked').length > 0;
+            }
+
+            let isTripSelectedValidCheck = false;
+            let isRatingValidCheck = false;
+
+            $('.select2').on('select2:select', function (e) {
+                isTripSelectedValidCheck = e.type === 'select2:select' && isTripSelectedValid(e);
+                updateSubmitButtonState();
+            });
+
+            $('input[name="TripRating"]').on('change', function (e) {
+                isRatingValidCheck = isRatingValid();
+                updateSubmitButtonState();
+            });
+
+            function updateSubmitButtonState() {
+
+                console.log("Trip selected: " + isTripSelectedValidCheck);
+                console.log("Rating selected: " + isRatingValidCheck);
+                console.log("Enabled: " + (isTripSelectedValidCheck && isRatingValidCheck));
+
+                $('#submitButton').prop('disabled', !(isTripSelectedValidCheck && isRatingValidCheck));
+            }
         });
 
         const comments = {

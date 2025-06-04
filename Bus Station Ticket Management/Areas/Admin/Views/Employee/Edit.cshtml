@@ -5,103 +5,297 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h4>Edit User Information</h4>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">
+                <i class="fas fa-user-alt me-1"></i>Employees
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-edit me-1"></i>Edit Employee
+        </li>
+    </ol>
+</nav>
 
-            <div class="form-group mb-3">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
+<form asp-action="Edit" method="post" id="editForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header">
+                    <h4 class="card-title">Account Information</h4>
+                </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label asp-for="UserName" class="control-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" id="NewPassword" name="NewPassword" class="form-control"
+                                    placeholder="New Password" autocomplete="new-password"
+                                    oninput="checkPasswordRequirements(); validatePasswords();" />
+                                <label for="NewPassword">New Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword"
+                                data-bs-toggle="tooltip" title="Show/Hide Password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Gender" class="control-label"></label>
-                <select class="form-control" asp-for="Gender">
-                        <option value="" disabled selected>Select your gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
+                        <!-- Password Strength Meter -->
+                        <div class="password-strength-meter mt-2">
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"
+                                    id="passwordStrengthMeter" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-            </div>
+                        <!-- Password Requirements -->
+                        <div class="password-requirements mt-2">
+                            <small class="d-block text-muted my-1">
+                                <i class="bi bi-shield-lock me-1"></i>
+                                Password must contain:
+                            </small>
+                            <small class="d-block" id="length-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least 8 characters
+                            </small>
+                            <small class="d-block" id="uppercase-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one uppercase letter
+                            </small>
+                            <small class="d-block" id="lowercase-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one lowercase letter
+                            </small>
+                            <small class="d-block" id="number-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one number
+                            </small>
+                            <small class="d-block" id="special-check">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                At least one special character
+                            </small>
+                        </div>
 
-            <div class="form-group mb-3">
-                <label for="SelectedRole">Role</label>
-                <select class="form-control" id="SelectedRole" name="SelectedRole">
-                    <option value="" selected disabled>Select Role</option>
-                    @foreach (var role in ViewBag.Roles as List<string>)
-                    {
-                        <option value="@role" selected="@(ViewBag.CurrentRole == role ? "selected" : "")">@role</option>
-                    }
-                </select>
-            </div>
+                        <span id="PasswordError" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label for="NewPassword" class="control-label">New Password</label>
-                <input type="password" id="NewPassword" name="NewPassword" class="form-control" minlength="10" />
-            </div>
+                    <div class="form-floating mb-3">
+                        <div class="input-group">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" id="ConfirmPassword" class="form-control"
+                                    placeholder="Confirm Password" />
+                                <label for="ConfirmPassword">Confirm Password</label>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span id="PasswordConfirmError" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <div class="form-group mb-3">
+                        <label for="SelectedRole">Role</label>
+                        <select class="form-control" id="SelectedRole" name="SelectedRole">
+                            <option value="" selected disabled>Select Role</option>
+                            @foreach (var role in ViewBag.Roles as List<string>)
+                            {
+                                if (!User.IsInRole("Admin") && role == "Admin")
+                                {
+                                    continue;
+                                }
+                                <option value="@role" selected="@(ViewBag.CurrentRole == role ? "selected" : "")">@role
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="LockoutEnd" class="control-label"></label>
-                <input asp-for="LockoutEnd" class="form-control" />
-                <span asp-validation-for="LockoutEnd" class="text-danger"></span>
-            </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header">
+                    <h4 class="card-title">User Information</h4>
+                </div>
 
-            <div class="form-group form-check mb-3">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="LockoutEnabled" />
-                    @Html.DisplayNameFor(model => model.LockoutEnabled)
-                </label>
-            </div>
+                <div class="card-body">
+                    <div class="col-12 mb-4">
+                        <div class="row g-3 align-items-center">
+                            <!-- File Input -->
+                            <div class="col-md-6 col-lg-8">
+                                <div class="form-group">
+                                    <label asp-for="Avatar" class="form-label fw-semibold">Upload Avatar</label>
+                                    <input asp-for="Avatar" type="file" class="form-control" accept="image/*"
+                                        onchange="previewImage(this);" title="Only image files allowed" />
+                                    <small class="form-text text-muted">Supported formats: JPG, PNG, GIF. Max size:
+                                        2MB</small>
+                                    <span asp-validation-for="Avatar" class="text-danger"></span>
+                                </div>
+                            </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="AccessFailedCount" class="control-label"></label>
-                <input asp-for="AccessFailedCount" class="form-control" />
-                <span asp-validation-for="AccessFailedCount" class="text-danger"></span>
-            </div>
+                            <!-- Preview -->
+                            <div class="col-md-6 col-lg-4 d-flex justify-content-md-end justify-content-center">
+                                <div class="card shadow-sm border-0 rounded-circle"
+                                    style="width: 200px; height: 200px;">
+                                    <div
+                                        class="card-body p-0 position-relative d-flex align-items-center justify-content-center">
+                                        @{
+                                            var hasImage = Model?.Avatar != null && System.IO.File.Exists(
+                                            System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images",
+                                            "avatar", Model.Avatar)
+                                            );
+                                        }
 
-            <div class="form-group btn-group gap-1 mb-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+                                        <div id="defaultAvatarWrapper" style="display:@(hasImage ? "none" : "block");">
+                                            <div id="defaultAvatar"
+                                                class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 200px; height: 200px;">
+                                                <i class="fas fa-user fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+
+                                        <img id="avatarPreview"
+                                            src="@(hasImage ? Url.Content("~/images/avatars/" + Model.Avatar) : "#")"
+                                            alt="Avatar" class="rounded-circle shadow position-absolute top-0 start-0"
+                                            style="width: 200px; height: 200px; object-fit: cover; display:@(hasImage ? "block" : "none");" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="FullName" class="control-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Address" class="control-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Gender" class="control-label"></label>
+                        <select class="form-control" asp-for="Gender">
+                            <option value="" disabled selected>Select your gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="DateOfBirth" class="control-label"></label>
+                        <input asp-for="DateOfBirth" class="form-control" type="date" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="LockoutEnd" class="control-label"></label>
+                        <input asp-for="LockoutEnd" class="form-control" />
+                        <span asp-validation-for="LockoutEnd" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-check mb-3">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="LockoutEnabled" />
+                            @Html.DisplayNameFor(model => model.LockoutEnabled)
+                        </label>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AccessFailedCount" class="control-label"></label>
+                        <input asp-for="AccessFailedCount" class="form-control" />
+                        <span asp-validation-for="AccessFailedCount" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
+        <div class="d-flex justify-content-between mt-4 pb-4">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> Save Changes
+            </button>
+        </div>
     </div>
-</div>
+</form>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/password.js"></script>
+}
 
-    
+<style>
+    .password-requirements {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item {
+        transition: all 0.3s ease;
+    }
+
+    .requirement-item small {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .password-strength-meter .progress {
+        background-color: #e9ecef;
+        border-radius: 2px;
+    }
+
+    .password-strength-meter .progress-bar {
+        transition: width 0.3s ease;
+    }
+</style>
+
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('avatarPreview');
+        const defaultAvatarWrapper = document.getElementById('defaultAvatarWrapper');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (defaultAvatarWrapper) {
+                    defaultAvatarWrapper.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

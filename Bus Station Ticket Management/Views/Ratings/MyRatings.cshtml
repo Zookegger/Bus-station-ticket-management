@@ -1,7 +1,24 @@
-@model IEnumerable<Bus_Station_Ticket_Management.Models.Rating>
+﻿@model IEnumerable<Bus_Station_Ticket_Management.Models.Rating>
 
 @{
     ViewData["Title"] = "My Reviews & Ratings";
+    ViewData["Layout"] = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 <div class="container-fluid px-3 px-md-4">
@@ -128,7 +145,8 @@
                                         @rating.Trip.Route.DestinationLocation.Name
                                     </h6>
                                 </div>
-                                <div class="rating-badge d-flex flex-column d-md-none align-items-center justify-content-center">
+                                <div
+                                    class="rating-badge d-flex flex-column d-md-none align-items-center justify-content-center">
                                     <span class="text-white text-center fw-semibold mb-1">Your Rating</span>
                                     <div class="rating-circle bg-white text-dark fw-bold">
                                         @rating.TripRating <i class="fas fa-star text-warning"></i>
@@ -217,7 +235,8 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-0 bg-danger text-white">
@@ -236,11 +255,13 @@
                 <p class="text-muted small mb-0">This action cannot be undone.</p>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">
-                    <i class="fas fa-trash-alt me-1"></i>
-                    Delete Review
-                </a>
+                <form asp-action="DeleteConfirmed" method="post">
+                    <input type="text" name="id" id="ratingId" value="" hidden />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button role="button" type="submit" id="confirmDeleteBtn" class="btn btn-danger"><i
+                            class="fas fa-trash-alt me-1"></i>
+                        Delete Review</button>
+                </form>
             </div>
         </div>
     </div>
@@ -434,8 +455,10 @@
         }
 
         function confirmDelete(ratingId, startLocation, destinationLocation) {
+            console.log(ratingId)
+            $('#ratingId').val(ratingId);
+            console.log($('#ratingId').val());
             $('#deleteRouteInfo').text(`${startLocation} → ${destinationLocation}`);
-            $('#confirmDeleteBtn').attr('href', `@Url.Action("Delete")?id=${ratingId}`);
             $('#deleteConfirmationModal').modal('show');
         }
     </script>

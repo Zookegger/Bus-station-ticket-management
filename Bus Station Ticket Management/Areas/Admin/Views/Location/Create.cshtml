@@ -5,40 +5,171 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Location</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" id="searchName" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" id="searchAddress" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group btn-group gap-1 mb-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
-            </div>
-
-            <input type="hidden" id="Latitude" asp-for="Latitude">
-            <input type="hidden" id="Longitude" asp-for="Longitude">
-        </form>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div class="col-md-4">
-        <div id="map" style="height: 400px;"></div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Location")" class="text-decoration-none"><i
+                    class="fas fa-map-marker-alt me-2"></i>Location</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add New Location</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Add New Location</h4>
+    </div>
+    <div class="card-body row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-3">
+                    <div class="input-group form-floating">
+                        <input asp-for="Name" id="searchName" class="form-control" placeholder="Location Name"
+                            autocomplete="off" />
+                        <label asp-for="Name" class="control-label" placeholder="Location Name"></label>
+                        <button type="button" id="searchButton" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" id="searchAddress" class="form-control" readonly />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group btn-group gap-1 mb-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a role="button" class="btn btn-outline-secondary" asp-action="Index">Back to List</a>
+                </div>
+
+                <input type="hidden" id="Latitude" asp-for="Latitude">
+                <input type="hidden" id="Longitude" asp-for="Longitude">
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-lg mb-2 mb-3">
+                <div class="card-header text-muted fs-5 fw-bold">
+                    <i class="fa-solid fa-map-location-dot fa-lg me-1"></i>
+                    Location Map
+                </div>
+                <div class="card-body px-0 py-0">
+                    <div id="map" style="min-height: 400px;" class="rounded h-100 w-100">
+                        <div id="map-loading" class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-check">
+                        <input type="checkbox" name="getLocationOnMove" id="getLocationOnMove" class="form-check-input" />
+                        <label for="getLocationOnMove" class="form-check-label">Get Location On Move</label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script src="~/js/initOSM.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const map = $('#map');
+            let marker = null;
+            let searchTimeout = null;
+            let getLocationOnMove = $('#getLocationOnMove').is(':checked');
+
+            if (!getLocationOnMove) {
+                
+            }
+            // Handle search button click
+            $('#searchButton').on('click', function () {
+                const searchTerm = $('#searchName').val().trim();
+                if (searchTerm) {
+                    searchLocation(searchTerm);
+                }
+            });
+
+            // Handle enter key in search input
+            $('#searchName').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#searchButton').click();
+                }
+            });
+
+            function searchLocation(query) {
+                // Show loading state
+                $('#map-loading').show();
+
+                // Use Nominatim API to search for the location
+                $.ajax({
+                    url: `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`,
+                    method: 'GET',
+                    success: function (data) {
+                        if (data && data.length > 0) {
+                            const result = data[0];
+                            const lat = parseFloat(result.lat);
+                            const lng = parseFloat(result.lon);
+
+                            // Update map and marker
+                            mapInstance.setView([lat, lng], 15);
+                            if (marker) {
+                                marker.setLatLng([lat, lng]);
+                            } else {
+                                marker = L.marker([lat, lng], { draggable: true }).addTo(mapInstance);
+                            }
+
+                            // Update form fields
+                            $('#Latitude').val(lat);
+                            $('#Longitude').val(lng);
+                            $('#searchAddress').val(result.display_name);
+                        } else {
+                            alert('Location not found. Please try a different search term.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error searching for location. Please try again.');
+                    },
+                    complete: function () {
+                        $('#map-loading').hide();
+                    }
+                });
+            }
+
+            function reverseGeocode(lat, lng) {
+                $.ajax({
+                    url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+                    method: 'GET',
+                    success: function (data) {
+                        if (data && data.display_name) {
+                            $('#searchAddress').val(data.display_name);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 }

@@ -2,196 +2,234 @@
 @inject UserManager<ApplicationUser> _userManager;
 @{
     ViewData["AOS"] = "fade-down";
-    var user = await _userManager.GetUserAsync(User);    
+    var user = await _userManager.GetUserAsync(User);
 }
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - EasyRide</title>
-        <!-- Import stylesheet -->
-        <!-- Site & Shared Styles -->
-        <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/Shared/Custom Bootstrap.css" asp-append-version="true" />
 
-        <!-- Bootstrap & Icons -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EasyRide</title>
+    <!-- Import stylesheet -->
+    <!-- Site & Shared Styles -->
+    <link rel="stylesheet" href="~/css/Shared/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/Custom Bootstrap.css" asp-append-version="true" />
 
-        <!-- Select2 -->
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"rel="stylesheet" />
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-        <!-- Animate on Scroll -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
-        <!-- Hover.css -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css">
+    <!-- Animate on Scroll -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
 
-        <!-- Animate.css -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+    <!-- Hover.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css">
 
-        <!-- Flatpickr -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
 
-        <!-- Choices.js -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-        <!-- DataTables.js -->
-        <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css" rel="stylesheet" integrity="sha384-AWSLQaLuKmq5XKJHGvvjQzw2Jnn03K1sgvkxCi+eYpHkXSvC+1RRfYXZHQ4teTF5" crossorigin="anonymous">
-        
-        @await RenderSectionAsync("Styles", required: false)
+    <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
-    </head>
 
-    <body>
-        <!-- Header -->
-        <header class="shadow-sm">
-            <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
-                <div class="container-fluid">
-                    <div class="navbar-brand-group d-flex">
-                        <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fa-solid fa-bus me-2"></i>EasyRide
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
+        integrity="sha512-cUoWMYmv4H9TGP4hbm1mIjYo90WzIQFo/5jj+P5tQcDTf+iVR59RyIj/a9fRsBxzxt5Dnv/Ex7MzRIxcDwaOLw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- DataTables.js -->
+    <link
+        href="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+        rel="stylesheet" integrity="sha384-AWSLQaLuKmq5XKJHGvvjQzw2Jnn03K1sgvkxCi+eYpHkXSvC+1RRfYXZHQ4teTF5"
+        crossorigin="anonymous">
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="shadow-sm">
+        <nav class="navbar navbar-expand-lg bg-success bg-gradient navbar-dark">
+            <div class="container-fluid">
+                <div class="navbar-brand-group d-flex">
+                    <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fa-solid fa-bus me-2"></i>EasyRide
+                    </a>
+
+                    @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                    {
+                        <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex justify-content-start align-items-center gap-2 shadow-sm"
+                            asp-area="Admin" asp-controller="Home" asp-action="Dashboard" title="Admin Dashboard">
+                            <i class="fas fa-tools"></i>
+                            <span class="d-none d-sm-inline">Admin Dashboard</span>
                         </a>
-
-                        @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
-                        {
-                            <a class="btn btn-outline-light rounded-pill px-4 py-2 d-flex justify-content-start align-items-center gap-2 shadow-sm"
-                                asp-area="Admin" asp-controller="Home" asp-action="Dashboard" title="Admin Dashboard">
-                                <i class="fas fa-tools"></i>
-                                <span class="d-none d-sm-inline">Admin Dashboard</span>
-                            </a>
-                        }
-                    </div>
-
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="mainNavbar">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <partial name="_LoginPartial"/>
-                            </li>
-                        </ul>
-                    </div>
+                    }
                 </div>
-            </nav>
-        </header>
 
-        @if (user != null && !user.EmailConfirmed)
-        {
-            <div class="alert alert-warning mb-0">
-                <span>Please confirm your email address to continue.</span>
-                <a id="email-verification" 
-                    asp-area="Identity" asp-page="/Account/Manage/Email"
-                    class="btn btn-outline-secondary ms-2">
-                    Send verification
-                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <partial name="_LoginPartial" />
+                        </li>
+                    </ul>
+                </div>
             </div>
-        }
+        </nav>
+    </header>
 
-        <!-- Main Body -->
-        <div class="d-flex flex-column w-100 h-100 bg-light flex-grow-1">
-            <main role="main" class="container-fluid container-md py-4">
-                @RenderBody()
-            </main>
+    @if (user != null && !user.EmailConfirmed)
+    {
+        <div class="alert alert-warning mb-0">
+            <span>Please confirm your email address to continue.</span>
+            <a id="email-verification" asp-area="Identity" asp-page="/Account/Manage/Email"
+                class="btn btn-outline-secondary ms-2">
+                Send verification
+            </a>
+        </div>
+    }
 
-            <!-- Footer -->
-            <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
-                <div class="container py-4">
-                    <div class="row align-items-center gy-3 text-center text-md-start mx-auto">
-                        <!-- Left side -->
-                        <div class="col-md-6">
-                            <div class="small">
-                                &copy; 2025 <strong>EasyRide</strong><br />
-                                All rights reserved.
-                                <a asp-area="" asp-controller="Home" asp-action="Privacy"
-                                    class="text-white text-decoration-underline ms-1">Privacy Policy</a>
-                            </div>
-                        </div>
+    <!-- Main Body -->
+    <div class="d-flex flex-column w-100 h-100 bg-light flex-grow-1">
+        <main role="main" class="container-fluid container-md py-4">
+            @RenderBody()
+        </main>
 
-                        <!-- Right side -->
-                        <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4 pt-2">
-
-                            <a href="#"
-                                class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                                style="min-width: 110px; max-width: 120px;">
-                                <i class="fab fa-facebook fa-lg"></i>
-                                <span class="d-none d-sm-inline">Facebook</span>
-                            </a>
-                            <a href="#"
-                                class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                                style="min-width: 110px; max-width: 120px;">
-                                <i class="fab fa-linkedin fa-lg"></i>
-                                <span class="d-none d-sm-inline">LinkedIn</span>
-                            </a>
-                            <a href="mailto:support@example.com"
-                                class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
-                                style="min-width: 110px; max-width: 110px;">
-                                <i class="fas fa-envelope fa-lg"></i>
-                                <span class="d-none d-sm-inline">Email</span>
-                            </a>
+        <!-- Footer -->
+        <footer class="footer bg-success bg-gradient text-white mt-auto border-top shadow-sm">
+            <div class="container py-4">
+                <div class="row align-items-center gy-3 text-center text-md-start mx-auto">
+                    <!-- Left side -->
+                    <div class="col-md-6">
+                        <div class="small">
+                            &copy; 2025 <strong>EasyRide</strong><br />
+                            All rights reserved.
+                            <a asp-area="" asp-controller="Home" asp-action="Privacy"
+                                class="text-white text-decoration-underline ms-1">Privacy Policy</a>
                         </div>
                     </div>
+
+                    <!-- Right side -->
+                    <div class="col-md-6 d-flex justify-content-center justify-content-end gap-4 pt-2">
+
+                        <a href="#"
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 120px;">
+                            <i class="fab fa-facebook fa-lg"></i>
+                            <span class="d-none d-sm-inline">Facebook</span>
+                        </a>
+                        <a href="#"
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 120px;">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                            <span class="d-none d-sm-inline">LinkedIn</span>
+                        </a>
+                        <a href="mailto:support@example.com"
+                            class="text-white text-decoration-none d-inline-flex align-items-center gap-2 icon-link"
+                            style="min-width: 110px; max-width: 110px;">
+                            <i class="fas fa-envelope fa-lg"></i>
+                            <span class="d-none d-sm-inline">Email</span>
+                        </a>
+                    </div>
                 </div>
-            </footer>
-        </div>
-        <!-- Scripts -->
-        <!-- JQuery -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        
-        <!-- Chart.js -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        
-        <!-- Select2 -->
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        
-        <!-- Bootstrap -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
-        
-        <!-- Animate on Scroll -->
-        <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-        
-        <!-- DataTables -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js" integrity="sha384-kBh7viGzGlI/hChKb1qG4d8DPeVAmZQjRUfKRgY87RKjZQJtrcVSlLNX0GEXsYCm" crossorigin="anonymous"></script>
-        
-        <!-- GSAP -->
-        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-        
-        <!-- Lottie -->
-        <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
-        
-        <!-- Flatpickr -->
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        
-        <!-- Choices.js -->
-        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-        
-        <!-- Tippy.js -->
-        <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
-        <script src="@("https://unpkg.com/tippy.js@6")"></script>
-        
-        <!-- SweetAlert2 -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-        <!-- Toastr -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        
-        <!-- VanillaTilt -->
-        <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
+            </div>
+        </footer>
+    </div>
 
-        <!-- Full Calendar -->
-        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+    <!-- Scripts -->
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Animate on Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+    <!-- DataTables -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.0/af-2.7.0/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/cr-2.1.0/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.4/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.2/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"
+        integrity="sha384-kBh7viGzGlI/hChKb1qG4d8DPeVAmZQjRUfKRgY87RKjZQJtrcVSlLNX0GEXsYCm"
+        crossorigin="anonymous"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+
+    <!-- Lottie -->
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Tippy.js -->
+    <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
+    <script src="@("https://unpkg.com/tippy.js@6")"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Leaflet.Awesome-Markers -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"
+        integrity="sha512-8BqQ2RH4L4sQhV41ZB24fUc1nGcjmrTA6DILV/aTPYuUzo+wBdYdp0fvQ76Sxgf36p787CXF7TktWlcxu/zyOg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- VanillaTilt -->
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"
+        integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Full Calendar -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+
+    <!-- Bootstrap Toggle -->
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
 </html>

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
 {
+    [ApiController]
+    [Area("Admin")]
+    [Route("admin/api/vehicle-type")]
     public class VehicleTypeApiController(ApplicationDbContext context) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
@@ -13,7 +16,19 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
         [AllowAnonymous]
         public IActionResult TestConnection()
         {
-            return Ok("Connection successful");
+            try
+            {
+                _context.Database.CanConnect();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Connection successful"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Connection failed: " + ex.Message);
+            }
         }
 
         [HttpGet("list-vehicle-types")]

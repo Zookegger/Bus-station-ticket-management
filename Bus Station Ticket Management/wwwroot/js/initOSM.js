@@ -192,24 +192,15 @@ function drawRoute(data, moveMarker = false) {
     if (!startLocation || isNaN(startLocation.lat) || isNaN(startLocation.lon) ||
         !endLocation || isNaN(endLocation.lat) || isNaN(endLocation.lon)) {
         throw new Error("Invalid start or end location", startLocation, endLocation);
-    }
-
+    } 
+    
     const startMarkerIcon = L.AwesomeMarkers.icon({
-        icon: 'fa fa-map-marker',
+        icon: 'circle',
         markerColor: 'red',
         prefix: 'fa',
         spin: false,
-        extraClasses: ''
     });
 
-    const endMarkerIcon = L.AwesomeMarkers.icon({
-        icon: 'fa fa-map-marker',
-        markerColor: 'green',
-        prefix: 'fa',
-        spin: false,
-        extraClasses: ''
-    });
-    
     startMarker = L.marker([startLocation.lat, startLocation.lon], { 
         draggable: moveMarker,
         icon: startMarkerIcon
@@ -218,6 +209,12 @@ function drawRoute(data, moveMarker = false) {
         .bindPopup(`Start: ${startLocation.display_name}`)
         .bindTooltip("Start Point", { permanent: true, direction: "bottom" });
     
+    const endMarkerIcon = L.AwesomeMarkers.icon({
+        icon: 'circle',
+        markerColor: 'green',
+        prefix: 'fa',
+    });
+
     endMarker = L.marker([endLocation.lat, endLocation.lon], { 
         draggable: moveMarker,
         icon: endMarkerIcon
@@ -237,7 +234,14 @@ function drawRoute(data, moveMarker = false) {
         ? `${(distance / 1000).toFixed(1)} km` 
         : `${Math.round(distance)} m`;
 
-    L.popup()
+    L.popup({
+        closeOnClick: false,
+        keepInView: true,
+        closeButton: true,
+        autoClose: false,
+        closeOnEscapeKey: true,
+        
+    })
         .setLatLng([
             (parseFloat(startLocation.lat) + parseFloat(endLocation.lat)) / 2, 
             (parseFloat(startLocation.lon) + parseFloat(endLocation.lon)) / 2

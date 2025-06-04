@@ -133,7 +133,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             try
             {
-                var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+                var roles = _roleManager.Roles.Select(r => r.Name).Where(r => r != "Customer").ToList();
                 ViewBag.Roles = roles;
                 return View();
             }
@@ -216,7 +216,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 }
 
                 var user = await _userManager.FindByIdAsync(id);
-                var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+                var roles = await _roleManager.Roles.Select(r => r.Name).Where(r => r != "Customer").ToListAsync();
                 var userRoles = await _userManager.GetRolesAsync(user);
 
                 ViewBag.Roles = roles;

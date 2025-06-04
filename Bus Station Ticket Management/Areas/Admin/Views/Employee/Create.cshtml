@@ -5,9 +5,18 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-
-<h3>Add New Employee</h3>
-<hr />
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">
+                <i class="fas fa-user-alt me-1"></i>Employees
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-user-plus me-1"></i>Add New Employee
+        </li>
+    </ol>
+</nav>
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row g-4">

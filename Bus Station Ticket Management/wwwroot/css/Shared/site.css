@@ -316,3 +316,11 @@ footer ul {
 .hvr-underline-from-left {
 	transition: all 0.3s ease !important;
 }
+
+.awesome-marker i {
+	margin-top: 10px;
+}
+
+.awesome-marker svg {
+	margin-top: 10px;
+}

@@ -26,7 +26,7 @@
     <!-- Enhanced Statistics Cards -->
     <div class="row g-4 mb-4">
         <!-- Total Revenue Card -->
-        <div class="col-md-3" data-aos="fade-right">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-right">
             <div class="card text-bg-primary shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Average Ticket Price Card -->
-        <div class="col-md-3" data-aos="fade-up">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-up">
             <div class="card text-bg-dark shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Tickets Sold Card -->
-        <div class="col-md-3" data-aos="fade-up">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-up">
             <div class="card text-bg-warning shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Payment Status Card -->
-        <div class="col-md-3" data-aos="fade-left">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-left">
             <div class="card text-bg-info shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -85,7 +85,7 @@
                             <h3 class="mb-0">
                                 @(Model.Count(t => t.IsPaid).ToString("N0")) / @Model.Count.ToString("N0")
                             </h3>
-                            <small class="text-white-50">Paid / Total</small>
+                            <small class="text-white">Paid / Total</small>
                         </div>
                         <i class="fa-solid fa-money-bill-wave fa-2x opacity-50"></i>
                     </div>
@@ -96,7 +96,7 @@
 
     <!-- Additional Statistics -->
     <div class="row g-4 mb-4">
-        <div class="col-md-3" data-aos="fade-right">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-right">
             <div class="card text-bg-success shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title mb-1">Revenue (This Month)</h6>
@@ -111,7 +111,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3" data-aos="fade-up">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-up">
             <div class="card text-bg-secondary shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title mb-1">Revenue (This Week)</h6>
@@ -125,7 +125,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3" data-aos="fade-up">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-up">
             <div class="card text-bg-danger shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title mb-1">Canceled Tickets</h6>
@@ -135,7 +135,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3" data-aos="fade-left">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" data-aos="fade-left">
             <div class="card text-bg-light shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title mb-1">Top Route (by Revenue)</h6>
@@ -156,21 +156,19 @@
     </div>
 
     <!-- Revenue Chart -->
-    <div class="row mb-4" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
-        <div class="col-12">
+    <div class="row mb-4" >
+        <div class="col-md-6" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
             <div class="card shadow-sm">
-                <div class="card-body">
+                <div class="card-body" style="min-height: 250px; max-height: 400px">
                     <canvas id="revenueChart" class="w-100 h-100"></canvas>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Revenue by Route Chart -->
-    <div class="row mb-4" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
-        <div class="col-12">
+        <!-- Revenue by Route Chart -->
+        <div class="col-md-6" data-aos="zoom-in" data-aos-anchor-placement="top-bottom" data-aos-duration="2000">
             <div class="card shadow-sm">
-                <div class="card-body">
+                <div class="card-body" style="min-height: 250px; max-height: 400px">
                     <canvas id="routeRevenueChart" class="w-100 h-100"></canvas>
                 </div>
             </div>
@@ -193,10 +191,10 @@
                             <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
                         </div>
                         <div class="col-md-4 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100 h-100 fw-semibold">
                                 <i class="fa-solid fa-filter"></i> Apply Filter
                             </button>
-                            <button type="submit" id="clearFilter" class="btn btn-danger w-100">
+                            <button type="submit" id="clearFilter" class="btn btn-danger w-100 h-100 fw-semibold">
                                 <i class="fa-solid fa-ban"></i> Clear Filter
                             </button>
                         </div>

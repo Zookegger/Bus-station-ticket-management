@@ -44,7 +44,19 @@
             <input type="hidden" asp-for="Duration">
             <span asp-validation-for="Duration" class="text-danger"></span>
 
-            <div id="map" style="height: 400px;"></div>
+            <div class="card shadow-lg mb-2 mb-3">
+                <div class="card-header text-muted fs-5 fw-bold">
+                    <i class="fa-solid fa-map-location-dot fa-lg me-1"></i>
+                    Route Map
+                </div>
+                <div id="map" style="height: 400px;">
+                    <div id="map-loading" class="text-center position-absolute top-50 start-50 translate-middle">
+                        <div class="spinner-border text-primary align-middle" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </form>
     </div>
