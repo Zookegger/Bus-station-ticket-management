@@ -161,7 +161,7 @@ namespace Bus_Station_Ticket_Management.Controllers
 
                     _context.Payments.Add(payment);
                     TempData["PaymentId"] = payment.Id;
-                    List<Ticket> ticketList = new List<Ticket>();
+                    var ticketList = new List<Ticket>();
 
                     foreach (var seat in seats)
                     {

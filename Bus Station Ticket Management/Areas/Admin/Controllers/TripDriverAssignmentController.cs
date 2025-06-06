@@ -209,7 +209,9 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             // Get busy drivers at that time frame
             var busyDrivers = await _context.TripDriverAssignments
-                .Include(tda => tda.Trip)
+                .Include(tda => tda.Trip) 
+                    .Include(tda => tda.Driver)
+                        .ThenInclude(d => d.Account)
                 .Where(tda =>
                     tda != null &&
                     tda.Trip != null &&
@@ -355,11 +357,17 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     return NotFound("Trip or Route data is missing");
                 }
 
-                var trip = await _context.Trips.FindAsync(tripDriverAssignment.TripId);
+                var now = DateTime.Now;
+                var trip = tripDriverAssignment.Trip;
 
-                if (trip == null)
+                if (trip.ArrivalTime < now)
                 {
-                    return NotFound("Trip not found");
+                    return BadRequest("Cannot edit past trips.");
+                }
+                
+                if (trip.DepartureTime < now)
+                {
+                    return BadRequest("Cannot edit trips that have already departed.");
                 }
 
                 // Now pass the actual Trip entity to FreeDrivers
@@ -368,16 +376,18 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 // Check if there are any free drivers
                 if (totalFreeDrivers.Count == 0)
                 {
-                    ModelState.AddModelError("", "No drivers available.");
+                    ModelState.AddModelError("DriverId", "No drivers available.");
+                    ViewData["DriverId"] = new SelectList(new List<SelectListItem>());
                     return View(tripDriverAssignment);
                 }
-
+                
                 ViewData["DriverId"] = new SelectList(totalFreeDrivers, "Id", "FullName", tripDriverAssignment.DriverId);
 
                 return View(tripDriverAssignment);
             }
             catch (Exception ex)
             {
+                ViewData["DriverId"] = new SelectList(new List<Driver>(), "Id", "FullName");
                 return NotFound(ex.Message);
             }
         }

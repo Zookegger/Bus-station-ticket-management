@@ -9,6 +9,7 @@ using Bus_Station_Ticket_Management.Services.QRCode;
 using Bus_Station_Ticket_Management.Services.Email;
 using MimeKit;
 using Microsoft.AspNetCore.Authorization;
+using Bus_Station_Ticket_Management.Services.BackgroundProcess;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 {
@@ -19,12 +20,14 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         private readonly IEmailBackgroundQueue _emailBackgroundQueue;
         private readonly ILogger<TestController> _logger;
         private readonly IQrCodeService _qrCodeService;
+        private readonly ExpiredPaymentCleanupService _cleanupService;
 
-        public TestController(IEmailBackgroundQueue emailBackgroundQueue, ILogger<TestController> logger, IQrCodeService qrCodeService)
+        public TestController(IEmailBackgroundQueue emailBackgroundQueue, ILogger<TestController> logger, IQrCodeService qrCodeService, ExpiredPaymentCleanupService cleanupService)
         {
             _emailBackgroundQueue = emailBackgroundQueue;
             _logger = logger;
             _qrCodeService = qrCodeService;
+            _cleanupService = cleanupService;
         }
 
         public IActionResult Index()
@@ -158,7 +161,8 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 mimeMessage.Subject = subject;
                 mimeMessage.Body = new TextPart("html") { Text = htmlMessage };
 
-                var builder = new BodyBuilder{
+                var builder = new BodyBuilder
+                {
                     HtmlBody = htmlMessage
                 };
 
@@ -167,7 +171,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 image.ContentDisposition = new ContentDisposition(ContentDisposition.Inline);
                 image.ContentType.MediaType = "image";
                 image.ContentType.MediaSubtype = "png";
-                
+
                 mimeMessage.Body = builder.ToMessageBody();
 
                 await _emailBackgroundQueue.QueueEmail(mimeMessage);
@@ -203,11 +207,10 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             return View("~/Areas/Admin/Views/Test/Api/VehicleApi.cshtml");
         }
-        
+
         public IActionResult Assignments()
         {
             return View("~/Areas/Admin/Views/Test/Api/TripDriverAssignmentApi.cshtml");
         }
-
     }
-} 
+}

@@ -14,9 +14,9 @@
 
     var now = DateTime.Now;
 
-    var destination = ViewBag.Destination;
-    var departure = ViewBag.Departure;
-    var time = ViewBag.DepartureTime != null ? (ViewBag.DepartureTime).ToString("yyyy-MM-dd") : null;
+    var destination = @Html.Raw(Json.Serialize(Model.Destination));
+    var departure = @Html.Raw(Json.Serialize(Model.Departure));
+    var time = @Html.Raw(Json.Serialize(Model.DepartureTime));
 }
 
 @section Styles {
@@ -54,7 +54,7 @@
                             id="popoverDepartureBtn" data-bs-toggle="popover" data-popper-placement="bottom"
                             data-bs-html="true" data-bs-content="" data-bs-custom-class="custom-popover">
                             <input type="text" id="input_departure" name="departure" class="form-control fs-5" readonly
-                                placeholder="From" value='@Html.Raw(HttpUtility.JavaScriptStringEncode(departure))' required
+                                placeholder="From" value='@departure' required
                                 style="cursor: pointer; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
                             <i class="fas fa-map-marker-alt fa-lg ps-3"></i>
                         </button>
@@ -66,7 +66,7 @@
                             id="popoverDestinationBtn" data-bs-toggle="popover" data-popper-placement="bottom"
                             data-bs-html="true" data-bs-content="" data-bs-custom-class="custom-popover">
                             <input type="text" id="input_destination" name="destination" class="form-control fs-5"
-                                readonly placeholder="To" value="@Model.Destination" required
+                                readonly placeholder="To" value="@destination" required
                                 style="cursor: pointer; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
                             <i class="fas fa-map-marker-alt fa-lg ps-3"></i>
                         </button>
@@ -88,7 +88,15 @@
             }
         </div>
     </div>
-    <hr class="mb-5">
+
+    <hr class="mb-3">
+
+    @if (Model.IsSearchResult){
+        <div class="mb-3">
+            <span class="text-muted">Search result for: Departure: @Model.Departure, Destination: @Model.Destination, Departure Time: @Model.DepartureTime</span>
+        </div>
+    }
+
 
     @if (!Model.IsSearchResult)
     {
@@ -331,9 +339,9 @@
             const input_time = document.getElementById('input_time');
 
             try {
-                if (input_departure) input_departure.value = `@departure`;
-                if (input_destination) input_destination.value = `@destination`;
-                if (input_time) input_time.value = `@time`;
+                if (input_departure) input_departure.value = `@departure`.split('"')[1] ?? 'From';
+                if (input_destination) input_destination.value = `@destination`.split('"')[1] ?? 'To';
+                if (input_time) input_time.value = `@time`.split('"')[1];
             } catch (error) {
                 console.error(error);
             }

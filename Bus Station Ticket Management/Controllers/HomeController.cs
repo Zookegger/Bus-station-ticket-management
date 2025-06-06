@@ -80,10 +80,6 @@ public class HomeController : Controller
             DepartureTime = departureTime
         };
 
-        ViewBag.Departure = departure.Trim();
-        ViewBag.Destination = destination.Trim();
-        ViewBag.DepartureTime = departureTime;
-
         return View("Index", viewModel);
     }
 

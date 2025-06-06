@@ -3,28 +3,25 @@ using Bus_Station_Ticket_Management.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Bus_Station_Ticket_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using Bus_Station_Ticket_Management.Services.BackgroundProcess;
 
 namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
 {
-    
+    /// <summary>
+    /// API Controller for managing system
+    /// </summary>
+    /// Address: /Admin/api/System
     [ApiController]
     [Area("Admin")]
     [Route("admin/api/system")]
-    public class SystemApiController : ControllerBase
+    public class SystemApiController(ApplicationDbContext context, ExpiredPaymentCleanupService cleanupService) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public SystemApiController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet("check-database-connection")]
+        [HttpGet("check-database-connection", Name = "CheckDatabaseConnection")]
         public IActionResult CheckDatabaseConnection()
         {
             try
             {
-                _context.Database.CanConnect();
+                context.Database.CanConnect();
                 return Ok(new {
                     status = "success",
                     message = "Connection successful" 
@@ -39,7 +36,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
             }
         }
 
-        [HttpGet("check-api-connection")]
+        [HttpGet("check-api-connection", Name = "CheckApiConnection")]
         public IActionResult CheckApiConnection()
         {
             try
@@ -56,6 +53,20 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.ApiControllers
                     message = $"API connection failed: {ex.Message}" 
                 });
             }
+        }
+
+        [HttpGet("payment-cleanup-status", Name = "GetPaymentCleanupStatus")]
+        public IActionResult GetPaymentCleanupStatus()
+        {
+            return Ok(new
+            {
+                LastRunTime = cleanupService.LastRunTime,
+                IsHealthy = cleanupService.LastRunSuccess,
+                LastError = cleanupService.LastRunError,
+                TotalProcessed = cleanupService.LastRunProcessedCount,
+                IsRunning = cleanupService.IsRunning,
+                LastRunDuration = cleanupService.LastRunDuration
+            });
         }
     }
 }

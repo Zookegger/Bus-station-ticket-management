@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = "Edit Trip-Driver Assignment";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    
+    if (ViewData["FreeDrivers"] is null)
+    {
+        ViewData["FreeDrivers"] = new List<SelectListItem>();
+    }
+    var freeDrivers = ViewData["FreeDrivers"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>();
 }
 
 <div class="container mt-4">
@@ -38,19 +44,19 @@
 
                 <div class="mb-4">
                     <label asp-for="DriverId" class="form-label fw-semibold">Driver</label>
-                    <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId">
-                        @if (ViewBag.DriverId != null && ViewBag.DriverId.Any())
-                        {
+                    @if (freeDrivers.Any())
+                    {
+                        <select asp-for="DriverId" class="form-select" asp-items="freeDrivers">
                             <option value="">-- Select Driver --</option>
-                        } else {
-                            <option value="" selected disabled>No drivers available</option>
-                        }
-                    </select>
+                        </select>
+                    } else {
+                        <span class="text-danger">No drivers available</span>
+                    }
                     <span asp-validation-for="DriverId" class="text-danger small"></span>
                 </div>
 
                 <div class="d-flex gap-2">
-                    @if (ViewBag.DriverId == null || !ViewBag.DriverId.Any())
+                    @if (freeDrivers.Any())
                     {
                         <button type="submit" class="btn btn-lg btn-success fw-semibold hvr-icon-grow" disabled>
                             <i class="fa-regular fa-floppy-disk hvr-icon me-2"></i>Save

@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Bus_Station_Ticket_Management.Services.BackgroundProcess;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -99,6 +100,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Hosted Background Services
+builder.Services.AddSingleton<ExpiredPaymentCleanupService>();
 builder.Services.AddHostedService<ExpiredPaymentCleanupService>();
 builder.Services.AddHostedService<UpdateTripStatusService>();
 builder.Services.AddHostedService<UpdateCouponStatusService>();
