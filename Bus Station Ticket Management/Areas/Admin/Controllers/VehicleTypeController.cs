@@ -83,33 +83,34 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 ModelState.AddModelError("Name", "This Vehicle Type already exists!");
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Tính tổng số ghế từ SeatsPerFloor (nếu cần)
-                if (vehicleType.SeatsPerFloor != null && vehicleType.SeatsPerFloor.Count > 0)
-                {
-                    vehicleType.TotalSeats = vehicleType.SeatsPerFloor.Sum();
-                }
-
-                if (vehicleType.TotalFloors <= 0)
-                {
-                    ModelState.AddModelError("TotalFloors", "Total Floors must be greater than 0");
-                    return View(vehicleType);
-                }
-
-                if (vehicleType.SeatsPerFloor == null || vehicleType.SeatsPerFloor.Count == 0)
-                {
-                    int seatsPerFloor = (int)Math.Ceiling((double)vehicleType.TotalSeats / vehicleType.TotalFloors);
-                    vehicleType.SeatsPerFloor = [.. Enumerable.Repeat(seatsPerFloor, vehicleType.TotalFloors)];
-                }
-
-                vehicleType.RowsPerFloor = [.. vehicleType.SeatsPerFloor.Select(seats => (int)Math.Ceiling((double)seats / vehicleType.TotalColumns))];
-
-                _context.Add(vehicleType);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(vehicleType);
             }
-            return View(vehicleType);
+
+            // Tính tổng số ghế từ SeatsPerFloor (nếu cần)
+            if (vehicleType.SeatsPerFloor != null && vehicleType.SeatsPerFloor.Count > 0)
+            {
+                vehicleType.TotalSeats = vehicleType.SeatsPerFloor.Sum();
+            }
+
+            if (vehicleType.TotalFloors <= 0)
+            {
+                ModelState.AddModelError("TotalFloors", "Total Floors must be greater than 0");
+                return View(vehicleType);
+            }
+
+            if (vehicleType.SeatsPerFloor == null || vehicleType.SeatsPerFloor.Count == 0)
+            {
+                int seatsPerFloor = (int)Math.Ceiling((double)vehicleType.TotalSeats / vehicleType.TotalFloors);
+                vehicleType.SeatsPerFloor = [.. Enumerable.Repeat(seatsPerFloor, vehicleType.TotalFloors)];
+            }
+
+            vehicleType.RowsPerFloor = [.. vehicleType.SeatsPerFloor.Select(seats => (int)Math.Ceiling((double)seats / vehicleType.TotalColumns))];
+
+            _context.Add(vehicleType);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: VehicleType/Edit/5
@@ -140,27 +141,27 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(vehicleType);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VehicleTypeExists(vehicleType.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(vehicleType);
             }
-            return View(vehicleType);
+            try
+            {
+                _context.Update(vehicleType);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VehicleTypeExists(vehicleType.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: VehicleType/Delete/5

@@ -169,7 +169,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             try
             {
-                var validationResult = ValidateDriverModel(model);
+                var validationResult = ValidateDriverModel(model, null, avatar);
                 if (!validationResult)
                 {
                     return View(model);
@@ -499,7 +499,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         {
             ViewData["Id"] = id;
 
-            var validationResult = ValidateDriverModel(model, id);
+            var validationResult = ValidateDriverModel(model, id, Avatar);
             if (!validationResult)
             {
                 return View(model);
@@ -760,7 +760,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
             return _context.Drivers.Any(e => e.Id == id);
         }
 
-        private bool ValidateDriverModel(DriverViewModel model, string? id = null)
+        private bool ValidateDriverModel(DriverViewModel model, string? id = null, IFormFile? avatar = null)
         {
             if (model == null)
             {
@@ -796,7 +796,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
 
             // Only validate avatar in Create mode
             var isCreateAction = HttpContext.Request.Path.Value?.EndsWith("/Create", StringComparison.OrdinalIgnoreCase) ?? false;
-            if (isCreateAction && string.IsNullOrEmpty(model.Avatar))
+            if (isCreateAction && string.IsNullOrEmpty(model.Avatar) && avatar == null)
             {
                 ModelState.AddModelError("Avatar", "Avatar is required");
                 return false;
