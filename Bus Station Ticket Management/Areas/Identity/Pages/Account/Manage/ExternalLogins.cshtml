@@ -56,11 +56,27 @@
                 <div class="d-flex flex-wrap gap-2">
                     @foreach (var provider in Model.OtherLogins)
                     {
+                        var providerIcon = provider.DisplayName.ToLower() switch {
+                            "google" => "fa-brands fa-google",
+                            "facebook" => "fa-brands fa-facebook-f",
+                            "twitter" => "fa-brands fa-twitter",
+                            "github" => "fa-brands fa-github",
+                            _ => "fa-solid fa-link"
+                        };
+                        var providerColor = provider.DisplayName.ToLower() switch {
+                            "google" => "danger",
+                            "facebook" => "primary",
+                            "twitter" => "info",
+                            "github" => "dark",
+                            _ => "secondary"
+                        };
+
                         <button id="@($"link-login-button-{provider.Name}")" type="submit"
-                                class="btn btn-outline-primary"
+                                class="btn btn-outline-@providerColor btn-lg d-flex align-items-center justify-content-center gap-2 px-4 py-2 shadow-sm transition-all hover-scale"
                                 name="provider" value="@provider.Name"
-                                title="Link your @provider.DisplayName account">
-                            <i class="fa fa-link me-1"></i>@provider.DisplayName
+                                title="Link your @provider.DisplayName account" style="min-width: 200px;">
+                            <i class="@providerIcon me-2"></i>
+                            <span class="fw-semibold">Connect with @provider.DisplayName</span>
                         </button>
                     }
                 </div>

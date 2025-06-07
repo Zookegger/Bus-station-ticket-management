@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -52,13 +53,16 @@ namespace Bus_Station_Ticket_Management.Models
         public DateTime? LastUpdated { get; set; } = DateTime.Now;
 
         [DisplayName("Image")]
+        [ValidateNever] 
         public string? ImageUrl { get; set; }
 
-        [Required]
+        // [Required]
+        [ValidateNever] 
         [DisplayName("Title")]
         public string? Title { get; set; }
 
-        [Required]
+        // [Required] 
+        [ValidateNever] 
         [DisplayName("Description")]
         public string? Description { get; set; }
 

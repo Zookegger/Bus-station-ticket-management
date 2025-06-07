@@ -120,11 +120,31 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CouponString,DiscountType,DiscountAmount,StartPeriod,EndPeriod,Title,Description")] Coupon coupon, IFormFile? image)
         {
+            ViewBag.DiscountType = new SelectList(
+                Enum.GetValues(typeof(DiscountType))
+                .Cast<DiscountType>()
+                .Select(dt => new
+                {
+                    Value = dt,
+                    Text = dt.ToString()
+                }),
+                "Value", "Text");
+            
             try
             {
                 if (ModelState.IsValid)
                 {
                     coupon.IsActive = true;
+                    
+                    // Ensure Description is not null to prevent SQL error
+                    if (string.IsNullOrEmpty(coupon.Description))
+                    {
+                        coupon.Description = string.Empty;
+                    }
+                    if (string.IsNullOrEmpty(coupon.Title))
+                    {
+                        coupon.Title = string.Empty;
+                    }
 
                     if (image != null)
                     {
@@ -135,18 +155,13 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                // ViewBag.DiscountType = new SelectList(Enum.GetValues(typeof (DiscountType))
-                //     .Cast<DiscountType>()
-                //     .Select(dt => new {
-                //         Value = dt,
-                //         Text = dt.ToString()
-                //     }),
-                //     "Value", "Text");
+                
                 return View(coupon);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating coupon");
+                ModelState.AddModelError("", "An error occurred while saving the coupon. Please check all required fields.");
                 return View(coupon);
             }
         }

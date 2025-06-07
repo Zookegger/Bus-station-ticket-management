@@ -15,8 +15,8 @@
                 {
                     <div class="col trip-card" 
                         data-time="@trip.DepartureTime.TimeOfDay.TotalHours"
-                        data-seat-type="@trip.Vehicle?.VehicleType.TotalFloors"
-                        data-vehicle-type="@trip.Vehicle?.VehicleType.Name">
+                        data-seat-type="@(trip.Vehicle?.VehicleType?.TotalFloors > 1 ? "double" : "single")"
+                        data-vehicle-type="@(trip.Vehicle?.VehicleType?.Name?.ToLower() ?? "")">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">
@@ -57,7 +57,7 @@
             </div>
             <div class="card-body">
                 <!-- Time Period Filter -->
-                <div class="mb-4">
+                <div class="mb-4 time-filter-container">
                     <h6 class="fw-bold">Time Period</h6>
                     <div class="form-check">
                         <input class="form-check-input time-filter" type="checkbox" value="morning" id="morning">
@@ -86,52 +86,40 @@
                 </div>
 
                 <!-- Seat Type Filter -->
-                <div class="mb-4">
+                <div class="mb-4 seat-filter-container">
                     <h6 class="fw-bold">Seat Type</h6>
                     <div class="form-check">
-                        <input class="form-check-input seat-filter" type="checkbox" value="upper" id="upper">
-                        <label class="form-check-label" for="upper">
-                            Upper Floor
+                        <input class="form-check-input seat-filter" type="checkbox" value="double" id="double">
+                        <label class="form-check-label" for="double">
+                            Double Decker
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input seat-filter" type="checkbox" value="lower" id="lower">
-                        <label class="form-check-label" for="lower">
-                            Lower Floor
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input seat-filter" type="checkbox" value="mid" id="mid">
-                        <label class="form-check-label" for="mid">
-                            Middle Floor
+                        <input class="form-check-input seat-filter" type="checkbox" value="single" id="single">
+                        <label class="form-check-label" for="single">
+                            Single Decker
                         </label>
                     </div>
                 </div>
 
                 <!-- Vehicle Type Filter -->
-                <div class="mb-4">
+                <div class="mb-4 vehicle-filter-container">
                     <h6 class="fw-bold">Vehicle Type</h6>
-                    <div class="form-check">
-                        <input class="form-check-input vehicle-filter" type="checkbox" value="sleeper" id="sleeper">
-                        <label class="form-check-label" for="sleeper">
-                            Sleeper Bus
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input vehicle-filter" type="checkbox" value="sitting" id="sitting">
-                        <label class="form-check-label" for="sitting">
-                            Sitting Bus
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input vehicle-filter" type="checkbox" value="limousine" id="limousine">
-                        <label class="form-check-label" for="limousine">
-                            Limousine
-                        </label>
-                    </div>
+                    @if (Model.VehicleTypes != null)
+                    {
+                        @foreach (var vehicleType in Model.VehicleTypes)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input vehicle-filter" type="checkbox" value="@vehicleType.Name.ToLower()" id="@vehicleType.Name.ToLower()">
+                                <label class="form-check-label" for="@vehicleType.Name.ToLower()">
+                                    @vehicleType.Name
+                                </label>
+                            </div>
+                        }
+                    }
                 </div>
 
-                <button class="btn btn-outline-primary w-100" onclick="resetFilters()">
+                <button class="btn btn-outline-primary w-100" id="resetFiltersBtn">
                     <i class="fas fa-undo"></i> Reset Filters
                 </button>
             </div>
@@ -139,75 +127,111 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const timeFilters = document.querySelectorAll('.time-filter');
-            const seatFilters = document.querySelectorAll('.seat-filter');
-            const vehicleFilters = document.querySelectorAll('.vehicle-filter');
-            const tripCards = document.querySelectorAll('.trip-card');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timeFilters = document.querySelectorAll('.time-filter');
+        const seatFilters = document.querySelectorAll('.seat-filter');
+        const vehicleFilters = document.querySelectorAll('.vehicle-filter');
+        const tripCards = document.querySelectorAll('.trip-card');
+        const resetBtn = document.getElementById('resetFiltersBtn');
 
-            function applyFilters() {
-                const selectedTimes = Array.from(timeFilters)
-                    .filter(f => f.checked)
-                    .map(f => f.value);
-                const selectedSeats = Array.from(seatFilters)
-                    .filter(f => f.checked)
-                    .map(f => f.value);
-                const selectedVehicles = Array.from(vehicleFilters)
-                    .filter(f => f.checked)
-                    .map(f => f.value);
+        function applyFilters() {
+            // Get selected filter values
+            const selectedTimes = Array.from(timeFilters)
+                .filter(f => f.checked)
+                .map(f => f.value);
+            const selectedSeats = Array.from(seatFilters)
+                .filter(f => f.checked)
+                .map(f => f.value);
+            const selectedVehicles = Array.from(vehicleFilters)
+                .filter(f => f.checked)
+                .map(f => f.value);
 
-                tripCards.forEach(card => {
-                    const time = parseFloat(card.dataset.time);
-                    const seatType = card.dataset.seatType;
-                    const vehicleType = card.dataset.vehicleType;
-
-                    const timeMatch = selectedTimes.length === 0 || selectedTimes.some(t => {
-                        switch(t) {
-                            case 'morning': return time >= 5 && time < 12;
-                            case 'afternoon': return time >= 12 && time < 18;
-                            case 'evening': return time >= 18 && time < 23;
-                            case 'night': return time >= 23 || time < 5;
-                            default: return true;
-                        }
-                    });
-
-                    const seatMatch = selectedSeats.length === 0 || selectedSeats.includes(seatType);
-                    const vehicleMatch = selectedVehicles.length === 0 || selectedVehicles.includes(vehicleType);
-
-                    card.style.display = timeMatch && seatMatch && vehicleMatch ? '' : 'none';
-                });
-
-                // Show message if no results
-                const visibleCards = document.querySelectorAll('.trip-card[style=""]');
-                const noResultsMsg = document.getElementById('noResultsMessage');
-                if (visibleCards.length === 0) {
-                    if (!noResultsMsg) {
-                        const msg = document.createElement('div');
-                        msg.id = 'noResultsMessage';
-                        msg.className = 'alert alert-info mt-3';
-                        msg.innerHTML = '<i class="fas fa-info-circle"></i> No trips match the selected filters.';
-                        document.getElementById('tripResults').appendChild(msg);
-                    }
-                } else {
-                    noResultsMsg?.remove();
-                }
+            // Remove existing no results message
+            const existingNoResultsMsg = document.getElementById('noResultsMessage');
+            if (existingNoResultsMsg) {
+                existingNoResultsMsg.remove();
             }
 
-            timeFilters.forEach(filter => filter.addEventListener('change', applyFilters));
-            seatFilters.forEach(filter => filter.addEventListener('change', applyFilters));
-            vehicleFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+            let visibleCount = 0;
+
+            tripCards.forEach(card => {
+                const time = parseFloat(card.dataset.time);
+                const seatType = card.dataset.seatType;
+                const vehicleType = card.dataset.vehicleType;
+
+                // Check time filter match
+                const timeMatch = selectedTimes.length === 0 || selectedTimes.some(t => {
+                    switch(t) {
+                        case 'morning': return time >= 5 && time < 12;
+                        case 'afternoon': return time >= 12 && time < 18;
+                        case 'evening': return time >= 18 && time < 23;
+                        case 'night': return time >= 23 || time < 5;
+                        default: return false;
+                    }
+                });
+
+                // Check seat filter match
+                const seatMatch = selectedSeats.length === 0 || selectedSeats.includes(seatType);
+
+                // Check vehicle filter match
+                const vehicleMatch = selectedVehicles.length === 0 || 
+                    (vehicleType && selectedVehicles.includes(vehicleType));
+
+                // Show/hide card based on all filter matches
+                const shouldShow = timeMatch && seatMatch && vehicleMatch;
+                
+                card.style.display = shouldShow ? '' : 'none';
+                
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            // Show "no results" message if no cards are visible
+            if (visibleCount === 0 && tripCards.length > 0) {
+                const resultsContainer = document.getElementById('tripResults');
+                const msg = document.createElement('div');
+                msg.id = 'noResultsMessage';
+                msg.className = 'col-12';
+                msg.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> No trips match the selected filters.</div>';
+                resultsContainer.appendChild(msg);
+            }
+        }
+
+        // Add event listeners to all filters
+        timeFilters.forEach(filter => {
+            filter.addEventListener('change', applyFilters);
+        });
+        
+        seatFilters.forEach(filter => {
+            filter.addEventListener('change', applyFilters);
+        });
+        
+        vehicleFilters.forEach(filter => {
+            filter.addEventListener('change', applyFilters);
         });
 
+        // Reset filters function
         function resetFilters() {
+            // Uncheck all filters
             document.querySelectorAll('.time-filter, .seat-filter, .vehicle-filter').forEach(filter => {
                 filter.checked = false;
             });
-            document.querySelectorAll('.trip-card').forEach(card => {
+            
+            // Show all trip cards
+            tripCards.forEach(card => {
                 card.style.display = '';
             });
-            document.getElementById('noResultsMessage')?.remove();
+            
+            // Remove no results message
+            const noResultsMsg = document.getElementById('noResultsMessage');
+            if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
         }
-    </script>
-} 
+
+        // Add event listener to reset button
+        resetBtn.addEventListener('click', resetFilters);
+    });
+</script>

@@ -242,7 +242,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TripId,DriverId")] TripDriverAssignment tripDriverAssignment)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(tripDriverAssignment);
                 
             try

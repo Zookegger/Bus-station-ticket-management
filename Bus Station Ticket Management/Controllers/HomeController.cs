@@ -60,6 +60,8 @@ public class HomeController : Controller
                 .ThenInclude(r => r.StartLocation)
             .Include(t => t.Route)
                 .ThenInclude(r => r.DestinationLocation)
+            .Include(t => t.Vehicle)
+                .ThenInclude(v => v.VehicleType)
             .Where(t =>
                 t.Route != null && 
                 t.Route.StartLocation != null && 
@@ -71,13 +73,17 @@ public class HomeController : Controller
             .OrderBy(t => t.DepartureTime)
             .ToListAsync();
 
+        var vehicleTypes = await _context.VehicleTypes
+            .ToListAsync();
+
         var viewModel = new TripListViewModel
         {
             TripsList = trips,
             IsSearchResult = true,
             Departure = departure,
             Destination = destination,
-            DepartureTime = departureTime
+            DepartureTime = departureTime,
+            VehicleTypes = vehicleTypes
         };
 
         return View("Index", viewModel);

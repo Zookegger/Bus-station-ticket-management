@@ -1,7 +1,7 @@
 ﻿@model Bus_Station_Ticket_Management.Models.Rating
 
 @{
-    ViewData["Title"] = "Chi tiết đánh giá";
+    ViewData["Title"] = "Rating Details";
     // Convert the TripRating (assumed to be between 1 and 10) to a 5-star scale
     double stars = Model.TripRating / 2.0;
     int fullStars = (int)Math.Floor(stars);
@@ -9,28 +9,49 @@
     int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 }
 
-<h2>Chi tiết đánh giá chuyến đi</h2>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item"><a href="@Url.Action("MyRatings", "Ratings")" class="text-decoration-none"><i class="fas fa-star me-1"></i>Ratings</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Rating Details</li>
+    </ol>
+</nav>
 
-<div>
-    <h4>Chuyến đi: @Model.Trip.Route.StartLocation.Name - @Model.Trip.Route.DestinationLocation.Name</h4>
-    <p>
-        <strong>Rating:</strong>
-        @for (int i = 0; i < fullStars; i++)
-        {
-            <i class="fa fa-star" style="color: gold;"></i>
-        }
-        @if (hasHalfStar)
-        {
-            <i class="fa fa-star-half-o" style="color: gold;"></i>
-        }
-        @for (int i = 0; i < emptyStars; i++)
-        {
-            <i class="fa fa-star-o" style="color: gold;"></i>
-        }
-        <span> (@Model.TripRating)</span>
-    </p>
-    <p><strong>Comment:</strong> @Model.Comment</p>
-    <p><strong>Ngày tạo:</strong> @Model.CreatedAt</p>
+<div class="card shadow-sm rounded">
+    <div class="card-header">
+        <h4 class="mb-3">Trip: @Model.Trip.Route.StartLocation.Name → @Model.Trip.Route.DestinationLocation.Name</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>Rating:</strong>
+            <div class="d-inline-block ms-2">
+                @for (int i = 0; i < fullStars; i++)
+                {
+                    <i class="fas fa-star text-warning"></i>
+                }
+                @if (hasHalfStar)
+                {
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                }
+                @for (int i = 0; i < emptyStars; i++)
+                {
+                    <i class="far fa-star text-warning"></i>
+                }
+                <span class="ms-2 fw-bold">(@Model.TripRating/10)</span>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <strong>Comment:</strong>
+            <p class="mt-2 mb-0">@(string.IsNullOrEmpty(Model.Comment) ? "No comment provided" : Model.Comment)</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong>Created on:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="@Url.Action("MyRatings", "Ratings")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Ratings
+        </a>
+    </div>
 </div>
-
-<a href="@Url.Action("Index")" class="btn btn-secondary">Trở lại</a>

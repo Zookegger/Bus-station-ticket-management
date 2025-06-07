@@ -10,5 +10,6 @@ namespace Bus_Station_Ticket_Management.ViewModels {
         public DateOnly? DepartureTime { get; set; }
 
         public List<Coupon>? Coupons { get; set; }
+        public List<VehicleType>? VehicleTypes { get; set; }
     }
 }
