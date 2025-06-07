@@ -19,11 +19,13 @@ namespace Bus_Station_Ticket_Management.Models
         [DisplayName("Total Seats")]
         public int TotalSeats { get; set; }
 
-        [DisplayName("Total Floors")]
-        public int TotalFloors { get; set; }
 
         [DisplayName("Rows Per Floor")]
         public List<int> RowsPerFloor { get; set; } = [];
+
+        [DisplayName("Total Floors")]
+        public int TotalFloors { get; set; }
+
 
         [DisplayName("Total Columns")]
         public int TotalColumns { get; set; }
