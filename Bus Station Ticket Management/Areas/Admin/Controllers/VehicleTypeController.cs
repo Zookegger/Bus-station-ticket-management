@@ -76,7 +76,7 @@ namespace Bus_Station_Ticket_Management.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,TotalSeats,TotalFloors,TotalColumns,SeatsPerFloor,RowsPerFloor")] VehicleType vehicleType)
+        public async Task<IActionResult> Create([Bind("Id,Name,Price,TotalSeats,TotalFloors,TotalColumns,SeatsPerFloor")] VehicleType vehicleType)
         {
             if (VehicleTypeExists(vehicleType.Name))
             {
